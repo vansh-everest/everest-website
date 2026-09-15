@@ -1,5 +1,8 @@
 import { CaretDown } from "@phosphor-icons/react/ssr";
-import { Eyebrow, PHONE_DISPLAY } from "./ui";
+import { Phone } from "lucide-react";
+import { Eyebrow, PHONE_DISPLAY, PHONE_HREF } from "./ui";
+
+type Variant = "home" | "page";
 
 const steps = [
   {
@@ -56,7 +59,34 @@ function Stepper() {
   );
 }
 
-function ApplyForm() {
+function SubmitRow({ variant }: { variant: Variant }) {
+  if (variant === "home") {
+    return (
+      <button
+        type="submit"
+        className="mt-6 flex h-14 w-full items-center justify-center rounded-full bg-brand text-[15px] font-semibold text-white transition hover:brightness-110"
+      >
+        Submit &amp; Apply →
+      </button>
+    );
+  }
+  return (
+    <div className="mt-6 grid grid-cols-2 gap-[11px]">
+      <button type="submit" className="h-14 rounded-full bg-brand text-lg font-medium text-white transition hover:brightness-110">
+        Submit &amp; apply
+      </button>
+      <a
+        href={PHONE_HREF}
+        className="flex h-14 items-center justify-center gap-2 rounded-full border-2 border-brand text-lg font-medium text-brand"
+      >
+        <Phone size={16} fill="currentColor" strokeWidth={0} />
+        Call now
+      </a>
+    </div>
+  );
+}
+
+function ApplyForm({ variant }: { variant: Variant }) {
   return (
     <form className="px-6 py-8 lg:px-14 lg:py-4">
       <p className="inline-flex h-[27px] items-center gap-2 rounded-full bg-[#e8f9ee] px-3 text-[11px] font-semibold text-[#1a8f4a]">
@@ -98,12 +128,7 @@ function ApplyForm() {
           <CaretDown size={20} className="pointer-events-none absolute right-6 top-1/2 mt-1 -translate-y-1/2 text-navy" />
         </span>
       </label>
-      <button
-        type="submit"
-        className="mt-6 flex h-14 w-full items-center justify-center rounded-full bg-brand text-[15px] font-semibold text-white transition hover:brightness-110"
-      >
-        Submit &amp; Apply →
-      </button>
+      <SubmitRow variant={variant} />
       <p className="mt-4 text-center text-xs leading-4 text-ink-soft/80">
         Or reach us directly · 📞 {PHONE_DISPLAY} · 💬 WhatsApp
       </p>
@@ -111,19 +136,26 @@ function ApplyForm() {
   );
 }
 
-export function ApplySteps() {
+export function ApplySteps({ variant = "home" }: { variant?: Variant }) {
+  const page = variant === "page";
   return (
-    <section id="apply" className="scroll-mt-20 bg-paper px-6 pb-[94px] pt-[98px]">
+    <section id="apply" className={`scroll-mt-20 bg-paper px-6 ${page ? "py-24" : "pb-[94px] pt-[98px]"}`}>
       <div className="text-center">
         <Eyebrow>How it works</Eyebrow>
-        <h2 className="mt-2 text-[32px] font-bold leading-tight text-navy lg:text-[48px] lg:leading-[51px]">
-          Start Driving in 3 Simple Steps
-        </h2>
+        {page ? (
+          <h2 className="mt-2 text-[34px] font-bold leading-tight tracking-[-0.5px] text-navy lg:text-[64px] lg:leading-[77px]">
+            Start Driving in <span className="text-brand">3 Simple Steps</span>
+          </h2>
+        ) : (
+          <h2 className="mt-2 text-[32px] font-bold leading-tight text-navy lg:text-[48px] lg:leading-[51px]">
+            Start Driving in 3 Simple Steps
+          </h2>
+        )}
         <p className="mt-2 text-base leading-[21px] text-ink-soft">No CV. No interview. Just your licence and the will to work.</p>
       </div>
       <div className="mx-auto mt-16 grid max-w-[1200px] overflow-hidden rounded-3xl bg-white shadow-[0_20px_60px_rgba(6,47,80,0.12)] lg:h-[560px] lg:grid-cols-[560px_640px]">
         <Stepper />
-        <ApplyForm />
+        <ApplyForm variant={variant} />
       </div>
     </section>
   );

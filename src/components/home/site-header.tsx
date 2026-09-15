@@ -1,13 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-
-const nav = [
-  { label: "Home", href: "/", active: true },
-  { label: "About Us", href: "#" },
-  { label: "Our Plans", href: "#plans" },
-  { label: "Our Services", href: "#" },
-  { label: "Everest Dost", href: "#dost" },
-];
+import { NavLinks } from "./nav-links";
 
 export function SiteHeader() {
   return (
@@ -23,26 +16,13 @@ export function SiteHeader() {
             className="h-[78px] w-[135px] object-cover"
           />
         </Link>
-        <nav className="hidden items-center gap-12 lg:flex">
-          {nav.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`relative text-[15px] font-medium leading-[22.5px] tracking-[-0.23px] transition ${
-                item.active ? "text-navy" : "text-ink-soft hover:text-navy"
-              }`}
-            >
-              {item.label}
-              {item.active && <span aria-hidden className="absolute left-0 top-[24.75px] h-0.5 w-full bg-sun" />}
-            </Link>
-          ))}
-        </nav>
-        <a
-          href="#apply"
+        <NavLinks />
+        <Link
+          href="/#apply"
           className="flex h-12 items-center rounded-full bg-brand px-[26px] text-sm font-medium tracking-[-0.15px] text-white transition hover:brightness-110"
         >
           Join as Driver
-        </a>
+        </Link>
       </div>
     </header>
   );

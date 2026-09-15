@@ -42,3 +42,6 @@ next-env.d.ts
 
 # local browser-test artefacts
 .playwright-mcp/
+
+# Figma frame exports (large source renders for scripts/crop-*.py)
+design/

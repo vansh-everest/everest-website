@@ -1,8 +1,36 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react/ssr";
 import { CityPill } from "./ui";
 
-const cars = [
+export type CarCardData = {
+  tab: string;
+  tabTone: string;
+  name: string;
+  subtitle?: string;
+  fuel: string;
+  fuelTone: string;
+  img: string;
+  alt: string;
+  condition?: string;
+  tiles: { label: string; value: ReactNode }[];
+  cta: string;
+  ctaClassName?: string;
+};
+
+function PlanBadges({ plans }: { plans: string[] }) {
+  return (
+    <ul className="flex flex-wrap gap-[3px]">
+      {plans.map((p) => (
+        <li key={p} className="flex h-[21px] items-center rounded-full border border-brand px-2 text-[10px] font-semibold text-brand">
+          {p}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+const cars: CarCardData[] = [
   {
     tab: "India’s Most Driven & Trusted Choice",
     tabTone: "bg-brand",
@@ -11,7 +39,13 @@ const cars = [
     fuelTone: "bg-brand",
     img: "/figma/car-wagonr.jpg",
     alt: "White Everest Fleet Wagonr",
-    plans: ["DTE", "DTO", "Own Now", "RS"],
+    tiles: [
+      { label: "Rent starting from", value: "₹650/day" },
+      { label: "Deposit starting from", value: "₹40,000" },
+      { label: "Plans available", value: <PlanBadges plans={["DTE", "DTO", "Own Now", "RS"]} /> },
+      { label: "Models available", value: "2025, 2024, 2023" },
+    ],
+    cta: "Drive this car →",
   },
   {
     tab: "Our Most Popular Eco-Friendly Favorite",
@@ -21,11 +55,17 @@ const cars = [
     fuelTone: "bg-leaf",
     img: "/figma/car-tigor-ev.jpg",
     alt: "White Everest Fleet Tigor EV",
-    plans: ["DTE", "RS"],
+    tiles: [
+      { label: "Rent starting from", value: "₹650/day" },
+      { label: "Deposit starting from", value: "₹40,000" },
+      { label: "Plans available", value: <PlanBadges plans={["DTE", "RS"]} /> },
+      { label: "Models available", value: "2025, 2024, 2023" },
+    ],
+    cta: "Drive this car →",
   },
 ];
 
-function Tile({ label, children }: { label: string; children: React.ReactNode }) {
+function Tile({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="min-h-16 rounded-lg bg-mist p-[14px]">
       <p className="text-[10px] font-semibold uppercase leading-[13px] tracking-[0.5px] text-ink-soft">{label}</p>
@@ -34,7 +74,9 @@ function Tile({ label, children }: { label: string; children: React.ReactNode })
   );
 }
 
-function CarCard({ car }: { car: (typeof cars)[number] }) {
+const photoPill = "absolute top-4 flex h-[22px] items-center gap-[5px] rounded-full bg-white px-[11px] text-[10px] font-semibold text-navy";
+
+export function CarCard({ car }: { car: CarCardData }) {
   return (
     <article className="flex min-w-0 flex-col items-center">
       <p className={`flex h-[38px] w-[423px] max-w-full items-center justify-center rounded-t-xl text-sm font-semibold text-white ${car.tabTone}`}>
@@ -43,37 +85,36 @@ function CarCard({ car }: { car: (typeof cars)[number] }) {
       <div className="w-full overflow-hidden rounded-2xl bg-white shadow-[0_4px_20px_rgba(6,47,80,0.08)]">
         <div className="relative h-[262px]">
           <Image src={car.img} alt={car.alt} fill sizes="(min-width: 1024px) 580px, 100vw" className="object-cover object-left" />
-          <p className="absolute left-4 top-4 flex h-[22px] items-center gap-[5px] rounded-full bg-white px-[11px] text-[10px] font-semibold text-navy">
+          <p className={`${photoPill} left-4`}>
             <span aria-hidden className="size-[7px] rounded-full bg-leaf" />
             Available in Mumbai
           </p>
+          {car.condition && <p className={`${photoPill} right-[22px]`}>{car.condition}</p>}
         </div>
         <div className="p-[26px] pt-6 lg:min-h-[313px]">
-          <div className="flex items-center justify-between">
-            <h3 className="text-[22px] font-bold leading-[27px] text-navy">{car.name}</h3>
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="text-[22px] font-bold leading-[27px] text-navy">{car.name}</h3>
+              {car.subtitle && <p className="text-sm leading-[17px] text-ink-soft/60">{car.subtitle}</p>}
+            </div>
             <span className={`flex h-[25px] items-center gap-1 rounded-full px-[13px] text-[11px] font-bold text-white ${car.fuelTone}`}>
               ⚡ {car.fuel}
             </span>
           </div>
           <div className="mt-5 grid grid-cols-2 gap-3">
-            <Tile label="Rent starting from">₹650/day</Tile>
-            <Tile label="Deposit starting from">₹40,000</Tile>
-            <Tile label="Plans available">
-              <ul className="flex flex-wrap gap-[3px]">
-                {car.plans.map((p) => (
-                  <li key={p} className="flex h-[21px] items-center rounded-full border border-brand px-2 text-[10px] font-semibold text-brand">
-                    {p}
-                  </li>
-                ))}
-              </ul>
-            </Tile>
-            <Tile label="Models available">2025, 2024, 2023</Tile>
+            {car.tiles.map((tile) => (
+              <Tile key={tile.label} label={tile.label}>
+                {tile.value}
+              </Tile>
+            ))}
           </div>
           <a
             href="#apply"
-            className="mt-6 flex h-[50px] items-center justify-center rounded-full border-[1.5px] border-brand text-sm font-semibold text-brand transition hover:bg-brand hover:text-white"
+            className={`mt-6 flex h-[50px] items-center justify-center rounded-full border-[1.5px] border-brand font-semibold text-brand transition hover:bg-brand hover:text-white ${
+              car.ctaClassName ?? "text-sm"
+            }`}
           >
-            Drive this car →
+            {car.cta}
           </a>
         </div>
       </div>
