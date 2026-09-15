@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { TopBar } from "@/components/home/top-bar";
+import { SiteHeader } from "@/components/home/site-header";
 import { SiteFooter } from "@/components/home/site-footer";
 import "./globals.css";
 
@@ -23,7 +25,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${jakarta.variable} antialiased`}>
       <body className="font-sans">
-        {children}
+        <TopBar />
+        <SiteHeader />
+        <main className="overflow-x-clip">{children}</main>
         <SiteFooter />
       </body>
     </html>
