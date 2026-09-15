@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // A stray package-lock.json in the home directory makes Next guess the wrong workspace root.
+  turbopack: { root: __dirname },
 };
 
 export default nextConfig;
