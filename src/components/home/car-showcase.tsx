@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { CaretLeft, CaretRight } from "@phosphor-icons/react/ssr";
 import { CityPill } from "./ui";
+import Link from "next/link";
 
 export type CarCardData = {
   tab: string;
@@ -155,9 +156,9 @@ export function CarShowcase() {
       </div>
       <p className="mt-4 text-center text-xs text-ink-soft">
         Showing 5 vehicles available in Mumbai{" "}
-        <a href="#" className="ml-1 font-semibold text-brand">
-          View full fleet →
-        </a>
+        <Link href="/our-services" className="ml-1 font-semibold text-brand">
+          View full fleet
+        </Link>
       </p>
     </section>
   );

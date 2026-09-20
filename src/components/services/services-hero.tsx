@@ -5,7 +5,7 @@ export function ServicesHero() {
   return (
     <section className="relative h-[560px] overflow-hidden lg:h-[869px]">
       <Image
-        src="/figma/svc-hero.jpg"
+        src="/figma/svc-hero.webp"
         alt="Electric sedan on a city street at dusk"
         fill
         preload

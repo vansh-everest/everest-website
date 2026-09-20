@@ -3,6 +3,7 @@ import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { TopBar } from "@/components/home/top-bar";
 import { SiteHeader } from "@/components/home/site-header";
 import { SiteFooter } from "@/components/home/site-footer";
+import { COMPANY_BLURB, SITE_URL } from "@/lib/company";
 import "./globals.css";
 
 const inter = Inter({
@@ -17,8 +18,24 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Everest Fleet | Drive, Earn and Own",
-  description: "India's largest fleet partner with 35,000+ cars and 50,000+ drivers across 7 cities",
+  // metadataBase makes canonical URLs and social preview images resolve absolutely.
+  // Without it a link shared on WhatsApp renders with no preview card.
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Everest Fleet | Drive, Earn and Own",
+    template: "%s | Everest Fleet",
+  },
+  description: COMPANY_BLURB,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "Everest Fleet",
+    locale: "en_IN",
+    url: "/",
+    title: "Everest Fleet | Drive, Earn and Own",
+    description: COMPANY_BLURB,
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

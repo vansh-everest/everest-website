@@ -27,7 +27,7 @@ export function Testimonials({ variant = "home" }: { variant?: "home" | "page" }
             {/* Figma places the still at (-32, -130) at 1173x589 inside the 1112x460 thumb. */}
             <div className="absolute left-[-2.878%] top-[-28.261%] h-[128.043%] w-[105.486%]">
               <Image
-                src="/figma/hero.png"
+                src="/figma/hero.webp"
                 alt="Anand T., Everest Fleet driver, leaning on his sedan"
                 fill
                 sizes="(min-width: 1184px) 1173px, 105vw"
@@ -63,7 +63,7 @@ export function Testimonials({ variant = "home" }: { variant?: "home" | "page" }
             </div>
           </div>
           <p className="px-6 py-6 text-center text-xl font-semibold leading-8 text-navy md:px-10 md:py-[29px] md:text-[28px] md:leading-[39px]">
-            See how Anand T. secured ₹35,000 last month with Everest Fleet.
+            Anand has driven with Everest Fleet in Mumbai for a year and a half.
           </p>
         </article>
         <button type="button" aria-label="Previous story" className={`${arrow} left-0 bg-white text-navy`}>

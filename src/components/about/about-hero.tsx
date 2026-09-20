@@ -4,7 +4,7 @@ export function AboutHero() {
   return (
     <section className="relative h-[360px] overflow-hidden sm:h-[480px] lg:h-[605px]">
       <Image
-        src="/figma/about-hero.jpg"
+        src="/figma/about-hero.webp"
         alt="Everest Fleet cars lined up in a sunlit showroom"
         fill
         preload

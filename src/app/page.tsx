@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { COMPANY, COMPANY_BLURB, SITE_URL } from "@/lib/company";
 import { Hero } from "@/components/home/hero";
 import { HeadlineBand } from "@/components/home/headline-band";
 import { StatsBand } from "@/components/home/stats-band";
@@ -12,9 +14,40 @@ import { DostApp } from "@/components/home/dost-app";
 import { ApplySteps } from "@/components/home/apply-steps";
 import { Testimonials } from "@/components/home/testimonials";
 
+export const metadata: Metadata = {
+  title: "Drive an Uber without owning a car | Everest Fleet",
+  description:
+    `Rent or own a car to drive on Uber across ${COMPANY.cities} Indian cities. ` +
+    "Low deposit, weekly payouts, maintenance and insurance included.",
+  alternates: { canonical: "/" },
+};
+
+// Organization markup gives search engines and AI assistants one set of company facts to
+// quote. It reads from the same source as the page, so the two can never disagree.
+const organisation = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Everest Fleet",
+  url: SITE_URL,
+  foundingDate: String(COMPANY.founded),
+  description: COMPANY_BLURB,
+  areaServed: "India",
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: COMPANY.phone,
+    contactType: "sales",
+    areaServed: "IN",
+    availableLanguage: ["en", "hi"],
+  },
+};
+
 export default function Home() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organisation) }}
+      />
       <Hero />
       <HeadlineBand />
       <StatsBand />

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Icon } from "@phosphor-icons/react";
 import { CreditCard, CurrencyInr, Headset, LockSimpleOpen, Wrench } from "@phosphor-icons/react/ssr";
+import { COMPANY } from "@/lib/company";
 
 const benefits: { icon: Icon; tone: string; title: string; body: string }[] = [
   { icon: CurrencyInr, tone: "bg-sun text-navy", title: "Earn up to ₹40,000/mo", body: "Direct bank transfer every week" },
@@ -14,7 +15,7 @@ export function WhyChooseUs() {
   return (
     <section className="bg-mist px-6 pb-[83px] pt-[72px]">
       <h2 className="text-center text-[34px] font-bold leading-tight tracking-[-0.5px] text-navy lg:text-[64px] lg:leading-[60px]">
-        Why 50,000+ drivers choose us
+        Why {COMPANY.drivers} drivers choose us
       </h2>
       <div className="mx-auto mt-12 grid max-w-[1248px] items-center gap-10 lg:mt-[72px] lg:grid-cols-[568px_1fr] lg:gap-16">
         <div className="relative mx-auto aspect-[512/640] w-full max-w-[512px] overflow-hidden rounded-2xl lg:mx-0">

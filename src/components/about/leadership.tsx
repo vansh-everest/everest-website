@@ -1,11 +1,15 @@
 import Image from "next/image";
+import { COMPANY } from "@/lib/company";
 
 // Names, photos and bios are the Figma placeholders until the real team details arrive.
-const leaders = [
+// Add linkedIn only where a real profile exists; the icon is hidden otherwise.
+type Leader = { name: string; title: string; bio: string; img: string; linkedIn?: string };
+
+const leaders: Leader[] = [
   { name: "Founder Name 1", title: "Co-Founder & CEO", bio: "10+ years in fleet management", img: "/figma/leader-1.jpg" },
-  { name: "Founder Name 2", title: "Co-Founder & COO", bio: "Scaling operations across 7 cities", img: "/figma/leader-2.jpg" },
+  { name: "Founder Name 2", title: "Co-Founder & COO", bio: `Scaling operations across ${COMPANY.cities} cities`, img: "/figma/leader-2.jpg" },
   { name: "Founder Name 3", title: "Head of Operations", bio: "Driver-first operations leader", img: "/figma/leader-3.jpg" },
-  { name: "Founder Name 4", title: "Head of Driver Relations", bio: "Champion for 35,000+ drivers", img: "/figma/leader-4.jpg" },
+  { name: "Founder Name 4", title: "Head of Driver Relations", bio: `Champion for ${COMPANY.drivers} drivers`, img: "/figma/leader-4.jpg" },
 ];
 
 export function Leadership() {
@@ -29,13 +33,17 @@ export function Leadership() {
             <div className="px-5 pb-5 pt-[18px]">
               <div className="flex items-center justify-between">
                 <p className="text-[22px] font-bold leading-6 text-navy">{leader.name}</p>
-                <a
-                  href="#"
-                  aria-label={`${leader.name} on LinkedIn`}
-                  className="grid size-4 place-items-center rounded-[3px] bg-[#9ca3af] text-[9px] font-bold leading-none text-white"
-                >
-                  in
-                </a>
+                {leader.linkedIn ? (
+                  <a
+                    href={leader.linkedIn}
+                    target="_blank"
+                    rel="noopener"
+                    aria-label={`${leader.name} on LinkedIn`}
+                    className="grid size-4 place-items-center rounded-[3px] bg-[#9ca3af] text-[9px] font-bold leading-none text-white"
+                  >
+                    in
+                  </a>
+                ) : null}
               </div>
               <span aria-hidden className="mt-2 block h-[3px] w-8 bg-sun" />
               <p className="mt-2 text-[15px] leading-[17px] text-navy">{leader.title}</p>
@@ -44,11 +52,7 @@ export function Leadership() {
           </li>
         ))}
       </ul>
-      <p className="mt-10 text-center">
-        <a href="#" className="text-[15px] font-semibold leading-[17px] text-navy">
-          View full leadership team →
-        </a>
-      </p>
+
     </section>
   );
 }

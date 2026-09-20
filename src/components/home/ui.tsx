@@ -3,6 +3,7 @@ import { CaretDown, CheckCircle, GooglePlayLogo, MapPin } from "@phosphor-icons/
 
 export const PHONE_DISPLAY = "91262 14248";
 export const PHONE_HREF = "tel:+919126214248";
+export const PLAY_STORE_HREF = "https://play.google.com/store/apps/details?id=com.everest.fleet";
 export const WHATSAPP_HREF = "https://wa.me/919126214248";
 
 export function CityPill({ city = "Mumbai" }: { city?: string }) {
@@ -32,7 +33,9 @@ export function SunButton({ href, children, className = "" }: { href: string; ch
 export function GooglePlayButton({ className = "" }: { className?: string }) {
   return (
     <a
-      href="#"
+      href={PLAY_STORE_HREF}
+      target="_blank"
+      rel="noopener"
       className={`inline-flex h-14 w-[174px] items-center justify-center gap-2.5 rounded-full bg-black text-white ${className}`}
     >
       <GooglePlayLogo size={20} weight="fill" />

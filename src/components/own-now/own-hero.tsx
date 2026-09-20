@@ -8,7 +8,7 @@ export function OwnHero() {
     <section className="relative bg-white lg:h-[623px] lg:overflow-hidden">
       <div className="relative h-[280px] sm:h-[380px] lg:absolute lg:inset-0 lg:h-auto">
         <Image
-          src="/figma/own-hero.jpg"
+          src="/figma/own-hero.webp"
           alt="Everest driver holding up the keys to his car"
           fill
           preload

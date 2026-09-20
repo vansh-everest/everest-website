@@ -1,3 +1,4 @@
+import { COMPANY } from "@/lib/company";
 const values = [
   {
     name: "Empathetic",
@@ -29,7 +30,7 @@ export function Values() {
           Drives Us
         </h2>
         <p className="mt-6 max-w-80 text-lg leading-[29px] text-white/80">
-          Our EVERT values aren&apos;t just words — they&apos;re the promises we keep every day for 50,000+ drivers across India.
+          Our EVERT values aren&apos;t just words. They are the promises we keep every day for {COMPANY.drivers} drivers across India.
         </p>
         <div aria-hidden className="mt-12 flex lg:absolute lg:left-20 lg:top-[575px] lg:mt-0">
           {circles.map((tone, i) => (

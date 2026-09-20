@@ -6,7 +6,7 @@ export function Hero() {
       {/* Figma places the photo at (-70, -105) at 1510x759 inside the 1440x654 frame. */}
       <div className="absolute left-[-4.861%] top-[-16.055%] h-[116.055%] w-[104.861%]">
         <Image
-          src="/figma/hero.png"
+          src="/figma/hero.webp"
           alt="Everest Fleet driver leaning on a white Everest sedan"
           fill
           preload

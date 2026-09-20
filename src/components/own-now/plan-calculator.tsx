@@ -151,11 +151,7 @@ function PlanSummary() {
         </Link>
       </div>
       <p className="mt-4 text-center text-xs leading-[17px] text-ink-soft">
-        Plans, fees and deductions subject to{" "}
-        <a href="#" className="text-brand underline">
-          terms
-        </a>
-        .
+        Plans, fees and deductions subject to terms and conditions.
       </p>
     </div>
   );
@@ -207,10 +203,7 @@ export function PlanCalculator() {
         <span className="size-2 rounded-full bg-navy/15" />
       </div>
       <p className="mt-8 text-center text-[15px] text-ink-soft">
-        Showing 8 vehicles available in Mumbai.{" "}
-        <a href="#" className="font-semibold text-brand">
-          View full fleet →
-        </a>
+        Showing 8 vehicles available in Mumbai.
       </p>
     </section>
   );

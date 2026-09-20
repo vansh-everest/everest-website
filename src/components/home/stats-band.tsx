@@ -1,10 +1,11 @@
 import { Fragment } from "react";
+import { COMPANY } from "@/lib/company";
 
 const stats = [
-  { value: "35,000+", label: "Cars on the road" },
-  { value: "7", label: "Cities" },
-  { value: "50,000+", label: "Drivers" },
-  { value: "9+ Yrs", label: "Of operations" },
+  { value: COMPANY.vehicles, label: "Cars on the road" },
+  { value: String(COMPANY.cities), label: "Cities" },
+  { value: COMPANY.drivers, label: "Drivers" },
+  { value: `Since ${COMPANY.founded}`, label: "Operating" },
   { value: "✓ Uber", label: "Official partner" },
 ];
 

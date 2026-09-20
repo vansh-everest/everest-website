@@ -1,13 +1,19 @@
 import Image from "next/image";
 import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "./ui";
+import Link from "next/link";
+import { COMPANY_BLURB } from "@/lib/company";
 
+// Only routes that exist are linked. A placeholder link wastes crawl budget and fails a visitor.
 const columns = [
-  { title: "Drivers", links: ["Drive to Own", "Drive to Earn", "Revenue Share", "EIP Programme", "Driver FAQs"] },
-  { title: "Company", links: ["About Us", "Our Story", "Newsroom", "Careers", "Franchise"] },
-  { title: "Cities", links: ["Mumbai", "Delhi NCR", "Bengaluru", "Hyderabad", "Pune", "Kolkata", "Chennai"] },
+  {
+    title: "Drivers",
+    links: [
+      { label: "Own Now", href: "/own-now" },
+      { label: "Our Services", href: "/our-services" },
+    ],
+  },
+  { title: "Company", links: [{ label: "About Us", href: "/about-us" }] },
 ];
-
-const legal = ["Privacy Policy", "Terms of Use", "Cookie Policy", "For Investors & Partners →"];
 
 const heading = "text-[11px] font-bold uppercase leading-[17px] tracking-[1.5px] text-sun";
 const item = "text-sm leading-[21px] text-white/80 transition hover:text-white";
@@ -25,18 +31,17 @@ export function SiteFooter() {
       <div className="mx-auto max-w-[1184px]">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[270px_repeat(4,180px)] lg:gap-12">
           <p className="text-sm leading-[23px] text-white/80 lg:mt-[46px]">
-            India&apos;s largest fleet management company. 35,000+ cars. 50,000+ drivers. 7 cities. Powering driver earnings
-            and Uber India network since 2016.
+            {COMPANY_BLURB}
           </p>
           {columns.map((col) => (
             <div key={col.title}>
               <h4 className={heading}>{col.title}</h4>
               <ul className="mt-[14px] space-y-2.5 text-sm leading-[21px]">
                 {col.links.map((l) => (
-                  <li key={l}>
-                    <a href="#" className={item}>
-                      {l}
-                    </a>
+                  <li key={l.href}>
+                    <Link href={l.href} className={item}>
+                      {l.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -65,16 +70,7 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="mt-4 flex flex-col gap-4 border-t border-white/10 pt-8 text-[13px] leading-5 text-white/60 lg:flex-row lg:items-center lg:justify-between">
-          <p>© 2026 Everest Fleet Pvt Ltd. All rights reserved.</p>
-          <ul className="flex flex-wrap gap-x-6 gap-y-2">
-            {legal.map((l) => (
-              <li key={l}>
-                <a href="#" className="transition hover:text-white">
-                  {l}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <p>© {new Date().getFullYear()} Everest Fleet Pvt Ltd. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -17,7 +17,7 @@ export function Milestones() {
       </h2>
       {/* Desktop shows the Figma road illustration, milestone cards included; the list below carries the text. */}
       <div className="relative mt-[7px] hidden aspect-[1440/1212] w-full lg:block">
-        <Image src="/figma/milestones-road.png" alt="" fill sizes="100vw" className="object-cover" />
+        <Image src="/figma/milestones-road.webp" alt="" fill sizes="100vw" className="object-cover" />
       </div>
       <ol className="mx-auto mt-10 max-w-md space-y-4 px-6 pb-16 lg:sr-only">
         {milestones.map((m) => (
