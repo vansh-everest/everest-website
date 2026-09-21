@@ -23,7 +23,7 @@ export function Values() {
   return (
     <section className="grid lg:min-h-[800px] lg:grid-cols-[480px_1fr]">
       <div className="relative bg-[#0a3d62] px-6 py-16 lg:px-20 lg:pb-0 lg:pt-20">
-        <p className="inline-flex h-[31px] items-center rounded-full bg-sun px-4 text-[13px] font-bold uppercase text-navy">Our culture</p>
+        <p className="inline-flex h-[31px] items-center rounded-full bg-sun px-4 text-[13px] font-bold uppercase text-navy">IMPACTT</p>
         <h2 className="mt-10 text-5xl font-light leading-[1.05] text-white lg:text-[64px] lg:leading-[62px]">
           What
           <br />

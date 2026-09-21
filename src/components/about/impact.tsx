@@ -1,5 +1,4 @@
 const cards = [
-  { label: "Industry average", value: "40%", caption: "Asset utilization", tone: "bg-white", labelTone: "border-line text-ink-soft" },
   {
     label: "Everest Fleet standard",
     value: "80%",
@@ -15,13 +14,13 @@ export function Impact() {
       <span aria-hidden className="absolute left-0 top-[220px] hidden h-[120px] w-1 bg-sun lg:block" />
       <div className="mx-auto flex max-w-[1280px] flex-col gap-12 lg:h-full lg:flex-row lg:items-center lg:justify-between">
         <div className="lg:w-[540px]">
-          <p className="inline-flex h-[34px] items-center rounded-full bg-sun px-4 text-sm font-bold uppercase text-navy">Our journey</p>
+          <p className="inline-flex h-[34px] items-center rounded-full bg-sun px-4 text-sm font-bold uppercase text-navy">Impact</p>
           <h2 className="mt-6 font-display text-[40px] font-extrabold leading-[1.1] text-white lg:text-[56px] lg:leading-[62px]">
-            From 40% to 80%
+            80% asset
             <br />
-            Efficiency
+            utilisation
           </h2>
-          <p className="mt-6 text-xl text-white/90">We doubled what the industry calls &apos;good.&apos;</p>
+          <p className="mt-6 text-xl text-white/90">Cars on the road earning, not parked.</p>
         </div>
         <div className="relative grid gap-6 sm:grid-cols-2 sm:gap-10">
           {cards.map((card) => (

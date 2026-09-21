@@ -40,7 +40,7 @@ export function JoinCta() {
               href="/#apply"
               className="flex h-[70px] w-[218px] items-center justify-center rounded-2xl bg-white text-xl font-bold text-brand shadow-[0_10px_30px_rgba(0,0,0,0.2)]"
             >
-              Join as Driver
+              Drive with us
             </Link>
             <Link
               href="/#apply"

@@ -17,12 +17,12 @@ export function Leadership() {
     <section className="bg-white px-6 py-[72px]">
       <div className="text-center">
         <p className="inline-flex h-[29px] items-center rounded-full bg-navy px-4 text-xs font-bold uppercase tracking-[1px] text-white">
-          Meet the team
+          About the Founder
         </p>
         <h2 className="mt-4 text-[34px] font-bold leading-tight tracking-[-0.5px] text-navy lg:text-[64px] lg:leading-[77px]">
-          The People Behind Everest
+          The person behind Everest
         </h2>
-        <p className="mt-4 text-lg leading-[19px] text-ink-soft">Driven by purpose. United by vision.</p>
+        <p className="mt-4 text-lg leading-[19px] text-ink-soft">Driven by purpose</p>
       </div>
       <ul className="mx-auto mt-10 grid max-w-[1104px] gap-6 md:grid-cols-2">
         {leaders.map((leader) => (

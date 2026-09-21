@@ -32,6 +32,8 @@ const fixed: Array<{ path: string; priority: number; changeFrequency: Freq }> = 
   { path: "/own-now", priority: 0.9, changeFrequency: "weekly" },
   { path: "/our-services", priority: 0.7, changeFrequency: "monthly" },
   { path: "/about-us", priority: 0.5, changeFrequency: "monthly" },
+  { path: "/faq", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/investors", priority: 0.4, changeFrequency: "yearly" },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

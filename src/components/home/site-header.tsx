@@ -17,12 +17,12 @@ export function SiteHeader({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
             className="h-[78px] w-[135px] object-cover"
           />
         </Link>
-        <NavLinks locale={locale} />
+        <NavLinks />
         <Link
-          href={locale === DEFAULT_LOCALE ? "/#apply" : localePath(locale, "/drive-with-us")}
+          href={localePath(locale, "/drive-with-us")}
           className="flex h-12 items-center rounded-full bg-brand px-[26px] text-sm font-medium tracking-[-0.15px] text-white transition hover:brightness-110"
         >
-          Join as Driver
+          Drive with us
         </Link>
       </div>
     </header>

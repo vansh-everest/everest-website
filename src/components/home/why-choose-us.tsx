@@ -1,13 +1,12 @@
 import Image from "next/image";
 import type { Icon } from "@phosphor-icons/react";
 import { CreditCard, CurrencyInr, Headset, LockSimpleOpen, Wrench } from "@phosphor-icons/react/ssr";
-import { COMPANY } from "@/lib/company";
 
 const benefits: { icon: Icon; tone: string; title: string; body: string }[] = [
   { icon: CurrencyInr, tone: "bg-sun text-navy", title: "Earn up to ₹40,000/mo", body: "Direct bank transfer every week" },
   { icon: LockSimpleOpen, tone: "bg-[#207fc1] text-white", title: "Low Refundable Deposit", body: "Start with minimal upfront cost" },
-  { icon: Wrench, tone: "bg-navy text-white", title: "₹0 Maintenance", body: "100% service & repairs covered" },
-  { icon: CreditCard, tone: "bg-plum text-white", title: "Weekly Payouts", body: "No delays, reliable income" },
+  { icon: Wrench, tone: "bg-navy text-white", title: "₹0 Maintenance", body: "100% service & repairs covered*" },
+  { icon: CreditCard, tone: "bg-plum text-white", title: "Own Your Car", body: "The car transfers to you at the end of the term" },
   { icon: Headset, tone: "bg-lime text-navy", title: "24 × 7 Support", body: "Tele-support for you" },
 ];
 
@@ -15,7 +14,7 @@ export function WhyChooseUs() {
   return (
     <section className="bg-mist px-6 pb-[83px] pt-[72px]">
       <h2 className="text-center text-[34px] font-bold leading-tight tracking-[-0.5px] text-navy lg:text-[64px] lg:leading-[60px]">
-        Why {COMPANY.drivers} drivers choose us
+        Why drivers choose us
       </h2>
       <div className="mx-auto mt-12 grid max-w-[1248px] items-center gap-10 lg:mt-[72px] lg:grid-cols-[568px_1fr] lg:gap-16">
         <div className="relative mx-auto aspect-[512/640] w-full max-w-[512px] overflow-hidden rounded-2xl lg:mx-0">
@@ -41,6 +40,10 @@ export function WhyChooseUs() {
           ))}
         </ul>
       </div>
+      <p className="mx-auto mt-6 max-w-[1248px] text-sm leading-6 text-ink-soft">
+        *Servicing and repairs are covered for normal wear. Damage caused by an accident or by
+        misuse is charged to the driver.
+      </p>
     </section>
   );
 }

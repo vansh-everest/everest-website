@@ -8,7 +8,6 @@ import { CitiesStrip } from "@/components/home/cities-strip";
 import { Plans } from "@/components/home/plans";
 import { OwnNowBanner } from "@/components/home/own-now-banner";
 import { CarShowcase } from "@/components/home/car-showcase";
-import { EvBanner } from "@/components/home/ev-banner";
 import { FleetApp } from "@/components/home/fleet-app";
 import { DostApp } from "@/components/home/dost-app";
 import { ApplySteps } from "@/components/home/apply-steps";
@@ -57,7 +56,6 @@ export default function Home() {
       <Plans />
       <OwnNowBanner />
       <CarShowcase />
-      <EvBanner />
       <FleetApp />
       <DostApp />
       <ApplySteps />

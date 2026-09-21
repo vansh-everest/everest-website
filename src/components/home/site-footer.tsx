@@ -8,16 +8,19 @@ const columns = [
   {
     title: "Drivers",
     links: [
-      { label: "Drive With Us", href: "/drive-with-us" },
+      { label: "Drive with us", href: "/drive-with-us" },
       { label: "Own Now", href: "/own-now" },
       { label: "Our Services", href: "/our-services" },
+      { label: "FAQ", href: "/faq" },
     ],
   },
   {
     title: "Company",
     links: [
       { label: "About Us", href: "/about-us" },
-      { label: "Driver guides", href: "/blog" },
+      { label: "Everest Dost", href: "/#dost" },
+      { label: "For Investors", href: "/investors" },
+      { label: "Blog", href: "/blog" },
     ],
   },
 ];
