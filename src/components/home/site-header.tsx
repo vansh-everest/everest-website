@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import { DEFAULT_LOCALE, localePath, type Locale } from "@/lib/i18n";
 import { NavLinks } from "./nav-links";
 
-export function SiteHeader() {
+export function SiteHeader({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-white drop-shadow-[0_2px_8px_rgba(6,47,80,0.1)]">
       <div className="mx-auto flex h-[79px] max-w-[1280px] items-center justify-between px-4 lg:px-12">
@@ -16,9 +17,9 @@ export function SiteHeader() {
             className="h-[78px] w-[135px] object-cover"
           />
         </Link>
-        <NavLinks />
+        <NavLinks locale={locale} />
         <Link
-          href="/#apply"
+          href={locale === DEFAULT_LOCALE ? "/#apply" : localePath(locale, "/drive-with-us")}
           className="flex h-12 items-center rounded-full bg-brand px-[26px] text-sm font-medium tracking-[-0.15px] text-white transition hover:brightness-110"
         >
           Join as Driver

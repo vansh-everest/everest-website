@@ -1,6 +1,6 @@
-import Image from "next/image";
-import { PHONE_DISPLAY, PHONE_HREF } from "./ui";
 import Link from "next/link";
+import { LocaleSwitch } from "./locale-switch";
+import { PHONE_DISPLAY, PHONE_HREF } from "./ui";
 
 // Restore an entry here only when the route exists. A dead link fails a visitor and
 // spends crawl budget on nothing.
@@ -18,14 +18,7 @@ export function TopBar() {
         <a href={PHONE_HREF} className="text-sun">
           📞 {PHONE_DISPLAY}
         </a>
-        <button
-          type="button"
-          className="flex h-8 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.08] px-[13px] text-white/85"
-        >
-          <span aria-hidden>🌐</span>
-          EN
-          <Image src="/figma/chevron-down.svg" alt="" width={12} height={12} />
-        </button>
+        <LocaleSwitch />
       </div>
     </div>
   );

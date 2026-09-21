@@ -45,3 +45,12 @@ next-env.d.ts
 
 # Figma frame exports (large source renders for scripts/crop-*.py)
 design/
+
+# admin content store and lead capture (local development only)
+/.content-store.json
+/.leads.jsonl
+/public/uploads/
+!.env.example
+
+# design hook cache
+/.impeccable/

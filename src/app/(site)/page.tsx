@@ -13,6 +13,7 @@ import { FleetApp } from "@/components/home/fleet-app";
 import { DostApp } from "@/components/home/dost-app";
 import { ApplySteps } from "@/components/home/apply-steps";
 import { Testimonials } from "@/components/home/testimonials";
+import { jsonLd } from "@/lib/json-ld";
 
 export const metadata: Metadata = {
   title: "Drive an Uber without owning a car | Everest Fleet",
@@ -46,7 +47,7 @@ export default function Home() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organisation) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(organisation) }}
       />
       <Hero />
       <HeadlineBand />

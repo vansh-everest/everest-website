@@ -3,6 +3,9 @@
 @theme inline {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-jakarta), var(--font-inter), ui-sans-serif, sans-serif;
+  /* Indic faces fall back to the Latin stack, so mixed strings such as "Uber" stay on brand. */
+  --font-deva: var(--font-deva-src), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-telu: var(--font-telu-src), var(--font-inter), ui-sans-serif, sans-serif;
 }
 
 /* Tokens pulled from the Figma "Final homepage" frame (499:1311). */

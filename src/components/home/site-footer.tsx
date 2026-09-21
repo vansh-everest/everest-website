@@ -8,11 +8,18 @@ const columns = [
   {
     title: "Drivers",
     links: [
+      { label: "Drive With Us", href: "/drive-with-us" },
       { label: "Own Now", href: "/own-now" },
       { label: "Our Services", href: "/our-services" },
     ],
   },
-  { title: "Company", links: [{ label: "About Us", href: "/about-us" }] },
+  {
+    title: "Company",
+    links: [
+      { label: "About Us", href: "/about-us" },
+      { label: "Driver guides", href: "/blog" },
+    ],
+  },
 ];
 
 const heading = "text-[11px] font-bold uppercase leading-[17px] tracking-[1.5px] text-sun";
