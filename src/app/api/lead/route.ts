@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { appendLead, type Lead } from "@/lib/leads";
+import { UNKNOWN_CALLER, callerKey, tooMany } from "@/lib/throttle";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,27 +17,18 @@ export const dynamic = "force-dynamic";
  */
 
 const TEN_DIGITS = /^[6-9]\d{9}$/;
-
-/**
- * A soft throttle per address. Instances are reused between requests, so this absorbs a
- * script hammering the form. It is not a substitute for a gateway rule.
- */
 const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 5;
-const seen = new Map<string, number[]>();
 
-function throttled(key: string): boolean {
-  const now = Date.now();
-  const hits = (seen.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  hits.push(now);
-  seen.set(key, hits);
-  if (seen.size > 5000) seen.clear();
-  return hits.length > MAX_PER_WINDOW;
-}
+/** Per caller when the platform names one. The shared bucket has to clear real traffic. */
+const PER_CALLER = 5;
+const SHARED = 60;
+const PER_MOBILE = 3;
+/** A ceiling on relayed records, so a flood cannot be amplified into the CRM. */
+const WEBHOOK_PER_MINUTE = 120;
 
 export async function POST(request: Request) {
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
-  if (throttled(ip)) {
+  const caller = callerKey(request.headers);
+  if (tooMany(`lead:${caller}`, caller === UNKNOWN_CALLER ? SHARED : PER_CALLER, WINDOW_MS)) {
     return NextResponse.json({ error: "too_many" }, { status: 429 });
   }
 
@@ -55,6 +47,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid_input" }, { status: 400 });
   }
 
+  // A second key the caller cannot rotate freely, so a spoofed address chain still cannot
+  // resubmit the same number in a loop.
+  if (tooMany(`lead:mobile:${mobile}`, PER_MOBILE, WINDOW_MS)) {
+    return NextResponse.json({ error: "too_many" }, { status: 429 });
+  }
+
   const lead: Lead = {
     at: new Date().toISOString(),
     name,
@@ -70,7 +68,7 @@ export async function POST(request: Request) {
   await appendLead(lead);
 
   const hook = process.env.LEAD_WEBHOOK_URL;
-  if (hook) {
+  if (hook && !tooMany("lead:webhook", WEBHOOK_PER_MINUTE, WINDOW_MS)) {
     try {
       await fetch(hook, {
         method: "POST",
