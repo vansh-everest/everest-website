@@ -1,23 +1,10 @@
 import type { ReactNode } from "react";
-import { CaretDown, CheckCircle, GooglePlayLogo, MapPin } from "@phosphor-icons/react/ssr";
+import { CheckCircle, GooglePlayLogo } from "@phosphor-icons/react/ssr";
 
 export const PHONE_DISPLAY = "91262 14248";
 export const PHONE_HREF = "tel:+919126214248";
 export const PLAY_STORE_HREF = "https://play.google.com/store/apps/details?id=com.everest.fleet";
 export const WHATSAPP_HREF = "https://wa.me/919126214248";
-
-export function CityPill({ city = "Mumbai" }: { city?: string }) {
-  return (
-    <button
-      type="button"
-      className="mx-auto flex h-[30px] items-center gap-[5px] rounded-full border border-line bg-white px-[13px] text-[13px] font-medium text-navy"
-    >
-      <MapPin size={13} weight="bold" className="text-ink-soft" />
-      {city}
-      <CaretDown size={12} weight="bold" className="text-ink-soft" />
-    </button>
-  );
-}
 
 export function SunButton({ href, children, className = "" }: { href: string; children: ReactNode; className?: string }) {
   return (

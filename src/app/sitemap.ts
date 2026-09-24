@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/company";
 import { cityPath } from "@/lib/city-route";
-import { postsFor } from "@/lib/content";
+import { planFor, postsFor } from "@/lib/content";
 import { DEFAULT_LOCALE, LOCALES, alternatesFor, localePath } from "@/lib/i18n";
+import { PLAN_PAGES } from "@/lib/plan-pages";
 import { getContent } from "@/lib/store";
 
 type Entry = MetadataRoute.Sitemap[number];
@@ -30,6 +31,9 @@ function absoluteAlternates(path: string): Record<string, string> {
 const fixed: Array<{ path: string; priority: number; changeFrequency: Freq }> = [
   { path: "/", priority: 1, changeFrequency: "weekly" },
   { path: "/own-now", priority: 0.9, changeFrequency: "weekly" },
+  { path: "/drive-to-own", priority: 0.9, changeFrequency: "weekly" },
+  { path: "/drive-to-earn", priority: 0.9, changeFrequency: "weekly" },
+  { path: "/revenue-share", priority: 0.8, changeFrequency: "weekly" },
   { path: "/our-services", priority: 0.7, changeFrequency: "monthly" },
   { path: "/about-us", priority: 0.5, changeFrequency: "monthly" },
   { path: "/faq", priority: 0.7, changeFrequency: "monthly" },
@@ -41,7 +45,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const content = await getContent();
   const entries: MetadataRoute.Sitemap = [];
 
+  // A plan switched off in the admin has no page, so it has no address to list either.
+  const hidden = new Set(PLAN_PAGES.filter((p) => !planFor(content, p.planId)?.visible).map((p) => p.path as string));
   for (const { path, priority, changeFrequency } of fixed) {
+    if (hidden.has(path)) continue;
     entries.push({ url: url(path), lastModified, changeFrequency, priority });
   }
 

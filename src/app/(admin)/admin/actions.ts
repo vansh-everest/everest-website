@@ -1,11 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { authConfigured, requireAdmin, signIn, signOut } from "@/lib/auth";
 import type { SiteContent } from "@/lib/content";
-import { saveContent } from "@/lib/store";
+import { normalizeContent } from "@/lib/content-schema";
+import { CONTENT_TAG, DraftConflict, discardDraft, publishContent, restoreVersion, saveDraft } from "@/lib/store";
 import { callerKey, clear, tooMany } from "@/lib/throttle";
 
 export type SignInState = { error: string };
@@ -38,32 +39,85 @@ export async function signOutAction(): Promise<void> {
   redirect("/admin");
 }
 
-export type SaveState = { status: "idle" | "saved" | "error"; message: string };
+export type EditState = {
+  status: "idle" | "saved" | "published" | "error";
+  message: string;
+  /** The draft timestamp to send as the base of the next save. Blank once published. */
+  base: string;
+  /** Increments on every successful save or publish, so the editor can tell a new result from an old one. */
+  seq: number;
+};
 
-export async function saveAction(_prev: SaveState, form: FormData): Promise<SaveState> {
+/** Generous for the whole site's content, small enough to refuse an accidental paste of a file. */
+const MAX_PAYLOAD = 1_500_000;
+
+function readPayload(form: FormData): SiteContent | string {
+  const raw = String(form.get("content") ?? "");
+  if (raw.length > MAX_PAYLOAD) return "That change is too large to save.";
+  try {
+    return normalizeContent(JSON.parse(raw));
+  } catch {
+    return "That change could not be read.";
+  }
+}
+
+const fail = (prev: EditState, message: string): EditState => ({ ...prev, status: "error", message });
+
+const clock = (iso: string) => new Date(iso).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+
+/** Saves the screen as the draft, or publishes exactly what is on screen. */
+export async function editAction(prev: EditState, form: FormData): Promise<EditState> {
+  const publishing = form.get("intent") === "publish";
   let session;
   try {
     session = await requireAdmin();
   } catch {
-    return { status: "error", message: "Administrator access is required to save." };
+    return fail(prev, `Administrator access is required to ${publishing ? "publish" : "save"}.`);
   }
-
-  let next: SiteContent;
-  try {
-    next = JSON.parse(String(form.get("content") ?? ""));
-  } catch {
-    return { status: "error", message: "That change could not be read." };
-  }
+  const content = readPayload(form);
+  if (typeof content === "string") return fail(prev, content);
 
   try {
-    await saveContent(next, session.email);
+    const base = String(form.get("base") ?? "");
+    if (!publishing) {
+      const saved = await saveDraft(content, session.email, base);
+      return { status: "saved", message: `Draft saved at ${clock(saved.updatedAt)}.`, base: saved.updatedAt, seq: prev.seq + 1 };
+    }
+    const live = await publishContent(content, session.email, base);
+    refreshSite();
+    return { status: "published", message: `Published at ${clock(live.publishedAt)}.`, base: "", seq: prev.seq + 1 };
   } catch (error) {
-    return { status: "error", message: error instanceof Error ? error.message : "Saving failed." };
+    if (error instanceof DraftConflict) return fail(prev, error.message);
+    return fail(prev, error instanceof Error ? error.message : "That change was not saved.");
   }
+}
 
-  // Every surface that reads content, in all three locales.
-  for (const path of ["/", "/drive-with-us", "/blog", "/hi", "/te"]) {
-    revalidatePath(path, "layout");
+/** Every public surface, in all three locale trees. Each has its own root layout. */
+function refreshSite() {
+  updateTag(CONTENT_TAG);
+  for (const path of ["/", "/hi", "/te"]) revalidatePath(path, "layout");
+}
+
+/** Failures come back to the admin as a notice rather than an error screen. */
+export async function discardDraftAction(): Promise<void> {
+  let ok = true;
+  try {
+    await requireAdmin();
+    await discardDraft();
+  } catch {
+    ok = false;
   }
-  return { status: "saved", message: "Saved." };
+  redirect(ok ? "/admin" : "/admin?notice=discard-failed");
+}
+
+/** Bound to a version id in the history list: `restoreVersionAction.bind(null, id)`. */
+export async function restoreVersionAction(id: string): Promise<void> {
+  let ok = true;
+  try {
+    const session = await requireAdmin();
+    await restoreVersion(String(id), session.email);
+  } catch {
+    ok = false;
+  }
+  redirect(ok ? "/admin" : "/admin?notice=restore-failed");
 }

@@ -48,6 +48,8 @@ design/
 
 # admin content store and lead capture (local development only)
 /.content-store.json
+/.content-draft.json
+/.content-history/
 /.leads.jsonl
 /public/uploads/
 !.env.example

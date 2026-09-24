@@ -37,7 +37,8 @@ export function SiteImage({
       alt={slot.alt}
       fill
       sizes={sizes}
-      priority={priority}
+      // Next 16 renamed priority to preload.
+      preload={priority}
       className={`object-cover ${className}`}
     />
   );

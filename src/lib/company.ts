@@ -15,9 +15,9 @@ export const COMPANY = {
   asOf: "September 2026",
   founded: 2016,
 
-  /** Vehicles owned. Operating position 20,924, stated conservatively. */
+  /** Vehicles owned, stated conservatively. */
   vehicles: "20,000+",
-  /** Drivers currently on the road. Operating position 10,687 active partners. */
+  /** Drivers currently on the road, stated conservatively. */
   drivers: "10,000+",
   /** Mumbai, Delhi NCR, Bengaluru, Hyderabad, Pune, Kolkata, Chennai. */
   cities: 7,

@@ -1,289 +1,197 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import { saveAction, type SaveState } from "@/app/(admin)/admin/actions";
-import { Area, ImageField, Panel, Text, Toggle } from "@/components/admin/fields";
-import type { City, Hub, Plan, Post, SiteContent } from "@/lib/content";
-import { LOCALES, LOCALE_META, type Locale } from "@/lib/i18n";
+import { useActionState, useMemo, useState } from "react";
+import { discardDraftAction, editAction, type EditState } from "@/app/(admin)/admin/actions";
+import type { SiteContent } from "@/lib/content";
+import { CalculatorTab } from "./calculator-tab";
+import { CarsTab } from "./cars-tab";
+import { HistoryTab } from "./history-tab";
+import { PlansTab } from "./plans-tab";
+import { BlogTab, CitiesTab, ImagesTab } from "./site-tabs";
 
-const TABS = ["Cities", "Plans", "Blog", "Images"] as const;
+const TABS = ["Plans", "Cars", "Calculator", "Cities", "Blog", "Images", "History"] as const;
 type Tab = (typeof TABS)[number];
 
-const initialSave: SaveState = { status: "idle", message: "" };
+type Version = { id: string; publishedAt: string; publishedBy: string };
 
-function blankPost(): Post {
-  return {
-    slug: "",
-    locale: "en",
-    title: "",
-    excerpt: "",
-    body: [""],
-    published: false,
-    date: new Date().toISOString().slice(0, 10),
-    coverImage: { label: "Cover image", url: "", alt: "" },
-  };
-}
+const when = (iso: string) =>
+  iso ? new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : "";
+
+const button =
+  "h-10 rounded-full px-5 text-sm font-bold transition disabled:cursor-default disabled:opacity-50";
 
 export function Editor({
   initial,
+  hasDraft,
+  live,
+  versions,
+  previewPages,
   role,
   storeMode,
 }: {
   initial: SiteContent;
+  hasDraft: boolean;
+  live: { publishedAt: string; publishedBy: string };
+  versions: Version[];
+  previewPages: { label: string; path: string }[];
   role: "viewer" | "admin";
   storeMode: "file" | "blob" | "readonly";
 }) {
   const [content, setContent] = useState<SiteContent>(initial);
-  const [tab, setTab] = useState<Tab>("Cities");
-  const [state, action, pending] = useActionState(saveAction, initialSave);
-  const locked = role !== "admin";
+  const [tab, setTab] = useState<Tab>("Plans");
+  const [preview, setPreview] = useState(previewPages[0]?.path ?? "/");
+  const [confirming, setConfirming] = useState(false);
 
-  function patchCity(index: number, patch: Partial<City>) {
-    setContent((c) => ({ ...c, cities: c.cities.map((x, i) => (i === index ? { ...x, ...patch } : x)) }));
+  const [state, action, pending] = useActionState<EditState, FormData>(editAction, {
+    status: "idle",
+    message: "",
+    base: hasDraft ? initial.updatedAt : "",
+    seq: 0,
+  });
+
+  // Tells whether the screen has unsaved edits. Save times are left out, because the server
+  // stamps them and they would otherwise make a just-published copy look edited.
+  const body = (c: SiteContent) => JSON.stringify({ ...c, updatedAt: "", updatedBy: "", publishedAt: "", publishedBy: "" });
+  const [savedBody, setSavedBody] = useState(() => body(initial));
+  const [submittedBody, setSubmittedBody] = useState("");
+  const [draftExists, setDraftExists] = useState(hasDraft);
+  const [base, setBase] = useState(hasDraft ? initial.updatedAt : "");
+
+  // Both adjustments happen while rendering the new result, not in an effect.
+  // A save or publish from this screen:
+  const [seenSeq, setSeenSeq] = useState(0);
+  if (state.seq !== seenSeq) {
+    setSeenSeq(state.seq);
+    setSavedBody(submittedBody);
+    setDraftExists(state.status === "saved");
+    setBase(state.base);
+    setConfirming(false);
   }
-  function patchPlan(index: number, patch: Partial<Plan>) {
-    setContent((c) => ({ ...c, plans: c.plans.map((x, i) => (i === index ? { ...x, ...patch } : x)) }));
+  // The stored copy changed underneath (publish, discard, restore): start again from it.
+  const serverKey = `${hasDraft}|${initial.updatedAt}|${live.publishedAt}`;
+  const [seenKey, setSeenKey] = useState(serverKey);
+  if (serverKey !== seenKey) {
+    setSeenKey(serverKey);
+    setContent(initial);
+    setSavedBody(body(initial));
+    setDraftExists(hasDraft);
+    setBase(hasDraft ? initial.updatedAt : "");
   }
-  function patchPost(index: number, patch: Partial<Post>) {
-    setContent((c) => ({ ...c, posts: c.posts.map((x, i) => (i === index ? { ...x, ...patch } : x)) }));
-  }
+
+  const json = useMemo(() => JSON.stringify(content), [content]);
+  const dirty = useMemo(() => body(content), [content]) !== savedBody;
+  const locked = role !== "admin" || storeMode === "readonly";
+
+  const status = dirty
+    ? "Unsaved changes"
+    : draftExists
+      ? "Draft saved, not yet live"
+      : live.publishedAt
+        ? `Live since ${when(live.publishedAt)} · ${live.publishedBy}`
+        : "Live content";
 
   return (
-    <form action={action} className="grid gap-6">
-      <input type="hidden" name="content" value={JSON.stringify(content)} />
+    <form action={action} onSubmit={() => setSubmittedBody(body(content))} className="grid gap-6">
+      <input type="hidden" name="content" value={json} />
+      <input type="hidden" name="base" value={base} />
 
-      <div className="sticky top-0 z-10 flex flex-wrap items-center gap-3 border-b border-line bg-mist/95 py-4 backdrop-blur">
-        <nav className="flex flex-wrap gap-2">
-          {TABS.map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => setTab(t)}
-              aria-current={t === tab ? "page" : undefined}
-              className={`h-9 rounded-full px-4 text-[13px] font-bold transition ${
-                t === tab ? "bg-navy text-white" : "border border-line bg-white text-navy hover:border-navy"
-              }`}
-            >
-              {t}
-            </button>
-          ))}
-        </nav>
-        <div className="ml-auto flex items-center gap-3">
+      <div className="sticky top-0 z-10 grid gap-3 border-b border-line bg-mist/95 py-4 backdrop-blur">
+        <div className="flex flex-wrap items-center gap-3">
+          <p className={`text-[13px] font-bold ${dirty ? "text-[#b3261e]" : draftExists ? "text-[#8a6b09]" : "text-[#1a8f4a]"}`}>
+            {status}
+          </p>
           {state.message ? (
-            <span className={`text-[13px] ${state.status === "error" ? "text-[#b3261e]" : "text-ink-soft"}`}>
-              {state.message}
-            </span>
+            <p className={`text-[13px] ${state.status === "error" ? "text-[#b3261e]" : "text-ink-soft"}`}>{state.message}</p>
           ) : null}
-          <button
-            type="submit"
-            disabled={locked || pending || storeMode === "readonly"}
-            className="h-10 rounded-full bg-sun px-6 text-sm font-bold text-navy transition hover:brightness-95 disabled:opacity-60"
-          >
-            {pending ? "Saving" : "Save changes"}
-          </button>
+          <div className="ml-auto flex flex-wrap items-center gap-2">
+            {draftExists && !dirty && !locked ? (
+              <button type="submit" formAction={discardDraftAction} className={`${button} border border-line bg-white text-navy`}>
+                Discard draft
+              </button>
+            ) : null}
+            <button
+              type="submit"
+              name="intent"
+              value="save"
+              disabled={locked || pending || !dirty}
+              className={`${button} border border-navy bg-white text-navy`}
+            >
+              {pending ? "Working" : "Save draft"}
+            </button>
+            {confirming ? (
+              <>
+                <button type="button" onClick={() => setConfirming(false)} className={`${button} text-ink-soft`}>
+                  Cancel
+                </button>
+                <button type="submit" name="intent" value="publish" disabled={pending} className={`${button} bg-[#1a8f4a] text-white`}>
+                  Publish to the live site
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                disabled={locked || pending || (!dirty && !draftExists)}
+                onClick={() => setConfirming(true)}
+                className={`${button} bg-sun text-navy hover:brightness-95`}
+              >
+                Publish
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <nav className="flex flex-wrap gap-2">
+            {TABS.map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTab(t)}
+                aria-current={t === tab ? "page" : undefined}
+                className={`h-9 rounded-full px-4 text-[13px] font-bold transition ${
+                  t === tab ? "bg-navy text-white" : "border border-line bg-white text-navy hover:border-navy"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </nav>
+          <div className="ml-auto flex items-center gap-2">
+            <select
+              aria-label="Page to preview"
+              value={preview}
+              onChange={(e) => setPreview(e.target.value)}
+              className="h-9 rounded-full border border-line bg-white px-3 text-[13px] font-semibold text-navy"
+            >
+              {previewPages.map((p) => (
+                <option key={p.path} value={p.path}>
+                  {p.label}
+                </option>
+              ))}
+            </select>
+            {dirty ? (
+              <span className="text-[12px] text-ink-soft">Save to preview</span>
+            ) : (
+              <a
+                href={`/api/preview/?path=${encodeURIComponent(preview)}`}
+                target="_blank"
+                rel="noopener"
+                className="flex h-9 items-center rounded-full bg-brand px-4 text-[13px] font-bold text-white"
+              >
+                {draftExists ? "Preview draft" : "View page"}
+              </a>
+            )}
+          </div>
         </div>
       </div>
 
-      {tab === "Cities" ? (
-        <div className="grid gap-5">
-          {content.cities.map((city, i) => (
-            <Panel key={city.slug} title={`${city.name.en} · /drive-with-us/driver-job-in-${city.slug}/`}>
-              <div className="grid gap-4 sm:grid-cols-3">
-                {LOCALES.map((l) => (
-                  <Text
-                    key={l}
-                    label={`Name, ${LOCALE_META[l].label}`}
-                    value={city.name[l]}
-                    disabled={locked}
-                    onChange={(v) => patchCity(i, { name: { ...city.name, [l]: v } as Record<Locale, string> })}
-                  />
-                ))}
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Text label="State" value={city.state} disabled={locked} onChange={(v) => patchCity(i, { state: v })} />
-                <Text
-                  label="Cars ready"
-                  type="number"
-                  value={String(city.readyCars)}
-                  disabled={locked}
-                  onChange={(v) => patchCity(i, { readyCars: Number(v) || 0 })}
-                />
-              </div>
-              <ImageField slot={city.heroImage} disabled={locked} onChange={(heroImage) => patchCity(i, { heroImage })} />
-              <HubList hubs={city.hubs} disabled={locked} onChange={(hubs) => patchCity(i, { hubs })} />
-            </Panel>
-          ))}
-        </div>
-      ) : null}
-
-      {tab === "Plans" ? (
-        <div className="grid gap-5">
-          {content.plans.map((plan, i) => (
-            <Panel key={plan.id} title={plan.name.en || plan.id}>
-              <div className="grid gap-4 sm:grid-cols-3">
-                {LOCALES.map((l) => (
-                  <Text
-                    key={l}
-                    label={`Name, ${LOCALE_META[l].label}`}
-                    value={plan.name[l]}
-                    disabled={locked}
-                    onChange={(v) => patchPlan(i, { name: { ...plan.name, [l]: v } as Record<Locale, string> })}
-                  />
-                ))}
-              </div>
-              {LOCALES.map((l) => (
-                <Area
-                  key={l}
-                  rows={3}
-                  label={`Summary, ${LOCALE_META[l].label}`}
-                  value={plan.summary[l]}
-                  disabled={locked}
-                  onChange={(v) => patchPlan(i, { summary: { ...plan.summary, [l]: v } as Record<Locale, string> })}
-                />
-              ))}
-              <div className="grid gap-4 sm:grid-cols-3">
-                <Text
-                  label="Upfront"
-                  placeholder="Blank hides the row"
-                  value={plan.upfront ?? ""}
-                  disabled={locked}
-                  onChange={(v) => patchPlan(i, { upfront: v })}
-                />
-                <Text
-                  label="Per day"
-                  placeholder="Blank hides the row"
-                  value={plan.perDay ?? ""}
-                  disabled={locked}
-                  onChange={(v) => patchPlan(i, { perDay: v })}
-                />
-                <Text
-                  label="Months"
-                  placeholder="Blank hides the row"
-                  value={plan.months ?? ""}
-                  disabled={locked}
-                  onChange={(v) => patchPlan(i, { months: v })}
-                />
-              </div>
-            </Panel>
-          ))}
-        </div>
-      ) : null}
-
-      {tab === "Blog" ? (
-        <div className="grid gap-5">
-          {content.posts.map((post, i) => (
-            <Panel key={i} title={post.title || "Untitled post"}>
-              <div className="grid gap-4 sm:grid-cols-3">
-                <Text label="Address" value={post.slug} disabled={locked} onChange={(v) => patchPost(i, { slug: v })} />
-                <label className="block text-[12px] font-semibold uppercase tracking-[0.6px] text-ink-soft">
-                  Language
-                  <select
-                    value={post.locale}
-                    disabled={locked}
-                    onChange={(e) => patchPost(i, { locale: e.target.value as Locale })}
-                    className="mt-1.5 block w-full rounded-lg border border-line bg-white px-3 py-2 text-sm text-navy outline-none focus:border-brand disabled:bg-mist"
-                  >
-                    {LOCALES.map((l) => (
-                      <option key={l} value={l}>
-                        {LOCALE_META[l].label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <Text label="Date" type="date" value={post.date} disabled={locked} onChange={(v) => patchPost(i, { date: v })} />
-              </div>
-              <Text label="Title" value={post.title} disabled={locked} onChange={(v) => patchPost(i, { title: v })} />
-              <Area rows={2} label="Excerpt" value={post.excerpt} disabled={locked} onChange={(v) => patchPost(i, { excerpt: v })} />
-              <Area
-                rows={10}
-                label="Body, one paragraph per line"
-                value={post.body.join("\n\n")}
-                disabled={locked}
-                onChange={(v) => patchPost(i, { body: v.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean) })}
-              />
-              <ImageField slot={post.coverImage} disabled={locked} onChange={(coverImage) => patchPost(i, { coverImage })} />
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <Toggle label="Published" checked={post.published} disabled={locked} onChange={(v) => patchPost(i, { published: v })} />
-                <button
-                  type="button"
-                  disabled={locked}
-                  onClick={() => setContent((c) => ({ ...c, posts: c.posts.filter((_, x) => x !== i) }))}
-                  className="h-9 rounded-full border border-line px-4 text-[13px] font-bold text-[#b3261e] disabled:opacity-60"
-                >
-                  Remove post
-                </button>
-              </div>
-            </Panel>
-          ))}
-          <button
-            type="button"
-            disabled={locked}
-            onClick={() => setContent((c) => ({ ...c, posts: [...c.posts, blankPost()] }))}
-            className="h-11 rounded-full border border-dashed border-line bg-white text-sm font-bold text-navy disabled:opacity-60"
-          >
-            Add post
-          </button>
-        </div>
-      ) : null}
-
-      {tab === "Images" ? (
-        <Panel title="Site images">
-          {Object.entries(content.images).map(([key, slot]) => (
-            <ImageField
-              key={key}
-              slot={slot}
-              disabled={locked}
-              onChange={(next) => setContent((c) => ({ ...c, images: { ...c.images, [key]: next } }))}
-            />
-          ))}
-        </Panel>
-      ) : null}
+      {tab === "Plans" ? <PlansTab content={content} setContent={setContent} locked={locked} /> : null}
+      {tab === "Cars" ? <CarsTab content={content} setContent={setContent} locked={locked} /> : null}
+      {tab === "Calculator" ? <CalculatorTab content={content} setContent={setContent} locked={locked} /> : null}
+      {tab === "Cities" ? <CitiesTab content={content} setContent={setContent} locked={locked} /> : null}
+      {tab === "Blog" ? <BlogTab content={content} setContent={setContent} locked={locked} /> : null}
+      {tab === "Images" ? <ImagesTab content={content} setContent={setContent} locked={locked} /> : null}
+      {tab === "History" ? <HistoryTab versions={versions} locked={locked} /> : null}
     </form>
-  );
-}
-
-function HubList({
-  hubs,
-  onChange,
-  disabled,
-}: {
-  hubs: Hub[];
-  onChange: (hubs: Hub[]) => void;
-  disabled: boolean;
-}) {
-  function patch(index: number, next: Partial<Hub>) {
-    onChange(hubs.map((h, i) => (i === index ? { ...h, ...next } : h)));
-  }
-
-  return (
-    <div className="grid gap-3">
-      <p className="text-[12px] font-semibold uppercase tracking-[0.6px] text-ink-soft">Hubs</p>
-      {hubs.map((hub, i) => (
-        <div key={i} className="grid gap-3 rounded-xl border border-line bg-paper p-4">
-          <Text label="Hub name" value={hub.name} disabled={disabled} onChange={(v) => patch(i, { name: v })} />
-          <Area rows={2} label="Address" value={hub.address} disabled={disabled} onChange={(v) => patch(i, { address: v })} />
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Text label="Hours" value={hub.hours} disabled={disabled} onChange={(v) => patch(i, { hours: v })} />
-            <Text label="Map link" value={hub.mapUrl ?? ""} disabled={disabled} onChange={(v) => patch(i, { mapUrl: v })} />
-          </div>
-          <button
-            type="button"
-            disabled={disabled}
-            onClick={() => onChange(hubs.filter((_, x) => x !== i))}
-            className="h-9 justify-self-start rounded-full border border-line px-4 text-[13px] font-bold text-[#b3261e] disabled:opacity-60"
-          >
-            Remove hub
-          </button>
-        </div>
-      ))}
-      <button
-        type="button"
-        disabled={disabled}
-        onClick={() => onChange([...hubs, { name: "", address: "", hours: "" }])}
-        className="h-10 justify-self-start rounded-full border border-dashed border-line bg-white px-5 text-[13px] font-bold text-navy disabled:opacity-60"
-      >
-        Add hub
-      </button>
-    </div>
   );
 }

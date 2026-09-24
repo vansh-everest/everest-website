@@ -3,13 +3,20 @@ import { signOutAction } from "@/app/(admin)/admin/actions";
 import { Editor } from "@/components/admin/editor";
 import { LoginForm } from "@/components/admin/login-form";
 import { authConfigured, readSession } from "@/lib/auth";
-import { getContent, storeMode } from "@/lib/store";
+import { PREVIEW_PAGES } from "@/lib/preview";
+import { getEditorState, listVersions, storeMode } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
-const wrap = "mx-auto w-full max-w-[960px] px-5";
+const wrap = "mx-auto w-full max-w-[1040px] px-5";
 
-export default async function AdminPage() {
+const NOTICES: Record<string, string> = {
+  "restore-failed": "That version could not be loaded into the draft.",
+  "discard-failed": "The draft could not be discarded.",
+};
+
+export default async function AdminPage({ searchParams }: { searchParams: Promise<{ notice?: string }> }) {
+  const notice = NOTICES[(await searchParams).notice ?? ""];
   const session = await readSession();
 
   if (!session) {
@@ -26,7 +33,7 @@ export default async function AdminPage() {
   }
 
   const mode = storeMode();
-  const content = await getContent();
+  const [{ content, hasDraft, live }, versions] = await Promise.all([getEditorState(), listVersions()]);
 
   return (
     <div className={`${wrap} py-8`}>
@@ -37,7 +44,7 @@ export default async function AdminPage() {
         </span>
         <div className="ml-auto flex items-center gap-4">
           <Link href="/" className="text-[13px] font-bold text-brand">
-            View site
+            View live site
           </Link>
           <form action={signOutAction}>
             <button type="submit" className="text-[13px] font-bold text-ink-soft">
@@ -47,20 +54,26 @@ export default async function AdminPage() {
         </div>
       </header>
 
-      {content.updatedAt ? (
-        <p className="mt-2 text-[13px] text-ink-soft">
-          Last saved {new Date(content.updatedAt).toLocaleString("en-IN")} by {content.updatedBy}
-        </p>
+      {notice ? (
+        <p className="mt-4 rounded-xl border border-[#b3261e]/30 bg-white px-4 py-3 text-[13px] text-[#b3261e]">{notice}</p>
       ) : null}
 
       {mode === "readonly" ? (
         <p className="mt-4 rounded-xl border border-line bg-white px-4 py-3 text-[13px] text-ink-soft">
-          Set BLOB_READ_WRITE_TOKEN and BLOB_PUBLIC_BASE_URL to enable saving here.
+          Saving is off: no content store is connected to this deployment.
         </p>
       ) : null}
 
       <div className="mt-2">
-        <Editor initial={content} role={session.role} storeMode={mode} />
+        <Editor
+          initial={content}
+          hasDraft={hasDraft}
+          live={{ publishedAt: live.publishedAt, publishedBy: live.publishedBy }}
+          versions={versions}
+          previewPages={PREVIEW_PAGES}
+          role={session.role}
+          storeMode={mode}
+        />
       </div>
     </div>
   );

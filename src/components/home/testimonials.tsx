@@ -4,22 +4,28 @@ import { Eyebrow } from "./ui";
 
 const arrow = "absolute top-[204px] hidden size-[52px] place-items-center rounded-full text-[28px] leading-none shadow-[0_6px_18px_rgba(6,47,80,0.18)] md:grid";
 
-export function Testimonials({ variant = "home" }: { variant?: "home" | "page" }) {
+export function Testimonials({
+  variant = "home",
+  title = "Real Drivers. Real Stories. On Camera.",
+}: {
+  variant?: "home" | "page";
+  title?: string;
+}) {
   const page = variant === "page";
   return (
-    <section className={`bg-mist px-6 pt-24 ${page ? "pb-[84px]" : "pb-9"}`}>
+    <section className={`px-6 pt-24 ${page ? "bg-fog pb-[84px]" : "bg-mist pb-9"}`}>
       <div className={`mx-auto text-center ${page ? "max-w-[1248px]" : "max-w-[720px]"}`}>
         <Eyebrow trailingBar={false}>Hear it from them</Eyebrow>
         <h2
-          className={`mt-3 text-[32px] font-bold leading-tight text-navy ${
-            page ? "tracking-[-0.5px] lg:text-[64px] lg:leading-[77px]" : "lg:text-[40px] lg:leading-[48px]"
-          }`}
+          className={`mt-3 text-[32px] font-bold leading-tight text-navy lg:text-[40px] lg:leading-[48px] ${page ? "tracking-[-0.5px]" : ""}`}
         >
-          Real Drivers. Real Stories. On Camera.
+          {title}
         </h2>
-        <p className={`mx-auto mt-3 text-lg leading-[29px] text-ink-soft ${page ? "" : "max-w-[660px]"}`}>
-          Watch how Everest Fleet changed the lives of drivers across India in their own words.
-        </p>
+        {page ? null : (
+          <p className="mx-auto mt-3 max-w-[660px] text-lg leading-[29px] text-ink-soft">
+            Watch how Everest Fleet changed the lives of drivers across India in their own words.
+          </p>
+        )}
       </div>
       <div className="relative mx-auto mt-12 max-w-[1184px] pb-[31px]">
         <article className="mx-auto max-w-[1112px] overflow-hidden rounded-[20px] bg-white shadow-[0_12px_40px_rgba(6,47,80,0.1)]">

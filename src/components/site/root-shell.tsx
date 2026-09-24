@@ -1,6 +1,7 @@
 import { TopBar } from "@/components/home/top-bar";
 import { SiteHeader } from "@/components/home/site-header";
 import { SiteFooter } from "@/components/home/site-footer";
+import { PreviewBanner } from "@/components/site/preview-banner";
 import { FONT_VARS } from "@/lib/fonts";
 import { LOCALE_META, type Locale } from "@/lib/i18n";
 
@@ -19,6 +20,7 @@ export function RootShell({ locale, children }: { locale: Locale; children: Reac
         <SiteHeader locale={locale} />
         <main className="overflow-x-clip">{children}</main>
         <SiteFooter />
+        <PreviewBanner />
       </body>
     </html>
   );

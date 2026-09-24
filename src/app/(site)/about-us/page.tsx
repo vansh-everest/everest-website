@@ -1,27 +1,25 @@
 import type { Metadata } from "next";
 import { AboutHero } from "@/components/about/about-hero";
-import { Impact } from "@/components/about/impact";
-import { Leadership } from "@/components/about/leadership";
-import { Values } from "@/components/about/values";
+import { Founder } from "@/components/about/founder";
 import { Milestones } from "@/components/about/milestones";
-import { Difference } from "@/components/about/difference";
-import { JoinCta } from "@/components/about/join-cta";
+import { Values } from "@/components/about/values";
+import { StartDriving } from "@/components/site/start-driving";
 
 export const metadata: Metadata = {
-  title: "About Us | Everest Fleet",
-  description: "Everest Fleet story, leadership, values and milestones since 2016",
+  // The site layout's title template appends " | Everest Fleet".
+  title: "About Us",
+  description: "Everest Fleet values, journey since 2016 and founder Siddharth Ladsariya.",
+  alternates: { canonical: "/about-us/" },
 };
 
 export default function AboutPage() {
   return (
     <>
       <AboutHero />
-      <Impact />
-      <Leadership />
       <Values />
       <Milestones />
-      <Difference />
-      <JoinCta />
+      <Founder />
+      <StartDriving />
     </>
   );
 }

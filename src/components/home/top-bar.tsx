@@ -1,22 +1,26 @@
+import { Fragment } from "react";
 import Link from "next/link";
+import { Phone } from "lucide-react";
 import { LocaleSwitch } from "./locale-switch";
+import { UTILITY_LINKS } from "./nav-data";
 import { PHONE_DISPLAY, PHONE_HREF } from "./ui";
 
-const links = [
-  { label: "For Investors", href: "/investors" },
-  { label: "Blog", href: "/blog" },
-];
+const rule = <span aria-hidden className="h-4 w-px bg-white/20" />;
 
 export function TopBar() {
   return (
-    <div className="hidden border-b border-white/[0.06] bg-navy md:block">
-      <div className="mx-auto flex h-[39px] max-w-[1280px] items-center justify-end gap-6 px-12 text-xs font-bold leading-[18px] text-white">
-        {links.map(({ label, href }) => (
-          <Link key={href} href={href} className="text-white transition hover:text-sun">
-            {label}
-          </Link>
+    <div className="hidden bg-navy md:block">
+      <div className="mx-auto flex h-12 max-w-[1440px] items-center justify-end gap-5 px-6 text-sm font-semibold leading-5 text-white lg:px-12">
+        {UTILITY_LINKS.map(({ label, href }) => (
+          <Fragment key={href}>
+            <Link href={href} className="transition hover:text-sun">
+              {label}
+            </Link>
+            {rule}
+          </Fragment>
         ))}
-        <a href={PHONE_HREF} className="text-white transition hover:text-sun">
+        <a href={PHONE_HREF} className="flex items-center gap-2.5 text-sun transition hover:brightness-110">
+          <Phone size={17} fill="currentColor" strokeWidth={0} aria-hidden />
           {PHONE_DISPLAY}
         </a>
         <LocaleSwitch />

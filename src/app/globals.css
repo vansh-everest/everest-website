@@ -37,3 +37,35 @@ body {
   background: #ffffff;
   color: var(--color-navy);
 }
+
+/* The Own Now slider: navy fill up to the handle, grey after it. --fill is set inline. */
+@layer components {
+  .range-slider {
+    appearance: none;
+    height: 8px;
+    border-radius: 9999px;
+    background: linear-gradient(to right, var(--color-navy) var(--fill, 50%), var(--color-fog) var(--fill, 50%));
+    cursor: pointer;
+  }
+  .range-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 2px solid var(--color-navy);
+    box-shadow: 0 2px 6px rgb(6 47 80 / 0.25);
+  }
+  .range-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 2px solid var(--color-navy);
+    box-shadow: 0 2px 6px rgb(6 47 80 / 0.25);
+  }
+  .range-slider:focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 6px;
+  }
+}

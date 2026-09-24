@@ -5,7 +5,7 @@ import { SiteImage } from "@/components/site/site-image";
 import { fill, getDictionary } from "@/content/dictionary";
 import { SITE_URL } from "@/lib/company";
 import { cityPath } from "@/lib/city-route";
-import { findCity, planFor, type SiteContent } from "@/lib/content";
+import { findCity, planFor, priceIn, rupees, type Plan, type SiteContent } from "@/lib/content";
 import { LOCALE_META, LOCALES, localePath, type Locale } from "@/lib/i18n";
 
 const wrap = "mx-auto w-full max-w-[1120px] px-5";
@@ -130,6 +130,18 @@ export function DriverHub({ locale, content }: { locale: Locale; content: SiteCo
   );
 }
 
+/** A plan's figures in one city, blank ones dropped. None at all shows "pending approval". */
+function figuresFor(plan: Plan, city: string): [string, string][] {
+  const price = priceIn(plan.price, plan.cityPrices, city);
+  const rows: [string, string][] = [
+    ["From", price.amount ? `${rupees(price.amount)}${price.unit}` : ""],
+    ["Deposit", rupees(price.deposit)],
+    ["Upfront", rupees(price.upfront)],
+    ["Term", price.tenureMonths ? `${price.tenureMonths} months` : ""],
+  ];
+  return rows.filter(([, value]) => value);
+}
+
 /** /drive-with-us/driver-job-in-<city>/ in every locale. */
 export function CityPage({
   locale,
@@ -147,7 +159,7 @@ export function CityPage({
   const name = city.name[locale];
   const vars = { city: name };
   const cities = content.cities.map((c) => ({ slug: c.slug, label: c.name[locale] }));
-  const plans = city.plans.map((id) => planFor(content, id)).filter((p) => p !== undefined);
+  const plans = city.plans.map((id) => planFor(content, id)).filter((p): p is Plan => Boolean(p?.visible));
 
   return (
     <>
@@ -191,11 +203,14 @@ export function CityPage({
                   <li key={plan.id} className="rounded-2xl border border-line bg-white p-5">
                     <h3 className="text-lg font-bold text-navy">{plan.name[locale]}</h3>
                     <p className="mt-1.5 text-sm leading-6 text-ink-soft">{plan.summary[locale]}</p>
-                    {plan.upfront || plan.perDay || plan.months ? (
+                    {figuresFor(plan, city.slug).length ? (
                       <dl className="mt-3 flex flex-wrap gap-x-8 gap-y-1 text-sm text-navy">
-                        {plan.upfront ? <div><dt className="inline text-ink-soft">Upfront </dt><dd className="inline font-bold">{plan.upfront}</dd></div> : null}
-                        {plan.perDay ? <div><dt className="inline text-ink-soft">Per day </dt><dd className="inline font-bold">{plan.perDay}</dd></div> : null}
-                        {plan.months ? <div><dt className="inline text-ink-soft">Term </dt><dd className="inline font-bold">{plan.months}</dd></div> : null}
+                        {figuresFor(plan, city.slug).map(([label, value]) => (
+                          <div key={label}>
+                            <dt className="inline text-ink-soft">{label} </dt>
+                            <dd className="inline font-bold">{value}</dd>
+                          </div>
+                        ))}
                       </dl>
                     ) : (
                       <p className="mt-3 inline-block rounded-full bg-sun/25 px-3 py-1 text-xs font-semibold text-navy">

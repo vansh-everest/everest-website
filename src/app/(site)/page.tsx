@@ -13,6 +13,7 @@ import { DostApp } from "@/components/home/dost-app";
 import { ApplySteps } from "@/components/home/apply-steps";
 import { Testimonials } from "@/components/home/testimonials";
 import { jsonLd } from "@/lib/json-ld";
+import { getContent } from "@/lib/store";
 
 export const metadata: Metadata = {
   title: "Drive an Uber without owning a car | Everest Fleet",
@@ -41,7 +42,8 @@ const organisation = {
   },
 };
 
-export default function Home() {
+export default async function Home() {
+  const content = await getContent();
   return (
     <>
       <script
@@ -53,9 +55,9 @@ export default function Home() {
       <StatsBand />
       <WhyChooseUs />
       <CitiesStrip />
-      <Plans />
+      <Plans content={content} />
       <OwnNowBanner />
-      <CarShowcase />
+      <CarShowcase content={content} />
       <FleetApp />
       <DostApp />
       <ApplySteps />

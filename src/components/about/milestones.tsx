@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { MapPin } from "@phosphor-icons/react/ssr";
 
 const milestones = [
   { year: "2016", title: "Founded in Mumbai", body: "10 cars and a vision to professionalize ride-hailing.", badge: "10 Cars" },
@@ -11,28 +12,41 @@ const milestones = [
 
 export function Milestones() {
   return (
-    <section className="bg-mist pt-16 lg:pt-[84px]">
-      <h2 className="px-6 text-center font-display text-[36px] font-extrabold leading-tight text-navy lg:text-[64px] lg:leading-[64px]">
-        Milestones That <span className="text-brand">Define Us</span>
+    <section className="relative bg-blue-gradient pb-16 pt-16 lg:aspect-[1440/1367] lg:pb-0 lg:pt-20">
+      {/* Desktop shows the road illustration, milestone cards included; the list below carries the text. */}
+      <Image
+        src="/figma/about/journey-road.webp"
+        alt=""
+        fill
+        sizes="100vw"
+        className="hidden object-cover lg:block"
+      />
+      <h2 className="relative px-6 text-center text-[36px] font-extrabold leading-tight tracking-[-0.5px] text-white lg:text-[64px] lg:leading-[70px]">
+        Our Journey So Far
       </h2>
-      {/* Desktop shows the Figma road illustration, milestone cards included; the list below carries the text. */}
-      <div className="relative mt-[7px] hidden aspect-[1440/1212] w-full lg:block">
-        <Image src="/figma/milestones-road.webp" alt="" fill sizes="100vw" className="object-cover" />
+      <div className="relative mx-auto mt-10 max-w-md px-6 lg:sr-only">
+        {/* A vertical road for narrow screens: asphalt strip with a dashed centre line. */}
+        <span aria-hidden className="absolute bottom-0 left-6 top-0 w-5 rounded-full bg-[#333]">
+          <span className="absolute inset-y-3 left-1/2 -translate-x-1/2 border-l-2 border-dashed border-white/80" />
+        </span>
+        <ol className="relative space-y-8">
+          {milestones.map((m) => (
+            <li key={m.year} className="relative pl-12">
+              <MapPin aria-hidden size={28} weight="fill" className="absolute -left-1 top-6 text-[#e5392a] drop-shadow" />
+              <p className="w-fit rounded-t-xl bg-[#ce3922] px-4 pt-1 font-display text-xl font-extrabold leading-7 text-white">
+                {m.year}
+              </p>
+              <div className="rounded-xl rounded-tl-none bg-[#fdffe4] p-3 shadow-[0_8px_24px_rgba(0,0,0,0.18)]">
+                <p className="text-sm font-bold text-navy">{m.title}</p>
+                <p className="mt-1 text-[13px] leading-[18px] text-ink-soft">{m.body}</p>
+                {m.badge && (
+                  <p className="mt-2 w-fit rounded bg-[#e3f0ff] px-2 py-0.5 text-[11px] font-semibold text-brand">{m.badge}</p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
       </div>
-      <ol className="mx-auto mt-10 max-w-md space-y-4 px-6 pb-16 lg:sr-only">
-        {milestones.map((m) => (
-          <li key={m.year} className="flex gap-4">
-            <span className="h-fit rounded-md bg-[#ce3922] px-3 py-1 font-display text-xl font-extrabold text-white">{m.year}</span>
-            <div className="flex-1 rounded-md border border-[#e9ebc6] bg-[#fdffe4] p-3">
-              <p className="text-sm font-bold text-navy">{m.title}</p>
-              <p className="mt-1 text-[13px] leading-[18px] text-ink-soft">{m.body}</p>
-              {m.badge && (
-                <p className="mt-2 w-fit rounded bg-[#e3f0ff] px-2 py-0.5 text-[11px] font-semibold text-brand">{m.badge}</p>
-              )}
-            </div>
-          </li>
-        ))}
-      </ol>
     </section>
   );
 }

@@ -3,33 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { CaretDown } from "@phosphor-icons/react/ssr";
+import { ChevronDown } from "lucide-react";
+import { NAV, isActive, isCurrent } from "./nav-data";
 
-type Item = { label: string; href: string; items?: { label: string; href: string }[] };
-
-export const NAV: Item[] = [
-  { label: "Home", href: "/" },
-  { label: "About Us", href: "/about-us" },
-  {
-    label: "Our Plans",
-    href: "/own-now",
-    items: [
-      { label: "Own Now", href: "/own-now" },
-      { label: "Drive to Own", href: "/own-now#calculator" },
-      { label: "Leasing", href: "/drive-with-us" },
-    ],
-  },
-  {
-    label: "Our Services",
-    href: "/our-services",
-    items: [
-      { label: "Fleet Management", href: "/our-services" },
-      { label: "Driver Sourcing", href: "/drive-with-us" },
-      { label: "Maintenance", href: "/our-services#how" },
-    ],
-  },
-  { label: "Everest Dost", href: "/#dost" },
-];
+// The bottom padding reserves the underline's room on every item, so the active one does not
+// sit lower than its neighbours.
+const label = "relative pb-2 text-base leading-6 tracking-[-0.2px] transition";
 
 export function NavLinks() {
   const pathname = usePathname();
@@ -61,27 +40,41 @@ export function NavLinks() {
     };
   }, []);
 
-  const active = (href: string) => href === pathname || `${href}/` === pathname;
-
   return (
-    <nav ref={nav} className="hidden items-center gap-7 lg:flex xl:gap-10">
-      {NAV.map((item) =>
-        item.items ? (
+    <nav ref={nav} aria-label="Main" className="hidden items-center gap-6 lg:flex xl:gap-7">
+      {NAV.map((item) => {
+        const active = isActive(item, pathname);
+        const tone = active ? "font-semibold text-brand" : "font-medium text-navy hover:text-brand";
+
+        if (!("items" in item)) {
+          return (
+            <Link
+              key={item.label}
+              href={item.href}
+              aria-current={active ? "page" : undefined}
+              className={`${label} ${tone}`}
+            >
+              {item.label}
+              {active && <span aria-hidden className="absolute inset-x-0 bottom-0 h-[3px] bg-brand" />}
+            </Link>
+          );
+        }
+
+        return (
           <div key={item.label} className="relative" onMouseEnter={() => setOpen(item.label)}>
             <button
               type="button"
               aria-expanded={open === item.label}
               onClick={() => setOpen(open === item.label ? null : item.label)}
-              className={`flex items-center gap-1 text-[15px] font-medium leading-[22.5px] tracking-[-0.23px] transition ${
-                active(item.href) ? "text-navy" : "text-ink-soft hover:text-navy"
-              }`}
+              className={`flex items-center gap-1.5 ${label} ${tone}`}
             >
               {item.label}
-              <CaretDown size={13} weight="bold" className={open === item.label ? "rotate-180" : ""} />
+              <ChevronDown size={14} aria-hidden className={`-mr-[3px] transition ${open === item.label ? "rotate-180" : ""}`} />
+              {active && <span aria-hidden className="absolute inset-x-0 bottom-0 h-[3px] bg-brand" />}
             </button>
             {open === item.label ? (
               <div
-                className="absolute left-1/2 top-full z-50 w-[212px] -translate-x-1/2 pt-3"
+                className="absolute left-1/2 top-full z-50 w-[212px] -translate-x-1/2 pt-7"
                 onMouseLeave={() => setOpen(null)}
               >
                 <ul className="overflow-hidden rounded-xl border border-line bg-white py-1.5 shadow-[0_12px_32px_rgba(6,47,80,0.14)]">
@@ -89,7 +82,10 @@ export function NavLinks() {
                     <li key={sub.label}>
                       <Link
                         href={sub.href}
-                        className="block px-4 py-2.5 text-[14px] font-medium text-ink-soft transition hover:bg-mist hover:text-navy"
+                        aria-current={isCurrent(sub.href, pathname) ? "page" : undefined}
+                        className={`block px-4 py-2.5 text-[15px] font-medium transition hover:bg-mist hover:text-navy ${
+                          isCurrent(sub.href, pathname) ? "text-brand" : "text-ink-soft"
+                        }`}
                       >
                         {sub.label}
                       </Link>
@@ -99,20 +95,8 @@ export function NavLinks() {
               </div>
             ) : null}
           </div>
-        ) : (
-          <Link
-            key={item.label}
-            href={item.href}
-            aria-current={active(item.href) ? "page" : undefined}
-            className={`relative text-[15px] font-medium leading-[22.5px] tracking-[-0.23px] transition ${
-              active(item.href) ? "text-navy" : "text-ink-soft hover:text-navy"
-            }`}
-          >
-            {item.label}
-            {active(item.href) && <span aria-hidden className="absolute left-0 top-[24.75px] h-0.5 w-full bg-sun" />}
-          </Link>
-        )
-      )}
+        );
+      })}
     </nav>
   );
 }
