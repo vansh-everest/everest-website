@@ -17,7 +17,7 @@ export function SiteHeader({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
         <div className="flex items-center gap-2">
           <Link
             href={drive}
-            className="flex h-10 items-center rounded-full bg-sun px-4 text-sm font-bold tracking-[-0.2px] text-navy transition hover:brightness-105 lg:h-[45px] lg:px-[25px] lg:text-base"
+            className="hidden h-10 items-center rounded-full bg-sun px-4 text-sm font-bold tracking-[-0.2px] text-navy transition hover:brightness-105 sm:flex lg:h-[45px] lg:px-[25px] lg:text-base"
           >
             Drive With Us
           </Link>

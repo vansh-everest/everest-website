@@ -143,7 +143,7 @@ export function PlansTab({ content, setContent, locked }: { content: SiteContent
               <PriceGrid value={plan.price} fields={[...PLAN_FIELDS]} disabled={locked} onChange={(price) => patch(i, { price })} />
               <Row cols={2}>
                 <Text
-                  label="After the deposit"
+                  label="Word after the figures"
                   placeholder="Onwards"
                   value={plan.depositNote}
                   disabled={locked}
@@ -172,10 +172,9 @@ export function PlansTab({ content, setContent, locked }: { content: SiteContent
             </Section>
 
             <Section title="Home page card">
-              <Row cols={4}>
-                <Text label="Badge on car cards" value={plan.shortName} disabled={locked} onChange={(shortName) => patch(i, { shortName })} />
+              <Row cols={3}>
                 <Text label="Tab above the card" value={plan.tag} disabled={locked} onChange={(tag) => patch(i, { tag })} />
-                <Text label="Line above the price" value={plan.priceLabel} disabled={locked} onChange={(priceLabel) => patch(i, { priceLabel })} />
+                <Text label="Rent label on car cards" value={plan.priceLabel} disabled={locked} onChange={(priceLabel) => patch(i, { priceLabel })} />
                 <Select
                   label="Card colour"
                   value={plan.theme}

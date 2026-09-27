@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { COMPANY, COMPANY_BLURB, SITE_URL } from "@/lib/company";
 import { Hero } from "@/components/home/hero";
 import { HeadlineBand } from "@/components/home/headline-band";
-import { StatsBand } from "@/components/home/stats-band";
 import { WhyChooseUs } from "@/components/home/why-choose-us";
 import { CitiesStrip } from "@/components/home/cities-strip";
 import { Plans } from "@/components/home/plans";
@@ -10,8 +9,8 @@ import { OwnNowBanner } from "@/components/home/own-now-banner";
 import { CarShowcase } from "@/components/home/car-showcase";
 import { FleetApp } from "@/components/home/fleet-app";
 import { DostApp } from "@/components/home/dost-app";
-import { ApplySteps } from "@/components/home/apply-steps";
 import { Testimonials } from "@/components/home/testimonials";
+import { StartDriving } from "@/components/site/start-driving";
 import { jsonLd } from "@/lib/json-ld";
 import { getContent } from "@/lib/store";
 
@@ -52,7 +51,6 @@ export default async function Home() {
       />
       <Hero />
       <HeadlineBand />
-      <StatsBand />
       <WhyChooseUs />
       <CitiesStrip />
       <Plans content={content} />
@@ -60,7 +58,7 @@ export default async function Home() {
       <CarShowcase content={content} />
       <FleetApp />
       <DostApp />
-      <ApplySteps />
+      <StartDriving />
       <Testimonials />
     </>
   );

@@ -5,20 +5,17 @@ import { useState } from "react";
 import type { CityOption, PlanCardView } from "@/lib/plan-view";
 import { CitySelect } from "./city-select";
 
-/** Chip colours for the row labels: navy cards use yellow, white cards alternate. */
-const LIGHT_CHIPS = ["border-[#8fc27a] bg-[#eef7e9] text-[#3f7a2a]", "border-brand/50 bg-[#e8f3fb] text-brand"];
-
-function PlanCard({ plan, index }: { plan: PlanCardView; index: number }) {
+function PlanCard({ plan }: { plan: PlanCardView }) {
   const dark = plan.theme === "dark";
-  const divider = dark ? "border-white/25" : "border-line";
-  const chip = dark ? "border-sun/60 bg-sun/10 text-sun" : LIGHT_CHIPS[index % LIGHT_CHIPS.length];
   return (
-    <article className="flex flex-col items-center">
+    <article className="flex h-full flex-col items-center">
       {plan.tag ? (
-        <p className="flex h-9 w-[186px] items-center justify-center rounded-t-lg bg-sun text-xs font-semibold text-navy">{plan.tag}</p>
-      ) : null}
-      <div className="w-full overflow-hidden rounded-xl bg-white shadow-[0_8px_24px_rgba(6,47,80,0.12)]">
-        <h3 className={`flex h-12 items-center justify-center text-xl font-semibold text-white ${dark ? "bg-navy" : "bg-brand"}`}>
+        <p className="flex h-11 items-center rounded-t-lg bg-sun px-8 text-base font-medium text-navy">{plan.tag}</p>
+      ) : (
+        <span aria-hidden className="h-11" />
+      )}
+      <div className="flex w-full flex-1 flex-col overflow-hidden rounded-2xl bg-white shadow-[0_8px_24px_rgba(6,47,80,0.12)]">
+        <h3 className={`flex h-14 items-center justify-center text-[26px] font-medium text-white lg:text-[28px] ${dark ? "bg-navy" : "bg-brand"}`}>
           {plan.href ? (
             <Link href={plan.href} className="underline-offset-4 hover:underline">
               {plan.name}
@@ -28,77 +25,62 @@ function PlanCard({ plan, index }: { plan: PlanCardView; index: number }) {
           )}
         </h3>
         <div
-          className={`px-[26px] pb-7 pt-3 lg:min-h-[444px] ${dark ? "bg-[linear-gradient(180deg,#0d3458_0%,#44627f_100%)] text-white" : "text-navy"}`}
+          className={`flex flex-1 flex-col px-5 pb-5 pt-5 ${
+            dark ? "bg-[radial-gradient(95%_75%_at_78%_32%,#76899b_0%,#4f667d_45%,#1c3e5d_100%)] text-white" : "text-navy"
+          }`}
         >
-          {plan.amount ? (
-            <>
-              <p className={`text-sm ${dark ? "text-sun" : "text-brand"}`}>{plan.priceLabel}</p>
-              <div className={`flex items-center gap-2 border-b border-dashed pb-5 ${divider}`}>
-                <p className="flex items-baseline gap-0.5">
-                  <span className="text-base">₹</span>
-                  <span className="text-[40px] font-bold leading-10">{Number(plan.amount).toLocaleString("en-IN")}</span>
-                  <span className={`text-[13px] ${dark ? "text-white/70" : "text-ink-soft"}`}>{plan.unit}</span>
-                </p>
-                <a
-                  href="#apply"
-                  className="ml-2 flex h-9 w-[104px] items-center justify-center rounded-full bg-sun text-[13px] font-semibold text-navy"
+          {plan.figures.length ? (
+            <dl className="grid grid-cols-2 gap-2.5">
+              {plan.figures.map((f) => (
+                <div
+                  key={f.label}
+                  className={`rounded-lg border px-3.5 py-2.5 ${dark ? "border-sun/30 bg-sun/10" : "border-[#f3e7a0] bg-[#fdfae2]"}`}
                 >
-                  Join Now
-                </a>
-              </div>
-            </>
+                  <dt className={`text-[13px] font-medium ${dark ? "text-sun" : "text-brand"}`}>{f.label}</dt>
+                  <dd className="mt-1 whitespace-nowrap">
+                    <span className="text-xl font-bold">{f.value}</span>
+                    <span className={`text-xs ${dark ? "text-white/80" : "text-navy/80"}`}>{plan.suffix}</span>
+                  </dd>
+                </div>
+              ))}
+            </dl>
           ) : null}
-          <dl>
-            {plan.rows.map((row, i) => (
-              <div
-                key={`${row.label}-${i}`}
-                className={`grid grid-cols-[86px_1fr] items-center gap-[11px] border-b border-dashed py-4 ${divider}`}
-              >
-                <dt className={`w-fit rounded border px-2.5 py-1 text-[10px] font-bold uppercase leading-[12px] tracking-[0.5px] ${chip}`}>
-                  {row.label}
-                </dt>
-                <dd className={`leading-5 ${i === 0 ? "text-base font-medium" : "text-[13px]"} ${dark ? "text-white/90" : "text-navy/80"}`}>
-                  {row.value}
-                </dd>
-              </div>
+          <ul className="mt-4 space-y-2">
+            {plan.points.map((point, i) => (
+              <li key={`${i}-${point}`} className={`flex items-baseline gap-2.5 leading-5 ${i === 0 && dark ? "text-[17px] leading-6" : "text-[15px]"} ${dark ? "text-white" : "text-navy/90"}`}>
+                <span aria-hidden className="size-1.5 shrink-0 -translate-y-0.5 rounded-full bg-sun" />
+                {point}
+              </li>
             ))}
-          </dl>
-          {plan.benefits.length ? (
-            <>
-              <p className={`mt-3 text-[11px] font-semibold uppercase tracking-[1px] ${dark ? "text-white/60" : "text-ink-soft"}`}>
-                Key Benefits
-              </p>
-              <ul className="mt-2 flex flex-wrap gap-1.5">
-                {plan.benefits.map((b) => (
-                  <li
-                    key={b}
-                    className={`rounded-md px-2.5 py-[5px] text-[11px] leading-4 ${
-                      dark ? "bg-brand text-white" : "border border-line bg-mist text-ink-soft"
-                    }`}
-                  >
-                    {b}
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : null}
+          </ul>
+          <div className="mt-auto pt-5">
+            <a
+              href="#apply"
+              className="flex h-12 w-full items-center justify-center rounded-full bg-sun text-xl font-medium text-navy transition hover:brightness-95"
+            >
+              Join Now
+            </a>
+          </div>
         </div>
       </div>
     </article>
   );
 }
 
+/** Three across on a wide screen; on a phone the cards swipe, with the next one peeking in. */
 export function PlanGrid({ cities, cards }: { cities: CityOption[]; cards: Record<string, PlanCardView[]> }) {
   const [city, setCity] = useState(cities[0]?.slug ?? "");
   const plans = cards[city] ?? [];
   return (
     <>
-      <div className="mt-[21px] px-6">
-        <CitySelect cities={cities} value={city} onChange={setCity} />
+      <div className="mt-5 px-6">
+        <CitySelect cities={cities} value={city} onChange={setCity} filled />
       </div>
-      <div className="relative z-10 mx-auto mt-[50px] grid max-w-[1192px] gap-10 px-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-[38px] lg:px-0">
-        {plans.map((plan, i) => (
-          <PlanCard key={plan.id} plan={plan} index={plans.slice(0, i).filter((p) => p.theme !== "dark").length} />
+      <div className="mx-auto mt-10 flex max-w-[1248px] snap-x snap-mandatory gap-5 overflow-x-auto scroll-px-6 px-6 pb-4 [scrollbar-width:none] lg:mt-12 lg:grid lg:max-w-[1440px] lg:grid-cols-3 lg:gap-[66px] lg:overflow-visible lg:px-24 [&::-webkit-scrollbar]:hidden">
+        {plans.map((plan) => (
+          <div key={plan.id} className="w-[86%] shrink-0 snap-start sm:w-[60%] lg:w-auto">
+            <PlanCard plan={plan} />
+          </div>
         ))}
       </div>
     </>

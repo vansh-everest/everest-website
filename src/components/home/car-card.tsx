@@ -11,34 +11,20 @@ function Tile({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-function Badges({ plans }: { plans: string[] }) {
-  return (
-    <ul className="flex flex-wrap gap-[3px]">
-      {plans.map((p) => (
-        <li key={p} className="flex h-[21px] items-center rounded-full border border-brand px-2 text-[10px] font-semibold text-brand">
-          {p}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
 const photoPill =
   "absolute top-4 flex h-[22px] items-center gap-[5px] rounded-full bg-white px-[11px] text-[10px] font-semibold text-navy";
 
 /**
- * One car, already priced for the chosen city. The home page lists the plans a car is
- * offered under; the Own Now page lists its tenure instead.
+ * One car on a plan page, priced for the chosen city. All four boxes always show, as in the
+ * design, with a dash for a figure not set.
  */
-export function CarCard({ car, city, variant }: { car: CarCardView; city: string; variant: "home" | "plan" }) {
+export function CarCard({ car, city }: { car: CarCardView; city: string; variant: "plan" }) {
   const tiles: { label: string; value: ReactNode }[] = [
     { label: car.rentLabel, value: car.rent },
-    { label: variant === "home" ? "Deposit starting from" : "Deposit", value: car.deposit },
-    variant === "home"
-      ? { label: "Plans available", value: car.badges.length ? <Badges plans={car.badges} /> : "" }
-      : { label: "Tenure", value: car.tenure },
+    { label: "Deposit", value: car.deposit },
+    { label: "Tenure", value: car.tenure },
     { label: "Models available", value: car.modelYears },
-  ].flatMap((t) => (t.value ? [t] : variant === "plan" ? [{ ...t, value: "—" }] : []));
+  ].map((t) => (t.value ? t : { ...t, value: "—" }));
 
   return (
     <article className="flex min-w-0 flex-col items-center">
@@ -50,10 +36,10 @@ export function CarCard({ car, city, variant }: { car: CarCardView; city: string
         >
           {car.highlight}
         </p>
-      ) : variant === "plan" ? (
+      ) : (
         // Keeps a card without a tab level with its neighbours in the carousel.
         <span aria-hidden className="h-[38px]" />
-      ) : null}
+      )}
       <div className="w-full overflow-hidden rounded-2xl bg-white shadow-[0_4px_20px_rgba(6,47,80,0.08)]">
         <div className="relative h-[262px] bg-mist">
           {car.image.url ? (
@@ -96,11 +82,9 @@ export function CarCard({ car, city, variant }: { car: CarCardView; city: string
           </div>
           <a
             href="#apply"
-            className={`mt-6 flex h-[50px] items-center justify-center rounded-full border-[1.5px] border-brand font-semibold text-brand transition hover:bg-brand hover:text-white ${
-              variant === "home" ? "text-sm" : "text-2xl"
-            }`}
+            className="mt-6 flex h-[50px] items-center justify-center rounded-full border-[1.5px] border-brand text-2xl font-semibold text-brand transition hover:bg-brand hover:text-white"
           >
-            {variant === "home" ? "Drive this car →" : "View plan"}
+            View plan
           </a>
         </div>
       </div>

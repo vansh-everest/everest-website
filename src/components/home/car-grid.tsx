@@ -1,48 +1,71 @@
-"use client";
+import Image from "next/image";
+import { ArrowRight } from "lucide-react";
+import { Carousel } from "@/components/site/carousel";
+import type { CarCardView } from "@/lib/plan-view";
 
-import Link from "next/link";
-import { useState } from "react";
-import { CaretLeft, CaretRight } from "@phosphor-icons/react/ssr";
-import type { CarCardView, CityOption } from "@/lib/plan-view";
-import { CarCard } from "./car-card";
-import { CitySelect } from "./city-select";
-
-const arrow =
-  "absolute top-[578px] hidden size-12 place-items-center rounded-full bg-white text-navy shadow-[0_4px_12px_rgba(6,47,80,0.15)] lg:grid";
-
-export function CarGrid({ cities, cards }: { cities: CityOption[]; cards: Record<string, CarCardView[]> }) {
-  const [city, setCity] = useState(cities[0]?.slug ?? "");
-  const cars = cards[city] ?? [];
-  const name = cities.find((c) => c.slug === city)?.name ?? "";
-
+function FuelBadge({ fuel }: { fuel: string }) {
   return (
-    <>
-      <div className="mt-[26px] text-center">
-        <CitySelect cities={cities} value={city} onChange={setCity} />
-        <p className="mt-3 text-[11px] text-ink-soft/60">Vehicle availability varies by city</p>
+    <span
+      className={`flex h-6 items-center gap-1 rounded-full px-3 text-[11px] font-bold text-white ${
+        fuel.toUpperCase() === "EV" ? "bg-leaf" : "bg-brand"
+      }`}
+    >
+      ⚡ {fuel}
+    </span>
+  );
+}
+
+/** A car on the home page: its photo, name and fuel, and a way in. Prices live on the plan pages. */
+function HomeCarCard({ car }: { car: CarCardView }) {
+  return (
+    <article className="flex min-w-0 flex-col items-center">
+      {car.highlight ? (
+        <p
+          className={`flex h-[38px] w-[423px] max-w-[88%] items-center justify-center rounded-t-xl px-3 text-center text-sm font-semibold text-white lg:text-base ${
+            car.highlightTone === "leaf" ? "bg-leaf" : "bg-brand"
+          }`}
+        >
+          {car.highlight}
+        </p>
+      ) : (
+        <span aria-hidden className="h-[38px]" />
+      )}
+      <div className="w-full overflow-hidden rounded-2xl border border-line bg-white shadow-[0_4px_20px_rgba(6,47,80,0.08)]">
+        <div className="relative h-[210px] bg-mist sm:h-[288px]">
+          {car.image.url ? (
+            <Image src={car.image.url} alt={car.image.alt} fill sizes="(min-width: 1024px) 580px, 90vw" className="object-cover" />
+          ) : null}
+          <div className="absolute inset-x-0 bottom-0 flex items-center gap-2 bg-gradient-to-t from-black/55 to-transparent px-4 pb-3 pt-10 sm:hidden">
+            <h3 className="text-xl font-bold text-white">{car.name}</h3>
+            {car.fuel ? <FuelBadge fuel={car.fuel} /> : null}
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-4 px-5 py-4 sm:px-6 sm:py-5">
+          <div className="hidden items-center gap-3 sm:flex">
+            <p className="text-[22px] font-bold text-navy">{car.name}</p>
+            {car.fuel ? <FuelBadge fuel={car.fuel} /> : null}
+          </div>
+          <a
+            href="#apply"
+            className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-brand px-6 text-base font-medium text-white transition hover:brightness-110 sm:w-auto sm:text-lg"
+          >
+            Drive this car
+            <ArrowRight size={18} />
+          </a>
+        </div>
       </div>
-      <div className="mx-auto mt-[10px] grid max-w-[1184px] gap-10 lg:grid-cols-2 lg:gap-6">
+    </article>
+  );
+}
+
+export function CarGrid({ cars }: { cars: CarCardView[] }) {
+  return (
+    <div className="mx-auto mt-10 max-w-[1184px] lg:mt-[60px]">
+      <Carousel label="Our cars" item="w-[86%] md:w-[calc((100%-24px)/2)]" arrowTop="182px">
         {cars.map((car) => (
-          <CarCard key={car.id} car={car} city={name} variant="home" />
+          <HomeCarCard key={car.id} car={car} />
         ))}
-      </div>
-      <button type="button" aria-label="Previous vehicle" className={`${arrow} left-24`}>
-        <CaretLeft size={20} weight="bold" />
-      </button>
-      <button type="button" aria-label="Next vehicle" className={`${arrow} right-[46px]`}>
-        <CaretRight size={20} weight="bold" />
-      </button>
-      <div aria-hidden className="mt-[75px] flex justify-center gap-1.5">
-        <span className="h-[7px] w-6 rounded-full bg-navy" />
-        <span className="size-[7px] rounded-full bg-navy/20" />
-        <span className="size-[7px] rounded-full bg-navy/20" />
-      </div>
-      <p className="mt-4 text-center text-xs text-ink-soft">
-        {cars.length} {cars.length === 1 ? "vehicle" : "vehicles"} in {name}{" "}
-        <Link href="/own-now/#calculator" className="ml-1 font-semibold text-brand">
-          View full fleet
-        </Link>
-      </p>
-    </>
+      </Carousel>
+    </div>
   );
 }

@@ -1,14 +1,12 @@
 import {
   fillFigures,
   headline,
-  plansOffering,
   priceIn,
   rupees,
   type Car,
   type Feature,
   type ImageSlot,
   type Plan,
-  type Row,
   type SiteContent,
 } from "@/lib/content";
 import { PLAN_PAGES } from "@/lib/plan-pages";
@@ -23,11 +21,12 @@ export type PlanCardView = {
   name: string;
   tag: string;
   theme: Plan["theme"];
-  priceLabel: string;
-  amount: string;
-  unit: string;
-  rows: Row[];
-  benefits: string[];
+  /** The two boxes at the top of the card: the rent, then the upfront or deposit. */
+  figures: { label: string; value: string }[];
+  /** The small word after each figure, "Onwards" unless the plan sets its own. */
+  suffix: string;
+  /** The bullet list: the card rows first, then the key benefits. */
+  points: string[];
   /** The plan's own page, when it has one. */
   href: string;
 };
@@ -49,7 +48,6 @@ export type CarCardView = {
   deposit: string;
   tenure: string;
   modelYears: string;
-  badges: string[];
 };
 
 export type CityOption = { slug: string; name: string };
@@ -62,25 +60,19 @@ const months = (n: string) => (n ? `${n} month${n === "1" ? "" : "s"}` : "");
 
 export function planCard(content: SiteContent, plan: Plan, city?: string): PlanCardView {
   const price = priceIn(plan.price, plan.cityPrices, city);
-  const vehicles = plan.carIds
-    .map((id) => content.cars.find((c) => c.id === id)?.name)
-    .filter(Boolean)
-    .join(", ");
-  const rows: Row[] = [];
-  if (price.deposit) rows.push({ label: "Deposit", value: `${rupees(price.deposit)}${plan.depositNote ? ` ${plan.depositNote}` : ""}` });
-  if (vehicles) rows.push({ label: "Vehicles available", value: vehicles });
-  rows.push(...plan.rows);
+  const figures = [
+    { label: `Rent${price.unit.replace(/^\+/, "")}`, value: rupees(price.amount) },
+    price.upfront ? { label: "Upfront", value: rupees(price.upfront) } : { label: "Deposit", value: rupees(price.deposit) },
+  ].filter((f) => f.value);
   const page = PLAN_PAGES.find((p) => p.planId === plan.id);
   return {
     id: plan.id,
     name: plan.name.en,
     tag: plan.tag,
     theme: plan.theme,
-    priceLabel: plan.priceLabel,
-    amount: price.amount,
-    unit: price.unit,
-    rows,
-    benefits: plan.benefits,
+    figures,
+    suffix: plan.depositNote || "Onwards",
+    points: [...plan.rows.map((r) => r.value).filter(Boolean), ...plan.benefits],
     href: page ? `${page.path}/` : "",
   };
 }
@@ -106,7 +98,6 @@ export function carCard(content: SiteContent, car: Car, city?: string, plan?: Pl
     deposit: rupees(price.deposit),
     tenure: months(price.tenureMonths) || (plan?.tenureNote ?? ""),
     modelYears: car.modelYears,
-    badges: plansOffering(content, car.id).map((p) => p.shortName || p.name.en),
   };
 }
 

@@ -1,34 +1,68 @@
 import Image from "next/image";
-import { CheckItem, SunButton } from "./ui";
+import Link from "next/link";
 
+function YellowCheck({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 16 16" aria-hidden className={`shrink-0 ${className}`}>
+      <circle cx="8" cy="8" r="8" className="fill-sun" />
+      <path d="M4.6 8.3 7 10.6l4.4-4.9" fill="none" className="stroke-navy" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+const perks = ["Without loan", "Without CIBIL score", "With small deposit"];
+
+/*
+ * Desktop is laid out on the 1440 export frame. --u is one frame pixel: it shrinks with the
+ * viewport below 1440 so the photo's curve and the copy keep their places, and stops at 1px above it.
+ */
 export function OwnNowBanner() {
   return (
-    <section className="border-t-[12px] border-sun bg-[linear-gradient(90deg,#063f6c_0%,#006db8_100%)]">
-      <div className="grid lg:h-[348px] lg:grid-cols-[770px_1fr]">
-        <div className="relative aspect-[770/348] lg:aspect-auto">
+    <section className="@container bg-[linear-gradient(165.5deg,#062f50_0%,#006db8_100%)]">
+      <div className="relative [--u:calc(min(100cqw,1440px)/1440)] lg:h-[calc(var(--u)*348)]">
+        <div className="relative aspect-[412/220] lg:absolute lg:inset-y-0 lg:left-0 lg:aspect-auto lg:w-[calc(var(--u)*770)]">
           <Image
-            src="/figma/own-now-banner.jpg"
-            alt="Smiling driver at the wheel of an Everest car"
+            src="/figma/home/own-now-photo-mobile.webp"
+            alt="Car keys being handed over to a new owner"
             fill
-            sizes="(min-width: 1024px) 770px, 100vw"
-            className="object-cover object-left"
+            sizes="(min-width: 1024px) 0px, 100vw"
+            className="object-cover lg:hidden"
+          />
+          {/* The blue beyond the yellow curve is transparent, so the section gradient shows through. */}
+          <Image
+            src="/figma/home/own-now-photo.webp"
+            alt="Car keys being handed over to a new owner"
+            fill
+            sizes="(min-width: 1024px) min(770px, 54vw), 0px"
+            className="hidden object-cover lg:block"
           />
         </div>
-        <div className="px-6 py-10 lg:pl-[41px] lg:pr-0 lg:pt-8">
-          <h2 className="text-[34px] font-bold leading-tight text-white lg:text-[48px] lg:leading-[60px]">
-            Introducing <span className="text-sun">Own Now</span>
-            <br />
+
+        <div className="px-6 pb-6 pt-[22px] text-white lg:absolute lg:left-[calc(var(--u)*811)] lg:top-[calc(var(--u)*33)] lg:p-0">
+          <h2 className="text-center text-xl font-bold leading-7 tracking-[0.35px] lg:text-left lg:text-[length:calc(var(--u)*48)] lg:leading-[calc(var(--u)*60)] lg:tracking-[calc(var(--u)*0.3)]">
+            Introducing <span className="text-sun">Own Now</span> <br className="hidden lg:inline" />
             by Everest
           </h2>
-          <p className="mt-[22px] text-xl font-semibold leading-[29px] text-white lg:text-2xl">Now become owner of your own car</p>
-          <div className="mt-2 flex flex-wrap items-end gap-x-[92px] gap-y-6">
-            <ul className="space-y-2 text-base leading-5 text-white">
-              <CheckItem>Without loan</CheckItem>
-              <CheckItem>Without CIBIL score</CheckItem>
-              <CheckItem>With small deposit</CheckItem>
-            </ul>
-            <SunButton href="#plans">Know more</SunButton>
-          </div>
+          <p className="mt-[5px] text-center text-sm leading-5 tracking-[0.2px] lg:mt-[calc(var(--u)*21)] lg:text-left lg:text-[length:calc(var(--u)*24)] lg:font-semibold lg:leading-[calc(var(--u)*29)] lg:tracking-[calc(var(--u)*0.35)]">
+            Now become owner of your own car
+          </p>
+          <ul className="mt-1 lg:mt-[calc(var(--u)*5)]">
+            {perks.map((perk) => (
+              <li
+                key={perk}
+                className="flex h-8 items-center gap-2 text-base lg:h-[calc(var(--u)*28)] lg:gap-[calc(var(--u)*6)] lg:text-[length:calc(var(--u)*20)]"
+              >
+                <YellowCheck className="size-3.5 lg:size-[calc(var(--u)*15)]" />
+                {perk}
+              </li>
+            ))}
+          </ul>
+          <Link
+            href="/own-now/"
+            className="mt-1.5 flex h-14 w-full items-center justify-center rounded-full bg-sun text-base font-medium tracking-[0.2px] text-navy transition hover:brightness-95 lg:absolute lg:left-[calc(var(--u)*262)] lg:top-[calc(var(--u)*200)] lg:mt-0 lg:h-[calc(var(--u)*55)] lg:w-[calc(var(--u)*154)] lg:text-[length:calc(var(--u)*15)] lg:tracking-[calc(var(--u)*1.2)]"
+          >
+            Know more
+          </Link>
         </div>
       </div>
     </section>

@@ -68,7 +68,7 @@ export type PlanPage = {
 export type Plan = {
   /** Referenced by cities, cars and the calculator. Fixed once the plan exists. */
   id: string;
-  /** Offered at all: badges on car cards and the driver pages. */
+  /** Offered at all: its own page, the driver pages and the calculator. */
   visible: boolean;
   /** A card in "We have plans for everyone" on the home page. */
   showCard: boolean;
@@ -78,11 +78,11 @@ export type Plan = {
   summary: Record<Locale, string>;
   /** The tab above the card, e.g. "Ownership model". */
   tag: string;
-  /** The line above the headline figure, e.g. "Rent starting from". */
+  /** The rent label on this plan's car cards, e.g. "Rent starting from". */
   priceLabel: string;
   theme: "dark" | "light";
   price: Price;
-  /** Printed after the deposit, e.g. "Onwards". */
+  /** Printed after the figures on the home page card, e.g. "Onwards". */
   depositNote: string;
   /** Printed as the tenure where no months are set, e.g. "Flexible". */
   tenureNote: string;
@@ -565,11 +565,6 @@ export function priceIn(base: Price, overrides: CityPrices, city?: string): Pric
 export function rupees(digits: string): string {
   if (!digits) return "";
   return `₹${Number(digits).toLocaleString("en-IN")}`;
-}
-
-/** Plans that are offered and list this car, in plan order. */
-export function plansOffering(content: SiteContent, carId: string): Plan[] {
-  return content.plans.filter((p) => p.visible && p.carIds.includes(carId));
 }
 
 /** "₹650/day": the amount with its unit, blank when there is no amount. */

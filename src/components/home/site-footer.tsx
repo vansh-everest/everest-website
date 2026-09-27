@@ -58,8 +58,8 @@ export function SiteFooter() {
           height={118}
           className="-ml-[21px] h-[118px] w-[205px]"
         />
-        <div className="grid gap-10 sm:grid-cols-2 lg:-mt-0.5 lg:grid-cols-[1.3fr_repeat(3,1fr)_1.2fr] lg:gap-x-8 xl:grid-cols-[270px_repeat(4,180px)] xl:gap-x-12">
-          <p className="text-sm leading-[23px] sm:col-span-2 lg:col-span-1 lg:mt-[53px]">{COMPANY_BLURB}</p>
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:-mt-0.5 lg:grid-cols-[1.3fr_repeat(3,1fr)_1.2fr] lg:gap-x-8 xl:grid-cols-[270px_repeat(4,180px)] xl:gap-x-12">
+          <p className="col-span-2 text-sm leading-[23px] lg:col-span-1 lg:mt-[53px]">{COMPANY_BLURB}</p>
           {columns.map((col) => (
             <div key={col.title}>
               <h2 className={heading}>{col.title}</h2>
@@ -88,7 +88,7 @@ export function SiteFooter() {
                 </a>
               </li>
               <li>
-                <a href="mailto:hello@everestfleet.com" className={item}>
+                <a href="mailto:hello@everestfleet.com" className={`${item} [overflow-wrap:anywhere]`}>
                   <span aria-hidden className={emoji}>✉️</span> hello@everestfleet.com
                 </a>
               </li>
@@ -96,7 +96,7 @@ export function SiteFooter() {
             </ul>
           </div>
         </div>
-        <div className="mt-10 flex flex-col gap-3 border-t border-white/[0.08] pt-6 text-[13px] leading-5 sm:flex-row sm:items-center sm:justify-between lg:mt-5">
+        <div className="mt-10 flex flex-col-reverse items-center gap-3 border-t border-white/[0.08] pt-6 text-center text-[13px] leading-5 sm:flex-row sm:justify-between sm:text-left lg:mt-5">
           <p>© {new Date().getFullYear()} Everest Fleet Pvt Ltd. All rights reserved.</p>
           <Link href="/investors" className="flex items-center gap-1 transition hover:text-sun">
             For Investors &amp; Partners
