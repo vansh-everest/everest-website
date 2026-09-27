@@ -75,14 +75,18 @@ export function Testimonials({
         <button type="button" aria-label="Previous story" className={`${arrow} left-0 bg-white text-navy`}>
           ‹
         </button>
-        <button type="button" aria-label="Next story" className={`${arrow} right-0 bg-navy text-white`}>
+        <button type="button" aria-label="Next story" className={`${arrow} right-0 ${page ? "bg-white text-navy" : "bg-navy text-white"}`}>
           ›
         </button>
       </div>
       <div aria-hidden className="mt-6 flex justify-center gap-1.5">
         <span className="h-2 w-7 rounded-full bg-navy" />
-        <span className="size-2 rounded-full bg-navy/20" />
-        <span className="size-2 rounded-full bg-navy/20" />
+        {page ? null : (
+          <>
+            <span className="size-2 rounded-full bg-navy/20" />
+            <span className="size-2 rounded-full bg-navy/20" />
+          </>
+        )}
       </div>
     </section>
   );

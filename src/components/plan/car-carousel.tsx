@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CarCard } from "@/components/home/car-card";
@@ -65,7 +66,7 @@ export function CarCarousel({ cities, cards }: { cities: CityOption[]; cards: Re
           <CitySelect cities={cities} value={city} onChange={(slug) => restart(() => setCity(slug))} />
         </div>
         <p className="mt-3 text-[13px] leading-4 text-ink-soft/60">Vehicle availability varies by city</p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
           {FILTERS.map((f) => (
             <button
               key={f}
@@ -82,7 +83,7 @@ export function CarCarousel({ cities, cards }: { cities: CityOption[]; cards: Re
         </div>
       </div>
 
-      <div className="relative mx-auto mt-10 max-w-[1184px]">
+      <div className="relative mx-auto mt-8 max-w-[1184px]">
         <button type="button" aria-label="Previous cars" disabled={edges.start} onClick={() => step(-1)} className={`${arrow} -left-6`}>
           <ChevronLeft size={22} />
         </button>
@@ -112,8 +113,11 @@ export function CarCarousel({ cities, cards }: { cities: CityOption[]; cards: Re
           ))}
         </div>
       ) : null}
-      <p className="mt-6 text-center text-[15px] text-ink-soft">
+      <p className="mt-5 text-center text-[13px] text-ink-soft">
         Showing {cars.length} {cars.length === 1 ? "vehicle" : "vehicles"} available in {cityName}
+        <Link href="/#fleet" className="ml-2 font-semibold text-brand hover:underline">
+          View full fleet →
+        </Link>
       </p>
     </>
   );

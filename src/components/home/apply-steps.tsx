@@ -70,7 +70,7 @@ export async function ApplySteps({ variant = "home" }: { variant?: Variant }) {
   const page = variant === "page";
   const cities = (await getContent()).cities.map((c) => ({ slug: c.slug, name: c.name.en }));
   return (
-    <section id="apply" className={`scroll-mt-20 bg-paper px-6 ${page ? "py-20 lg:py-24" : "pb-[94px] pt-[98px]"}`}>
+    <section id="apply" className={`scroll-mt-20 bg-paper px-6 ${page ? "py-16 lg:pb-24 lg:pt-[72px]" : "pb-[94px] pt-[98px]"}`}>
       <div className="text-center">
         <Eyebrow>How it works</Eyebrow>
         {page ? (

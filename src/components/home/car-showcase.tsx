@@ -4,7 +4,7 @@ import { CarGrid } from "./car-grid";
 
 export function CarShowcase({ content }: { content: SiteContent }) {
   return (
-    <section className="relative bg-mist px-6 pb-[31px] pt-24">
+    <section id="fleet" className="relative scroll-mt-20 bg-mist px-6 pb-[31px] pt-24">
       <div className="text-center">
         <h2 className="text-[34px] font-bold leading-tight tracking-[-0.5px] text-navy lg:text-[64px] lg:leading-[60px]">
           Car that earns for you

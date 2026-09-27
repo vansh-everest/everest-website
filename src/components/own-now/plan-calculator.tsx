@@ -23,7 +23,7 @@ export function PlanCalculator({ content }: { content: SiteContent }) {
   if (!cars.length) return null;
 
   return (
-    <section id="calculator" className="scroll-mt-20 bg-[#f0f4f8] px-4 pb-20 pt-16 sm:px-6 lg:pb-[100px]">
+    <section id="calculator" className="scroll-mt-20 bg-[#f0f4f8] px-4 pb-20 pt-16 sm:px-6 lg:pb-40">
       <div className="text-center">
         <p className="text-sm font-semibold uppercase leading-4 tracking-[1.5px] text-brand">Plan calculator</p>
         <h2 className="mt-2 text-[34px] font-bold leading-tight tracking-[-0.5px] text-navy lg:text-[64px] lg:leading-[72px]">

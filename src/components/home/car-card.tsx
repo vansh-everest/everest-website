@@ -38,7 +38,7 @@ export function CarCard({ car, city, variant }: { car: CarCardView; city: string
       ? { label: "Plans available", value: car.badges.length ? <Badges plans={car.badges} /> : "" }
       : { label: "Tenure", value: car.tenure },
     { label: "Models available", value: car.modelYears },
-  ].filter((t) => t.value);
+  ].flatMap((t) => (t.value ? [t] : variant === "plan" ? [{ ...t, value: "—" }] : []));
 
   return (
     <article className="flex min-w-0 flex-col items-center">
