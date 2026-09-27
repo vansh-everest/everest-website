@@ -1,7 +1,8 @@
 "use client";
 
+import { RotateCcw } from "lucide-react";
 import { restoreVersionAction } from "@/app/(admin)/admin/actions";
-import { Panel } from "./fields";
+import { Badge, Panel, button } from "./fields";
 
 type Version = { id: string; publishedAt: string; publishedBy: string };
 
@@ -19,22 +20,18 @@ export function HistoryTab({ versions, locked }: { versions: Version[]; locked: 
       {versions.length === 0 ? (
         <p className="text-sm text-ink-soft">Each publish is listed here</p>
       ) : (
-        <ul className="divide-y divide-line">
+        <ul className="-my-2 divide-y divide-line">
           {versions.map((v, i) => (
-            <li key={v.id} className="flex flex-wrap items-center gap-3 py-3">
-              <div className="text-sm text-navy">
-                <span className="font-bold">{when(v.publishedAt)}</span>
-                <span className="text-ink-soft"> · {v.publishedBy}</span>
-                {i === 0 ? (
-                  <span className="ml-2 rounded-full bg-[#e8f9ee] px-2 py-0.5 text-[11px] font-bold text-[#1a8f4a]">Live</span>
-                ) : null}
+            <li key={v.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
+              <div className="min-w-0 flex-1">
+                <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-navy">
+                  {when(v.publishedAt)}
+                  {i === 0 ? <Badge tone="green">Live</Badge> : null}
+                </p>
+                <p className="mt-0.5 truncate text-[13px] text-ink-soft">{v.publishedBy}</p>
               </div>
-              <button
-                type="submit"
-                formAction={restoreVersionAction.bind(null, v.id)}
-                disabled={locked}
-                className="ml-auto h-8 rounded-full border border-line px-3 text-[12px] font-bold text-navy transition hover:border-navy disabled:opacity-40"
-              >
+              <button type="submit" formAction={restoreVersionAction.bind(null, v.id)} disabled={locked} className={button.small}>
+                <RotateCcw size={14} />
                 Load into draft
               </button>
             </li>

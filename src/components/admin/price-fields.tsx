@@ -1,7 +1,8 @@
 "use client";
 
 import { DIGIT_FIELDS, type CityPrices, type Price } from "@/lib/content";
-import { Text } from "./fields";
+import { ChevronRight } from "lucide-react";
+import { Text, control } from "./fields";
 
 type Field = keyof Price;
 
@@ -28,7 +29,7 @@ export function PriceGrid({
   disabled: boolean;
 }) {
   return (
-    <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-5">
       {fields.map((f) => (
         <Text
           key={f}
@@ -77,17 +78,21 @@ export function CityPriceTable({
   }
 
   return (
-    <details className="rounded-xl border border-line bg-paper" open={overridden > 0}>
-      <summary className="cursor-pointer px-4 py-3 text-[13px] font-bold text-navy">
-        City prices · {overridden ? `${overridden} ${overridden === 1 ? "city differs" : "cities differ"}` : "all national"}
+    <details className="group rounded-xl border border-line bg-paper" open={overridden > 0}>
+      <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-semibold text-navy [&::-webkit-details-marker]:hidden">
+        <ChevronRight size={16} className="text-ink-soft transition group-open:rotate-90" />
+        City prices
+        <span className="font-normal text-ink-soft">
+          {overridden ? `${overridden} ${overridden === 1 ? "city differs" : "cities differ"}` : "all national"}
+        </span>
       </summary>
       <div className="overflow-x-auto px-4 pb-4">
-        <table className="w-full min-w-[560px] border-separate border-spacing-y-1.5 text-sm">
+        <table className="w-full min-w-[600px] border-separate border-spacing-y-1.5 text-sm">
           <thead>
-            <tr className="text-left text-[11px] font-semibold uppercase tracking-[0.6px] text-ink-soft">
-              <th className="pr-3 font-semibold">City</th>
+            <tr className="text-left text-xs font-medium text-ink-soft">
+              <th className="w-28 pr-3 font-medium">City</th>
               {fields.map((f) => (
-                <th key={f} className="pr-3 font-semibold">
+                <th key={f} className="pr-3 font-medium">
                   {PRICE_LABELS[f]}
                 </th>
               ))}
@@ -96,7 +101,7 @@ export function CityPriceTable({
           <tbody>
             {cities.map((c) => (
               <tr key={c.slug}>
-                <td className="pr-3 font-semibold text-navy">{c.name}</td>
+                <td className="pr-3 text-[13px] font-semibold text-navy">{c.name}</td>
                 {fields.map((f) => (
                   <td key={f} className="pr-3">
                     <input
@@ -106,7 +111,7 @@ export function CityPriceTable({
                       inputMode={isDigits(f) ? "numeric" : undefined}
                       disabled={disabled}
                       onChange={(e) => set(c.slug, f, e.target.value)}
-                      className="w-full rounded-lg border border-line bg-white px-2.5 py-1.5 text-sm text-navy outline-none placeholder:text-ink-soft/40 focus:border-brand disabled:bg-mist"
+                      className={`${control} h-9 placeholder:text-ink-soft/40`}
                     />
                   </td>
                 ))}

@@ -56,3 +56,6 @@ design/
 
 # design hook cache
 /.impeccable/
+
+# Figma PNG exports for reference; large and not part of the site.
+/design-exports/

@@ -1,7 +1,7 @@
 "use client";
 
-import { emptyPrice, placeholder, type Car, type SiteContent } from "@/lib/content";
-import { AddByName, Checks, ImageField, ListControls, Panel, Select, Text, Toggle, move } from "./fields";
+import { emptyPrice, headline, placeholder, type Car, type SiteContent } from "@/lib/content";
+import { AddByName, Badge, Checks, Collapsible, ImageField, ListControls, Row, Section, Select, Text, Toggle, move } from "./fields";
 import { CityPriceTable, PriceGrid } from "./price-fields";
 import { newId, type Setter } from "./shared";
 
@@ -60,78 +60,106 @@ export function CarsTab({ content, setContent, locked }: { content: SiteContent;
   }
 
   return (
-    <div className="grid gap-5">
-      <p className="text-[13px] text-ink-soft">Car card order, left to right</p>
-      {content.cars.map((car, i) => (
-        <Panel
-          key={car.id}
-          title={[car.make, car.name].filter(Boolean).join(" ") || car.id}
-          aside={
-            <ListControls
-              index={i}
-              count={content.cars.length}
-              disabled={locked}
-              onMove={(to) => setContent((c) => ({ ...c, cars: move(c.cars, i, to) }))}
-              onRemove={() => remove(i)}
-            />
-          }
-        >
-          <Toggle label="Show a card for this car" checked={car.visible} disabled={locked} onChange={(visible) => patch(i, { visible })} />
+    <div className="grid gap-3">
+      <p className="text-[13px] text-ink-soft">Car cards appear in this order, left to right</p>
+      {content.cars.map((car, i) => {
+        const price = headline(car.price);
+        return (
+          <Collapsible
+            key={car.id}
+            title={[car.make, car.name].filter(Boolean).join(" ") || car.id}
+            thumb={
+              <span className="hidden h-9 w-12 shrink-0 overflow-hidden rounded-md border border-line bg-mist sm:block">
+                {car.image.url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={car.image.url} alt="" className="h-full w-full object-cover" />
+                ) : null}
+              </span>
+            }
+            meta={
+              <>
+                {price ? <Badge tone="blue">{price}</Badge> : null}
+                {car.fuel ? <Badge>{car.fuel}</Badge> : null}
+                <Badge tone={car.visible ? "green" : "grey"}>{car.visible ? "Card shown" : "Hidden"}</Badge>
+              </>
+            }
+            actions={
+              <ListControls
+                index={i}
+                count={content.cars.length}
+                disabled={locked}
+                onMove={(to) => setContent((c) => ({ ...c, cars: move(c.cars, i, to) }))}
+                onRemove={() => remove(i)}
+                removeLabel={`Remove ${car.name || "car"}`}
+              />
+            }
+          >
+            <Section title="Status">
+              <Toggle label="Show a card for this car" checked={car.visible} disabled={locked} onChange={(visible) => patch(i, { visible })} />
+            </Section>
 
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Text label="Make" value={car.make} disabled={locked} onChange={(make) => patch(i, { make })} />
-            <Text label="Model" value={car.name} disabled={locked} onChange={(name) => patch(i, { name })} />
-            <Text label="Line under the model" value={car.subtitle} disabled={locked} onChange={(subtitle) => patch(i, { subtitle })} />
-            <Text label="Fuel" value={car.fuel} disabled={locked} onChange={(fuel) => patch(i, { fuel })} />
-            <Select
-              label="Condition"
-              value={car.condition}
-              disabled={locked}
-              options={[
-                { value: "", label: "Not shown" },
-                { value: "Pre-owned", label: "Pre-owned" },
-                { value: "Brand new", label: "Brand new" },
-              ]}
-              onChange={(condition) => patch(i, { condition })}
-            />
-            <Text label="Model years" value={car.modelYears} disabled={locked} onChange={(modelYears) => patch(i, { modelYears })} />
-          </div>
+            <Section title="Details">
+              <Row cols={3}>
+                <Text label="Make" value={car.make} disabled={locked} onChange={(make) => patch(i, { make })} />
+                <Text label="Model" value={car.name} disabled={locked} onChange={(name) => patch(i, { name })} />
+                <Text label="Line under the model" value={car.subtitle} disabled={locked} onChange={(subtitle) => patch(i, { subtitle })} />
+                <Text label="Fuel" value={car.fuel} disabled={locked} onChange={(fuel) => patch(i, { fuel })} />
+                <Select
+                  label="Condition"
+                  value={car.condition}
+                  disabled={locked}
+                  options={[
+                    { value: "", label: "Not shown" },
+                    { value: "Pre-owned", label: "Pre-owned" },
+                    { value: "Brand new", label: "Brand new" },
+                  ]}
+                  onChange={(condition) => patch(i, { condition })}
+                />
+                <Text label="Model years" value={car.modelYears} disabled={locked} onChange={(modelYears) => patch(i, { modelYears })} />
+              </Row>
+              <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_200px]">
+                <Text label="Tab above the card" value={car.highlight} disabled={locked} onChange={(highlight) => patch(i, { highlight })} />
+                <Select
+                  label="Tab colour"
+                  value={car.highlightTone}
+                  disabled={locked}
+                  options={[
+                    { value: "brand", label: "Blue" },
+                    { value: "leaf", label: "Green" },
+                  ]}
+                  onChange={(highlightTone) => patch(i, { highlightTone })}
+                />
+              </div>
+            </Section>
 
-          <div className="grid gap-4 sm:grid-cols-[1fr_200px]">
-            <Text label="Tab above the card" value={car.highlight} disabled={locked} onChange={(highlight) => patch(i, { highlight })} />
-            <Select
-              label="Tab colour"
-              value={car.highlightTone}
-              disabled={locked}
-              options={[
-                { value: "brand", label: "Blue" },
-                { value: "leaf", label: "Green" },
-              ]}
-              onChange={(highlightTone) => patch(i, { highlightTone })}
-            />
-          </div>
+            <Section title="Photo">
+              <ImageField slot={car.image} disabled={locked} onChange={(image) => patch(i, { image })} />
+            </Section>
 
-          <ImageField slot={car.image} disabled={locked} onChange={(image) => patch(i, { image })} />
+            <Section title="Price" hint="Shown on the home page car cards">
+              <PriceGrid value={car.price} fields={[...CAR_FIELDS]} disabled={locked} onChange={(price) => patch(i, { price })} />
+              <CityPriceTable
+                cities={cities}
+                base={car.price}
+                fields={[...CAR_FIELDS]}
+                value={car.cityPrices}
+                disabled={locked}
+                onChange={(cityPrices) => patch(i, { cityPrices })}
+              />
+            </Section>
 
-          <PriceGrid value={car.price} fields={[...CAR_FIELDS]} disabled={locked} onChange={(price) => patch(i, { price })} />
-          <CityPriceTable
-            cities={cities}
-            base={car.price}
-            fields={[...CAR_FIELDS]}
-            value={car.cityPrices}
-            disabled={locked}
-            onChange={(cityPrices) => patch(i, { cityPrices })}
-          />
-
-          <Checks
-            label="Offered under"
-            items={plans}
-            selected={content.plans.filter((p) => p.carIds.includes(car.id)).map((p) => p.id)}
-            disabled={locked}
-            onChange={(ids) => setPlans(car.id, ids)}
-          />
-        </Panel>
-      ))}
+            <Section title="Plans">
+              <Checks
+                label="Offered under"
+                items={plans}
+                selected={content.plans.filter((p) => p.carIds.includes(car.id)).map((p) => p.id)}
+                disabled={locked}
+                onChange={(ids) => setPlans(car.id, ids)}
+              />
+            </Section>
+          </Collapsible>
+        );
+      })}
       <AddByName label="New car model" disabled={locked} onAdd={add} />
     </div>
   );
