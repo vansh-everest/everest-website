@@ -6,7 +6,7 @@ import { Panel } from "./fields";
 type Version = { id: string; publishedAt: string; publishedBy: string };
 
 const when = (iso: string) =>
-  iso ? new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : "";
+  iso ? new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }) : "";
 
 /**
  * Rendered inside the editor's form, so each restore is a button with its own form action

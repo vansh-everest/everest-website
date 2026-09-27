@@ -63,7 +63,9 @@ function readPayload(form: FormData): SiteContent | string {
 
 const fail = (prev: EditState, message: string): EditState => ({ ...prev, status: "error", message });
 
-const clock = (iso: string) => new Date(iso).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+// The server runs on UTC; editors read Indian time.
+const clock = (iso: string) =>
+  new Date(iso).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" });
 
 /** Saves the screen as the draft, or publishes exactly what is on screen. */
 export async function editAction(prev: EditState, form: FormData): Promise<EditState> {

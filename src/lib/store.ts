@@ -220,7 +220,7 @@ export async function saveDraft(next: SiteContent, editor: string, base: string)
   const current = await readDraftEntry();
   if (current && current.content.updatedAt !== base) {
     throw new DraftConflict(
-      `${current.content.updatedBy} saved a newer draft at ${new Date(current.content.updatedAt).toLocaleTimeString("en-IN")}. Reload before saving.`
+      `${current.content.updatedBy} saved a newer draft at ${new Date(current.content.updatedAt).toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" })}. Reload before saving.`
     );
   }
 
@@ -255,7 +255,7 @@ export async function publishContent(next: SiteContent, editor: string, base: st
   const current = await readDraftEntry();
   if (current && current.content.updatedAt !== base) {
     throw new DraftConflict(
-      `${current.content.updatedBy} saved a newer draft at ${new Date(current.content.updatedAt).toLocaleTimeString("en-IN")}. Reload before publishing.`
+      `${current.content.updatedBy} saved a newer draft at ${new Date(current.content.updatedAt).toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" })}. Reload before publishing.`
     );
   }
 

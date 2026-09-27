@@ -15,7 +15,7 @@ type Tab = (typeof TABS)[number];
 type Version = { id: string; publishedAt: string; publishedBy: string };
 
 const when = (iso: string) =>
-  iso ? new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : "";
+  iso ? new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }) : "";
 
 const button =
   "h-10 rounded-full px-5 text-sm font-bold transition disabled:cursor-default disabled:opacity-50";
