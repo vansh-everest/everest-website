@@ -3,13 +3,16 @@
 import { Plus } from "lucide-react";
 import {
   FEATURE_ICONS,
+  emptyOverview,
   emptyPage,
   emptyPrice,
   headline,
   type Feature,
   type FeatureIcon,
   type Plan,
+  type PlanOverview,
   type PlanPage,
+  type PlanStep,
   type Row as CardRow,
   type SiteContent,
 } from "@/lib/content";
@@ -23,6 +26,7 @@ import {
   Checks,
   Collapsible,
   ImageField,
+  LinesArea,
   ListControls,
   Row,
   RowHeads,
@@ -76,6 +80,7 @@ export function PlansTab({ content, setContent, locked }: { content: SiteContent
         benefits: [],
         carIds: [],
         page: emptyPage(name),
+        overview: emptyOverview(name),
       };
       return { ...c, plans: [...c.plans, plan] };
     });
@@ -86,6 +91,7 @@ export function PlansTab({ content, setContent, locked }: { content: SiteContent
     setContent((c) => ({
       ...c,
       plans: c.plans.filter((_, j) => j !== i),
+      calculators: c.calculators.filter((calc) => calc.planId !== plan.id),
       cities: c.cities.map((city) => ({ ...city, plans: city.plans.filter((id) => id !== plan.id) })),
     }));
   }
@@ -113,7 +119,7 @@ export function PlansTab({ content, setContent, locked }: { content: SiteContent
                 count={content.plans.length}
                 disabled={locked}
                 onMove={(to) => setContent((c) => ({ ...c, plans: move(c.plans, i, to) }))}
-                onRemove={plan.id === content.calculator.planId ? undefined : () => remove(i)}
+                onRemove={() => remove(i)}
                 removeLabel={`Remove ${plan.name.en || "plan"}`}
               />
             }
@@ -187,13 +193,14 @@ export function PlansTab({ content, setContent, locked }: { content: SiteContent
                 />
               </Row>
               <RowsEditor rows={plan.rows} disabled={locked} onChange={(rows) => patch(i, { rows })} />
-              <Area
+              <LinesArea
                 label="Key benefits"
                 hint="one per line"
                 rows={4}
-                value={plan.benefits.join("\n")}
+                max={12}
+                value={plan.benefits}
                 disabled={locked}
-                onChange={(v) => patch(i, { benefits: v.split("\n").map((s) => s.trim()).filter(Boolean) })}
+                onChange={(benefits) => patch(i, { benefits })}
               />
             </Section>
 
@@ -212,6 +219,10 @@ export function PlansTab({ content, setContent, locked }: { content: SiteContent
 
             <Section title="Plan page" hint={page ? `${page.path}/` : "No page for this plan"}>
               <PageEditor page={plan.page} disabled={locked} onChange={(next) => patch(i, { page: next })} />
+            </Section>
+
+            <Section title="Our Plans page" hint={plan.showCard ? "/our-plans/" : "Shown once the home page card is on"}>
+              <OverviewEditor overview={plan.overview} disabled={locked} onChange={(overview) => patch(i, { overview })} />
             </Section>
           </Collapsible>
         );
@@ -256,24 +267,51 @@ function RowsEditor({ rows, onChange, disabled }: { rows: CardRow[]; onChange: (
 
 const CARDS_GRID = "sm:grid-cols-[120px_minmax(0,1fr)_minmax(0,1.4fr)_104px]";
 
-/** The plan's own page: hero, the blue band of cards, and the video heading. */
+/** The plan's own page: hero, the benefits band and cards, and the video heading. */
 function PageEditor({ page, onChange, disabled }: { page: PlanPage; onChange: (page: PlanPage) => void; disabled: boolean }) {
   const set = (p: Partial<PlanPage>) => onChange({ ...page, ...p });
   const setFeature = (i: number, p: Partial<Feature>) => set({ features: page.features.map((f, j) => (j === i ? { ...f, ...p } : f)) });
 
   return (
     <>
-      <p className="text-xs text-ink-soft">{"{price}, {deposit} and {months} print this plan's national figures"}</p>
+      <p className="text-xs text-ink-soft">{"{price}, {deposit}, {upfront} and {months} print this plan's national figures"}</p>
       <Row cols={2}>
         <Text label="Heading, first line" value={page.headline} disabled={disabled} onChange={(headline) => set({ headline })} />
-        <Text label="Heading, blue line" value={page.highlight} disabled={disabled} onChange={(highlight) => set({ highlight })} />
+        <Text label="Heading, yellow line" value={page.highlight} disabled={disabled} onChange={(highlight) => set({ highlight })} />
       </Row>
       <ImageField slot={page.heroImage} disabled={disabled} onChange={(heroImage) => set({ heroImage })} />
-      <Row cols={3}>
-        <Text label="Pill above the cards" value={page.whyTag} disabled={disabled} onChange={(whyTag) => set({ whyTag })} />
-        <Text label="Cards heading" value={page.whyTitle} disabled={disabled} onChange={(whyTitle) => set({ whyTitle })} />
-        <Text label="Cards subheading" value={page.whySubtitle} disabled={disabled} onChange={(whySubtitle) => set({ whySubtitle })} />
+      <Row cols={2}>
+        <Text
+          label="Third figure, label"
+          hint="after rent and deposit"
+          placeholder="Tenure"
+          value={page.term.label}
+          disabled={disabled}
+          onChange={(label) => set({ term: { ...page.term, label } })}
+        />
+        <Text
+          label="Third figure, value"
+          placeholder="12 Months"
+          value={page.term.value}
+          disabled={disabled}
+          onChange={(value) => set({ term: { ...page.term, value } })}
+        />
       </Row>
+      <LinesArea
+        label="Tags under the figures"
+        hint="one per line, up to 4"
+        rows={3}
+        max={4}
+        value={page.tags}
+        disabled={disabled}
+        onChange={(tags) => set({ tags })}
+      />
+      <Row cols={3}>
+        <Text label="Band label" placeholder="Benefits" value={page.whyTag} disabled={disabled} onChange={(whyTag) => set({ whyTag })} />
+        <Text label="Band heading" value={page.whyTitle} disabled={disabled} onChange={(whyTitle) => set({ whyTitle })} />
+        <Text label="Band subheading" value={page.whySubtitle} disabled={disabled} onChange={(whySubtitle) => set({ whySubtitle })} />
+      </Row>
+      <ImageField slot={page.benefitsImage} disabled={disabled} onChange={(benefitsImage) => set({ benefitsImage })} />
 
       <div className="grid gap-2">
         <p className="text-[13px] font-medium text-navy">Cards</p>
@@ -321,6 +359,79 @@ function PageEditor({ page, onChange, disabled }: { page: PlanPage; onChange: (p
       </div>
 
       <Text label="Video heading" value={page.storiesTitle} disabled={disabled} onChange={(storiesTitle) => set({ storiesTitle })} />
+    </>
+  );
+}
+
+const STEPS_GRID = "sm:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_104px]";
+
+/** The plan's block on the Our Plans page: numbered photo steps, or a photo with points. */
+function OverviewEditor({ overview, onChange, disabled }: { overview: PlanOverview; onChange: (o: PlanOverview) => void; disabled: boolean }) {
+  const set = (p: Partial<PlanOverview>) => onChange({ ...overview, ...p });
+  const setStep = (i: number, p: Partial<PlanStep>) => set({ steps: overview.steps.map((s, j) => (j === i ? { ...s, ...p } : s)) });
+
+  return (
+    <>
+      <Text label="Note after the name" placeholder="Leasing plan" value={overview.note} disabled={disabled} onChange={(note) => set({ note })} />
+
+      <div className="grid gap-2">
+        <p className="text-[13px] font-medium text-navy">Steps</p>
+        {overview.steps.length ? <RowHeads grid={STEPS_GRID} heads={["Title", "Line", ""]} /> : null}
+        {overview.steps.map((step, i) => (
+          <div key={i} className="grid gap-3 rounded-lg border border-line p-3">
+            <div className={`grid gap-3 sm:items-center ${STEPS_GRID}`}>
+              <Cell label={`Step ${i + 1} title`} value={step.title} disabled={disabled} onChange={(title) => setStep(i, { title })} />
+              <Cell label="Line" value={step.body} disabled={disabled} onChange={(body) => setStep(i, { body })} />
+              <div className="flex items-center justify-end">
+                <ListControls
+                  index={i}
+                  count={overview.steps.length}
+                  disabled={disabled}
+                  onMove={(to) => set({ steps: move(overview.steps, i, to) })}
+                  onRemove={() => set({ steps: overview.steps.filter((_, j) => j !== i) })}
+                  removeLabel="Remove step"
+                />
+              </div>
+            </div>
+            <ImageField slot={step.image} disabled={disabled} onChange={(image) => setStep(i, { image })} />
+          </div>
+        ))}
+        <button
+          type="button"
+          disabled={disabled || overview.steps.length >= 4}
+          onClick={() =>
+            set({ steps: [...overview.steps, { title: "", body: "", image: { label: `Step ${overview.steps.length + 1} photo`, url: "", alt: "" } }] })
+          }
+          className={button.add}
+        >
+          <Plus size={14} />
+          Add step
+        </button>
+      </div>
+
+      {overview.steps.length ? null : (
+        <>
+          <ImageField slot={overview.image} disabled={disabled} onChange={(image) => set({ image })} />
+          <LinesArea
+            label="Points beside the photo"
+            hint="one per line"
+            rows={4}
+            max={8}
+            value={overview.points}
+            disabled={disabled}
+            onChange={(points) => set({ points })}
+          />
+        </>
+      )}
+      <LinesArea
+        label="Why drivers pick it"
+        hint="one per line, up to 4"
+        rows={4}
+        max={4}
+        value={overview.highlights}
+        disabled={disabled}
+        onChange={(highlights) => set({ highlights })}
+      />
     </>
   );
 }

@@ -1,5 +1,6 @@
 import {
   fillFigures,
+  fillOrDrop,
   headline,
   priceIn,
   rupees,
@@ -128,17 +129,38 @@ export function planCarCards(content: SiteContent, plan: Plan): Record<string, C
   );
 }
 
+/** One box in a plan's row of figures: "Daily rent", "₹725/day", "onwards". */
+export type PlanFigure = { label: string; value: string; suffix: string };
+
+/**
+ * The rent, then the upfront or the deposit, then the plan's own third figure. A figure the plan
+ * leaves blank is left out rather than shown as zero.
+ */
+export function planFigures(plan: Plan): PlanFigure[] {
+  const price = plan.price;
+  const suffix = (plan.depositNote || "Onwards").toLowerCase();
+  const daily = price.unit.includes("day");
+  const term = { label: fillOrDrop(plan.page.term.label, price), value: fillOrDrop(plan.page.term.value, price) };
+  return [
+    { label: daily ? "Daily rent" : "Rent", value: headline(price), suffix },
+    price.upfront
+      ? { label: "Upfront", value: rupees(price.upfront), suffix }
+      : { label: "Deposit", value: rupees(price.deposit), suffix },
+    { ...term, suffix: "" },
+  ].filter((f) => f.label && f.value);
+}
+
 export type PlanPageView = {
   name: string;
   headline: string;
   highlight: string;
   heroImage: ImageSlot;
-  /** "₹499" and "+/mo", blank when the plan has no national amount. */
-  amount: string;
-  unit: string;
+  figures: PlanFigure[];
+  tags: string[];
   whyTag: string;
   whyTitle: string;
   whySubtitle: string;
+  benefitsImage: ImageSlot;
   features: Feature[];
   storiesTitle: string;
 };
@@ -151,12 +173,58 @@ export function planPage(plan: Plan): PlanPageView {
     headline: fill(page.headline),
     highlight: fill(page.highlight),
     heroImage: page.heroImage,
-    amount: rupees(plan.price.amount),
-    unit: plan.price.amount ? plan.price.unit : "",
+    figures: planFigures(plan),
+    tags: page.tags.map((t) => fillOrDrop(t, plan.price)).filter(Boolean),
     whyTag: fill(page.whyTag),
     whyTitle: fill(page.whyTitle),
     whySubtitle: fill(page.whySubtitle),
+    benefitsImage: page.benefitsImage,
     features: page.features.map((f) => ({ ...f, title: fill(f.title), body: fill(f.body) })).filter((f) => f.title || f.body),
     storiesTitle: fill(page.storiesTitle),
   };
+}
+
+export type PlanStepView = { title: string; body: string; image: ImageSlot };
+
+/** A plan's block on the Our Plans page. */
+export type PlanOverviewView = {
+  id: string;
+  name: string;
+  /** Small text after the name, e.g. "Leasing plan". */
+  note: string;
+  /** The plan's own page. */
+  href: string;
+  figures: PlanFigure[];
+  tags: string[];
+  /** Numbered photo cards. When there are none, `image` and `points` show instead. */
+  steps: PlanStepView[];
+  image: ImageSlot;
+  points: string[];
+  /** "Why drivers pick Own Now" */
+  highlightsTitle: string;
+  highlights: string[];
+};
+
+export function planOverview(plan: Plan): PlanOverviewView {
+  const fill = (text: string) => fillOrDrop(text, plan.price);
+  const o = plan.overview;
+  const page = PLAN_PAGES.find((p) => p.planId === plan.id);
+  return {
+    id: plan.id,
+    name: plan.name.en,
+    note: fill(o.note),
+    href: page ? `${page.path}/` : "",
+    figures: planFigures(plan),
+    tags: plan.page.tags.map(fill).filter(Boolean),
+    steps: o.steps.map((s) => ({ title: fill(s.title), body: fill(s.body), image: s.image })).filter((s) => s.title || s.body),
+    image: o.image,
+    points: o.points.map(fill).filter(Boolean),
+    highlightsTitle: `Why drivers pick ${plan.name.en}`,
+    highlights: o.highlights.map(fill).filter(Boolean),
+  };
+}
+
+/** Plans on the Our Plans page: visible ones with a home card, in the admin's order. */
+export function planOverviews(content: SiteContent): PlanOverviewView[] {
+  return content.plans.filter((p) => p.visible && p.showCard).map(planOverview);
 }

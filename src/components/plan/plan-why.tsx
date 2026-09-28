@@ -1,4 +1,5 @@
 import { Calendar, Coins, CreditCard, Key, ShieldCheck, Wrench } from "lucide-react";
+import { SiteImage } from "@/components/site/site-image";
 import type { FeatureIcon } from "@/lib/content";
 import type { PlanPageView } from "@/lib/plan-view";
 
@@ -12,36 +13,52 @@ const MARKS: Record<FeatureIcon, { icon: typeof CreditCard; tone: string }> = {
   wrench: { icon: Wrench, tone: "bg-[#005a99]" },
 };
 
+/** The navy title band, then the benefits photo beside the cards. With no photo the cards sit centred on their own. */
 export function PlanWhy({ view }: { view: PlanPageView }) {
   if (!view.features.length && !view.whyTitle) return null;
+  const photo = !!view.benefitsImage.url;
   return (
-    <section className="bg-blue-gradient px-6 pb-20 pt-16 lg:pb-[122px] lg:pt-20">
-      <div className="text-center">
+    <>
+      <section className="bg-navy px-4 pb-[31px] pt-8 text-center sm:px-6 lg:pb-[57px] lg:pt-[35px]">
         {view.whyTag ? (
-          <p className="inline-flex h-[33px] items-center rounded-full bg-brand px-4 text-sm font-bold uppercase text-white">{view.whyTag}</p>
+          <p className="text-xs font-semibold uppercase leading-4 tracking-[1.5px] text-sun lg:text-lg lg:leading-6 lg:tracking-[3px]">{view.whyTag}</p>
         ) : null}
-        <h2 className="mt-6 text-[34px] font-bold leading-tight tracking-[-0.5px] text-white lg:text-[64px] lg:leading-[64px]">{view.whyTitle}</h2>
-        {view.whySubtitle ? <p className="mt-6 text-xl text-white/90 lg:text-2xl lg:leading-[29px]">{view.whySubtitle}</p> : null}
-      </div>
-      <ul className="mx-auto mt-10 flex max-w-[1200px] flex-wrap justify-center gap-3 sm:gap-6 lg:mt-[94px]">
-        {view.features.map((feature, i) => {
-          const { icon: Icon, tone } = MARKS[feature.icon];
-          return (
-            <li
-              key={`${i}-${feature.title}`}
-              className="w-[calc((100%-12px)/2)] rounded-2xl bg-white p-4 sm:w-[calc((100%-24px)/2)] sm:rounded-3xl sm:p-8 lg:min-h-[220px] lg:w-[calc((100%-48px)/3)]"
-            >
-              <span className={`grid size-10 place-items-center rounded-[10px] text-white sm:size-12 ${tone}`}>
-                <Icon size={22} strokeWidth={2} />
-              </span>
-              {feature.title ? (
-                <h3 className="mt-3 text-lg font-bold leading-6 text-navy sm:mt-4 sm:text-[26px] sm:leading-[34px] lg:text-[32px] lg:leading-[39px]">{feature.title}</h3>
-              ) : null}
-              {feature.body ? <p className="mt-1.5 text-[13px] leading-[18px] text-ink-soft/80 sm:mt-3 sm:text-base sm:leading-6 lg:text-lg">{feature.body}</p> : null}
-            </li>
-          );
-        })}
-      </ul>
-    </section>
+        <h2 className="mx-auto mt-1.5 max-w-[1100px] text-balance text-[30px] font-bold leading-9 tracking-[-0.5px] text-white lg:mt-0 lg:text-[52px] lg:leading-[64px]">
+          {view.whyTitle}
+        </h2>
+        {view.whySubtitle ? <p className="mt-3 text-lg text-white/85 lg:text-2xl">{view.whySubtitle}</p> : null}
+      </section>
+
+      {view.features.length ? (
+        <section className="bg-paper px-5 pb-10 pt-6 sm:px-6 lg:pb-[119px] lg:pt-[66px]">
+          <div className={`mx-auto grid items-start gap-6 ${photo ? "max-w-[1280px] lg:grid-cols-[558px_1fr] lg:gap-[66px]" : "max-w-[654px]"}`}>
+            {photo ? (
+              <div className="relative aspect-[558/313] overflow-hidden rounded-xl border border-line shadow-[0_12px_32px_rgba(6,47,80,0.12)]">
+                <SiteImage slot={view.benefitsImage} sizes="(min-width: 1024px) 558px, 100vw" />
+              </div>
+            ) : null}
+            <ul className="grid gap-3 sm:grid-cols-2 lg:gap-x-[22px] lg:gap-y-[21px]">
+              {view.features.map((feature, i) => {
+                const { icon: Icon, tone } = MARKS[feature.icon];
+                return (
+                  <li
+                    key={`${i}-${feature.title}`}
+                    className="flex items-center gap-4 rounded-2xl border border-line bg-white px-4 py-[15px] shadow-[0_4px_12px_rgba(6,47,80,0.05)] lg:min-h-[87px] lg:px-[19px] lg:py-4 lg:shadow-none"
+                  >
+                    <span className={`grid size-11 shrink-0 place-items-center rounded-[10px] text-white lg:size-12 ${tone}`}>
+                      <Icon size={22} strokeWidth={2} />
+                    </span>
+                    <div>
+                      {feature.title ? <h3 className="text-[17px] font-bold leading-6 text-navy lg:text-lg">{feature.title}</h3> : null}
+                      {feature.body ? <p className="text-sm leading-5 text-ink-soft lg:mt-1">{feature.body}</p> : null}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </section>
+      ) : null}
+    </>
   );
 }

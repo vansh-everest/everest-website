@@ -19,7 +19,7 @@ export default function AboutPage() {
       <Values />
       <Milestones />
       <Founder />
-      <StartDriving />
+      <StartDriving source="about-us" eyebrow />
     </>
   );
 }

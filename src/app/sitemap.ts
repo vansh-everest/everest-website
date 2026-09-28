@@ -30,6 +30,7 @@ function absoluteAlternates(path: string): Record<string, string> {
  */
 const fixed: Array<{ path: string; priority: number; changeFrequency: Freq }> = [
   { path: "/", priority: 1, changeFrequency: "weekly" },
+  { path: "/our-plans", priority: 0.9, changeFrequency: "weekly" },
   { path: "/own-now", priority: 0.9, changeFrequency: "weekly" },
   { path: "/drive-to-own", priority: 0.9, changeFrequency: "weekly" },
   { path: "/drive-to-earn", priority: 0.9, changeFrequency: "weekly" },

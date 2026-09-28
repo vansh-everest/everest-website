@@ -31,6 +31,7 @@ export function Text({
   placeholder,
   type = "text",
   numeric = false,
+  hint,
 }: {
   label: string;
   value: string;
@@ -40,10 +41,14 @@ export function Text({
   type?: string;
   /** Digits only: the keypad on a phone, and anything else typed is dropped. */
   numeric?: boolean;
+  hint?: string;
 }) {
   return (
     <label className="grid min-w-0 content-start gap-1.5">
-      <span className={labelText}>{label}</span>
+      <span className={labelText}>
+        {label}
+        {hint ? <span className="ml-2 font-normal text-ink-soft">{hint}</span> : null}
+      </span>
       <input
         type={type}
         value={value}
@@ -87,6 +92,63 @@ export function Area({
       />
     </label>
   );
+}
+
+/**
+ * Text that is stored as a list. What was typed is kept as typed, so a trailing new line or comma
+ * survives until the next character; a change from elsewhere (discard, restore) replaces it.
+ */
+function useListText(value: string[], parse: (raw: string) => string[], separator: string) {
+  const joined = value.join(separator);
+  const [raw, setRaw] = useState(joined);
+  const [seen, setSeen] = useState(joined);
+  if (joined !== seen) {
+    setSeen(joined);
+    if (parse(raw).join(separator) !== joined) setRaw(joined);
+  }
+  const update = (next: string) => {
+    const parsed = parse(next);
+    setRaw(next);
+    setSeen(parsed.join(separator));
+    return parsed;
+  };
+  return [raw, update] as const;
+}
+
+/** One entry per line. */
+export function LinesArea({
+  value,
+  onChange,
+  max = 20,
+  ...rest
+}: {
+  label: string;
+  value: string[];
+  onChange: (v: string[]) => void;
+  disabled: boolean;
+  rows?: number;
+  hint?: string;
+  max?: number;
+}) {
+  const [raw, update] = useListText(value, (v) => v.split("\n").map((s) => s.trim()).filter(Boolean).slice(0, max), "\n");
+  return <Area {...rest} value={raw} onChange={(v) => onChange(update(v))} />;
+}
+
+/** Whole numbers separated by commas or spaces, e.g. months. */
+export function NumbersInput({
+  value,
+  onChange,
+  ...rest
+}: {
+  label: string;
+  value: string[];
+  onChange: (v: string[]) => void;
+  disabled: boolean;
+  placeholder?: string;
+  hint?: string;
+}) {
+  const [raw, update] = useListText(value, (v) => v.split(/[^\d]+/).filter(Boolean), ", ");
+  return <Text {...rest} value={raw} onChange={(v) => onChange(update(v))} />;
 }
 
 export function Select<T extends string>({

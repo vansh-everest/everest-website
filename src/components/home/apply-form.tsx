@@ -92,11 +92,11 @@ export function ApplyForm({ cities, source }: { cities: { slug: string; name: st
       <p className="text-center text-sm leading-5 text-navy">
         Or reach us directly ·{" "}
         <a href={PHONE_HREF} className="font-medium hover:text-brand">
-          📞 {PHONE_DISPLAY}
+          <span aria-hidden>📞</span> {PHONE_DISPLAY}
         </a>{" "}
         ·{" "}
         <a href={WHATSAPP_HREF} className="font-medium hover:text-brand">
-          💬 WhatsApp
+          <span aria-hidden>💬</span> WhatsApp
         </a>
       </p>
     </form>

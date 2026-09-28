@@ -49,20 +49,44 @@ export type FeatureIcon = (typeof FEATURE_ICONS)[number];
 /** A card in the plan page's blue band. */
 export type Feature = { icon: FeatureIcon; title: string; body: string };
 
-/** The plan's own page. `{price}`, `{deposit}` and `{months}` in any text print the national figures. */
+/**
+ * The plan's own page. `{price}`, `{deposit}`, `{upfront}` and `{months}` in any text print the
+ * national figures.
+ */
 export type PlanPage = {
-  /** First line of the hero heading, in navy. */
+  /** First line of the hero heading, in white. */
   headline: string;
-  /** Second line, in blue. */
+  /** Second line, in yellow. */
   highlight: string;
   heroImage: ImageSlot;
-  /** The pill above the band heading, e.g. "Why Drive to Own". */
+  /** The third hero figure, after the rent and the deposit, e.g. Tenure: 12 Months. */
+  term: Row;
+  /** The chips under the hero figures, e.g. "Ownership plan". Also on the Our Plans page. */
+  tags: string[];
+  /** The small heading over the band, e.g. "Benefits". */
   whyTag: string;
   whyTitle: string;
   whySubtitle: string;
+  /** The photo beside the benefit cards. */
+  benefitsImage: ImageSlot;
   features: Feature[];
   /** Heading over the driver video. */
   storiesTitle: string;
+};
+
+/** A numbered photo card in the plan's Our Plans block. */
+export type PlanStep = { title: string; body: string; image: ImageSlot };
+
+/** The plan's block on the Our Plans page. */
+export type PlanOverview = {
+  /** Small text after the plan name, e.g. "Leasing plan". */
+  note: string;
+  /** Numbered photo cards. With none, the photo and points show instead. */
+  steps: PlanStep[];
+  image: ImageSlot;
+  points: string[];
+  /** The "Why drivers pick" strip. */
+  highlights: string[];
 };
 
 export type Plan = {
@@ -93,6 +117,7 @@ export type Plan = {
   /** Cars offered under this plan, in the order the card lists them. */
   carIds: string[];
   page: PlanPage;
+  overview: PlanOverview;
 };
 
 export type Car = {
@@ -125,10 +150,13 @@ export type CalculatorCar = {
   defaultOption: number;
 };
 
+/** A plan page's calculator. A plan with no calculator, or no cars in it, shows none. */
 export type Calculator = {
   planId: string;
+  /** Names the slider and the second result box, e.g. "Upfront payment" or "Deposit". */
+  depositLabel: string;
   cars: CalculatorCar[];
-  /** Months offered in the Tenure picker. The first is selected. */
+  /** Months offered in the Tenure picker. The first is selected. None hides the picker. */
   tenures: string[];
   /** `{months}` prints the chosen tenure. */
   perks: string[];
@@ -168,13 +196,13 @@ export type SiteContent = {
   cities: City[];
   plans: Plan[];
   cars: Car[];
-  calculator: Calculator;
+  calculators: Calculator[];
   posts: Post[];
   images: Record<string, ImageSlot>;
 };
 
 /** Bump when SiteContent changes shape, so no deployment reads a cache written by an older one. */
-export const CONTENT_VERSION = "3";
+export const CONTENT_VERSION = "4";
 
 export const placeholder = (label: string, alt = ""): ImageSlot => ({ label, url: "", alt });
 
@@ -225,9 +253,12 @@ const PLAN_SEED: Plan[] = [
       headline: "The Easiest Way to",
       highlight: "Own a Car",
       heroImage: { label: "Own Now, hero photo", url: "/figma/own-hero.webp", alt: "Everest driver holding up the keys to his car" },
-      whyTag: "Benefits of this plan",
-      whyTitle: "Own a car without a bank or CIBIL",
-      whySubtitle: "Built for drivers, not paperwork.",
+      term: { label: "Tenure", value: "12 Months" },
+      tags: ["Ownership plan", "High upfront · low daily rental plan", "Non-refundable"],
+      whyTag: "Benefits",
+      whyTitle: "Everything a driver needs, in one plan",
+      whySubtitle: "",
+      benefitsImage: { label: "Own Now, benefits photo", url: "/figma/plans/own-now-benefits.webp", alt: "A hand holding out a car key in front of a white car" },
       features: [
         { icon: "card", title: "No CIBIL Needed", body: "Just licence + basic KYC" },
         { icon: "coins", title: "Low Upfront", body: "Start with only 10% down" },
@@ -236,7 +267,30 @@ const PLAN_SEED: Plan[] = [
         INSURANCE,
         SUPPORT,
       ],
-      storiesTitle: "Own Now Stories",
+      storiesTitle: "Real Drivers. Real Stories. On Camera.",
+    },
+    overview: {
+      note: "Alternative to ownership via bank loan",
+      steps: [
+        {
+          title: "Select Tenure & Pay Upfront",
+          body: "Upfront payment starting as low as {upfront}",
+          image: { label: "Own Now, step 1 photo", url: "/figma/our-plans/own-now-step-1.webp", alt: "A driver handing over the upfront payment at an Everest desk" },
+        },
+        {
+          title: "Drive & Earn",
+          body: "Daily rent starting from as low as {price} onwards",
+          image: { label: "Own Now, step 2 photo", url: "/figma/our-plans/own-now-step-2.webp", alt: "A white Everest car on a city highway" },
+        },
+        {
+          title: "Full Ownership After End Of Tenure",
+          body: "Car transferred to your name at the end of tenure",
+          image: { label: "Own Now, step 3 photo", url: "/figma/our-plans/own-now-step-3.webp", alt: "A driver beside his new car at the showroom" },
+        },
+      ],
+      image: placeholder("Own Now, Our Plans photo"),
+      points: [],
+      highlights: ["No CIBIL", "₹0 insurance", "₹0 regulatory fees", "100% incentive"],
     },
   },
   {
@@ -264,9 +318,12 @@ const PLAN_SEED: Plan[] = [
       headline: "Own a Car Without",
       highlight: "a Fixed Rent",
       heroImage: { label: "Drive to Own, hero photo", url: "/figma/hero-drive-to-own.webp", alt: "A hand holding out car keys in front of a row of Everest cars" },
-      whyTag: "Why Drive to Own",
-      whyTitle: "Pay less on the weeks you earn less",
-      whySubtitle: "Ownership that flexes with you.",
+      term: { label: "Ownership", value: "24 Months" },
+      tags: ["Ownership plan", "Low deposit · high daily rental plan", "Refundable"],
+      whyTag: "Benefits",
+      whyTitle: "Why Drivers Choose Drive to Own",
+      whySubtitle: "",
+      benefitsImage: { label: "Drive to Own, benefits photo", url: "/figma/plans/drive-to-own-benefits.webp", alt: "An Everest driver standing beside his car" },
       features: [
         { icon: "card", title: "No Fixed Rent", body: "You pay a share of what you earn" },
         { icon: "coins", title: "{deposit} Deposit", body: "Low, and fully refundable" },
@@ -276,6 +333,13 @@ const PLAN_SEED: Plan[] = [
         SUPPORT,
       ],
       storiesTitle: "Real Drivers. Real Stories. On Camera.",
+    },
+    overview: {
+      note: "",
+      steps: [],
+      image: { label: "Drive to Own, Our Plans photo", url: "/figma/our-plans/drive-to-own.webp", alt: "An Everest manager shaking hands with a driver beside his car" },
+      points: ["No large upfront, refundable deposit", "No Regulatory Charges", "Own your car in less than 24 months", "24×7 Support, zero maintenance"],
+      highlights: ["Earnings-Linked", "No insurance costs", "No regulatory fees", "Free Maintenance"],
     },
   },
   {
@@ -302,10 +366,13 @@ const PLAN_SEED: Plan[] = [
     page: {
       headline: "Earn Without",
       highlight: "Owning Anything",
-      heroImage: { label: "Drive to Earn, hero photo", url: "/figma/hero-drive-to-earn.webp", alt: "A smiling man at a laptop with the city skyline behind him" },
-      whyTag: "Why Drive to Earn",
-      whyTitle: "Keep what you earn above the rent",
-      whySubtitle: "The rent never moves.",
+      heroImage: { label: "Drive to Earn, hero photo", url: "/figma/hero-drive-to-earn.webp", alt: "A driver sitting in the open door of his Everest car" },
+      term: { label: "Liability", value: "Zero" },
+      tags: ["Rental plan", "Low deposit · high daily rental plan", "Refundable"],
+      whyTag: "Benefits",
+      whyTitle: "Why Drivers Choose Drive to Earn",
+      whySubtitle: "",
+      benefitsImage: { label: "Drive to Earn, benefits photo", url: "/figma/plans/drive-to-earn-benefits.webp", alt: "A smiling driver at the wheel of his car" },
       features: [
         { icon: "card", title: "Fixed {price}", body: "Same rent, every single day" },
         { icon: "coins", title: "{deposit} Deposit", body: "Low, and fully refundable" },
@@ -315,6 +382,13 @@ const PLAN_SEED: Plan[] = [
         SUPPORT,
       ],
       storiesTitle: "Real Drivers. Real Stories. On Camera.",
+    },
+    overview: {
+      note: "Leasing plan",
+      steps: [],
+      image: { label: "Drive to Earn, Our Plans photo", url: "/figma/our-plans/drive-to-earn.webp", alt: "A driver checking his phone beside an Everest car" },
+      points: ["Simple renting, no commitment", "Low refundable deposit", "We set up your Uber account", "Earn Uber incentives on every ride", "24×7 Support, zero maintenance"],
+      highlights: ["Earnings-Linked", "100% Uber incentive", "24×7 Driver Support", "Free Maintenance"],
     },
   },
   {
@@ -338,9 +412,12 @@ const PLAN_SEED: Plan[] = [
       headline: "You Drive.",
       highlight: "We Both Earn.",
       heroImage: { label: "Revenue Share, hero photo", url: "/figma/hero-revenue-share.webp", alt: "An Everest driver leaning on his car with the city skyline behind him" },
+      term: { label: "", value: "" },
+      tags: [],
       whyTag: "Why Revenue Share",
       whyTitle: "No rent to find on a slow day",
       whySubtitle: "Your cost moves with you.",
+      benefitsImage: placeholder("Revenue Share, benefits photo"),
       // The design also carries "Share split" and "Deposit" cards, to add once those figures are set.
       features: [
         { icon: "card", title: "No Fixed Rent", body: "Your cost moves with your earnings" },
@@ -350,6 +427,7 @@ const PLAN_SEED: Plan[] = [
       ],
       storiesTitle: "Real Drivers. Real Stories. On Camera.",
     },
+    overview: emptyOverview("Revenue Share"),
   },
 ];
 
@@ -410,20 +488,32 @@ const CAR_SEED: Car[] = [
   ),
 ];
 
-const CALCULATOR_SEED: Calculator = {
-  planId: "own-now",
-  cars: [
-    {
-      carId: "wagonr",
-      image: { label: "WagonR, studio photo", url: "/figma/own-wagonr-studio.jpg", alt: "Maruti Suzuki WagonR in a studio" },
-      // The one combination the design shows. The slider appears once a second point is added.
-      options: [{ deposit: "65000", daily: "750" }],
-      defaultOption: 0,
-    },
-  ],
-  tenures: ["48"],
-  perks: ["Taxes and insurance included", "Maintenance for contract duration", "You own it at month {months}"],
-};
+const WAGONR_STUDIO: ImageSlot = { label: "WagonR, studio photo", url: "/figma/own-wagonr-studio.jpg", alt: "Maruti Suzuki WagonR in a studio" };
+
+// One combination per plan, the one its design shows. The slider appears once a second point is added.
+const CALCULATOR_SEED: Calculator[] = [
+  {
+    planId: "own-now",
+    depositLabel: "Upfront payment",
+    cars: [{ carId: "wagonr", image: WAGONR_STUDIO, options: [{ deposit: "65000", daily: "750" }], defaultOption: 0 }],
+    tenures: ["48"],
+    perks: ["Taxes and insurance included", "Maintenance for contract duration", "You own it at month {months}"],
+  },
+  {
+    planId: "drive-to-own",
+    depositLabel: "Deposit",
+    cars: [{ carId: "wagonr", image: WAGONR_STUDIO, options: [{ deposit: "15000", daily: "900" }], defaultOption: 0 }],
+    tenures: ["24"],
+    perks: ["Taxes and insurance included", "Maintenance for contract duration", "You own it at month {months}"],
+  },
+  {
+    planId: "leasing",
+    depositLabel: "Deposit",
+    cars: [{ carId: "wagonr", image: WAGONR_STUDIO, options: [{ deposit: "5000", daily: "925" }], defaultOption: 0 }],
+    tenures: [],
+    perks: ["Taxes and insurance included", "Maintenance included", "Refundable deposit"],
+  },
+];
 
 /**
  * Opening guides. Every claim here already appears on the driver pages, so nothing new is
@@ -523,11 +613,12 @@ export const DEFAULT_CONTENT: SiteContent = {
   })),
   plans: PLAN_SEED,
   cars: CAR_SEED,
-  calculator: CALCULATOR_SEED,
+  calculators: CALCULATOR_SEED,
   posts: SEED_POSTS,
   images: {
     "driver-hub-hero": placeholder("Drive with us, hero image", "A driver beside an Everest Fleet car"),
     "blog-hero": placeholder("Driver guides, hero image", ""),
+    "our-plans-hero": { label: "Our Plans, hero photo", url: "/figma/our-plans/hero.webp", alt: "Rows of white Everest cars in front of a city skyline" },
   },
 };
 
@@ -580,18 +671,42 @@ export function fillFigures(text: string, price: Price, months = price.tenureMon
   return text
     .replaceAll("{price}", headline(price))
     .replaceAll("{deposit}", rupees(price.deposit))
+    .replaceAll("{upfront}", rupees(price.upfront))
     .replaceAll("{months}", months)
     .replace(/\s{2,}/g, " ")
     .trim();
+}
+
+const TOKENS = /\{(price|deposit|upfront|months)\}/g;
+
+/**
+ * Like fillFigures, but a line quoting a figure the plan leaves blank is dropped whole, so a
+ * sentence never ends on "as low as".
+ */
+export function fillOrDrop(text: string, price: Price, months = price.tenureMonths): string {
+  const blank = [...text.matchAll(TOKENS)].some(([, token]) => {
+    if (token === "price") return !price.amount;
+    if (token === "months") return !months;
+    return !price[token as "deposit" | "upfront"];
+  });
+  return blank ? "" : fillFigures(text, price, months);
 }
 
 export const emptyPage = (name = "Plan"): PlanPage => ({
   headline: "",
   highlight: "",
   heroImage: placeholder(`${name}, hero photo`),
+  term: { label: "", value: "" },
+  tags: [],
   whyTag: "",
   whyTitle: "",
   whySubtitle: "",
+  benefitsImage: placeholder(`${name}, benefits photo`),
   features: [],
   storiesTitle: "Real Drivers. Real Stories. On Camera.",
 });
+
+/** A function declaration, because the plan seeds above call it before this line runs. */
+export function emptyOverview(name = "Plan"): PlanOverview {
+  return { note: "", steps: [], image: placeholder(`${name}, Our Plans photo`), points: [], highlights: [] };
+}

@@ -58,7 +58,7 @@ export default async function Home() {
       <CarShowcase content={content} />
       <FleetApp />
       <DostApp />
-      <StartDriving />
+      <StartDriving source="home" eyebrow />
       <Testimonials />
     </>
   );

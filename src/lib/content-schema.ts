@@ -3,6 +3,7 @@ import {
   DIGIT_FIELDS,
   FEATURE_ICONS,
   PRICE_FIELDS,
+  emptyOverview,
   emptyPage,
   emptyPrice,
   placeholder,
@@ -16,6 +17,7 @@ import {
   type Hub,
   type ImageSlot,
   type Plan,
+  type PlanOverview,
   type PlanPage,
   type Post,
   type Price,
@@ -139,6 +141,7 @@ function blankPlan(id: string): Plan {
     benefits: [],
     carIds: [],
     page: emptyPage(),
+    overview: emptyOverview(),
   };
 }
 
@@ -167,9 +170,12 @@ function page(v: unknown, base: PlanPage): PlanPage {
     headline: pick("headline", 60),
     highlight: pick("highlight", 60),
     heroImage: image(o.heroImage, base.heroImage),
+    term: "term" in o ? { label: text(obj(o.term).label, 24), value: text(obj(o.term).value, 24) } : { ...base.term },
+    tags: "tags" in o ? lines(o.tags, 4, 48) : [...base.tags],
     whyTag: pick("whyTag", 40),
     whyTitle: pick("whyTitle", 90),
     whySubtitle: pick("whySubtitle", 120),
+    benefitsImage: image(o.benefitsImage, base.benefitsImage),
     features:
       "features" in o
         ? list(o.features, 9)
@@ -183,6 +189,26 @@ function page(v: unknown, base: PlanPage): PlanPage {
             .filter((f) => f.title || f.body)
         : structuredClone(base.features),
     storiesTitle: pick("storiesTitle", 90),
+  };
+}
+
+function overview(v: unknown, base: PlanOverview): PlanOverview {
+  const o = obj(v);
+  return {
+    note: "note" in o ? text(o.note, 60) : base.note,
+    steps:
+      "steps" in o
+        ? list(o.steps, 4)
+            .map((raw, i) => ({
+              title: text(obj(raw).title, 60),
+              body: text(obj(raw).body, 120),
+              image: image(obj(raw).image, base.steps[i]?.image ?? placeholder(`Step ${i + 1} photo`)),
+            }))
+            .filter((step) => step.title || step.body)
+        : structuredClone(base.steps),
+    image: image(o.image, base.image),
+    points: "points" in o ? lines(o.points, 8, 80) : [...base.points],
+    highlights: "highlights" in o ? lines(o.highlights, 4, 40) : [...base.highlights],
   };
 }
 
@@ -221,6 +247,7 @@ function plans(v: unknown, cityList: string[]): Plan[] {
       benefits: "benefits" in o ? lines(o.benefits, 12, 60) : base.benefits,
       carIds: "carIds" in o ? lines(o.carIds, 40, 40).map(slugify) : base.carIds,
       page: page(o.page, base.page),
+      overview: overview(o.overview, base.overview),
     };
   });
 }
@@ -278,26 +305,46 @@ function legacyCalculator(o: Json): Json {
   };
 }
 
-function calculator(v: unknown, planIds: string[], carIds: string[]): Calculator {
-  const o = legacyCalculator(obj(v));
-  const base = DEFAULT_CONTENT.calculator;
+function calculator(o: Json, planId: string, carIds: string[]): Calculator {
+  const base = DEFAULT_CONTENT.calculators.find((c) => c.planId === planId);
   const seen = new Set<string>();
-  const entered = "cars" in o ? list(o.cars, 20) : base.cars;
+  const entered = "cars" in o ? list(o.cars, 20) : (base?.cars ?? []);
   const cars = entered.flatMap((raw): CalculatorCar[] => {
     const carId = text(obj(raw).carId, 40);
     if (!carIds.includes(carId) || seen.has(carId)) return [];
     seen.add(carId);
-    const seed = base.cars.find((c) => c.carId === carId);
+    const seed = base?.cars.find((c) => c.carId === carId);
     return [{ carId, ...calculatorCar(raw, seed?.image ?? placeholder("Car, studio photo")) }];
   });
-  const wantedPlan = text(o.planId, 40);
-  const tenures = Array.isArray(o.tenures) ? [...new Set(list(o.tenures, 8).map((t) => digits(t, 3)).filter(Boolean))] : base.tenures;
+  const tenures = Array.isArray(o.tenures) ? [...new Set(list(o.tenures, 8).map((t) => digits(t, 3)).filter(Boolean))] : (base?.tenures ?? []);
   return {
-    planId: planIds.includes(wantedPlan) ? wantedPlan : planIds.includes(base.planId) ? base.planId : planIds[0] ?? "",
+    planId,
+    depositLabel: "depositLabel" in o ? text(o.depositLabel, 30) : (base?.depositLabel ?? "Deposit"),
     cars,
     tenures,
-    perks: "perks" in o ? lines(o.perks, 8, 80) : base.perks,
+    perks: "perks" in o ? lines(o.perks, 8, 80) : (base?.perks ?? []),
   };
+}
+
+/**
+ * One calculator per plan at most. Content saved before every plan could have one kept a single
+ * calculator; it stays on its plan. The other plans get their labels and ticks but no cars, so
+ * no figure reaches a live page until an editor enters it.
+ */
+function calculators(saved: Json, planIds: string[], carIds: string[]): Calculator[] {
+  const entered = Array.isArray(saved.calculators)
+    ? list(saved.calculators, 12).map(obj)
+    : "calculator" in saved
+      ? [legacyCalculator(obj(saved.calculator)), ...DEFAULT_CONTENT.calculators.map((c): Json => ({ planId: c.planId, cars: [] }))]
+      : DEFAULT_CONTENT.calculators.map((c): Json => ({ planId: c.planId }));
+  const seen = new Set<string>();
+  return entered.flatMap((o) => {
+    // A calculator from before it named its plan belonged to Own Now.
+    const planId = "planId" in o ? text(o.planId, 40) : "own-now";
+    if (!planIds.includes(planId) || seen.has(planId)) return [];
+    seen.add(planId);
+    return [calculator(o, planId, carIds)];
+  });
 }
 
 function hubs(v: unknown): Hub[] {
@@ -373,7 +420,7 @@ export function normalizeContent(raw: unknown): SiteContent {
     cities: cities(o.cities, planIds),
     plans: planList,
     cars: carList,
-    calculator: calculator(o.calculator, planIds, carIds),
+    calculators: calculators(o, planIds, carIds),
     posts: posts(o.posts),
     images: Object.fromEntries(
       Object.entries(DEFAULT_CONTENT.images).map(([key, base]) => [key, image(savedImages[key], base)])

@@ -4,6 +4,7 @@
  */
 export const PREVIEW_PAGES: { label: string; path: string }[] = [
   { label: "Home", path: "/" },
+  { label: "Our Plans", path: "/our-plans/" },
   { label: "Own Now", path: "/own-now/" },
   { label: "Drive to Own", path: "/drive-to-own/" },
   { label: "Drive to Earn", path: "/drive-to-earn/" },

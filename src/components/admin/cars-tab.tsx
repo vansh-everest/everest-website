@@ -55,7 +55,7 @@ export function CarsTab({ content, setContent, locked }: { content: SiteContent;
       ...c,
       cars: c.cars.filter((_, j) => j !== i),
       plans: c.plans.map((p) => ({ ...p, carIds: p.carIds.filter((x) => x !== id) })),
-      calculator: { ...c.calculator, cars: c.calculator.cars.filter((x) => x.carId !== id) },
+      calculators: c.calculators.map((calc) => ({ ...calc, cars: calc.cars.filter((x) => x.carId !== id) })),
     }));
   }
 

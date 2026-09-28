@@ -11,6 +11,7 @@ export const NAV: NavItem[] = [
   {
     label: "Our Plans",
     items: [
+      { label: "All plans", href: "/our-plans" },
       { label: "Own Now", href: "/own-now" },
       { label: "Drive to Own", href: "/drive-to-own" },
       { label: "Drive to Earn", href: "/drive-to-earn" },

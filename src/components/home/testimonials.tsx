@@ -1,10 +1,11 @@
 import Image from "next/image";
 import { Play } from "@phosphor-icons/react/ssr";
-import { Eyebrow } from "./ui";
 
-const arrow = "absolute top-[204px] hidden size-[52px] place-items-center rounded-full text-[28px] leading-none shadow-[0_6px_18px_rgba(6,47,80,0.18)] md:grid";
-const homeArrow =
-  "absolute top-[91px] grid size-8 place-items-center rounded-full border-2 border-fog bg-white text-lg leading-none text-navy lg:top-[226px] lg:size-[52px] lg:border-0 lg:text-[28px] lg:shadow-[0_6px_18px_rgba(6,47,80,0.18)]";
+/* Both variants share the phone look from the exports; they differ on a desktop only. */
+const phoneArrow =
+  "absolute top-[91px] grid size-8 place-items-center rounded-full border-2 border-fog bg-white text-lg leading-none text-navy lg:size-[52px] lg:border-0 lg:text-[28px] lg:shadow-[0_6px_18px_rgba(6,47,80,0.18)]";
+const arrow = `${phoneArrow} lg:top-[204px]`;
+const homeArrow = `${phoneArrow} lg:top-[226px]`;
 
 /* The home export tints the still navy, strongest at the top, so the white labels read on it. */
 const homeTint =
@@ -39,84 +40,72 @@ export function Testimonials({
   const page = variant === "page";
   return (
     <section
-      className={page ? "bg-fog px-6 pb-[84px] pt-24" : "bg-white px-4 pb-9 pt-9 lg:bg-fog lg:px-6 lg:pb-[111px] lg:pt-24"}
+      className={`bg-white px-4 pb-9 pt-9 lg:bg-fog lg:px-6 lg:pt-24 ${page ? "lg:pb-[84px]" : "lg:pb-[111px]"}`}
     >
       <div className="mx-auto max-w-[1248px] text-center">
-        {page ? (
-          <Eyebrow trailingBar={false}>Hear it from them</Eyebrow>
-        ) : (
-          <p className="flex items-center justify-center gap-2 text-[13px] font-bold uppercase leading-4 tracking-[0.07em] text-brand lg:gap-[11px]">
-            <span aria-hidden className="h-[3px] w-7 rounded-full bg-sun" />
-            Hear it from them
-            <span aria-hidden className="h-[3px] w-7 rounded-full bg-sun lg:hidden" />
-          </p>
-        )}
+        <p
+          className={`flex items-center justify-center gap-2 text-[13px] font-bold uppercase leading-4 tracking-[0.07em] text-brand ${
+            page ? "lg:gap-[22px] lg:text-xs lg:tracking-[2px]" : "lg:gap-[11px]"
+          }`}
+        >
+          <span aria-hidden className={`h-[3px] w-7 rounded-full bg-sun ${page ? "lg:w-6" : ""}`} />
+          Hear it from them
+          <span aria-hidden className="h-[3px] w-7 rounded-full bg-sun lg:hidden" />
+        </p>
         <h2
-          className={
-            page
-              ? "mt-3 text-[32px] font-bold leading-tight tracking-[-0.5px] text-navy lg:text-[40px] lg:leading-[48px]"
-              : "mt-[15px] text-[28.5px] font-bold leading-[35px] tracking-[-0.3px] text-navy lg:mt-3 lg:text-[40px] lg:leading-[48px] lg:tracking-[-0.25px]"
-          }
+          className={`mt-[15px] text-[28.5px] font-bold leading-[35px] tracking-[-0.3px] text-navy lg:mt-3 lg:text-[40px] lg:leading-[48px] ${
+            page ? "lg:tracking-[-0.5px]" : "lg:tracking-[-0.25px]"
+          }`}
         >
           {title}
         </h2>
       </div>
-      <div className={`relative mx-auto max-w-[1184px] ${page ? "mt-12 pb-[31px]" : "mt-[15px] lg:mt-12 lg:pb-[31px]"}`}>
-        <article
-          className={`mx-auto max-w-[1112px] overflow-hidden ${
-            page
-              ? "rounded-[20px] bg-white shadow-[0_12px_40px_rgba(6,47,80,0.1)]"
-              : "rounded-2xl bg-mist p-0.5 lg:rounded-[20px] lg:bg-white lg:p-0 lg:shadow-[0_12px_40px_rgba(6,47,80,0.1)]"
-          }`}
-        >
+      <div className="relative mx-auto mt-[15px] max-w-[1184px] lg:mt-12 lg:pb-[31px]">
+        <article className="mx-auto max-w-[1112px] overflow-hidden rounded-2xl bg-mist p-0.5 lg:rounded-[20px] lg:bg-white lg:p-0 lg:shadow-[0_12px_40px_rgba(6,47,80,0.1)]">
           <div
-            className={`relative overflow-hidden ${
-              page
-                ? "aspect-[1112/460]"
-                : "aspect-[376/210] rounded-[14px] lg:aspect-[1112/460] lg:rounded-[20px] lg:shadow-[0_10px_24px_rgba(6,47,80,0.14)]"
+            className={`relative aspect-[376/210] overflow-hidden rounded-[14px] lg:aspect-[1112/460] ${
+              page ? "lg:rounded-none" : "lg:rounded-[20px] lg:shadow-[0_10px_24px_rgba(6,47,80,0.14)]"
             }`}
           >
             {/* Figma places the still at (-32, -130) at 1173x589 inside the 1112x460 thumb. */}
-            <div
-              className={`absolute ${
-                page
-                  ? "left-[-2.878%] top-[-28.261%] h-[128.043%] w-[105.486%]"
-                  : "left-[-5.5%] top-[-1%] h-[102.7%] w-[114%] lg:left-[-2.878%] lg:top-[-28.261%] lg:h-[128.043%] lg:w-[105.486%]"
-              }`}
-            >
+            <div className="absolute left-[-5.5%] top-[-1%] h-[102.7%] w-[114%] lg:left-[-2.878%] lg:top-[-28.261%] lg:h-[128.043%] lg:w-[105.486%]">
               <Image
                 src="/figma/hero.webp"
                 alt="Anand T., Everest Fleet driver, leaning on his sedan"
                 fill
-                sizes={page ? "(min-width: 1184px) 1173px, 105vw" : "(min-width: 1184px) 1173px, (min-width: 1024px) 105vw, 114vw"}
+                sizes="(min-width: 1184px) 1173px, (min-width: 1024px) 105vw, 114vw"
                 className="object-cover"
               />
             </div>
+            <div aria-hidden className={`absolute inset-0 ${homeTint} ${page ? "lg:hidden" : ""}`} />
             {page ? (
-              <div aria-hidden className="absolute inset-x-0 bottom-0 h-[119px] bg-gradient-to-t from-black/60 to-transparent" />
-            ) : (
-              <div aria-hidden className={`absolute inset-0 ${homeTint}`} />
-            )}
+              <div aria-hidden className="absolute inset-x-0 bottom-0 hidden h-[119px] bg-gradient-to-t from-black/60 to-transparent lg:block" />
+            ) : null}
             <button
               type="button"
               aria-label="Play Anand T.'s story"
-              className={
-                page
-                  ? "absolute left-1/2 top-1/2 grid size-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/30 md:size-24"
-                  : "absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center lg:top-[calc(50%-11px)]"
-              }
+              className={`absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center ${
+                page ? "lg:size-24 lg:rounded-full lg:bg-white/30" : "lg:top-[calc(50%-11px)]"
+              }`}
             >
               {page ? (
-                <span className="grid size-12 place-items-center rounded-full bg-white md:size-[76px]">
-                  <Play size={28} weight="fill" className="translate-x-0.5 text-brand" />
-                </span>
+                <>
+                  <span className="grid h-12 w-[68px] place-items-center rounded-xl bg-[#ff0000] lg:hidden">
+                    <svg viewBox="0 0 20 22" aria-hidden className="ml-1 h-[22px] w-5 fill-white">
+                      <path d="M0 0 20 11 0 22Z" />
+                    </svg>
+                  </span>
+                  <span className="hidden size-[76px] place-items-center rounded-full bg-white lg:grid">
+                    <Play size={28} weight="fill" className="translate-x-0.5 text-brand" />
+                  </span>
+                </>
               ) : (
                 <HomePlayMark />
               )}
             </button>
             <p
               className={`absolute h-[25px] items-center gap-1.5 rounded-full bg-navy/85 text-[11px] font-semibold text-white ${
-                page ? "right-6 top-4 flex px-3" : "right-[39px] top-[21px] hidden px-[11px] lg:flex"
+                page ? "right-6 top-4 hidden px-3 lg:flex" : "right-[39px] top-[21px] hidden px-[11px] lg:flex"
               }`}
             >
               <span aria-hidden className="size-[7px] rounded-full bg-leaf" />
@@ -124,7 +113,7 @@ export function Testimonials({
             </p>
             <div
               className={`absolute flex items-center ${
-                page ? "bottom-[13px] left-[9px] gap-3" : "bottom-[11px] left-[9px] gap-1.5 lg:bottom-3 lg:left-2 lg:gap-5"
+                page ? "bottom-[11px] left-[9px] gap-1.5 lg:bottom-[13px] lg:gap-3" : "bottom-[11px] left-[9px] gap-1.5 lg:bottom-3 lg:left-2 lg:gap-5"
               }`}
             >
               <Image
@@ -132,62 +121,33 @@ export function Testimonials({
                 alt=""
                 width={50}
                 height={50}
-                className={page ? "size-[50px] rounded-full object-cover ring-2 ring-white" : "size-6 rounded-full object-cover lg:size-[50px]"}
+                className={`size-6 rounded-full object-cover lg:size-[50px] ${page ? "lg:ring-2 lg:ring-white" : ""}`}
               />
               <div>
-                <p
-                  className={
-                    page
-                      ? "text-base font-semibold leading-[21px] text-white"
-                      : "text-xs font-semibold leading-4 text-white lg:text-base lg:leading-[21px]"
-                  }
-                >
+                <p className="text-xs font-semibold leading-4 text-white lg:text-base lg:leading-[21px]">
                   Anand T.
                 </p>
-                <p className={page ? "text-xs leading-4 text-white/80" : "text-[10px] leading-3 text-white/85 lg:mt-0.5 lg:text-xs lg:leading-4"}>
+                <p className={`text-[10px] leading-3 lg:text-xs lg:leading-4 ${page ? "text-white/85 lg:text-white/80" : "text-white/85 lg:mt-0.5"}`}>
                   Mumbai · 1.5 years with Everest
                 </p>
               </div>
             </div>
           </div>
-          <p
-            className={
-              page
-                ? "px-6 py-6 text-center text-xl font-semibold leading-8 text-navy md:px-10 md:py-[29px] md:text-[28px] md:leading-[39px]"
-                : "px-4 py-[13px] text-center text-xs font-semibold leading-4 text-navy lg:px-10 lg:py-[29px] lg:text-[28px] lg:leading-[39px]"
-            }
-          >
+          <p className="px-4 py-[13px] text-center text-xs font-semibold leading-4 text-navy lg:px-10 lg:py-[29px] lg:text-[28px] lg:leading-[39px]">
             Anand has driven with Everest Fleet in Mumbai for a year and a half.
           </p>
         </article>
-        {page ? (
-          <>
-            <button type="button" aria-label="Previous story" className={`${arrow} left-0 bg-white text-navy`}>
-              ‹
-            </button>
-            <button type="button" aria-label="Next story" className={`${arrow} right-0 bg-white text-navy`}>
-              ›
-            </button>
-          </>
-        ) : (
-          <>
-            <button type="button" aria-label="Previous story" className={`${homeArrow} -left-2 lg:left-0`}>
-              ‹
-            </button>
-            <button type="button" aria-label="Next story" className={`${homeArrow} -right-2 lg:right-0`}>
-              ›
-            </button>
-          </>
-        )}
+        <button type="button" aria-label="Previous story" className={`${page ? arrow : homeArrow} -left-2 lg:left-0`}>
+          ‹
+        </button>
+        <button type="button" aria-label="Next story" className={`${page ? arrow : homeArrow} -right-2 lg:right-0`}>
+          ›
+        </button>
       </div>
-      <div aria-hidden className={`flex justify-center ${page ? "mt-6 gap-1.5" : "mt-4 gap-2 lg:mt-6"}`}>
-        <span className={page ? "h-2 w-7 rounded-full bg-navy" : "size-2 rounded-full bg-navy lg:w-7"} />
-        {page ? null : (
-          <>
-            <span className="size-2 rounded-full bg-fog lg:hidden" />
-            <span className="size-2 rounded-full bg-fog lg:hidden" />
-          </>
-        )}
+      <div aria-hidden className={`mt-4 flex justify-center gap-2 lg:mt-6 ${page ? "lg:gap-1.5" : ""}`}>
+        <span className="size-2 rounded-full bg-navy lg:w-7" />
+        <span className="size-2 rounded-full bg-fog lg:hidden" />
+        <span className="size-2 rounded-full bg-fog lg:hidden" />
       </div>
     </section>
   );
