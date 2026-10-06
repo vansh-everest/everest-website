@@ -1,8 +1,10 @@
 import type { SiteContent } from "@/lib/content";
-import { cityOptions, planCardsByCity } from "@/lib/plan-view";
+import { planCard } from "@/lib/plan-view";
 import { PlanGrid } from "./plan-grid";
 
 export function Plans({ content }: { content: SiteContent }) {
+  // No city is chosen here, so each card shows the plan's own "onwards" figures.
+  const cards = content.plans.filter((p) => p.visible && p.showCard).map((p) => planCard(content, p));
   return (
     <section id="plans" className="relative bg-[#f7f9fc] pb-5 pt-[22px] sm:pb-16 sm:pt-12 lg:bg-fog lg:pb-20 lg:pt-[52px]">
       <div className="px-6 text-center">
@@ -11,7 +13,7 @@ export function Plans({ content }: { content: SiteContent }) {
           <span className="hidden sm:inline">We have plans for everyone</span>
         </h2>
       </div>
-      <PlanGrid cities={cityOptions(content)} cards={planCardsByCity(content)} />
+      <PlanGrid cards={cards} />
     </section>
   );
 }

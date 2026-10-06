@@ -1,9 +1,6 @@
-"use client";
-
 import Link from "next/link";
-import { useState } from "react";
-import type { CityOption, PlanCardView } from "@/lib/plan-view";
-import { CitySelect } from "./city-select";
+import { Marquee } from "@/components/site/marquee";
+import type { PlanCardView } from "@/lib/plan-view";
 
 /* The dark card leads with a larger first point; its other points are a size smaller than a light card's. */
 function pointSize(i: number, dark: boolean) {
@@ -75,23 +72,15 @@ function PlanCard({ plan }: { plan: PlanCardView }) {
   );
 }
 
-/** Three across on a wide screen; on a phone the cards swipe, with the next one peeking in. */
-export function PlanGrid({ cities, cards }: { cities: CityOption[]; cards: Record<string, PlanCardView[]> }) {
-  const [city, setCity] = useState(cities[0]?.slug ?? "");
-  const plans = cards[city] ?? [];
+/** The plan cards drift across the page in a loop, with the same gap between every card. */
+export function PlanGrid({ cards }: { cards: PlanCardView[] }) {
   return (
-    <>
-      {/* The phone design drops the city pill; phones see the first city's prices. */}
-      <div className="mt-5 hidden px-6 sm:block lg:mt-[11px]">
-        <CitySelect cities={cities} value={city} onChange={setCity} filled />
-      </div>
-      <div className="mx-auto mt-[30px] flex max-w-[1248px] snap-x snap-mandatory gap-3.5 overflow-x-auto scroll-px-[26px] px-[26px] pb-4 [scrollbar-width:none] sm:mt-10 sm:gap-5 sm:scroll-px-6 sm:px-6 lg:mt-[50px] lg:grid lg:max-w-[1440px] lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:px-10 xl:gap-[66px] xl:px-24 [&::-webkit-scrollbar]:hidden">
-        {plans.map((plan) => (
-          <div key={plan.id} className="w-[300px] max-w-[86%] shrink-0 snap-start sm:w-[60%] sm:max-w-none lg:w-auto">
-            <PlanCard plan={plan} />
-          </div>
-        ))}
-      </div>
-    </>
+    <Marquee
+      label="Plans"
+      seconds={30}
+      items={cards.map((plan) => ({ key: plan.id, node: <div className="w-full"><PlanCard plan={plan} /></div> }))}
+      itemClassName="w-[328px] pr-7 sm:w-[384px] sm:pr-10 lg:w-[438px] lg:pr-[66px]"
+      className="mt-[30px] py-4 [mask-image:linear-gradient(90deg,transparent,#000_24px,#000_calc(100%-24px),transparent)] sm:mt-10 lg:mt-[46px] lg:[mask-image:linear-gradient(90deg,transparent,#000_80px,#000_calc(100%-80px),transparent)]"
+    />
   );
 }

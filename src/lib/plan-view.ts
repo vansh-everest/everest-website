@@ -55,10 +55,6 @@ export type CarCardView = {
 
 export type CityOption = { slug: string; name: string };
 
-export function cityOptions(content: SiteContent): CityOption[] {
-  return content.cities.map((c) => ({ slug: c.slug, name: c.name.en }));
-}
-
 const months = (n: string) => (n ? `${n} month${n === "1" ? "" : "s"}` : "");
 
 export function planCard(content: SiteContent, plan: Plan, city?: string): PlanCardView {
@@ -102,12 +98,6 @@ export function carCard(content: SiteContent, car: Car, city?: string, plan?: Pl
     tenure: months(price.tenureMonths) || (plan?.tenureNote ?? ""),
     modelYears: car.modelYears,
   };
-}
-
-/** Every visible home-page plan card, priced for every city. */
-export function planCardsByCity(content: SiteContent): Record<string, PlanCardView[]> {
-  const shown = content.plans.filter((p) => p.visible && p.showCard);
-  return Object.fromEntries(content.cities.map((c) => [c.slug, shown.map((p) => planCard(content, p, c.slug))]));
 }
 
 /** Cards for visible cars, optionally only those offered under one plan, priced per city. */

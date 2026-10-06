@@ -25,6 +25,14 @@
   --color-mist: #f3f4f6;
   --color-fog: #e5e7eb;
   --color-paper: #fafafa;
+
+  /* Used by the Marquee row; it sets --marquee-speed for its own length. */
+  --animate-marquee: marquee var(--marquee-speed, 40s) linear infinite;
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
 }
 
 /* Figma style "Blue gradient": navy -> brand blue. */
