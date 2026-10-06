@@ -10,7 +10,12 @@ function YellowCheck({ className = "" }: { className?: string }) {
   );
 }
 
-const perks = ["Without loan", "Without CIBIL score", "With small deposit"];
+/* The phone design words the last perk differently. */
+const perks: { text: string; phone?: string }[] = [
+  { text: "Without loan" },
+  { text: "Without CIBIL score" },
+  { text: "With small deposit", phone: "With small Upfront Payment" },
+];
 
 /*
  * Desktop is laid out on the 1440 export frame. --u is one frame pixel: it shrinks with the
@@ -41,7 +46,8 @@ export function OwnNowBanner() {
         <div className="px-6 pb-6 pt-[22px] text-white lg:absolute lg:left-[calc(var(--u)*811)] lg:top-[calc(var(--u)*33)] lg:p-0">
           <h2 className="text-center text-xl font-bold leading-7 tracking-[0.35px] lg:text-left lg:text-[length:calc(var(--u)*48)] lg:leading-[calc(var(--u)*60)] lg:tracking-[calc(var(--u)*0.3)]">
             Introducing <span className="text-sun">Own Now</span> <br className="hidden lg:inline" />
-            by Everest
+            <span className="lg:hidden">By</span>
+            <span className="hidden lg:inline">by</span> Everest
           </h2>
           <p className="mt-[5px] text-center text-sm leading-5 tracking-[0.2px] lg:mt-[calc(var(--u)*21)] lg:text-left lg:text-[length:calc(var(--u)*24)] lg:font-semibold lg:leading-[calc(var(--u)*29)] lg:tracking-[calc(var(--u)*0.35)]">
             Now become owner of your own car
@@ -49,11 +55,18 @@ export function OwnNowBanner() {
           <ul className="mt-1 lg:mt-[calc(var(--u)*5)]">
             {perks.map((perk) => (
               <li
-                key={perk}
+                key={perk.text}
                 className="flex h-8 items-center gap-2 text-base lg:h-[calc(var(--u)*28)] lg:gap-[calc(var(--u)*6)] lg:text-[length:calc(var(--u)*20)]"
               >
                 <YellowCheck className="size-3.5 lg:size-[calc(var(--u)*15)]" />
-                {perk}
+                {perk.phone ? (
+                  <>
+                    <span className="lg:hidden">{perk.phone}</span>
+                    <span className="hidden lg:inline">{perk.text}</span>
+                  </>
+                ) : (
+                  perk.text
+                )}
               </li>
             ))}
           </ul>

@@ -39,6 +39,12 @@ const fixed: Array<{ path: string; priority: number; changeFrequency: Freq }> = 
   { path: "/about-us", priority: 0.5, changeFrequency: "monthly" },
   { path: "/faq", priority: 0.7, changeFrequency: "monthly" },
   { path: "/investors", priority: 0.4, changeFrequency: "yearly" },
+  { path: "/everest-dost", priority: 0.6, changeFrequency: "monthly" },
+  { path: "/fleet-logistics", priority: 0.5, changeFrequency: "monthly" },
+  { path: "/employee-mobility", priority: 0.5, changeFrequency: "monthly" },
+  { path: "/intercity", priority: 0.5, changeFrequency: "monthly" },
+  { path: "/advertise-with-us", priority: 0.5, changeFrequency: "monthly" },
+  { path: "/careers", priority: 0.4, changeFrequency: "monthly" },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

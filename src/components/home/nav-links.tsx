@@ -74,17 +74,17 @@ export function NavLinks() {
             </button>
             {open === item.label ? (
               <div
-                className="absolute left-1/2 top-full z-50 w-[212px] -translate-x-1/2 pt-7"
+                className="absolute left-1/2 top-full z-50 w-[263px] -translate-x-1/2 pt-7"
                 onMouseLeave={() => setOpen(null)}
               >
-                <ul className="overflow-hidden rounded-xl border border-line bg-white py-1.5 shadow-[0_12px_32px_rgba(6,47,80,0.14)]">
+                <ul className="overflow-hidden rounded-xl border border-[#dfe5ee] bg-white py-2 shadow-[0_14px_36px_rgba(6,47,80,0.22)]">
                   {item.items.map((sub) => (
                     <li key={sub.label}>
                       <Link
                         href={sub.href}
                         aria-current={isCurrent(sub.href, pathname) ? "page" : undefined}
-                        className={`block px-4 py-2.5 text-[15px] font-medium transition hover:bg-mist hover:text-navy ${
-                          isCurrent(sub.href, pathname) ? "text-brand" : "text-ink-soft"
+                        className={`flex h-11 items-center px-[21px] text-base leading-6 transition hover:bg-mist hover:text-brand ${
+                          isCurrent(sub.href, pathname) ? "font-semibold text-brand" : "font-medium text-navy"
                         }`}
                       >
                         {sub.label}

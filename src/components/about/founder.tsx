@@ -33,7 +33,7 @@ export function Founder() {
             </span>
           </figcaption>
         </figure>
-        <div className="lg:max-w-[592px] lg:pt-[49px]">
+        <div className="lg:max-w-[600px] lg:pt-[49px]">
           <p className="text-xl font-bold leading-7 tracking-[-0.3px] text-navy sm:text-[26px] sm:leading-[34px] lg:text-[32px] lg:leading-[42px]">
             We don&rsquo;t just put drivers on the road.
             <br /> We put families ahead.

@@ -76,10 +76,18 @@ function image(v: unknown, fallback: ImageSlot): ImageSlot {
   };
 }
 
+const blankText = (): Record<Locale, string> =>
+  Object.fromEntries(LOCALES.map((l) => [l, ""])) as Record<Locale, string>;
+
 function localized(v: unknown, fallback: Record<Locale, string>, max = 200): Record<Locale, string> {
   const o = obj(v);
   return Object.fromEntries(
-    LOCALES.map((l) => [l, typeof o[l] === "string" ? text(o[l], max) : fallback[l] ?? ""])
+    LOCALES.map((l) => [
+      l,
+      typeof o[l] === "string"
+        ? text(o[l], max)
+        : fallback[l] || (typeof o.en === "string" ? text(o.en, max) : fallback.en) || "",
+    ])
   ) as Record<Locale, string>;
 }
 
@@ -127,9 +135,9 @@ function blankPlan(id: string): Plan {
     id,
     visible: false,
     showCard: false,
-    name: { en: "", hi: "", te: "" },
+    name: blankText(),
     shortName: "",
-    summary: { en: "", hi: "", te: "" },
+    summary: blankText(),
     tag: "",
     priceLabel: "Rent starting from",
     theme: "light",
@@ -170,6 +178,7 @@ function page(v: unknown, base: PlanPage): PlanPage {
     headline: pick("headline", 60),
     highlight: pick("highlight", 60),
     heroImage: image(o.heroImage, base.heroImage),
+    heroImagePhone: image(o.heroImagePhone, base.heroImagePhone),
     term: "term" in o ? { label: text(obj(o.term).label, 24), value: text(obj(o.term).value, 24) } : { ...base.term },
     tags: "tags" in o ? lines(o.tags, 4, 48) : [...base.tags],
     whyTag: pick("whyTag", 40),
@@ -195,6 +204,7 @@ function page(v: unknown, base: PlanPage): PlanPage {
 function overview(v: unknown, base: PlanOverview): PlanOverview {
   const o = obj(v);
   return {
+    title: "title" in o ? text(o.title, 60) : base.title,
     note: "note" in o ? text(o.note, 60) : base.note,
     steps:
       "steps" in o
@@ -383,7 +393,7 @@ function posts(v: unknown): Post[] {
   if (!Array.isArray(v)) return structuredClone(DEFAULT_CONTENT.posts);
   // Two posts at one address in one language would hide each other, so a repeat is numbered.
   const taken: Record<string, Set<string>> = {};
-  return list(v, 200).map((raw, i) => {
+  const saved = list(v, 200).map((raw, i) => {
     const o = obj(raw);
     const date = text(o.date, 10);
     const locale = (LOCALES as readonly string[]).includes(o.locale as string) ? (o.locale as Locale) : "en";
@@ -398,6 +408,11 @@ function posts(v: unknown): Post[] {
       coverImage: image(o.coverImage, placeholder("Cover image")),
     };
   });
+  // A language added after the content was saved would open on an empty blog, so a language
+  // with no saved post gets its seed guides. To hide a seeded guide, unpublish it.
+  const covered = new Set(saved.map((p) => p.locale));
+  const seeded = DEFAULT_CONTENT.posts.filter((p) => !covered.has(p.locale));
+  return [...saved, ...structuredClone(seeded)];
 }
 
 export function normalizeContent(raw: unknown): SiteContent {

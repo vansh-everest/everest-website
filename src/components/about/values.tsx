@@ -1,147 +1,219 @@
-import Image from "next/image";
+import {
+  Eye,
+  Flame,
+  Hand,
+  Handshake,
+  Heart,
+  Lightbulb,
+  MessageCircleHeart,
+  Rocket,
+  Star,
+  User,
+  Users,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
 
-type Size = "lg" | "md" | "sm";
+type Tone = "blue" | "plum" | "lime" | "sun";
 
-type Value = { name: string; line: string; img: string; alt: string; size: Size; layout: string; sizes: string };
-
-// Phones stack every card at one size. Three rows on desktop: wide + narrow, three equal, two equal.
-// Flex basis rather than a grid because the first row's 728:440 split does not fall on any shared column count.
-const ROW1 = "h-[280px] md:h-[400px] lg:h-[480px]";
-const ROW2 = "h-[280px] md:h-[340px] lg:h-[380px]";
-const ROW3 = "h-[280px] md:h-[300px] lg:h-[340px]";
-const THIRD = "md:basis-[calc((100%_-_4rem_-_1px)_/_3)]";
-const HALF = "md:basis-[calc((100%_-_2rem_-_1px)_/_2)]";
+type Value = {
+  id: string;
+  letter: string;
+  name: string;
+  /** The letter-card icon, also the phone card's icon. */
+  icon: LucideIcon;
+  /** Desktop's larger icon in the tinted circle. */
+  mark: LucideIcon;
+  tone: Tone;
+  points: [string, string, string];
+};
 
 const values: Value[] = [
   {
-    name: "Entrepreneurial",
-    line: "Boldly pushing limits, creating real impact",
-    img: "entrepreneurial",
-    alt: "Passenger looking out of the window from the back seat of a car",
-    size: "lg",
-    layout: `${ROW1} md:basis-[calc((100%_-_2rem_-_1px)_*_0.6233)]`,
-    sizes: "(min-width: 1280px) 728px, (min-width: 768px) 62vw, 100vw",
+    id: "innovation",
+    letter: "I",
+    name: "Innovation",
+    icon: Lightbulb,
+    mark: Lightbulb,
+    tone: "blue",
+    points: [
+      "We challenge the usual way of doing things.",
+      "We experiment boldly and learn from every result.",
+      "We stay curious and keep finding better solutions.",
+    ],
   },
   {
-    name: "Vigilant",
-    line: "Safety-first for every journey",
-    img: "vigilant",
-    alt: "Driver with both hands on the wheel on a city street at night",
-    size: "md",
-    layout: `${ROW1} md:basis-[calc((100%_-_2rem_-_1px)_*_0.3767)]`,
-    sizes: "(min-width: 1280px) 440px, (min-width: 768px) 38vw, 100vw",
+    id: "empower",
+    letter: "M",
+    name: "eMpower",
+    icon: Handshake,
+    mark: Hand,
+    tone: "blue",
+    points: [
+      "We trust our people to take ownership and decide.",
+      "We act early, solve problems and share ideas openly.",
+      "We give every team the guidance and tools to grow.",
+    ],
   },
   {
-    name: "Empowering",
-    line: "Enabling drivers, teams & clients to thrive",
-    img: "empowering",
-    alt: "Car keys being handed over outside a showroom",
-    size: "sm",
-    layout: `${ROW2} ${THIRD}`,
-    sizes: "(min-width: 1280px) 380px, (min-width: 768px) 33vw, 100vw",
+    id: "passion",
+    letter: "P",
+    name: "Passion",
+    icon: Heart,
+    mark: Flame,
+    tone: "plum",
+    points: [
+      "We bring energy and purpose to everything we do.",
+      "We take pride in our work and keep improving it.",
+      "We go beyond what is expected of us.",
+    ],
   },
   {
-    name: "Rigorous",
-    line: "Relentless pursuit of excellence",
-    img: "rigorous",
-    alt: "Vehicle telemetry on a dashboard screen",
-    size: "sm",
-    layout: `${ROW2} ${THIRD}`,
-    sizes: "(min-width: 1280px) 380px, (min-width: 768px) 33vw, 100vw",
+    id: "agility",
+    letter: "A",
+    name: "Agility",
+    icon: Zap,
+    mark: Rocket,
+    tone: "plum",
+    points: [
+      "We move fast and act decisively.",
+      "We keep things simple and focus on outcomes.",
+      "We adapt quickly and turn ideas into action.",
+    ],
   },
   {
-    name: "Empathetic",
-    line: "Solving for what truly matters",
-    img: "empathetic",
-    alt: "Driver helping an elderly passenger into a car",
-    size: "sm",
-    layout: `${ROW2} ${THIRD}`,
-    sizes: "(min-width: 1280px) 380px, (min-width: 768px) 33vw, 100vw",
+    id: "customer-first",
+    letter: "C",
+    name: "Customer First",
+    icon: User,
+    mark: MessageCircleHeart,
+    tone: "lime",
+    points: [
+      "We put our customers at the heart of every decision.",
+      "We listen closely and respond quickly.",
+      "We measure our success by our customers’ success.",
+    ],
   },
   {
-    name: "Sharing",
-    line: "Collaborating for the greater good",
-    img: "sharing",
-    alt: "Team working together around a meeting table",
-    size: "md",
-    layout: `${ROW3} ${HALF}`,
-    sizes: "(min-width: 1280px) 584px, (min-width: 768px) 50vw, 100vw",
+    id: "transparency",
+    letter: "T",
+    name: "Transparency",
+    icon: Eye,
+    mark: Eye,
+    tone: "sun",
+    points: [
+      "We communicate openly, honestly and respectfully.",
+      "We share information and explain our decisions.",
+      "We speak up when something isn’t right.",
+    ],
   },
   {
-    name: "Trust",
-    line: "Ethical, honest, and dependable",
-    img: "trust",
-    alt: "Two men shaking hands in front of a lot of parked cars",
-    size: "md",
-    layout: `${ROW3} ${HALF}`,
-    sizes: "(min-width: 1280px) 584px, (min-width: 768px) 50vw, 100vw",
+    id: "team-spirit",
+    letter: "T",
+    name: "Team Spirit",
+    icon: Star,
+    mark: Users,
+    tone: "sun",
+    points: [
+      "We work together and support one another.",
+      "We value every perspective and include everyone.",
+      "We celebrate our successes together.",
+    ],
   },
 ];
 
-// The unprefixed classes are the phone card, the same for every size; md: and up restore the desktop scale.
-const type: Record<Size, { pad: string; num: string; title: string; line: string }> = {
-  lg: {
-    pad: "p-6 md:p-10 lg:p-12",
-    num: "text-[#ff5d2b]",
-    title: "text-[22px] leading-7 md:text-[30px] md:leading-[36px] lg:text-[40px] lg:leading-[48px]",
-    line: "mt-1 text-sm leading-5 md:mt-2 md:text-base md:leading-6 lg:mt-3",
-  },
-  md: {
-    pad: "p-6 lg:p-10",
-    num: "text-[#ff5d2b] md:text-white/60",
-    title: "text-[22px] leading-7 md:text-[26px] md:leading-[32px] lg:text-[28px] lg:leading-[34px]",
-    line: "mt-1 text-sm leading-5 md:mt-2",
-  },
-  sm: {
-    pad: "p-6 lg:p-8",
-    num: "text-[#ff5d2b] md:text-white/60",
-    title: "text-[22px] leading-7 md:text-2xl md:leading-[30px]",
-    line: "mt-1 text-sm leading-5 md:mt-2 md:text-[13px] md:leading-[18px]",
-  },
+/** Letter colour, tint behind icons, icon colour and the phone card's accent bar and bullets. */
+const tones: Record<Tone, { letter: string; tint: string; icon: string; accent: string }> = {
+  blue: { letter: "text-brand", tint: "bg-[#e8f2fb]", icon: "text-brand", accent: "bg-brand" },
+  plum: { letter: "text-plum", tint: "bg-[#f6eaf5]", icon: "text-plum", accent: "bg-plum" },
+  lime: { letter: "text-lime", tint: "bg-[#f2f7de]", icon: "text-lime", accent: "bg-lime" },
+  sun: { letter: "text-navy", tint: "bg-[#fdf8da]", icon: "text-sun", accent: "bg-sun" },
 };
 
+/**
+ * "Our Values Our Foundation": the seven values that spell IMPACTT, as letter cards, then each value
+ * in full. Phones put each value on a white card; from lg the values sit in a four-column grid.
+ */
 export function Values() {
   return (
-    <section className="bg-navy px-4 pb-14 pt-[53px] sm:px-6 sm:py-20 lg:px-10 lg:py-[120px]">
+    <section className="bg-[#f2f5fd] px-4 pb-14 pt-10 sm:px-6 sm:py-16 lg:px-10 lg:pb-[125px] lg:pt-[108px]">
       <div className="mx-auto max-w-[1200px]">
-        <div className="text-center">
-          <p className="flex items-center justify-center gap-2 text-xs font-semibold uppercase leading-5 tracking-[0.5px] text-sun sm:text-sm">
-            <span aria-hidden className="h-0.5 w-6 bg-sun" />
-            What we stand for
-          </p>
-          <h2 className="mt-2 text-wrap font-sans text-[26px] font-bold leading-[32px] text-white sm:mt-4 sm:text-balance sm:font-display sm:text-[40px] sm:leading-[48px] lg:mt-[14px] lg:text-[54px] lg:leading-[62px]">
-            The standards we live by on every single mile
-          </h2>
-          <p className="mx-auto mt-3 max-w-[680px] text-sm leading-[17px] text-[#9aa8bd] sm:mt-4 sm:text-[15px] sm:leading-[26px] sm:text-[#94a3b8] lg:mt-6">
-            Seven principles guiding our journey to move India&rsquo;s mobility forward.
-          </p>
-        </div>
-        <ol className="mt-9 grid gap-5 md:mt-12 md:flex md:flex-row md:flex-wrap md:gap-8 lg:mt-[68px]">
-          {values.map((value, i) => {
-            const t = type[value.size];
+        <p className="mt-3.5 flex items-center gap-3 text-[13px] font-medium uppercase leading-4 tracking-[1px] text-brand sm:mt-0 lg:hidden">
+          <span aria-hidden className="h-0.5 w-5 bg-sun" />
+          Our values
+        </p>
+        <h2 className="mt-3 text-[28px] font-bold leading-[34px] text-navy sm:text-[36px] sm:leading-[44px] lg:mt-0 lg:text-center lg:text-[64px] lg:leading-[76px]">
+          Our Values Our Foundation<span className="hidden lg:inline">.</span>
+        </h2>
+        <p className="mt-3 text-base leading-[26px] text-ink-soft lg:hidden">
+          Seven values that spell IMPACTT. Guiding how we work, empowering who we are.
+        </p>
+
+        <ul className="mt-[41px] grid grid-cols-4 gap-2 sm:max-w-[520px] lg:mt-[86px] lg:flex lg:max-w-none lg:gap-[13px]">
+          {values.map((v) => {
+            const t = tones[v.tone];
+            const Icon = v.icon;
+            return (
+              <li key={v.id} className="min-w-0 lg:flex-1 lg:basis-0">
+                <a
+                  href={`#${v.id}`}
+                  className="flex h-[120px] flex-col items-center rounded-[14px] bg-white px-1.5 pt-2.5 text-center shadow-[0_6px_18px_rgba(6,47,80,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(6,47,80,0.1)] lg:h-[262px] lg:rounded-[20px] lg:px-2 lg:pt-[13px] xl:px-4"
+                >
+                  <span aria-hidden className={`text-[28px] font-bold leading-[34px] lg:text-[64px] lg:font-extrabold lg:leading-[96px] xl:text-[80px] ${t.letter}`}>
+                    {v.letter}
+                  </span>
+                  <span
+                    aria-hidden
+                    className={`mt-0.5 grid size-9 place-items-center rounded-lg lg:mt-[9px] lg:h-14 lg:w-16 lg:rounded-[14px] ${t.tint} ${t.icon}`}
+                  >
+                    <Icon className="size-[30px]" strokeWidth={1.5} />
+                  </span>
+                  <span className="mt-2 hyphens-auto text-[11px] [overflow-wrap:anywhere] font-bold leading-3 text-navy lg:mt-[17px] lg:text-[15px] lg:leading-[22px] xl:text-2xl xl:leading-[31px]">
+                    {v.name}
+                  </span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+
+        <ol className="mt-[38px] grid gap-6 md:grid-cols-2 lg:mt-[101px] lg:grid-cols-4 lg:gap-x-8 lg:gap-y-[49px] xl:gap-x-14">
+          {values.map((v, i) => {
+            const t = tones[v.tone];
+            const Icon = v.icon;
+            const Mark = v.mark;
             return (
               <li
-                key={value.name}
-                className={`relative isolate overflow-hidden rounded-2xl border border-white/15 md:grow md:rounded-3xl md:border-0 ${value.layout}`}
+                key={v.id}
+                id={v.id}
+                className="scroll-mt-28 rounded-[20px] bg-white p-5 shadow-[0_6px_18px_rgba(6,47,80,0.05)] lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none"
               >
-                <Image
-                  src={`/figma/about/value-${value.img}.webp`}
-                  alt={value.alt}
-                  fill
-                  sizes={value.sizes}
-                  className="-z-10 object-cover"
-                />
-                <div
-                  aria-hidden
-                  className="absolute inset-0 -z-10 bg-[rgba(8,23,38,0.68)] md:bg-transparent md:bg-[linear-gradient(180deg,rgba(6,47,80,0)_50%,rgba(6,47,80,0.35)_100%)]"
-                />
-                <div className={`flex h-full flex-col justify-between ${t.pad}`}>
-                  <span className={`text-sm font-medium leading-5 ${t.num}`}>{String(i + 1).padStart(2, "0")}</span>
-                  <div>
-                    <h3 className={`font-display font-bold text-white ${t.title}`}>{value.name}</h3>
-                    <p className={`text-slate-200 ${t.line}`}>{value.line}</p>
-                  </div>
+                <div className="flex items-center justify-between lg:block">
+                  <span aria-hidden className={`grid size-14 place-items-center rounded-[14px] lg:hidden ${t.tint} ${t.icon}`}>
+                    <Icon className="size-[34px]" strokeWidth={1.6} />
+                  </span>
+                  <span aria-hidden className={`hidden size-[120px] place-items-center rounded-full text-navy lg:grid ${t.tint}`}>
+                    <Mark className="size-16" strokeWidth={1.5} />
+                  </span>
+                  <span className="text-[36px] font-bold leading-[44px] text-brand lg:mt-[21px] lg:block lg:text-[52px] lg:font-normal lg:leading-[60px] lg:text-navy">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
                 </div>
+                <h3 className="mt-[18px] text-[28px] font-bold leading-[34px] text-navy lg:mt-1 lg:text-[28px] lg:leading-[34px] lg:text-brand">
+                  {v.name}
+                </h3>
+                <span aria-hidden className={`mt-2 block h-[3px] w-10 rounded-full lg:hidden ${t.accent}`} />
+                <ul className="mt-[13px] space-y-[9px] text-base leading-[26px] text-navy/80 lg:mt-[14px] lg:space-y-3 lg:text-base lg:leading-[19px] lg:text-navy/85">
+                  {v.points.map((p) => (
+                    <li key={p} className="relative pl-4 lg:pl-[18px]">
+                      <span
+                        aria-hidden
+                        className={`absolute left-0 top-[11px] size-[5px] rounded-full lg:top-2 lg:size-1 lg:bg-navy ${t.accent}`}
+                      />
+                      {p}
+                    </li>
+                  ))}
+                </ul>
               </li>
             );
           })}

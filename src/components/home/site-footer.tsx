@@ -1,67 +1,62 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { COMPANY_BLURB } from "@/lib/company";
-import { cityPath } from "@/lib/city-route";
+import { COMPANY } from "@/lib/company";
 import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "./ui";
-
-const CITIES: [slug: string, name: string][] = [
-  ["mumbai", "Mumbai"],
-  ["delhi", "Delhi NCR"],
-  ["bengaluru", "Bengaluru"],
-  ["hyderabad", "Hyderabad"],
-  ["pune", "Pune"],
-  ["kolkata", "Kolkata"],
-  ["chennai", "Chennai"],
-];
 
 // Only routes that exist are linked. A placeholder link wastes crawl budget and fails a visitor.
 const columns = [
   {
     title: "Drivers",
     links: [
+      { label: "Own Now", href: "/own-now" },
       { label: "Drive to Own", href: "/drive-to-own" },
       { label: "Drive to Earn", href: "/drive-to-earn" },
-      { label: "Revenue Share", href: "/revenue-share" },
       { label: "Driver FAQs", href: "/faq" },
+      { label: "Benefits", href: "/our-services" },
     ],
   },
   {
     title: "Company",
     links: [
       { label: "About Us", href: "/about-us" },
-      { label: "Everest Dost", href: "/#dost" },
-      { label: "Blog", href: "/blog" },
-      { label: "For Investors", href: "/investors" },
+      { label: "Careers", href: "/careers" },
+      { label: "ESG Report", href: "/investors#esg" },
+      { label: "Everest Dost", href: "/everest-dost" },
     ],
   },
   {
-    title: "Cities",
-    links: CITIES.map(([slug, name]) => ({ label: name, href: cityPath(slug) })),
+    title: "Investors",
+    links: [
+      { label: "Investor Hub", href: "/investors" },
+      { label: "Metrics & Impact", href: "/investors#metrics" },
+      { label: "Leadership", href: "/investors#leadership" },
+      { label: "Reports & Downloads", href: "/investors#reports" },
+    ],
   },
 ];
 
 const heading = "text-[11px] font-bold uppercase leading-[17px] tracking-[1.8px] text-sun";
-const list = "mt-4 space-y-2.5 text-sm leading-[21px]";
+const list = "mt-3 space-y-1.5 text-sm leading-[21px]";
 const item = "text-white transition hover:text-sun";
-const emoji = "text-[11px] leading-none";
 
 export function SiteFooter() {
   return (
     <footer className="bg-navy text-white">
-      <div className="mx-auto max-w-[1232px] px-6 pb-12 pt-3">
-        {/* The artwork carries transparent padding; the offset lines the wordmark up with the text. */}
-        <Image
-          src="/figma/logo-white.png"
-          alt="Everest Fleet"
-          width={205}
-          height={118}
-          className="-ml-[21px] h-[118px] w-[205px]"
-        />
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 lg:-mt-0.5 lg:grid-cols-[1.3fr_repeat(3,1fr)_1.2fr] lg:gap-x-8 xl:grid-cols-[270px_repeat(4,180px)] xl:gap-x-12">
-          <p className="col-span-2 text-sm leading-[23px] lg:col-span-1 lg:mt-[53px]">{COMPANY_BLURB}</p>
+      <div className="mx-auto max-w-[1440px] px-4 pb-6 pt-[29px] md:px-10 lg:pb-[37px] lg:pt-[52px] xl:px-20">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-[26px] lg:grid-cols-[1.25fr_1fr_1fr_1fr_1fr] lg:gap-x-6 xl:grid-cols-[328px_250px_250px_250px_1fr] xl:gap-x-0">
+          <div className="col-span-2 lg:col-span-1">
+            {/* The artwork carries transparent padding; the offset lines the wordmark up with the text. */}
+            <Link href="/" className="-ml-[7px] block w-fit">
+              <Image src="/figma/logo-white.png" alt="Everest Fleet" width={98} height={56} className="h-14 w-[98px]" />
+            </Link>
+            <p className="-mt-[3px] text-[15px] leading-[23px] lg:-mt-px lg:max-w-[270px] lg:text-sm">
+              India&apos;s largest fleet management company. {COMPANY.vehicles} vehicles. {COMPANY.cities} cities.
+              Powering driver earnings and investor returns since {COMPANY.founded}.
+            </p>
+          </div>
           {columns.map((col) => (
-            <div key={col.title}>
+            <div key={col.title} className="lg:pt-3">
               <h2 className={heading}>{col.title}</h2>
               <ul className={list}>
                 {col.links.map((l) => (
@@ -74,29 +69,28 @@ export function SiteFooter() {
               </ul>
             </div>
           ))}
-          <div>
+          <div className="lg:pt-3">
             <h2 className={heading}>Contact</h2>
             <ul className={list}>
               <li>
                 <a href={PHONE_HREF} className={item}>
-                  <span aria-hidden className={emoji}>📞</span> {PHONE_DISPLAY}
+                  +91 {PHONE_DISPLAY}
                 </a>
               </li>
               <li>
                 <a href={WHATSAPP_HREF} className="text-whatsapp transition hover:brightness-110">
-                  <span aria-hidden className={emoji}>💬</span> WhatsApp Us
+                  WhatsApp Us
                 </a>
               </li>
               <li>
                 <a href="mailto:hello@everestfleet.com" className={`${item} [overflow-wrap:anywhere]`}>
-                  <span aria-hidden className={emoji}>✉️</span> hello@everestfleet.com
+                  hello@everestfleet.com
                 </a>
               </li>
-              <li>Mumbai HQ, Andheri E</li>
             </ul>
           </div>
         </div>
-        <div className="mt-10 flex flex-col-reverse items-center gap-3 border-t border-white/[0.08] pt-6 text-center text-[13px] leading-5 sm:flex-row sm:justify-between sm:text-left lg:mt-5">
+        <div className="mt-[30px] flex flex-col-reverse items-center gap-2 border-t border-white/[0.1] pt-[22px] text-center text-[13px] leading-5 lg:mt-[80px] lg:flex-row lg:justify-between lg:pt-[26px] lg:text-left">
           <p>© {new Date().getFullYear()} Everest Fleet Pvt Ltd. All rights reserved.</p>
           <Link href="/investors" className="flex items-center gap-1 transition hover:text-sun">
             For Investors &amp; Partners

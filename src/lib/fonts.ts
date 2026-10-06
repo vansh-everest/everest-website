@@ -1,4 +1,12 @@
-import { Inter, Noto_Sans_Devanagari, Noto_Sans_Telugu, Plus_Jakarta_Sans } from "next/font/google";
+import {
+  Inter,
+  Noto_Sans_Bengali,
+  Noto_Sans_Devanagari,
+  Noto_Sans_Kannada,
+  Noto_Sans_Tamil,
+  Noto_Sans_Telugu,
+  Plus_Jakarta_Sans,
+} from "next/font/google";
 
 /**
  * Shared by every root layout. The site has one per locale group, so that a Hindi page can
@@ -27,4 +35,30 @@ const telugu = Noto_Sans_Telugu({
   display: "swap",
 });
 
-export const FONT_VARS = `${inter.variable} ${jakarta.variable} ${devanagari.variable} ${telugu.variable}`;
+// Not preloaded: the files load only when a page sets text in that script, so the English
+// pages do not pay for six Indic faces.
+const kannada = Noto_Sans_Kannada({
+  variable: "--font-knda-src",
+  subsets: ["kannada"],
+  weight: ["400", "600", "700"],
+  display: "swap",
+  preload: false,
+});
+
+const bengali = Noto_Sans_Bengali({
+  variable: "--font-beng-src",
+  subsets: ["bengali"],
+  weight: ["400", "600", "700"],
+  display: "swap",
+  preload: false,
+});
+
+const tamil = Noto_Sans_Tamil({
+  variable: "--font-taml-src",
+  subsets: ["tamil"],
+  weight: ["400", "600", "700"],
+  display: "swap",
+  preload: false,
+});
+
+export const FONT_VARS = [inter, jakarta, devanagari, telugu, kannada, bengali, tamil].map((f) => f.variable).join(" ");

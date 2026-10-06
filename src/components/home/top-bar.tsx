@@ -9,9 +9,9 @@ const rule = <span aria-hidden className="h-4 w-px bg-white/20" />;
 
 export function TopBar() {
   return (
-    <div className="bg-navy">
+    <div className="relative z-[51] bg-navy">
       {/* On a phone only the number and the language stay; the other links are in the menu. */}
-      <div className="mx-auto flex h-10 max-w-[1440px] items-center justify-between gap-5 px-4 text-sm font-semibold leading-5 text-white md:h-12 md:justify-end md:px-6 lg:px-12">
+      <div className="mx-auto flex h-11 max-w-[1440px] items-center justify-between gap-5 px-4 text-sm font-semibold leading-5 text-white md:h-12 md:justify-end md:px-6 lg:px-12">
         <div className="hidden items-center gap-5 md:flex">
           {UTILITY_LINKS.map(({ label, href }) => (
             <Fragment key={href}>

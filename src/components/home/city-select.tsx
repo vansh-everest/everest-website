@@ -25,9 +25,13 @@ export function CitySelect({
         filled ? "border-brand bg-brand text-white" : "border-line bg-white text-navy focus-within:border-brand"
       } ${
         big ? "h-11 gap-2 pl-5 pr-4 text-[15px] font-semibold" : "h-[30px] gap-[5px] pl-[13px] pr-[11px] text-[13px]"
-      }`}
+      } ${filled ? "lg:h-10 lg:gap-1.5 lg:pl-[13px] lg:pr-3 lg:text-base" : ""}`}
     >
-      <MapPin size={big ? 20 : 13} weight={big ? "regular" : "bold"} className={`shrink-0 ${filled ? "text-white" : "text-ink-soft"}`} />
+      <MapPin
+        size={big ? 20 : 13}
+        weight={big ? "regular" : "bold"}
+        className={`shrink-0 ${filled ? "text-white lg:size-[17px]" : "text-ink-soft"}`}
+      />
       <span className="sr-only">City</span>
       <select
         value={value}
@@ -43,7 +47,7 @@ export function CitySelect({
       <CaretDown
         size={big ? 18 : 12}
         weight="bold"
-        className={`pointer-events-none absolute ${filled ? "text-white" : "text-ink-soft"} ${big ? "right-4" : "right-[11px]"}`}
+        className={`pointer-events-none absolute ${filled ? "text-white lg:right-3 lg:size-[13px]" : "text-ink-soft"} ${big ? "right-4" : "right-[11px]"}`}
       />
     </label>
   );

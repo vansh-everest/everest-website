@@ -5,12 +5,14 @@ import {
   priceIn,
   rupees,
   type Car,
+  type DepositOption,
   type Feature,
   type ImageSlot,
   type Plan,
+  type Row,
   type SiteContent,
 } from "@/lib/content";
-import { PLAN_PAGES } from "@/lib/plan-pages";
+import { PLAN_PAGES, type WizardKind } from "@/lib/plan-pages";
 
 /**
  * What a card needs, already priced for one city. Built on the server and handed to the
@@ -121,14 +123,6 @@ export function planCities(content: SiteContent, planId: string): CityOption[] {
   return (listed.length ? listed : content.cities).map((c) => ({ slug: c.slug, name: c.name.en }));
 }
 
-/** Visible cars a plan offers, priced by that plan for every city it is sold in. */
-export function planCarCards(content: SiteContent, plan: Plan): Record<string, CarCardView[]> {
-  const cars = plan.carIds.map((id) => content.cars.find((c) => c.id === id)).filter((c): c is Car => !!c?.visible);
-  return Object.fromEntries(
-    planCities(content, plan.id).map((city) => [city.slug, cars.map((car) => carCard(content, car, city.slug, plan))])
-  );
-}
-
 /** One box in a plan's row of figures: "Daily rent", "₹725/day", "onwards". */
 export type PlanFigure = { label: string; value: string; suffix: string };
 
@@ -155,12 +149,12 @@ export type PlanPageView = {
   headline: string;
   highlight: string;
   heroImage: ImageSlot;
+  /** The phone hero's photo card; the hero photo when the plan has no phone crop. */
+  heroImagePhone: ImageSlot;
   figures: PlanFigure[];
   tags: string[];
+  /** The label over the benefit cards. */
   whyTag: string;
-  whyTitle: string;
-  whySubtitle: string;
-  benefitsImage: ImageSlot;
   features: Feature[];
   storiesTitle: string;
 };
@@ -173,12 +167,10 @@ export function planPage(plan: Plan): PlanPageView {
     headline: fill(page.headline),
     highlight: fill(page.highlight),
     heroImage: page.heroImage,
+    heroImagePhone: page.heroImagePhone.url ? page.heroImagePhone : page.heroImage,
     figures: planFigures(plan),
     tags: page.tags.map((t) => fillOrDrop(t, plan.price)).filter(Boolean),
     whyTag: fill(page.whyTag),
-    whyTitle: fill(page.whyTitle),
-    whySubtitle: fill(page.whySubtitle),
-    benefitsImage: page.benefitsImage,
     features: page.features.map((f) => ({ ...f, title: fill(f.title), body: fill(f.body) })).filter((f) => f.title || f.body),
     storiesTitle: fill(page.storiesTitle),
   };
@@ -189,13 +181,16 @@ export type PlanStepView = { title: string; body: string; image: ImageSlot };
 /** A plan's block on the Our Plans page. */
 export type PlanOverviewView = {
   id: string;
+  /** The block's heading: the overview title, or the plan name. */
   name: string;
-  /** Small text after the name, e.g. "Leasing plan". */
+  /** Small text after the heading, e.g. "Leasing Plan". */
   note: string;
   /** The plan's own page. */
   href: string;
-  figures: PlanFigure[];
-  tags: string[];
+  /** `short` is the phone's compact form of the value. */
+  figures: (PlanFigure & { short: string })[];
+  /** `short` drops everything after a " · ", for the phone. */
+  tags: { full: string; short: string }[];
   /** Numbered photo cards. When there are none, `image` and `points` show instead. */
   steps: PlanStepView[];
   image: ImageSlot;
@@ -205,17 +200,38 @@ export type PlanOverviewView = {
   highlights: string[];
 };
 
+/** The phone's narrower boxes: "₹50,000" becomes "₹50k" and "12 Months" "12 Mo.". */
+function compact(value: string): string {
+  const money = /^₹([\d,]+)$/.exec(value);
+  if (money) {
+    const n = Number(money[1].replaceAll(",", ""));
+    return n >= 10000 && n % 1000 === 0 ? `₹${n / 1000}k` : value;
+  }
+  return value.replace(/^(\d+)\s*months?$/i, "$1 Mo.");
+}
+
+/** "Low deposit · high daily rental plan" becomes "Low deposit" on a phone. */
+const shortTag = (tag: string) => tag.split(" · ")[0];
+
 export function planOverview(plan: Plan): PlanOverviewView {
   const fill = (text: string) => fillOrDrop(text, plan.price);
   const o = plan.overview;
   const page = PLAN_PAGES.find((p) => p.planId === plan.id);
+  // The label already says "Daily rent", so a daily figure drops its "/day" here.
+  const figures = planFigures(plan).map((f, i) => {
+    const value = i === 0 && plan.price.unit.includes("day") ? rupees(plan.price.amount) : f.value;
+    return { ...f, value, short: compact(value) };
+  });
   return {
     id: plan.id,
-    name: plan.name.en,
+    name: fill(o.title) || plan.name.en,
     note: fill(o.note),
     href: page ? `${page.path}/` : "",
-    figures: planFigures(plan),
-    tags: plan.page.tags.map(fill).filter(Boolean),
+    figures,
+    tags: plan.page.tags
+      .map(fill)
+      .filter(Boolean)
+      .map((tag) => ({ full: tag, short: shortTag(tag) })),
     steps: o.steps.map((s) => ({ title: fill(s.title), body: fill(s.body), image: s.image })).filter((s) => s.title || s.body),
     image: o.image,
     points: o.points.map(fill).filter(Boolean),
@@ -227,4 +243,84 @@ export function planOverview(plan: Plan): PlanOverviewView {
 /** Plans on the Our Plans page: visible ones with a home card, in the admin's order. */
 export function planOverviews(content: SiteContent): PlanOverviewView[] {
   return content.plans.filter((p) => p.visible && p.showCard).map(planOverview);
+}
+
+/** One car in a plan page's picker, with the figures the plan's calculator sets for it, if any. */
+export type WizardCar = {
+  id: string;
+  name: string;
+  image: ImageSlot;
+  /** Model years in the order the admin lists them; the first is picked to start with. */
+  years: string[];
+  /** Upfront-to-daily points from the calculator. None means the plan's own figures apply. */
+  options: DepositOption[];
+  defaultOption: number;
+};
+
+/** The plan's own figures in one city, for a car the calculator does not price. `money` is the upfront, or else the deposit. */
+export type WizardPrice = { amount: string; unit: string; money: string; upfront: boolean; months: string };
+
+export type PlanWizardView = {
+  kind: WizardKind;
+  name: string;
+  cities: CityOption[];
+  cars: WizardCar[];
+  /** Months offered on the upfront step. */
+  tenures: string[];
+  prices: Record<string, WizardPrice>;
+  /** The plan's third figure, e.g. Liability: Zero. */
+  term: Row;
+  /** The plan's first tag, e.g. "Rental plan". */
+  tag: string;
+};
+
+/**
+ * The cars a plan offers that have a photo, in the plan's order, then any car only the calculator
+ * lists. A car the calculator prices keeps its studio photo and slider points.
+ */
+function wizardCars(content: SiteContent, plan: Plan): WizardCar[] {
+  const entries = content.calculators.find((c) => c.planId === plan.id)?.cars ?? [];
+  const ids = [...plan.carIds, ...entries.map((e) => e.carId).filter((id) => !plan.carIds.includes(id))];
+  return ids.flatMap((id): WizardCar[] => {
+    const car = content.cars.find((c) => c.id === id);
+    const entry = entries.find((e) => e.carId === id);
+    const image = entry?.image.url ? entry.image : car?.image;
+    if (!car || !image?.url) return [];
+    return [
+      {
+        id,
+        name: car.name,
+        image,
+        years: car.modelYears.split(",").map((y) => y.trim()).filter(Boolean),
+        options: entry?.options.filter((o) => o.daily || o.deposit) ?? [],
+        defaultOption: entry?.defaultOption ?? 0,
+      },
+    ];
+  });
+}
+
+/** A plan page's picker, or null when the plan has no city, no car with a photo, or no figures to offer. */
+export function planWizard(content: SiteContent, plan: Plan, kind: WizardKind): PlanWizardView | null {
+  const cities = planCities(content, plan.id);
+  const cars = wizardCars(content, plan);
+  if (!cities.length || !cars.length) return null;
+  const prices = Object.fromEntries(
+    cities.map((c) => {
+      const p = priceIn(plan.price, plan.cityPrices, c.slug);
+      return [c.slug, { amount: p.amount, unit: p.unit, money: p.upfront || p.deposit, upfront: !!p.upfront, months: p.tenureMonths }];
+    })
+  );
+  // With no figure anywhere the last step would have nothing to show.
+  if (!cars.some((c) => c.options.length) && !Object.values(prices).some((p) => p.amount)) return null;
+  const term = { label: fillOrDrop(plan.page.term.label, plan.price), value: fillOrDrop(plan.page.term.value, plan.price) };
+  return {
+    kind,
+    name: plan.name.en,
+    cities,
+    cars,
+    tenures: content.calculators.find((c) => c.planId === plan.id)?.tenures ?? [],
+    prices,
+    term: term.label && term.value ? term : { label: "", value: "" },
+    tag: plan.page.tags.map((t) => fillOrDrop(t, plan.price)).find(Boolean) ?? "",
+  };
 }

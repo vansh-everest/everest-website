@@ -50,6 +50,12 @@ const ICON_NAMES: Record<FeatureIcon, string> = {
   key: "Key",
   shield: "Shield",
   wrench: "Spanner",
+  refund: "Refund",
+  badge: "Badge",
+  headset: "Headset",
+  id: "ID card",
+  bank: "Bank",
+  clipboard: "Clipboard",
 };
 
 export function PlansTab({ content, setContent, locked }: { content: SiteContent; setContent: Setter; locked: boolean }) {
@@ -66,9 +72,9 @@ export function PlansTab({ content, setContent, locked }: { content: SiteContent
         id,
         visible: false,
         showCard: false,
-        name: { en: name, hi: name, te: name },
+        name: Object.fromEntries(LOCALES.map((l) => [l, name])) as Record<Locale, string>,
         shortName: "",
-        summary: { en: "", hi: "", te: "" },
+        summary: Object.fromEntries(LOCALES.map((l) => [l, ""])) as Record<Locale, string>,
         tag: "",
         priceLabel: "Rent starting from",
         theme: "light",
@@ -280,6 +286,7 @@ function PageEditor({ page, onChange, disabled }: { page: PlanPage; onChange: (p
         <Text label="Heading, yellow line" value={page.highlight} disabled={disabled} onChange={(highlight) => set({ highlight })} />
       </Row>
       <ImageField slot={page.heroImage} disabled={disabled} onChange={(heroImage) => set({ heroImage })} />
+      <ImageField slot={page.heroImagePhone} disabled={disabled} onChange={(heroImagePhone) => set({ heroImagePhone })} />
       <Row cols={2}>
         <Text
           label="Third figure, label"
@@ -306,12 +313,14 @@ function PageEditor({ page, onChange, disabled }: { page: PlanPage; onChange: (p
         disabled={disabled}
         onChange={(tags) => set({ tags })}
       />
-      <Row cols={3}>
-        <Text label="Band label" placeholder="Benefits" value={page.whyTag} disabled={disabled} onChange={(whyTag) => set({ whyTag })} />
-        <Text label="Band heading" value={page.whyTitle} disabled={disabled} onChange={(whyTitle) => set({ whyTitle })} />
-        <Text label="Band subheading" value={page.whySubtitle} disabled={disabled} onChange={(whySubtitle) => set({ whySubtitle })} />
-      </Row>
-      <ImageField slot={page.benefitsImage} disabled={disabled} onChange={(benefitsImage) => set({ benefitsImage })} />
+      <Text
+        label="Label over the cards"
+        hint="phones only"
+        placeholder="Benefits of this plan"
+        value={page.whyTag}
+        disabled={disabled}
+        onChange={(whyTag) => set({ whyTag })}
+      />
 
       <div className="grid gap-2">
         <p className="text-[13px] font-medium text-navy">Cards</p>
@@ -372,7 +381,10 @@ function OverviewEditor({ overview, onChange, disabled }: { overview: PlanOvervi
 
   return (
     <>
-      <Text label="Note after the name" placeholder="Leasing plan" value={overview.note} disabled={disabled} onChange={(note) => set({ note })} />
+      <Row cols={2}>
+        <Text label="Heading" hint="blank uses the plan name" value={overview.title} disabled={disabled} onChange={(title) => set({ title })} />
+        <Text label="Note after the heading" placeholder="Leasing Plan" value={overview.note} disabled={disabled} onChange={(note) => set({ note })} />
+      </Row>
 
       <div className="grid gap-2">
         <p className="text-[13px] font-medium text-navy">Steps</p>

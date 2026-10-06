@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Testimonials } from "@/components/home/testimonials";
 import { PlanBlock } from "@/components/our-plans/plan-block";
 import { PlansHero } from "@/components/our-plans/plans-hero";
 import { StartDriving } from "@/components/site/start-driving";
@@ -18,12 +19,16 @@ export default async function OurPlansPage() {
   return (
     <>
       <PlansHero slot={content.images["our-plans-hero"]} />
-      <div className="lg:space-y-[180px] lg:px-10 lg:pb-16 lg:pt-[100px]">
-        {plans.map((plan, i) => (
-          <PlanBlock key={plan.id} plan={plan} shade={i % 2 === 1} />
+      <div className="lg:space-y-40 lg:px-10 lg:pb-16 lg:pt-20">
+        {plans.map((plan) => (
+          <PlanBlock key={plan.id} plan={plan} />
         ))}
       </div>
-      <StartDriving source="our-plans" eyebrow="phone" />
+      {/* Only the phone design has the driver stories here. */}
+      <div className="lg:hidden">
+        <Testimonials variant="page" />
+      </div>
+      <StartDriving source="our-plans" eyebrow />
     </>
   );
 }

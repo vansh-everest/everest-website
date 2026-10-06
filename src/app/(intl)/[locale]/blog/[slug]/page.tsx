@@ -20,6 +20,11 @@ async function findPost(locale: ExtraLocale, slug: string) {
   return postsFor(content, locale).find((p) => p.slug === slug);
 }
 
+async function relatedTo(locale: ExtraLocale, slug: string) {
+  const content = await getContent();
+  return postsFor(content, locale).filter((p) => p.slug !== slug).slice(0, 4);
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   if (!isLocale(locale) || locale === "en") return {};
@@ -48,7 +53,7 @@ export default async function Page({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(postJsonLd(post, locale as ExtraLocale)) }}
       />
-      <BlogPost locale={locale as ExtraLocale} post={post} />
+      <BlogPost locale={locale as ExtraLocale} post={post} related={await relatedTo(locale as ExtraLocale, slug)} />
     </>
   );
 }

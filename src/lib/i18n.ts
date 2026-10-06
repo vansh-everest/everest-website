@@ -2,11 +2,12 @@
  * Locales for the driver pages.
  *
  * English is the default and carries no prefix, because the eight driver addresses on the
- * live property already rank and must not move. Hindi and Telugu are served under /hi and
- * /te. More locales are added by extending LOCALES and the dictionary; no routing changes.
+ * live property already rank and must not move. Every other language is served under its own
+ * prefix (/hi, /mr, /kn, /te, /bn, /ta). More locales are added by extending LOCALES and the
+ * dictionary; no routing changes. The order here is the order of the language picker.
  */
 export const DEFAULT_LOCALE = "en" as const;
-export const EXTRA_LOCALES = ["hi", "te"] as const;
+export const EXTRA_LOCALES = ["hi", "mr", "kn", "te", "bn", "ta"] as const;
 export const LOCALES = [DEFAULT_LOCALE, ...EXTRA_LOCALES] as const;
 
 export type Locale = (typeof LOCALES)[number];
@@ -15,7 +16,11 @@ export type ExtraLocale = (typeof EXTRA_LOCALES)[number];
 export const LOCALE_META: Record<Locale, { label: string; htmlLang: string; fontVar: string }> = {
   en: { label: "English", htmlLang: "en-IN", fontVar: "font-sans" },
   hi: { label: "हिन्दी", htmlLang: "hi-IN", fontVar: "font-deva" },
+  mr: { label: "मराठी", htmlLang: "mr-IN", fontVar: "font-deva" },
+  kn: { label: "ಕನ್ನಡ", htmlLang: "kn-IN", fontVar: "font-knda" },
   te: { label: "తెలుగు", htmlLang: "te-IN", fontVar: "font-telu" },
+  bn: { label: "বাংলা", htmlLang: "bn-IN", fontVar: "font-beng" },
+  ta: { label: "தமிழ்", htmlLang: "ta-IN", fontVar: "font-taml" },
 };
 
 export function isLocale(value: string): value is Locale {

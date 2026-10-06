@@ -6,6 +6,9 @@
   /* Indic faces fall back to the Latin stack, so mixed strings such as "Uber" stay on brand. */
   --font-deva: var(--font-deva-src), var(--font-inter), ui-sans-serif, sans-serif;
   --font-telu: var(--font-telu-src), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-knda: var(--font-knda-src), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-beng: var(--font-beng-src), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-taml: var(--font-taml-src), var(--font-inter), ui-sans-serif, sans-serif;
 }
 
 /* Tokens pulled from the Figma "Final homepage" frame (499:1311). */

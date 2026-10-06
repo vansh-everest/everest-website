@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Testimonials } from "@/components/home/testimonials";
-import { calculatorFor, PlanCalculator } from "@/components/own-now/plan-calculator";
 import { StartDriving } from "@/components/site/start-driving";
 import { headline, planFor } from "@/lib/content";
-import { planIdFor, type PlanPagePath } from "@/lib/plan-pages";
-import { planPage } from "@/lib/plan-view";
+import { planIdFor, wizardFor, type PlanPagePath } from "@/lib/plan-pages";
+import { planPage, planWizard } from "@/lib/plan-view";
 import { getContent } from "@/lib/store";
-import { PickYourCar } from "./pick-your-car";
+import { PlanBenefits } from "./plan-benefits";
 import { PlanHero } from "./plan-hero";
-import { PlanWhy } from "./plan-why";
+import { PlanWizard } from "./plan-wizard";
 
 /** A plan that is switched off in the admin has no page, rather than a page with no plan. */
 export async function offered(path: PlanPagePath) {
@@ -29,41 +28,20 @@ export async function planMetadata(path: PlanPagePath): Promise<Metadata> {
   };
 }
 
-/**
- * What each page adds after the calculator, as the designs lay them out: where the plan's cars are
- * listed, and whether the driver stories come before the form on a desktop. Phones always show the
- * stories first, and the Drive to Own phone design has no car list.
- */
-const LAYOUT: Record<PlanPagePath, { cars: "none" | "desktop" | "all"; storiesFirst: boolean }> = {
-  "/own-now": { cars: "none", storiesFirst: true },
-  "/drive-to-own": { cars: "desktop", storiesFirst: false },
-  "/drive-to-earn": { cars: "none", storiesFirst: false },
-  "/revenue-share": { cars: "all", storiesFirst: false },
-};
-
+/** Hero, the plan picker, the benefit cards (phones only), driver stories, then the form. */
 export async function PlanPage({ path }: { path: PlanPagePath }) {
   const { content, plan } = await offered(path);
   if (!plan) notFound();
   const view = planPage(plan);
-  const calculator = calculatorFor(content, plan.id);
-  const { cars, storiesFirst } = LAYOUT[path];
+  const wizard = planWizard(content, plan, wizardFor(path));
   return (
     <>
-      <PlanHero view={view} startHref={calculator ? "#calculator" : "#apply"} />
-      <PlanWhy view={view} />
-      {calculator ? <PlanCalculator data={calculator} /> : null}
-      {/* One copy of each section; the order moves with CSS, so #cars and #apply stay unique. */}
-      <div className="flex flex-col">
-        {cars === "none" ? null : (
-          <div className={cars === "desktop" ? "hidden lg:block" : ""}>
-            <PickYourCar content={content} plan={plan} />
-          </div>
-        )}
-        <div className={storiesFirst ? "" : "lg:order-last"}>
-          <Testimonials variant="page" title={view.storiesTitle} />
-        </div>
-        <StartDriving source={`plan:${plan.id}`} eyebrow="phone" />
-      </div>
+      {/* Revenue Share has no edge-to-edge hero artwork yet; its photo is cropped for the split layout. */}
+      <PlanHero view={view} startHref={wizard ? "#plan" : "#apply"} wide={path !== "/revenue-share"} />
+      {wizard ? <PlanWizard view={wizard} /> : null}
+      <PlanBenefits view={view} />
+      <Testimonials variant="page" title={view.storiesTitle} />
+      <StartDriving source={`plan:${plan.id}`} eyebrow />
     </>
   );
 }

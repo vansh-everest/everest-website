@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { MapPin } from "lucide-react";
 
 const milestones = [
   { year: "2016", title: "Founded in Mumbai", body: "10 cars and a vision to professionalize ride-hailing.", badge: "10 Cars" },
@@ -11,7 +12,7 @@ const milestones = [
 
 export function Milestones() {
   return (
-    <section className="relative bg-blue-gradient pb-[58px] pt-14 lg:aspect-[1440/1367] lg:pb-0 lg:pt-20">
+    <section className="relative bg-blue-gradient pb-[52px] pt-[15px] lg:aspect-[1440/1367] lg:pb-0 lg:pt-20">
       {/* Desktop shows the road illustration, milestone cards included; the list below carries the text. */}
       <Image
         src="/figma/about/journey-road.webp"
@@ -20,23 +21,36 @@ export function Milestones() {
         sizes="100vw"
         className="hidden object-cover lg:block"
       />
-      <h2 className="relative px-6 text-center text-[28px] font-extrabold leading-[34px] text-white lg:text-[64px] lg:tracking-[-0.5px] lg:leading-[70px]">
+      <p className="relative flex items-center justify-center gap-2.5 text-[13px] font-semibold uppercase leading-4 tracking-[1px] text-sun lg:hidden">
+        <span aria-hidden className="h-0.5 w-[18px] bg-sun" />
+        Our milestones
+        <span aria-hidden className="h-0.5 w-[18px] bg-sun" />
+      </p>
+      <h2 className="relative mt-[14px] px-6 text-center text-[34px] font-extrabold leading-[40px] text-white lg:mt-0 lg:text-[64px] lg:leading-[70px] lg:tracking-[-0.5px]">
         Our Journey So Far
       </h2>
-      {/* Narrow screens: a year tab and card per milestone, with a marker on a dashed line down the left. */}
-      <ol className="relative mx-auto mt-8 max-w-md space-y-6 pl-[21px] pr-[17px] lg:sr-only">
+      {/* Narrow screens: a pin, a year pill and a card per milestone, joined by a small road down the left. */}
+      <ol className="relative mx-auto mt-[45px] max-w-md space-y-[33px] pl-6 pr-4 lg:sr-only">
         {milestones.map((m, i) => (
-          <li key={m.year} className="relative pl-[23px]">
-            <span aria-hidden className="absolute left-0 top-3 size-3.5 rounded-full bg-[#ce3922]" />
+          <li key={m.year} className="relative pl-16">
+            <span
+              aria-hidden
+              className="absolute left-0 top-[-3px] z-10 grid size-10 place-items-center rounded-full bg-[#d33f27] text-white shadow-[0_0_0_3px_rgba(240,128,105,0.8),0_4px_12px_rgba(0,0,0,0.25)]"
+            >
+              <MapPin className="size-[18px]" strokeWidth={2} />
+            </span>
             {i < milestones.length - 1 && (
-              <span aria-hidden className="absolute -bottom-[43px] left-1.5 top-[19px] border-l-2 border-dashed border-white/25" />
+              <span
+                aria-hidden
+                className="absolute -bottom-[30px] left-4 top-[37px] w-2 border-x-2 border-dashed border-sun bg-[#1f2b39]"
+              />
             )}
-            <p className="w-fit rounded-t-[10px] bg-[#ce3922] px-3.5 pt-px text-[15px] font-extrabold leading-[27px] text-white">{m.year}</p>
-            <div className="mt-2 rounded-xl rounded-tl-none border border-[#d2dbe3] bg-[#fdffe4] pb-3.5 pl-[15px] pr-3 pt-3.5">
-              <p className="text-sm font-bold leading-5 text-[#000014]">{m.title}</p>
-              <p className="mt-[7px] text-xs leading-[17px] text-[#727e95]">{m.body}</p>
+            <p className="w-fit rounded-full bg-[#d33f27] px-4 text-lg font-extrabold leading-[34px] text-white">{m.year}</p>
+            <div className="mt-3 rounded-[14px] bg-white px-4 pb-4 pt-[18px] shadow-[0_8px_24px_rgba(0,0,0,0.12)]">
+              <p className="text-base font-bold leading-5 text-[#0f172a]">{m.title}</p>
+              <p className="mt-[7px] text-[13px] leading-[18px] text-ink-soft">{m.body}</p>
               {m.badge && (
-                <p className="mt-[9px] w-fit rounded-md bg-[#e3f0ff] px-2.5 py-0.5 text-xs font-medium leading-[17px] text-[#195af5]">
+                <p className="mt-3 w-fit rounded-md bg-[#e3f0ff] px-2.5 py-0.5 text-[11px] font-semibold leading-4 text-[#195af5]">
                   {m.badge}
                 </p>
               )}

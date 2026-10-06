@@ -19,7 +19,7 @@ const benefits: Benefit[] = [
   {
     icon: LockSimpleOpen,
     tone: "bg-brand text-white",
-    title: "Low Deposit/ Upfront Payment",
+    title: "Low Deposit",
     titleMd: "Low Deposit Plan",
     body: "Start with minimal upfront cost",
   },
@@ -29,7 +29,7 @@ const benefits: Benefit[] = [
     tone: "bg-plum text-white",
     title: "Ownership Plans Available",
     titleMd: "Ownership Plans",
-    body: "Own your car in less than 12 months",
+    body: "Own your car starting from 11 months",
     bodyMd: "Own car in less than 12 months",
   },
   {

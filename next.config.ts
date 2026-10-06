@@ -11,6 +11,25 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com", pathname: "/**" }],
   },
+  // Until everestfleet.com points here, the site answers only on *.vercel.app. Those copies
+  // must stay out of search results, or they would compete with the real domain at launch.
+  // The header is tied to the host, so it disappears on its own once the domain moves.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: ".*\\.vercel\\.app" }],
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      },
+    ];
+  },
+  // Addresses from the WordPress site that have a new home here.
+  async redirects() {
+    return [
+      { source: "/OwnNow", destination: "/own-now/", permanent: true },
+      { source: "/OwnNow/:path*", destination: "/own-now/", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

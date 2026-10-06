@@ -3,36 +3,40 @@
  * It lives outside the client components so a server component can read it as data.
  */
 export type NavLink = { label: string; href: string };
-export type NavItem = NavLink | { label: string; items: NavLink[] };
+/** `href` on a group is the page that marks the group current without being one of its items. */
+export type NavGroup = { label: string; href?: string; items: NavLink[] };
+export type NavItem = NavLink | NavGroup;
 
 export const NAV: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about-us" },
   {
     label: "Our Plans",
+    href: "/our-plans",
     items: [
-      { label: "All plans", href: "/our-plans" },
       { label: "Own Now", href: "/own-now" },
-      { label: "Drive to Own", href: "/drive-to-own" },
-      { label: "Drive to Earn", href: "/drive-to-earn" },
       { label: "Revenue Share", href: "/revenue-share" },
+      { label: "Drive to Earn", href: "/drive-to-earn" },
+      { label: "Drive to Own", href: "/drive-to-own" },
     ],
   },
   {
-    label: "Our Services",
+    label: "Other Services",
     items: [
-      { label: "Fleet Management", href: "/our-services" },
-      { label: "Driver Sourcing", href: "/drive-with-us" },
-      { label: "Maintenance", href: "/our-services#how" },
+      { label: "Fleet Logistics", href: "/fleet-logistics" },
+      { label: "Employee Mobility", href: "/employee-mobility" },
+      { label: "Intercity", href: "/intercity" },
+      { label: "Advertise With Us", href: "/advertise-with-us" },
     ],
   },
-  { label: "Everest Dost", href: "/#dost" },
+  { label: "Everest Dost", href: "/everest-dost" },
 ];
 
 /** The top bar's links. The mobile menu repeats them because the top bar is hidden there. */
 export const UTILITY_LINKS: NavLink[] = [
   { label: "For Investors", href: "/investors" },
   { label: "Blogs", href: "/blog" },
+  { label: "ESG Report", href: "/investors#esg" },
 ];
 
 // A hash link points into a page, so it never marks that page as the current one.
@@ -42,7 +46,6 @@ export function isCurrent(href: string, pathname: string): boolean {
 }
 
 export function isActive(item: NavItem, pathname: string): boolean {
-  return "items" in item
-    ? item.items.some((sub) => isCurrent(sub.href, pathname))
-    : isCurrent(item.href, pathname);
+  if (!("items" in item)) return isCurrent(item.href, pathname);
+  return (item.href !== undefined && isCurrent(item.href, pathname)) || item.items.some((sub) => isCurrent(sub.href, pathname));
 }

@@ -13,6 +13,9 @@ type Props = { params: Promise<{ slug: string }> };
 
 export const dynamicParams = false;
 
+// Daily, so the job posting's monthly dates roll over without a publish or a deploy.
+export const revalidate = 86400;
+
 export async function generateStaticParams() {
   const content = await getContent();
   return content.cities.map((c) => ({ slug: citySegment(c.slug) }));

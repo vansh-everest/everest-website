@@ -11,14 +11,16 @@ import { FleetApp } from "@/components/home/fleet-app";
 import { DostApp } from "@/components/home/dost-app";
 import { Testimonials } from "@/components/home/testimonials";
 import { StartDriving } from "@/components/site/start-driving";
+import { LOCALES, LOCALE_META } from "@/lib/i18n";
 import { jsonLd } from "@/lib/json-ld";
 import { getContent } from "@/lib/store";
 
 export const metadata: Metadata = {
-  title: "Drive an Uber without owning a car | Everest Fleet",
+  // Absolute, so the layout's "| Everest Fleet" is not added twice.
+  title: { absolute: "Everest Fleet: Driver Jobs and Cars for Uber in India" },
   description:
-    `Rent or own a car to drive on Uber across ${COMPANY.cities} Indian cities. ` +
-    "Low deposit, weekly payouts, maintenance and insurance included.",
+    `Get a driver job with Everest Fleet: the car, insurance and permit to drive on Uber in ${COMPANY.cities} cities, ` +
+    "weekly payouts, and plans to own the car. Apply in 30 seconds.",
   alternates: { canonical: "/" },
 };
 
@@ -29,6 +31,7 @@ const organisation = {
   "@type": "Organization",
   name: "Everest Fleet",
   url: SITE_URL,
+  logo: `${SITE_URL}/figma/logo.png`,
   foundingDate: String(COMPANY.founded),
   description: COMPANY_BLURB,
   areaServed: "India",
@@ -41,13 +44,21 @@ const organisation = {
   },
 };
 
+const website = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Everest Fleet",
+  url: SITE_URL,
+  inLanguage: LOCALES.map((l) => LOCALE_META[l].htmlLang),
+};
+
 export default async function Home() {
   const content = await getContent();
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLd(organisation) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd([organisation, website]) }}
       />
       <Hero />
       <HeadlineBand />
@@ -58,8 +69,15 @@ export default async function Home() {
       <CarShowcase content={content} />
       <FleetApp />
       <DostApp />
-      <StartDriving source="home" eyebrow />
-      <Testimonials />
+      {/* Phones show the form before the stories; the desktop design puts the stories first. */}
+      <div className="flex flex-col">
+        <div className="lg:order-2">
+          <StartDriving source="home" eyebrow />
+        </div>
+        <div className="lg:order-1">
+          <Testimonials />
+        </div>
+      </div>
     </>
   );
 }

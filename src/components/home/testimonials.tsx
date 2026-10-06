@@ -13,26 +13,17 @@ const homeTint =
 
 function HomePlayMark() {
   return (
-    <>
-      <span className="grid h-12 w-[68px] place-items-center rounded-xl bg-[#ff0000] lg:hidden">
-        <svg viewBox="0 0 20 22" aria-hidden className="ml-1 h-[22px] w-5 fill-white">
-          <path d="M0 0 20 11 0 22Z" />
-        </svg>
-      </span>
-      <span className="hidden size-24 place-items-center rounded-full border-2 border-white/50 bg-white/10 lg:grid">
-        <span className="grid size-[76px] place-items-center rounded-full bg-white/95">
-          <svg viewBox="0 0 18 22" aria-hidden className="ml-1 h-[22px] w-[18px] fill-brand">
-            <path d="M0 0 18 11 0 22Z" />
-          </svg>
-        </span>
-      </span>
-    </>
+    <span className="grid h-12 w-[68px] place-items-center rounded-xl bg-[#ff0000] lg:h-[50px] lg:w-[72px] lg:rounded-[14px]">
+      <svg viewBox="0 0 20 22" aria-hidden className="ml-1 h-[22px] w-5 fill-white lg:h-[21px] lg:w-[19px]">
+        <path d="M0 0 20 11 0 22Z" />
+      </svg>
+    </span>
   );
 }
 
 export function Testimonials({
   variant = "home",
-  title = "Real Drivers. Real Stories. On Camera.",
+  title = "Real Drivers Real Stories",
 }: {
   variant?: "home" | "page";
   title?: string;
@@ -85,7 +76,7 @@ export function Testimonials({
               type="button"
               aria-label="Play Anand T.'s story"
               className={`absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center ${
-                page ? "lg:size-24 lg:rounded-full lg:bg-white/30" : "lg:top-[calc(50%-11px)]"
+                page ? "lg:size-24 lg:rounded-full lg:bg-white/30" : "lg:top-[calc(50%-26px)]"
               }`}
             >
               {page ? (

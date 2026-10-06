@@ -298,12 +298,19 @@ export function CityPage({
   );
 }
 
+/** Text for an HTML job description; city names come from the admin. */
+const escapeHtml = (text: string) => text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
 /**
  * JobPosting plus FAQ markup for a city page.
  *
  * The live WordPress city pages carry JobPosting, which is a material reason they rank.
  * Reproducing it here is what stops the migration losing those positions. Salary is omitted
  * entirely rather than guessed, because an unapproved figure is worse than no figure.
+ *
+ * Hiring is continuous, so the posting renews each month: it is dated the first of the month
+ * and valid to the end of the next, and the page regenerates daily to roll it over. A posting
+ * dated "today" on every render reads to Google as a job reposted to stay on top.
  */
 export function cityJsonLd({
   locale,
@@ -321,25 +328,41 @@ export function cityJsonLd({
   if (!city) return null;
   const name = city.name[locale];
 
+  const now = new Date();
+  const posted = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+  const validThrough = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 2, 0, 23, 59, 59));
+  const description = [
+    `<p>${escapeHtml(fill(dict.city.intro, { city: name }))}</p>`,
+    `<ul>${dict.benefits.map((b) => `<li><strong>${escapeHtml(b.title)}</strong>: ${escapeHtml(b.body)}</li>`).join("")}</ul>`,
+    `<p><strong>${escapeHtml(dict.city.documentsHeading)}</strong>: ${dict.documents.map(escapeHtml).join(", ")}</p>`,
+  ].join("");
+
   const posting = {
     "@context": "https://schema.org",
     "@type": "JobPosting",
-    title: fill(dict.city.title, { city: name }),
-    description: fill(dict.city.intro, { city: name }),
-    datePosted: new Date().toISOString().slice(0, 10),
-    employmentType: "CONTRACTOR",
+    title: dict.city.jobTitle,
+    description,
+    identifier: { "@type": "PropertyValue", name: "Everest Fleet", value: `driver-${city.slug}` },
+    datePosted: posted.toISOString().slice(0, 10),
+    validThrough: validThrough.toISOString(),
+    employmentType: ["FULL_TIME", "PART_TIME", "CONTRACTOR"],
     directApply: true,
-    hiringOrganization: { "@type": "Organization", name: "Everest Fleet", sameAs: "https://everestfleet.com" },
+    hiringOrganization: {
+      "@type": "Organization",
+      name: "Everest Fleet",
+      sameAs: SITE_URL,
+      logo: `${SITE_URL}/figma/logo.png`,
+    },
     jobLocation: {
       "@type": "Place",
       address: {
         "@type": "PostalAddress",
+        ...(city.hubs[0]?.address ? { streetAddress: city.hubs[0].address } : {}),
         addressLocality: city.name.en,
         addressRegion: city.state,
         addressCountry: "IN",
       },
     },
-    applicantLocationRequirements: { "@type": "Country", name: "India" },
     url,
   };
 

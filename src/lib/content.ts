@@ -1,4 +1,4 @@
-import type { Locale } from "@/lib/i18n";
+import { LOCALES, type Locale } from "@/lib/i18n";
 
 /**
  * Everything on the public site that a person can change from /admin without a deploy.
@@ -43,10 +43,10 @@ export type CityPrices = Record<string, Partial<Price>>;
 export type Row = { label: string; value: string };
 
 /** Marks a plan page card can carry; each has its own colour. */
-export const FEATURE_ICONS = ["card", "coins", "calendar", "key", "shield", "wrench"] as const;
+export const FEATURE_ICONS = ["card", "coins", "calendar", "key", "shield", "wrench", "refund", "badge", "headset", "id", "bank", "clipboard"] as const;
 export type FeatureIcon = (typeof FEATURE_ICONS)[number];
 
-/** A card in the plan page's blue band. */
+/** A benefit card on the plan page. */
 export type Feature = { icon: FeatureIcon; title: string; body: string };
 
 /**
@@ -59,11 +59,13 @@ export type PlanPage = {
   /** Second line, in yellow. */
   highlight: string;
   heroImage: ImageSlot;
+  /** The photo card in the phone hero. Blank uses the hero photo. */
+  heroImagePhone: ImageSlot;
   /** The third hero figure, after the rent and the deposit, e.g. Tenure: 12 Months. */
   term: Row;
   /** The chips under the hero figures, e.g. "Ownership plan". Also on the Our Plans page. */
   tags: string[];
-  /** The small heading over the band, e.g. "Benefits". */
+  /** The label over the benefit cards, e.g. "Benefits of this plan". */
   whyTag: string;
   whyTitle: string;
   whySubtitle: string;
@@ -79,7 +81,9 @@ export type PlanStep = { title: string; body: string; image: ImageSlot };
 
 /** The plan's block on the Our Plans page. */
 export type PlanOverview = {
-  /** Small text after the plan name, e.g. "Leasing plan". */
+  /** The block's heading. Blank uses the plan name. */
+  title: string;
+  /** Small text after the heading, e.g. "Leasing plan". */
   note: string;
   /** Numbered photo cards. With none, the photo and points show instead. */
   steps: PlanStep[];
@@ -202,25 +206,58 @@ export type SiteContent = {
 };
 
 /** Bump when SiteContent changes shape, so no deployment reads a cache written by an older one. */
-export const CONTENT_VERSION = "4";
+export const CONTENT_VERSION = "7";
 
 export const placeholder = (label: string, alt = ""): ImageSlot => ({ label, url: "", alt });
 
 export const emptyPrice = (): Price => ({ amount: "", unit: "/day", deposit: "", upfront: "", tenureMonths: "" });
 
-const same = (text: string): Record<Locale, string> => ({ en: text, hi: text, te: text });
+const same = (text: string): Record<Locale, string> =>
+  Object.fromEntries(LOCALES.map((l) => [l, text])) as Record<Locale, string>;
 
-const INSURANCE: Feature = { icon: "shield", title: "Insurance & Permits", body: "Included from Day 1" };
-const SUPPORT: Feature = { icon: "wrench", title: "24×7 Support", body: "On-road breakdown help, always" };
+const INSURANCE: Feature = { icon: "shield", title: "Insurance & permits", body: "Included from day one" };
+const SUPPORT: Feature = { icon: "headset", title: "24×7 support", body: "Breakdown help, day or night" };
+const NO_LOAN: Feature = { icon: "bank", title: "No bank loan", body: "You don’t need a loan to own it" };
+const INCENTIVE: Feature = { icon: "coins", title: "100% Uber incentive", body: "All of it stays with you" };
+const REFUND: Feature = { icon: "refund", title: "Refundable deposit", body: "It comes back to you in full" };
+const MAINTENANCE: Feature = { icon: "wrench", title: "Zero maintenance", body: "Servicing and repairs are on us" };
 
-const CITY_SEED: Array<{ slug: string; en: string; hi: string; te: string; state: string }> = [
-  { slug: "mumbai", en: "Mumbai", hi: "मुंबई", te: "ముంబై", state: "Maharashtra" },
-  { slug: "delhi", en: "Delhi NCR", hi: "दिल्ली NCR", te: "ఢిల్లీ NCR", state: "Delhi" },
-  { slug: "bengaluru", en: "Bengaluru", hi: "बेंगलुरु", te: "బెంగళూరు", state: "Karnataka" },
-  { slug: "hyderabad", en: "Hyderabad", hi: "हैदराबाद", te: "హైదరాబాద్", state: "Telangana" },
-  { slug: "chennai", en: "Chennai", hi: "चेन्नई", te: "చెన్నై", state: "Tamil Nadu" },
-  { slug: "pune", en: "Pune", hi: "पुणे", te: "పూణే", state: "Maharashtra" },
-  { slug: "kolkata", en: "Kolkata", hi: "कोलकाता", te: "కోల్‌కతా", state: "West Bengal" },
+const CITY_SEED: Array<{ slug: string; name: Record<Locale, string>; state: string }> = [
+  {
+    slug: "mumbai",
+    name: { en: "Mumbai", hi: "मुंबई", mr: "मुंबई", kn: "ಮುಂಬೈ", te: "ముంబై", bn: "মুম্বাই", ta: "மும்பை" },
+    state: "Maharashtra",
+  },
+  {
+    slug: "delhi",
+    name: { en: "Delhi NCR", hi: "दिल्ली NCR", mr: "दिल्ली NCR", kn: "ದೆಹಲಿ NCR", te: "ఢిల్లీ NCR", bn: "দিল্লি NCR", ta: "டெல்லி NCR" },
+    state: "Delhi",
+  },
+  {
+    slug: "bengaluru",
+    name: { en: "Bengaluru", hi: "बेंगलुरु", mr: "बेंगळुरू", kn: "ಬೆಂಗಳೂರು", te: "బెంగళూరు", bn: "বেঙ্গালুরু", ta: "பெங்களூரு" },
+    state: "Karnataka",
+  },
+  {
+    slug: "hyderabad",
+    name: { en: "Hyderabad", hi: "हैदराबाद", mr: "हैदराबाद", kn: "ಹೈದರಾಬಾದ್", te: "హైదరాబాద్", bn: "হায়দরাবাদ", ta: "ஹைதராபாத்" },
+    state: "Telangana",
+  },
+  {
+    slug: "chennai",
+    name: { en: "Chennai", hi: "चेन्नई", mr: "चेन्नई", kn: "ಚೆನ್ನೈ", te: "చెన్నై", bn: "চেন্নাই", ta: "சென்னை" },
+    state: "Tamil Nadu",
+  },
+  {
+    slug: "pune",
+    name: { en: "Pune", hi: "पुणे", mr: "पुणे", kn: "ಪುಣೆ", te: "పూణే", bn: "পুনে", ta: "புனே" },
+    state: "Maharashtra",
+  },
+  {
+    slug: "kolkata",
+    name: { en: "Kolkata", hi: "कोलकाता", mr: "कोलकाता", kn: "ಕೋಲ್ಕತ್ತಾ", te: "కోల్‌కతా", bn: "কলকাতা", ta: "கொல்கத்தா" },
+    state: "West Bengal",
+  },
 ];
 
 /**
@@ -238,6 +275,10 @@ const PLAN_SEED: Plan[] = [
       en: "Pay a low amount upfront, then daily, and the car transfers to you at the end.",
       hi: "शुरू में कम रकम, फिर रोज़ का भुगतान, और अवधि पूरी होने पर गाड़ी आपकी।",
       te: "మొదట తక్కువ మొత్తం, తర్వాత రోజువారీ చెల్లింపు, గడువు చివర కారు మీదే.",
+      mr: "सुरुवातीला कमी रक्कम, मग रोजचे पेमेंट, आणि मुदतीअखेर गाडी तुमची.",
+      kn: "ಮೊದಲು ಕಡಿಮೆ ಮೊತ್ತ, ನಂತರ ದಿನದ ಪಾವತಿ, ಅವಧಿಯ ಕೊನೆಗೆ ಕಾರು ನಿಮ್ಮದು.",
+      bn: "শুরুতে অল্প টাকা, তারপর রোজের পেমেন্ট, আর মেয়াদ শেষে গাড়ি আপনার।",
+      ta: "முதலில் குறைந்த தொகை, பிறகு தினசரி கட்டணம், காலம் முடிவில் கார் உங்களுடையது.",
     },
     tag: "Ownership model",
     priceLabel: "Rent starting from",
@@ -248,48 +289,40 @@ const PLAN_SEED: Plan[] = [
     cityPrices: {},
     rows: [{ label: "Ownership", value: "Car transferred to your name at tenure end" }],
     benefits: ["No CIBIL", "Daily Instalments", "No Insurance", "No Regulatory Charges", "100% Uber incentive"],
-    carIds: ["swift-dzire", "wagonr", "tigor", "s-presso"],
+    carIds: ["wagonr", "s-presso", "tigor", "rumion", "swift-dzire"],
     page: {
       headline: "The Easiest Way to",
       highlight: "Own a Car",
       heroImage: { label: "Own Now, hero photo", url: "/figma/own-hero.webp", alt: "Everest driver holding up the keys to his car" },
+      heroImagePhone: { label: "Own Now, phone hero photo", url: "/figma/plans/hero-phone-own-now.webp", alt: "An Everest driver holding up the keys to his car" },
       term: { label: "Tenure", value: "12 Months" },
       tags: ["Ownership plan", "High upfront · low daily rental plan", "Non-refundable"],
-      whyTag: "Benefits",
+      whyTag: "Benefits of this plan",
       whyTitle: "Everything a driver needs, in one plan",
       whySubtitle: "",
       benefitsImage: { label: "Own Now, benefits photo", url: "/figma/plans/own-now-benefits.webp", alt: "A hand holding out a car key in front of a white car" },
       features: [
-        { icon: "card", title: "No CIBIL Needed", body: "Just licence + basic KYC" },
-        { icon: "coins", title: "Low Upfront", body: "Start with only 10% down" },
-        { icon: "calendar", title: "Fixed Daily Pay", body: "{price}, no surprises" },
-        { icon: "key", title: "Own in 24 Months", body: "Car is 100% yours at the end" },
+        { icon: "id", title: "No CIBIL needed", body: "Just your licence and basic KYC" },
+        NO_LOAN,
         INSURANCE,
+        { icon: "wrench", title: "Repair & Servicing at minimal cost", body: "Pay minimum amount for your repairs" },
         SUPPORT,
+        INCENTIVE,
       ],
       storiesTitle: "Real Drivers. Real Stories. On Camera.",
     },
     overview: {
-      note: "Alternative to ownership via bank loan",
-      steps: [
-        {
-          title: "Select Tenure & Pay Upfront",
-          body: "Upfront payment starting as low as {upfront}",
-          image: { label: "Own Now, step 1 photo", url: "/figma/our-plans/own-now-step-1.webp", alt: "A driver handing over the upfront payment at an Everest desk" },
-        },
-        {
-          title: "Drive & Earn",
-          body: "Daily rent starting from as low as {price} onwards",
-          image: { label: "Own Now, step 2 photo", url: "/figma/our-plans/own-now-step-2.webp", alt: "A white Everest car on a city highway" },
-        },
-        {
-          title: "Full Ownership After End Of Tenure",
-          body: "Car transferred to your name at the end of tenure",
-          image: { label: "Own Now, step 3 photo", url: "/figma/our-plans/own-now-step-3.webp", alt: "A driver beside his new car at the showroom" },
-        },
+      title: "Own Now",
+      note: "",
+      steps: [],
+      image: { label: "Own Now, Our Plans photo", url: "/figma/our-plans/own-now.webp", alt: "An Everest driver with the keys to his new car at the showroom" },
+      points: [
+        "Select tenure & pay small upfront around {upfront} onwards",
+        "During tenure pay rent which is {price} onwards",
+        "Own your car in less than 12 months",
+        "No Regulatory Charges",
+        "24×7 Support, zero maintenance",
       ],
-      image: placeholder("Own Now, Our Plans photo"),
-      points: [],
       highlights: ["No CIBIL", "₹0 insurance", "₹0 regulatory fees", "100% incentive"],
     },
   },
@@ -303,6 +336,10 @@ const PLAN_SEED: Plan[] = [
       en: "A deposit and monthly instalments, with ownership at the end of the term.",
       hi: "डिपॉज़िट और महीने की किस्तें, अवधि पूरी होने पर मालिकाना हक़ आपका।",
       te: "డిపాజిట్ మరియు నెలవారీ వాయిదాలు, గడువు చివర యాజమాన్యం మీదే.",
+      mr: "डिपॉझिट आणि मासिक हप्ते, मुदतीअखेर मालकी तुमची.",
+      kn: "ಠೇವಣಿ ಮತ್ತು ಮಾಸಿಕ ಕಂತುಗಳು, ಅವಧಿಯ ಕೊನೆಗೆ ಮಾಲೀಕತ್ವ ನಿಮ್ಮದು.",
+      bn: "ডিপোজিট আর মাসিক কিস্তি, মেয়াদ শেষে মালিকানা আপনার।",
+      ta: "டெபாசிட் மற்றும் மாதத் தவணைகள், காலம் முடிவில் உரிமை உங்களுடையது.",
     },
     tag: "Ownership model",
     priceLabel: "Rent starting from",
@@ -313,28 +350,30 @@ const PLAN_SEED: Plan[] = [
     cityPrices: {},
     rows: [{ label: "Flexible", value: "No fixed rent - earnings-linked model" }],
     benefits: ["No Insurance", "No Regulatory Charges", "Free Repair & Maintenance", "24×7 Support"],
-    carIds: ["swift-dzire", "wagonr", "tigor", "s-presso", "tigor-ev"],
+    carIds: ["wagonr", "s-presso", "tigor", "rumion", "swift-dzire"],
     page: {
       headline: "Own a Car Without",
       highlight: "a Fixed Rent",
       heroImage: { label: "Drive to Own, hero photo", url: "/figma/hero-drive-to-own.webp", alt: "A hand holding out car keys in front of a row of Everest cars" },
+      heroImagePhone: { label: "Drive to Own, phone hero photo", url: "/figma/plans/hero-phone-drive-to-own.webp", alt: "A hand holding out car keys beside a white car" },
       term: { label: "Ownership", value: "24 Months" },
       tags: ["Ownership plan", "Low deposit · high daily rental plan", "Refundable"],
-      whyTag: "Benefits",
+      whyTag: "Benefits of this plan",
       whyTitle: "Why Drivers Choose Drive to Own",
       whySubtitle: "",
       benefitsImage: { label: "Drive to Own, benefits photo", url: "/figma/plans/drive-to-own-benefits.webp", alt: "An Everest driver standing beside his car" },
       features: [
-        { icon: "card", title: "No Fixed Rent", body: "You pay a share of what you earn" },
-        { icon: "coins", title: "{deposit} Deposit", body: "Low, and fully refundable" },
-        { icon: "calendar", title: "Earnings-Linked", body: "A slow week costs you less" },
-        { icon: "key", title: "Ends in Ownership", body: "The car still becomes yours" },
+        { ...REFUND, icon: "clipboard" },
+        NO_LOAN,
         INSURANCE,
+        MAINTENANCE,
+        { icon: "clipboard", title: "No regulatory charges", body: "We cover them for you" },
         SUPPORT,
       ],
       storiesTitle: "Real Drivers. Real Stories. On Camera.",
     },
     overview: {
+      title: "Drive to Own Plan",
       note: "",
       steps: [],
       image: { label: "Drive to Own, Our Plans photo", url: "/figma/our-plans/drive-to-own.webp", alt: "An Everest manager shaking hands with a driver beside his car" },
@@ -352,6 +391,10 @@ const PLAN_SEED: Plan[] = [
       en: "A refundable deposit and a daily rent, with no commitment to buy.",
       hi: "वापस मिलने वाला डिपॉज़िट और रोज़ का किराया, खरीदने की कोई बाध्यता नहीं।",
       te: "తిరిగి ఇచ్చే డిపాజిట్ మరియు రోజువారీ అద్దె, కొనుగోలు తప్పనిసరి కాదు.",
+      mr: "परत मिळणारे डिपॉझिट आणि रोजचे भाडे, गाडी विकत घेण्याचे बंधन नाही.",
+      kn: "ಹಿಂತಿರುಗಿಸುವ ಠೇವಣಿ ಮತ್ತು ದಿನದ ಬಾಡಿಗೆ, ಖರೀದಿಸುವ ಕಡ್ಡಾಯವಿಲ್ಲ.",
+      bn: "ফেরতযোগ্য ডিপোজিট আর রোজের ভাড়া, কেনার কোনো বাধ্যবাধকতা নেই।",
+      ta: "திரும்பக் கிடைக்கும் டெபாசிட் மற்றும் தினசரி வாடகை, வாங்க வேண்டிய கட்டாயம் இல்லை.",
     },
     tag: "Renting model",
     priceLabel: "Rent starting from",
@@ -362,29 +405,31 @@ const PLAN_SEED: Plan[] = [
     cityPrices: {},
     rows: [{ label: "Zero asset", value: "No ownership or loan liability" }],
     benefits: ["24/7 Support", "100% Uber incentive", "free repair and maintenance"],
-    carIds: ["swift-dzire", "wagonr", "tigor", "s-presso", "tigor-ev"],
+    carIds: ["wagonr", "s-presso", "tigor", "rumion", "swift-dzire"],
     page: {
       headline: "Earn Without",
       highlight: "Owning Anything",
       heroImage: { label: "Drive to Earn, hero photo", url: "/figma/hero-drive-to-earn.webp", alt: "A driver sitting in the open door of his Everest car" },
+      heroImagePhone: { label: "Drive to Earn, phone hero photo", url: "/figma/plans/hero-phone-drive-to-earn.webp", alt: "A driver sitting in the open door of his Everest car" },
       term: { label: "Liability", value: "Zero" },
       tags: ["Rental plan", "Low deposit · high daily rental plan", "Refundable"],
-      whyTag: "Benefits",
+      whyTag: "Benefits of this plan",
       whyTitle: "Why Drivers Choose Drive to Earn",
       whySubtitle: "",
       benefitsImage: { label: "Drive to Earn, benefits photo", url: "/figma/plans/drive-to-earn-benefits.webp", alt: "A smiling driver at the wheel of his car" },
       features: [
-        { icon: "card", title: "Fixed {price}", body: "Same rent, every single day" },
-        { icon: "coins", title: "{deposit} Deposit", body: "Low, and fully refundable" },
-        { icon: "calendar", title: "Zero Asset", body: "No ownership, no loan in your name" },
-        { icon: "key", title: "All Incentives", body: "Every Uber incentive stays with you" },
+        REFUND,
+        INCENTIVE,
+        { icon: "badge", title: "Zero liability", body: "No loan or car in your name" },
+        MAINTENANCE,
         INSURANCE,
         SUPPORT,
       ],
       storiesTitle: "Real Drivers. Real Stories. On Camera.",
     },
     overview: {
-      note: "Leasing plan",
+      title: "Drive to Earn",
+      note: "Leasing Plan",
       steps: [],
       image: { label: "Drive to Earn, Our Plans photo", url: "/figma/our-plans/drive-to-earn.webp", alt: "A driver checking his phone beside an Everest car" },
       points: ["Simple renting, no commitment", "Low refundable deposit", "We set up your Uber account", "Earn Uber incentives on every ride", "24×7 Support, zero maintenance"],
@@ -412,16 +457,17 @@ const PLAN_SEED: Plan[] = [
       headline: "You Drive.",
       highlight: "We Both Earn.",
       heroImage: { label: "Revenue Share, hero photo", url: "/figma/hero-revenue-share.webp", alt: "An Everest driver leaning on his car with the city skyline behind him" },
+      heroImagePhone: placeholder("Revenue Share, phone hero photo"),
       term: { label: "", value: "" },
       tags: [],
-      whyTag: "Why Revenue Share",
+      whyTag: "Benefits of this plan",
       whyTitle: "No rent to find on a slow day",
       whySubtitle: "Your cost moves with you.",
       benefitsImage: placeholder("Revenue Share, benefits photo"),
       // The design also carries "Share split" and "Deposit" cards, to add once those figures are set.
       features: [
-        { icon: "card", title: "No Fixed Rent", body: "Your cost moves with your earnings" },
-        { icon: "coins", title: "Pay As You Earn", body: "Earn less, pay less, automatically" },
+        { icon: "card", title: "No fixed rent", body: "Your cost moves with your earnings" },
+        { icon: "coins", title: "Pay as you earn", body: "Earn less, pay less, automatically" },
         INSURANCE,
         SUPPORT,
       ],
@@ -464,14 +510,15 @@ const CAR_SEED: Car[] = [
   },
   ...(
     [
-      ["swift-dzire", "Maruti Suzuki", "Swift Dzire"],
-      ["tigor", "Tata", "Tigor"],
-      ["s-presso", "Maruti Suzuki", "S-Presso"],
+      ["swift-dzire", "Maruti Suzuki", "Dzire", "/figma/plans/car-dzire.webp"],
+      ["tigor", "Tata", "Tigor", "/figma/plans/car-tigor.webp"],
+      ["s-presso", "Maruti Suzuki", "S-Presso", "/figma/plans/car-s-presso.webp"],
+      ["rumion", "Toyota", "Rumion", "/figma/plans/car-rumion.webp"],
     ] as const
   ).map(
-    ([id, make, name]): Car => ({
+    ([id, make, name, url]): Car => ({
       id,
-      // Listed on the plan cards; no photo or figures yet, so no card of its own.
+      // Offered under the plans and shown in their car pickers; no figures yet, so no card of its own.
       visible: false,
       make,
       name,
@@ -480,7 +527,7 @@ const CAR_SEED: Car[] = [
       condition: "",
       highlight: "",
       highlightTone: "brand",
-      image: placeholder(`${name} photo`, `White Everest Fleet ${name}`),
+      image: { label: `${name} photo`, url, alt: `${make} ${name} in a studio` },
       modelYears: "",
       price: emptyPrice(),
       cityPrices: {},
@@ -594,6 +641,66 @@ const SEED_POSTS: Post[] = [
       "దరఖాస్తుకు ఎలాంటి రుసుము లేదు. తిరిగి ఇచ్చే డిపాజిట్ కారు కేటాయించిన తర్వాత హబ్‌లో తీసుకుంటారు.",
     ],
   },
+  {
+    slug: "documents-to-drive-an-uber",
+    locale: "mr",
+    title: "गाडी घेण्यासाठी कोणती कागदपत्रे लागतात",
+    excerpt: "चार कागदपत्रे, आणि हबवर प्रत्येकात काय तपासले जाते.",
+    date: "2026-09-15",
+    published: true,
+    coverImage: placeholder("Guide cover, documents (Marathi)", ""),
+    body: [
+      "गाडी देण्याआधी चार कागदपत्रे तपासली जातात: आधार कार्ड, पॅन कार्ड, ड्रायव्हिंग लायसन्स आणि पत्त्याचा पुरावा. हबवर मूळ कागदपत्रे सोबत आणा.",
+      "ज्या दिवशी तुम्ही गाडी घ्याल त्या दिवशी ड्रायव्हिंग लायसन्स वैध असले पाहिजे. तुमच्या शहरात कमर्शियल एंडोर्समेंट लागते का, हे हब सांगेल, कारण हा नियम राज्यानुसार बदलतो.",
+      "पत्त्याच्या पुराव्यासाठी भाडेकरार, वीज बिल किंवा पासपोर्ट चालेल. त्यावर तुम्ही सध्या जिथे राहता तोच पत्ता असला पाहिजे.",
+      "अर्ज करण्यासाठी कोणतेही शुल्क नाही. परत मिळणारे डिपॉझिट गाडी मिळाल्यावर हबवर घेतले जाते.",
+    ],
+  },
+  {
+    slug: "documents-to-drive-an-uber",
+    locale: "kn",
+    title: "ಕಾರು ಪಡೆಯಲು ಯಾವ ದಾಖಲೆಗಳು ಬೇಕು",
+    excerpt: "ನಾಲ್ಕು ದಾಖಲೆಗಳು, ಹಬ್‌ನಲ್ಲಿ ಪ್ರತಿಯೊಂದರಲ್ಲಿ ಏನು ಪರಿಶೀಲಿಸುತ್ತಾರೆ.",
+    date: "2026-09-15",
+    published: true,
+    coverImage: placeholder("Guide cover, documents (Kannada)", ""),
+    body: [
+      "ಕಾರು ಕೊಡುವ ಮೊದಲು ನಾಲ್ಕು ದಾಖಲೆಗಳನ್ನು ಪರಿಶೀಲಿಸಲಾಗುತ್ತದೆ: ಆಧಾರ್ ಕಾರ್ಡ್, ಪ್ಯಾನ್ ಕಾರ್ಡ್, ಡ್ರೈವಿಂಗ್ ಲೈಸೆನ್ಸ್ ಮತ್ತು ವಿಳಾಸದ ಪುರಾವೆ. ಹಬ್‌ಗೆ ಮೂಲ ದಾಖಲೆಗಳನ್ನು ತನ್ನಿ.",
+      "ಕಾರು ಪಡೆಯುವ ದಿನ ನಿಮ್ಮ ಡ್ರೈವಿಂಗ್ ಲೈಸೆನ್ಸ್ ಮಾನ್ಯವಾಗಿರಬೇಕು. ನಿಮ್ಮ ನಗರದಲ್ಲಿ ಕಮರ್ಷಿಯಲ್ ಎಂಡೋರ್ಸ್‌ಮೆಂಟ್ ಬೇಕೇ ಎಂದು ಹಬ್ ತಿಳಿಸುತ್ತದೆ, ಏಕೆಂದರೆ ಅದು ರಾಜ್ಯದಿಂದ ರಾಜ್ಯಕ್ಕೆ ಬದಲಾಗುತ್ತದೆ.",
+      "ವಿಳಾಸದ ಪುರಾವೆಯಾಗಿ ಬಾಡಿಗೆ ಒಪ್ಪಂದ, ವಿದ್ಯುತ್ ಬಿಲ್ ಅಥವಾ ಪಾಸ್‌ಪೋರ್ಟ್ ನಡೆಯುತ್ತದೆ. ಅದರಲ್ಲಿ ನೀವು ಈಗ ವಾಸಿಸುತ್ತಿರುವ ವಿಳಾಸವೇ ಇರಬೇಕು.",
+      "ಅರ್ಜಿಗೆ ಯಾವುದೇ ಶುಲ್ಕವಿಲ್ಲ. ಹಿಂತಿರುಗಿಸುವ ಠೇವಣಿಯನ್ನು ಕಾರು ಸಿಕ್ಕ ನಂತರ ಹಬ್‌ನಲ್ಲಿ ಪಡೆಯಲಾಗುತ್ತದೆ.",
+    ],
+  },
+  {
+    slug: "documents-to-drive-an-uber",
+    locale: "bn",
+    title: "গাড়ি নিতে কী কী কাগজ লাগে",
+    excerpt: "চারটি কাগজ, আর হাবে প্রতিটিতে কী দেখা হয়।",
+    date: "2026-09-15",
+    published: true,
+    coverImage: placeholder("Guide cover, documents (Bengali)", ""),
+    body: [
+      "গাড়ি দেওয়ার আগে চারটি কাগজ দেখা হয়: আধার কার্ড, প্যান কার্ড, ড্রাইভিং লাইসেন্স আর ঠিকানার প্রমাণ। হাবে আসল কাগজগুলো সঙ্গে আনুন।",
+      "যেদিন গাড়ি নেবেন সেদিন ড্রাইভিং লাইসেন্স বৈধ থাকতে হবে। আপনার শহরে কমার্শিয়াল এনডোর্সমেন্ট লাগবে কিনা, তা হাব জানাবে, কারণ এই নিয়ম রাজ্যভেদে আলাদা।",
+      "ঠিকানার প্রমাণ হিসেবে ভাড়ার চুক্তি, বিদ্যুতের বিল বা পাসপোর্ট চলবে। তাতে আপনি এখন যেখানে থাকেন সেই ঠিকানাই থাকতে হবে।",
+      "আবেদনের জন্য কোনো ফি নেই। ফেরতযোগ্য ডিপোজিট গাড়ি পাওয়ার পর হাবে নেওয়া হয়।",
+    ],
+  },
+  {
+    slug: "documents-to-drive-an-uber",
+    locale: "ta",
+    title: "கார் எடுக்க என்ன ஆவணங்கள் தேவை",
+    excerpt: "நான்கு ஆவணங்கள், ஹப்பில் ஒவ்வொன்றிலும் என்ன சரிபார்க்கப்படுகிறது.",
+    date: "2026-09-15",
+    published: true,
+    coverImage: placeholder("Guide cover, documents (Tamil)", ""),
+    body: [
+      "கார் தருவதற்கு முன் நான்கு ஆவணங்கள் சரிபார்க்கப்படும்: ஆதார் அட்டை, பான் அட்டை, ஓட்டுநர் உரிமம் மற்றும் முகவரிச் சான்று. ஹப்புக்கு அசல் ஆவணங்களைக் கொண்டு வாருங்கள்.",
+      "கார் எடுக்கும் நாளில் ஓட்டுநர் உரிமம் செல்லுபடியாக இருக்க வேண்டும். உங்கள் நகரத்தில் கமர்ஷியல் எண்டார்ஸ்மென்ட் தேவையா என்பதை ஹப் சொல்லும், ஏனெனில் அது மாநிலத்துக்கு மாநிலம் மாறுபடும்.",
+      "முகவரிச் சான்றாக வாடகை ஒப்பந்தம், மின் கட்டண ரசீது அல்லது பாஸ்போர்ட் ஏற்கப்படும். அதில் நீங்கள் இப்போது வசிக்கும் முகவரியே இருக்க வேண்டும்.",
+      "விண்ணப்பிக்க கட்டணம் எதுவும் இல்லை. திரும்பக் கிடைக்கும் டெபாசிட் கார் ஒதுக்கப்பட்ட பிறகு ஹப்பில் வசூலிக்கப்படும்.",
+    ],
+  },
 ];
 
 export const DEFAULT_CONTENT: SiteContent = {
@@ -603,13 +710,13 @@ export const DEFAULT_CONTENT: SiteContent = {
   publishedBy: "",
   cities: CITY_SEED.map((c) => ({
     slug: c.slug,
-    name: { en: c.en, hi: c.hi, te: c.te },
+    name: { ...c.name },
     state: c.state,
     readyCars: 0,
     // Hub details are placeholders until the city teams supply verified addresses.
     hubs: [],
     plans: ["own-now", "drive-to-own", "leasing"],
-    heroImage: placeholder(`${c.en} hero image`, `Everest Fleet cars in ${c.en}`),
+    heroImage: placeholder(`${c.name.en} hero image`, `Everest Fleet cars in ${c.name.en}`),
   })),
   plans: PLAN_SEED,
   cars: CAR_SEED,
@@ -696,6 +803,7 @@ export const emptyPage = (name = "Plan"): PlanPage => ({
   headline: "",
   highlight: "",
   heroImage: placeholder(`${name}, hero photo`),
+  heroImagePhone: placeholder(`${name}, phone hero photo`),
   term: { label: "", value: "" },
   tags: [],
   whyTag: "",
@@ -708,5 +816,5 @@ export const emptyPage = (name = "Plan"): PlanPage => ({
 
 /** A function declaration, because the plan seeds above call it before this line runs. */
 export function emptyOverview(name = "Plan"): PlanOverview {
-  return { note: "", steps: [], image: placeholder(`${name}, Our Plans photo`), points: [], highlights: [] };
+  return { title: "", note: "", steps: [], image: placeholder(`${name}, Our Plans photo`), points: [], highlights: [] };
 }

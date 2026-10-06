@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
 import { ServicesHero } from "@/components/services/services-hero";
-import { HowItWorks } from "@/components/services/how-it-works";
-import { BenefitRows } from "@/components/services/benefit-rows";
+import { ServiceList } from "@/components/services/service-list";
+import { Enquiry } from "@/components/services/enquiry";
 
 export const metadata: Metadata = {
   // The layout appends "| Everest Fleet" through its title template.
   title: "Our Services",
   alternates: { canonical: "/our-services/" },
-  description: "Everest Fleet driver services: register, pick a vehicle, start earning with weekly payouts",
+  description: "Everest Fleet services for business: fleet logistics, employee mobility, intercity travel and advertising on cars.",
 };
 
 export default function OurServicesPage() {
   return (
     <>
       <ServicesHero />
-      <HowItWorks />
-      <BenefitRows />
+      <ServiceList />
+      <Enquiry source="our-services" />
     </>
   );
 }

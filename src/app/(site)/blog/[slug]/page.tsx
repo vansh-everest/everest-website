@@ -18,6 +18,11 @@ async function findPost(slug: string) {
   return postsFor(content, DEFAULT_LOCALE).find((p) => p.slug === slug);
 }
 
+async function relatedTo(slug: string) {
+  const content = await getContent();
+  return postsFor(content, DEFAULT_LOCALE).filter((p) => p.slug !== slug).slice(0, 4);
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = await findPost(slug);
@@ -41,7 +46,7 @@ export default async function Page({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(postJsonLd(post, DEFAULT_LOCALE)) }}
       />
-      <BlogPost locale={DEFAULT_LOCALE} post={post} />
+      <BlogPost locale={DEFAULT_LOCALE} post={post} related={await relatedTo(slug)} />
     </>
   );
 }
