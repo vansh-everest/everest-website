@@ -103,7 +103,9 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
           <button type="submit" className="h-9 rounded-lg bg-navy px-4 text-[13px] font-semibold text-white hover:bg-navy/90">
             Filter
           </button>
-          <p className="ml-auto text-[13px] text-ink-soft">{total} leads</p>
+          <p className="ml-auto text-[13px] text-ink-soft">
+            {total} {total === 1 ? "lead" : "leads"}
+          </p>
         </form>
 
         <div className="mt-4 overflow-x-auto rounded-xl border border-line bg-white">
