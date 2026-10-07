@@ -1,5 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
+import { jarvisAdminEnabled, jarvisSignIn } from "@/lib/jarvis";
 
 /**
  * Two roles, signed into a cookie. No database and no third party.
@@ -9,6 +10,9 @@ import { cookies } from "next/headers";
  *
  * Credentials come from the environment. With none set, the admin refuses to sign anyone
  * in rather than falling back to a default password.
+ *
+ * With JARVIS_API_URL set, none of this applies: the signed-in person is the Hawkeye user Jarvis
+ * confirms holds the website-admin role (see jarvis.ts), and every such user is an admin.
  */
 
 export const SESSION_COOKIE = "everest_admin";
@@ -82,6 +86,10 @@ export async function signOut(): Promise<void> {
 }
 
 export async function readSession(): Promise<Session | null> {
+  if (jarvisAdminEnabled()) {
+    const { user } = await jarvisSignIn();
+    return user ? { email: user.name, role: "admin" } : null;
+  }
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   return token ? verify(token) : null;
 }

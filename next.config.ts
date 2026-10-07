@@ -9,7 +9,12 @@ const nextConfig: NextConfig = {
   // Images uploaded in /admin live in Vercel Blob. Only that host is allowed, so the image
   // optimiser never fetches from an arbitrary address pasted into the admin.
   images: {
-    remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com", pathname: "/**" }],
+    remotePatterns: [
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com", pathname: "/**" },
+      // Photos uploaded through Jarvis: its public Cloudflare buckets (production, staging).
+      { protocol: "https", hostname: "efpp.everestfleet.com", pathname: "/website/**" },
+      { protocol: "https", hostname: "efps.everestfleet.com", pathname: "/website/**" },
+    ],
   },
   // Until everestfleet.com points here, the site answers only on its host's own addresses
   // (*.vercel.app, *.amplifyapp.com). Those copies must stay out of search results, or they would

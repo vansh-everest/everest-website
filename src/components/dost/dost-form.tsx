@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
+import { trackLead } from "@/lib/analytics";
 
 const OCCUPATIONS = ["Driver sourcing agent", "Agent", "Logistics business", "Someone who knows drivers"];
 
@@ -33,6 +34,7 @@ export function DostForm({ cities }: { cities: { slug: string; name: string }[] 
     data.set("campaign", new URLSearchParams(window.location.search).toString());
     try {
       const res = await fetch("/api/lead/", { method: "POST", body: data });
+      if (res.ok) trackLead("everest-dost");
       setState(res.ok ? "done" : "failed");
     } catch {
       setState("failed");

@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 import { authConfigured, requireAdmin, signIn, signOut } from "@/lib/auth";
 import type { SiteContent } from "@/lib/content";
 import { normalizeContent } from "@/lib/content-schema";
+import { EXTRA_LOCALES } from "@/lib/i18n";
+import { fleetConnectEnabled, fleetSend } from "@/lib/jarvis";
 import { CONTENT_TAG, DraftConflict, discardDraft, publishContent, restoreVersion, saveDraft } from "@/lib/store";
 import { callerKey, clear, tooMany } from "@/lib/throttle";
 
@@ -42,7 +44,7 @@ export async function signOutAction(): Promise<void> {
 export type EditState = {
   status: "idle" | "saved" | "published" | "error";
   message: string;
-  /** The draft timestamp to send as the base of the next save. Blank once published. */
+  /** The marker to send as the base of the next change (a draft timestamp, or Jarvis's revision). */
   base: string;
   /** Increments on every successful save or publish, so the editor can tell a new result from an old one. */
   seq: number;
@@ -83,41 +85,49 @@ export async function editAction(prev: EditState, form: FormData): Promise<EditS
     const base = String(form.get("base") ?? "");
     if (!publishing) {
       const saved = await saveDraft(content, session.email, base);
-      return { status: "saved", message: `Draft saved at ${clock(saved.updatedAt)}.`, base: saved.updatedAt, seq: prev.seq + 1 };
+      return { status: "saved", message: `Draft saved at ${clock(saved.at)}.`, base: saved.base, seq: prev.seq + 1 };
     }
     const live = await publishContent(content, session.email, base);
-    refreshSite();
-    return { status: "published", message: `Published at ${clock(live.publishedAt)}.`, base: "", seq: prev.seq + 1 };
+    await refreshSite();
+    return { status: "published", message: `Published at ${clock(live.at)}.`, base: live.base, seq: prev.seq + 1 };
   } catch (error) {
     if (error instanceof DraftConflict) return fail(prev, error.message);
     return fail(prev, error instanceof Error ? error.message : "That change was not saved.");
   }
 }
 
-/** Every public surface, in all three locale trees. Each has its own root layout. */
-function refreshSite() {
+/** Every public surface, in every locale tree. Each has its own root layout. */
+async function refreshSite() {
+  // fleet_connect holds the content for a few minutes; drop its copy so this publish shows now.
+  if (fleetConnectEnabled()) {
+    try {
+      await fleetSend("DELETE", "/website/content/cache");
+    } catch (error) {
+      console.error("[admin] fleet_connect cache was not cleared; the change shows within minutes", error);
+    }
+  }
   updateTag(CONTENT_TAG);
-  for (const path of ["/", "/hi", "/te"]) revalidatePath(path, "layout");
+  for (const path of ["/", ...EXTRA_LOCALES.map((l) => `/${l}`)]) revalidatePath(path, "layout");
 }
 
-/** Failures come back to the admin as a notice rather than an error screen. */
-export async function discardDraftAction(): Promise<void> {
+/** Failures come back to the admin as a notice rather than an error screen. Sent from the editor's form. */
+export async function discardDraftAction(form: FormData): Promise<void> {
   let ok = true;
   try {
     await requireAdmin();
-    await discardDraft();
+    await discardDraft(String(form.get("base") ?? ""));
   } catch {
     ok = false;
   }
   redirect(ok ? "/admin" : "/admin?notice=discard-failed");
 }
 
-/** Bound to a version id in the history list: `restoreVersionAction.bind(null, id)`. */
-export async function restoreVersionAction(id: string): Promise<void> {
+/** Bound to a version id in the history list: `restoreVersionAction.bind(null, id)`. Sent from the editor's form. */
+export async function restoreVersionAction(id: string, form: FormData): Promise<void> {
   let ok = true;
   try {
     const session = await requireAdmin();
-    await restoreVersion(String(id), session.email);
+    await restoreVersion(String(id), session.email, String(form.get("base") ?? ""));
   } catch {
     ok = false;
   }

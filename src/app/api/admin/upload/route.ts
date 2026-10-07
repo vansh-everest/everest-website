@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
+import { jarvisAdminEnabled, jarvisAdminForm } from "@/lib/jarvis";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -9,7 +10,8 @@ export const dynamic = "force-dynamic";
 /**
  * Image upload for the admin.
  *
- * Vercel Blob when a token is present, otherwise public/uploads for local development.
+ * Jarvis when it is connected (its public Cloudflare bucket, efpp.everestfleet.com), else Vercel
+ * Blob when a token is present, otherwise public/uploads for local development.
  * The route returns the address to store in the image slot, so the editor never has to
  * know which of the two is in use.
  *
@@ -60,7 +62,23 @@ function storedName(uploadName: string, kind: Kind): string {
   return `${base || "image"}-${Date.now()}${kind.ext}`;
 }
 
+/** Behind a proxy (Amplify, CloudFront) the public host arrives as x-forwarded-host, as Next's own check reads it. */
+function sameOrigin(request: Request): boolean {
+  const origin = request.headers.get("origin");
+  if (!origin) return true;
+  let host: string;
+  try {
+    host = new URL(origin).host;
+  } catch {
+    return false;
+  }
+  return [request.headers.get("x-forwarded-host"), request.headers.get("host")].includes(host);
+}
+
 export async function POST(request: Request) {
+  // Server actions get Next's own origin check; a route handler does not. The admin's cookies
+  // can be sent by any everestfleet.com page, so only this site's own pages may upload.
+  if (!sameOrigin(request)) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   try {
     await requireAdmin();
   } catch {
@@ -83,6 +101,18 @@ export async function POST(request: Request) {
   }
 
   const name = storedName(file.name, kind);
+
+  if (jarvisAdminEnabled()) {
+    const upload = new FormData();
+    upload.set("file", new File([bytes], name, { type: kind.mime }));
+    const answer = await jarvisAdminForm<{ url: string }>("/website/admin/images", upload);
+    const url = answer.body.data?.records?.url;
+    if (answer.status !== 201 || !url) {
+      console.error("[upload] Jarvis refused the photo", answer.status, answer.body.message);
+      return NextResponse.json({ error: "storage_failed" }, { status: 502 });
+    }
+    return NextResponse.json({ url });
+  }
 
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     const { put } = await import("@vercel/blob");

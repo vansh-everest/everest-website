@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { fleetConnectEnabled, fleetSend } from "@/lib/jarvis";
 import { appendLead, type Lead } from "@/lib/leads";
 import { UNKNOWN_CALLER, callerKey, tooMany } from "@/lib/throttle";
 
@@ -14,9 +15,16 @@ export const dynamic = "force-dynamic";
  *
  * LEAD_WEBHOOK_URL forwards the same record to a CRM. A failure there is logged and the
  * driver still sees a success, because the record is already stored.
+ *
+ * With fleet_connect configured, the lead goes to Jarvis, where the website admin lists it,
+ * together with every other field the form had (company, email, trip details). If that fails,
+ * the site's own store keeps it, so a Jarvis outage never loses a lead.
  */
 
 const TEN_DIGITS = /^[6-9]\d{9}$/;
+/** Fields every form shares; anything else a form sends goes to Jarvis as a detail. */
+const STANDARD = new Set(["name", "mobile", "city", "locale", "source", "page", "referrer", "campaign"]);
+const MAX_DETAILS = 30;
 const WINDOW_MS = 60_000;
 
 /** Per caller when the platform names one. The shared bucket has to clear real traffic. */
@@ -65,7 +73,14 @@ export async function POST(request: Request) {
     campaign: value("campaign"),
   };
 
-  await appendLead(lead);
+  const details: Record<string, string> = {};
+  for (const [key, raw] of form.entries()) {
+    if (STANDARD.has(key) || typeof raw !== "string" || !raw.trim() || key.startsWith("$")) continue;
+    if (Object.keys(details).length >= MAX_DETAILS) break;
+    details[key.slice(0, 40)] = raw.trim().slice(0, 300);
+  }
+
+  if (!(await sentToJarvis(lead, details))) await appendLead(lead);
 
   const hook = process.env.LEAD_WEBHOOK_URL;
   if (hook && !tooMany("lead:webhook", WEBHOOK_PER_MINUTE, WINDOW_MS)) {
@@ -81,4 +96,22 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ ok: true });
+}
+
+/** True once Jarvis has the lead. False when fleet_connect is not set up or did not take it. */
+async function sentToJarvis(lead: Lead, details: Record<string, string>): Promise<boolean> {
+  if (!fleetConnectEnabled()) return false;
+  try {
+    const { name, mobile, city, locale, page, referrer, campaign } = lead;
+    const answer = await fleetSend("POST", "/website/leads", {
+      name, mobile, city, locale, page, referrer, campaign,
+      source: lead.source || "apply",
+      details,
+    });
+    if (answer.status >= 200 && answer.status < 300) return true;
+    console.error("[lead] fleet_connect refused the lead", answer.status, answer.body.message);
+  } catch (error) {
+    console.error("[lead] fleet_connect unreachable", error);
+  }
+  return false;
 }

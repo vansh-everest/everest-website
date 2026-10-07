@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ChevronDown, Phone } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_HREF } from "./ui";
+import { trackLead } from "@/lib/analytics";
 
 const input =
   "mt-1.5 h-12 w-full rounded border border-line bg-white px-4 text-base text-navy placeholder:text-[#9ca3af] focus:border-brand focus:outline-none";
@@ -65,6 +66,7 @@ export function ApplyForm({ cities, source }: { cities: { slug: string; name: st
     data.set("campaign", new URLSearchParams(window.location.search).toString());
     try {
       const res = await fetch("/api/lead/", { method: "POST", body: data });
+      if (res.ok) trackLead(String(data.get("source") ?? ""));
       setState(res.ok ? "done" : "failed");
     } catch {
       setState("failed");

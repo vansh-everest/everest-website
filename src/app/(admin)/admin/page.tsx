@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ExternalLink, LogOut } from "lucide-react";
+import { ExternalLink, Inbox, LogOut } from "lucide-react";
 import { signOutAction } from "@/app/(admin)/admin/actions";
 import { Editor } from "@/components/admin/editor";
 import { LoginForm } from "@/components/admin/login-form";
 import { authConfigured, readSession } from "@/lib/auth";
+import { hawkeyeUrl, jarvisAdminEnabled, jarvisSignIn } from "@/lib/jarvis";
 import { PREVIEW_PAGES } from "@/lib/preview";
 import { getEditorState, listVersions, storeMode } from "@/lib/store";
 
@@ -18,6 +19,33 @@ const NOTICES: Record<string, string> = {
 export default async function AdminPage({ searchParams }: { searchParams: Promise<{ notice?: string }> }) {
   const notice = NOTICES[(await searchParams).notice ?? ""];
   const session = await readSession();
+
+  if (!session && jarvisAdminEnabled()) {
+    const { problem } = await jarvisSignIn();
+    return (
+      <div className="grid min-h-screen place-items-center px-4 py-12">
+        <div className="w-full max-w-[380px]">
+          <Image src="/figma/logo.png" alt="Everest Fleet" width={135} height={78} className="mx-auto h-14 w-auto" />
+          <div className="mt-4 rounded-xl border border-line bg-white p-6 shadow-[0_1px_2px_rgba(6,47,80,0.05)] sm:p-7">
+            <h1 className="text-lg font-bold text-navy">Everest Fleet website admin</h1>
+            {problem === "no-access" ? (
+              <p className="mt-1 text-[13px] text-ink-soft">Ask a Hawkeye admin for the website-admin role.</p>
+            ) : (
+              <>
+                <p className="mt-1 text-[13px] text-ink-soft">Sign in to Hawkeye, then open this app again.</p>
+                <a
+                  href={hawkeyeUrl()}
+                  className="mt-5 flex h-10 items-center justify-center rounded-lg bg-navy text-sm font-semibold text-white hover:bg-navy/90"
+                >
+                  Open Hawkeye
+                </a>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!session) {
     return (
@@ -37,7 +65,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   }
 
   const mode = storeMode();
-  const [{ content, hasDraft, live }, versions] = await Promise.all([getEditorState(), listVersions()]);
+  const [{ content, hasDraft, live, base }, versions] = await Promise.all([getEditorState(), listVersions()]);
 
   return (
     <>
@@ -52,18 +80,27 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
               <ExternalLink size={14} />
               <span className="hidden sm:inline">View live site</span>
             </Link>
-            <form action={signOutAction}>
-              <button type="submit" className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-ink-soft hover:bg-mist hover:text-navy">
-                <LogOut size={14} />
-                Sign out
-              </button>
-            </form>
+            {/* Signed in through Hawkeye, people sign out there, so this slot holds the leads link. */}
+            {mode === "jarvis" ? (
+              <Link href="/admin/leads" className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-navy hover:bg-mist">
+                <Inbox size={14} />
+                Leads
+              </Link>
+            ) : (
+              <form action={signOutAction}>
+                <button type="submit" className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-ink-soft hover:bg-mist hover:text-navy">
+                  <LogOut size={14} />
+                  Sign out
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </header>
 
       <Editor
         initial={content}
+        initialBase={base}
         hasDraft={hasDraft}
         live={{ publishedAt: live.publishedAt, publishedBy: live.publishedBy }}
         versions={versions}

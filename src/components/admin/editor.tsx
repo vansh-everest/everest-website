@@ -29,6 +29,7 @@ const when = (iso: string) =>
 
 export function Editor({
   initial,
+  initialBase,
   hasDraft,
   live,
   versions,
@@ -38,12 +39,14 @@ export function Editor({
   notice,
 }: {
   initial: SiteContent;
+  /** The marker the first change must send back: the draft's timestamp, or Jarvis's revision. */
+  initialBase: string;
   hasDraft: boolean;
   live: { publishedAt: string; publishedBy: string };
   versions: Version[];
   previewPages: { label: string; path: string }[];
   role: "viewer" | "admin";
-  storeMode: "file" | "blob" | "readonly";
+  storeMode: "file" | "blob" | "jarvis" | "readonly";
   notice?: string;
 }) {
   const [content, setContent] = useState<SiteContent>(initial);
@@ -54,7 +57,7 @@ export function Editor({
   const [state, action, pending] = useActionState<EditState, FormData>(editAction, {
     status: "idle",
     message: "",
-    base: hasDraft ? initial.updatedAt : "",
+    base: initialBase,
     seq: 0,
   });
 
@@ -64,7 +67,7 @@ export function Editor({
   const [savedBody, setSavedBody] = useState(() => body(initial));
   const [submittedBody, setSubmittedBody] = useState("");
   const [draftExists, setDraftExists] = useState(hasDraft);
-  const [base, setBase] = useState(hasDraft ? initial.updatedAt : "");
+  const [base, setBase] = useState(initialBase);
 
   // Both adjustments happen while rendering the new result, not in an effect.
   // A save or publish from this screen:
@@ -77,14 +80,14 @@ export function Editor({
     setConfirming(false);
   }
   // The stored copy changed underneath (publish, discard, restore): start again from it.
-  const serverKey = `${hasDraft}|${initial.updatedAt}|${live.publishedAt}`;
+  const serverKey = `${hasDraft}|${initialBase}|${initial.updatedAt}|${live.publishedAt}`;
   const [seenKey, setSeenKey] = useState(serverKey);
   if (serverKey !== seenKey) {
     setSeenKey(serverKey);
     setContent(initial);
     setSavedBody(body(initial));
     setDraftExists(hasDraft);
-    setBase(hasDraft ? initial.updatedAt : "");
+    setBase(initialBase);
   }
 
   const json = useMemo(() => JSON.stringify(content), [content]);

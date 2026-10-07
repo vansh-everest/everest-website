@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Dictionary } from "@/content/dictionary";
 import type { Locale } from "@/lib/i18n";
+import { trackLead } from "@/lib/analytics";
 
 /**
  * Three fields: name, mobile, city. The previous form asked for nine including an email
@@ -37,6 +38,7 @@ export function LeadForm({
     data.set("campaign", new URLSearchParams(window.location.search).toString());
     try {
       const res = await fetch("/api/lead/", { method: "POST", body: data });
+      if (res.ok) trackLead(String(data.get("source") ?? ""));
       setState(res.ok ? "done" : "failed");
     } catch {
       setState("failed");

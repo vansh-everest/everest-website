@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
 import { PICK_SERVICE_EVENT, SERVICES } from "./services";
+import { trackLead } from "@/lib/analytics";
 
 const input =
   "mt-1.5 h-[52px] w-full rounded border border-line bg-white px-4 text-base text-navy placeholder:text-[#9ca3af] focus:border-brand focus:outline-none sm:h-12";
@@ -65,6 +66,7 @@ export function EnquiryForm({ source }: { source: string }) {
     data.set("campaign", new URLSearchParams(window.location.search).toString());
     try {
       const res = await fetch("/api/lead/", { method: "POST", body: data });
+      if (res.ok) trackLead(String(data.get("source") ?? ""));
       setState(res.ok ? "done" : "failed");
     } catch {
       setState("failed");
