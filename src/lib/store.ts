@@ -6,6 +6,7 @@ import { draftMode } from "next/headers";
 import { readSession } from "@/lib/auth";
 import { CONTENT_VERSION, DEFAULT_CONTENT, type SiteContent } from "@/lib/content";
 import { normalizeContent } from "@/lib/content-schema";
+import { getLiveData, withLiveData } from "@/lib/fleet-data";
 import { fleetConnectEnabled, fleetGet, jarvisAdmin, jarvisAdminEnabled, jarvisMessage, type Answer } from "@/lib/jarvis";
 
 /**
@@ -209,10 +210,10 @@ async function previewing(): Promise<boolean> {
   }
 }
 
-/** What a public page renders. */
+/** What a public page renders: the admin's content with Jarvis's live figures laid over it. */
 export async function getContent(): Promise<SiteContent> {
-  if (await previewing()) return (await readDraft()) ?? (await readPublished());
-  return cachedPublished();
+  const content = (await previewing()) ? ((await readDraft()) ?? (await readPublished())) : await cachedPublished();
+  return withLiveData(content, await getLiveData());
 }
 
 /* ---------------------------------------------------------------------------- Jarvis */

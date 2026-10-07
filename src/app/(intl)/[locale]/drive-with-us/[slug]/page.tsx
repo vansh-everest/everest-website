@@ -11,7 +11,8 @@ import { jsonLd } from "@/lib/json-ld";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
-export const dynamicParams = false;
+// Unknown cities 404 through notFound() below. dynamicParams = false would also 404 every city
+// after an on-demand revalidate on a self-hosted server (Amplify), so it is left at its default.
 
 // Daily, so the job posting's monthly dates roll over without a publish or a deploy.
 export const revalidate = 86400;

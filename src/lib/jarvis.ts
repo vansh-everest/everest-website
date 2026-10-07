@@ -38,7 +38,8 @@ export type Envelope<T = unknown> = {
   error_message?: unknown;
 };
 
-export type Answer<T = unknown> = { status: number; body: Envelope<T> };
+/** `stale`: fleet_connect could not reach Jarvis and answered with its last good copy. */
+export type Answer<T = unknown> = { status: number; body: Envelope<T>; stale?: boolean };
 
 async function readJson<T>(res: Response): Promise<Envelope<T>> {
   try {
@@ -56,7 +57,7 @@ export async function fleetGet<T>(path: string, init?: RequestInit): Promise<Ans
     ...init,
     headers: { "X-Website-Key": fleetKey(), ...(init?.headers ?? {}) },
   });
-  return { status: res.status, body: await readJson<T>(res) };
+  return { status: res.status, body: await readJson<T>(res), stale: res.headers.get("x-cache") === "stale" };
 }
 
 export async function fleetSend<T>(method: "POST" | "DELETE", path: string, json?: unknown): Promise<Answer<T>> {

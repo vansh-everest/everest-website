@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ExternalLink, Inbox, LogOut } from "lucide-react";
+import { ExternalLink, Gauge, Inbox, LogOut } from "lucide-react";
 import { signOutAction } from "@/app/(admin)/admin/actions";
 import { Editor } from "@/components/admin/editor";
 import { LoginForm } from "@/components/admin/login-form";
 import { authConfigured, readSession } from "@/lib/auth";
-import { hawkeyeUrl, jarvisAdminEnabled, jarvisSignIn } from "@/lib/jarvis";
+import { fleetConnectEnabled, hawkeyeUrl, jarvisAdminEnabled, jarvisSignIn } from "@/lib/jarvis";
 import { PREVIEW_PAGES } from "@/lib/preview";
 import { getEditorState, listVersions, storeMode } from "@/lib/store";
 
@@ -81,6 +81,12 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
               <span className="hidden sm:inline">View live site</span>
             </Link>
             {/* Signed in through Hawkeye, people sign out there, so this slot holds the leads link. */}
+            {fleetConnectEnabled() ? (
+              <Link href="/admin/live-data" className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-navy hover:bg-mist">
+                <Gauge size={14} />
+                <span className="hidden sm:inline">Live data</span>
+              </Link>
+            ) : null}
             {mode === "jarvis" ? (
               <Link href="/admin/leads" className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-navy hover:bg-mist">
                 <Inbox size={14} />

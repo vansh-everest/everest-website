@@ -240,10 +240,18 @@ export function CityPage({
                 <h2 className="text-2xl font-bold text-navy">{fill(dict.city.hubsHeading, vars)}</h2>
                 <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                   {city.hubs.map((hub) => (
-                    <li key={hub.name} className="rounded-2xl bg-white p-5">
-                      <h3 className="text-base font-bold text-navy">{hub.name}</h3>
+                    <li key={`${hub.name}|${hub.address}`} className="rounded-2xl bg-white p-5">
+                      <h3 className="text-base font-bold text-navy">
+                        {hub.mapUrl ? (
+                          <a href={hub.mapUrl} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">
+                            {hub.name}
+                          </a>
+                        ) : (
+                          hub.name
+                        )}
+                      </h3>
                       <p className="mt-1 text-sm leading-6 text-ink-soft">{hub.address}</p>
-                      <p className="mt-1 text-sm text-ink-soft">{hub.hours}</p>
+                      {hub.hours ? <p className="mt-1 text-sm text-ink-soft">{hub.hours}</p> : null}
                     </li>
                   ))}
                 </ul>
