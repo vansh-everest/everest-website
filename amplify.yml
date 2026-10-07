@@ -5,6 +5,10 @@
 #   SESSION_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD, VIEWER_EMAIL, VIEWER_PASSWORD,
 #   CONTENT_BLOB_READ_WRITE_TOKEN, BLOB_READ_WRITE_TOKEN, LEAD_WEBHOOK_URL (optional),
 #   VERCEL_ENV=production  (selects the published content folder; without it the site reads an empty one)
+# Once Jarvis and fleet_connect carry the website, set these instead of all of the above:
+#   FLEET_CONNECT_URL, FLEET_CONNECT_KEY, JARVIS_API_URL, HAWKEYE_URL
+# And for analytics: NEXT_PUBLIC_GA_ID (read at build time, so it needs a rebuild to change).
+# grep exits 1 when none of the variables is set; || true keeps that from failing the build.
 version: 1
 frontend:
   phases:
@@ -14,7 +18,7 @@ frontend:
         - npm ci
     build:
       commands:
-        - env | grep -e SESSION_SECRET -e ADMIN_ -e VIEWER_ -e BLOB_READ_WRITE_TOKEN -e LEAD_WEBHOOK_URL -e VERCEL_ENV >> .env.production
+        - env | grep -e SESSION_SECRET -e ADMIN_ -e VIEWER_ -e BLOB_READ_WRITE_TOKEN -e LEAD_WEBHOOK_URL -e VERCEL_ENV -e FLEET_CONNECT_ -e JARVIS_API_URL -e HAWKEYE_URL -e NEXT_PUBLIC_GA_ID >> .env.production || true
         - npm run build
   artifacts:
     baseDirectory: .next
