@@ -1,0 +1,26 @@
+# AWS Amplify Hosting build.
+#
+# Amplify hands its environment variables to the build only, so the build copies the ones the
+# server code reads into .env.production. Set these in the Amplify console:
+#   SESSION_SECRET, ADMIN_EMAIL, ADMIN_PASSWORD, VIEWER_EMAIL, VIEWER_PASSWORD,
+#   CONTENT_BLOB_READ_WRITE_TOKEN, BLOB_READ_WRITE_TOKEN, LEAD_WEBHOOK_URL (optional),
+#   VERCEL_ENV=production  (selects the published content folder; without it the site reads an empty one)
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - nvm install 22 && nvm use 22
+        - npm ci
+    build:
+      commands:
+        - env | grep -e SESSION_SECRET -e ADMIN_ -e VIEWER_ -e BLOB_READ_WRITE_TOKEN -e LEAD_WEBHOOK_URL -e VERCEL_ENV >> .env.production
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*

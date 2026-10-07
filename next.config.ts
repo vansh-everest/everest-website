@@ -11,14 +11,15 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com", pathname: "/**" }],
   },
-  // Until everestfleet.com points here, the site answers only on *.vercel.app. Those copies
-  // must stay out of search results, or they would compete with the real domain at launch.
-  // The header is tied to the host, so it disappears on its own once the domain moves.
+  // Until everestfleet.com points here, the site answers only on its host's own addresses
+  // (*.vercel.app, *.amplifyapp.com). Those copies must stay out of search results, or they would
+  // compete with the real domain at launch. The header is tied to the host, so it disappears on
+  // its own once the domain moves.
   async headers() {
     return [
       {
         source: "/:path*",
-        has: [{ type: "host", value: ".*\\.vercel\\.app" }],
+        has: [{ type: "host", value: ".*\\.(vercel\\.app|amplifyapp\\.com)" }],
         headers: [{ key: "X-Robots-Tag", value: "noindex" }],
       },
     ];
