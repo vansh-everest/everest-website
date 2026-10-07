@@ -44,7 +44,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
 
   const params = await searchParams;
   const filters = leadFilters(params);
-  const answer = await jarvisAdmin<Lead[]>("GET", `/website/admin/leads?${leadQuery(params)}&page_size=50`);
+  const answer = await jarvisAdmin<Lead[]>("GET", `/everest_website/admin/leads?${leadQuery(params)}&page_size=50`);
   const leads = answer.body.data?.records ?? [];
   const meta = (answer.body.data?.metadata ?? null) as Metadata | null;
   const total = answer.body.data?.countdata ?? leads.length;

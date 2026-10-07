@@ -103,7 +103,7 @@ async function sentToJarvis(lead: Lead, details: Record<string, string>): Promis
   if (!fleetConnectEnabled()) return false;
   try {
     const { name, mobile, city, locale, page, referrer, campaign } = lead;
-    const answer = await fleetSend("POST", "/website/leads", {
+    const answer = await fleetSend("POST", "/everest_website/leads", {
       name, mobile, city, locale, page, referrer, campaign,
       source: lead.source || "apply",
       details,

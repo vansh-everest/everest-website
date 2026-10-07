@@ -148,7 +148,7 @@ async function blobDelete(urls: string[]): Promise<void> {
 
 async function readPublishedRaw(): Promise<unknown | null> {
   if (fleetConnectEnabled()) {
-    const answer = await fleetGet<unknown>("/website/content", { cache: "no-store" });
+    const answer = await fleetGet<unknown>("/everest_website/content", { cache: "no-store" });
     if (answer.status === 404) return null;
     // A failed read throws, so the cached pages are kept rather than replaced with defaults.
     if (answer.status !== 200) throw new Error(`fleet_connect answered ${answer.status} for the website content.`);
@@ -227,7 +227,7 @@ type JarvisState = {
 };
 
 async function jarvisState(): Promise<JarvisState> {
-  const answer = await jarvisAdmin<JarvisState>("GET", "/website/admin/content");
+  const answer = await jarvisAdmin<JarvisState>("GET", "/everest_website/admin/content");
   const state = answer.body.data?.records;
   if (answer.status !== 200 || !state) throw new Error(jarvisMessage(answer, "The website content could not be loaded."));
   return state;
@@ -285,7 +285,7 @@ export async function saveDraft(next: SiteContent, editor: string, base: string)
   if (mode === "jarvis") {
     const at = new Date().toISOString();
     const content: SiteContent = { ...next, updatedAt: at, updatedBy: editor };
-    const answer = await jarvisAdmin<{ revision: number }>("PUT", "/website/admin/content/draft", { content, base: revisionOf(base) });
+    const answer = await jarvisAdmin<{ revision: number }>("PUT", "/everest_website/admin/content/draft", { content, base: revisionOf(base) });
     return { at, base: jarvisRevision(answer, "The draft was not saved.") };
   }
   const current = await readDraftEntry();
@@ -326,7 +326,7 @@ export async function publishContent(next: SiteContent, editor: string, base: st
   if (mode === "jarvis") {
     const at = new Date().toISOString();
     const content: SiteContent = { ...next, updatedAt: at, updatedBy: editor, publishedAt: at, publishedBy: editor };
-    const answer = await jarvisAdmin<{ revision: number }>("POST", "/website/admin/content/publish", { content, base: revisionOf(base) });
+    const answer = await jarvisAdmin<{ revision: number }>("POST", "/everest_website/admin/content/publish", { content, base: revisionOf(base) });
     return { at, base: jarvisRevision(answer, "That change was not published.") };
   }
   const current = await readDraftEntry();
@@ -370,7 +370,7 @@ export async function publishContent(next: SiteContent, editor: string, base: st
 export async function discardDraft(base: string): Promise<void> {
   const mode = requireWritable();
   if (mode === "jarvis") {
-    const answer = await jarvisAdmin<{ revision: number }>("DELETE", `/website/admin/content/draft?base=${revisionOf(base)}`);
+    const answer = await jarvisAdmin<{ revision: number }>("DELETE", `/everest_website/admin/content/draft?base=${revisionOf(base)}`);
     jarvisRevision(answer, "The draft could not be discarded.");
     return;
   }
@@ -391,7 +391,7 @@ function parseVersion(id: string, name: string): Version | null {
 export async function listVersions(): Promise<Version[]> {
   switch (storeMode()) {
     case "jarvis": {
-      const answer = await jarvisAdmin<{ id: number; published_at: string; published_by: string }[]>("GET", "/website/admin/content/versions");
+      const answer = await jarvisAdmin<{ id: number; published_at: string; published_by: string }[]>("GET", "/everest_website/admin/content/versions");
       return (answer.body.data?.records ?? []).map((v) => ({ id: String(v.id), publishedAt: v.published_at, publishedBy: v.published_by }));
     }
     case "blob":
@@ -415,7 +415,7 @@ export async function listVersions(): Promise<Version[]> {
 /** Copies a published version into the draft, to be checked and published again. */
 export async function restoreVersion(id: string, editor: string, base: string): Promise<void> {
   if (storeMode() === "jarvis") {
-    const answer = await jarvisAdmin<{ revision: number }>("POST", `/website/admin/content/versions/${Number(id) || 0}/restore`, {
+    const answer = await jarvisAdmin<{ revision: number }>("POST", `/everest_website/admin/content/versions/${Number(id) || 0}/restore`, {
       base: revisionOf(base),
     });
     if (answer.status === 404) throw new Error("That version no longer exists.");

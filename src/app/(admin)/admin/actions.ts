@@ -101,7 +101,7 @@ async function refreshSite() {
   // fleet_connect holds the content for a few minutes; drop its copy so this publish shows now.
   if (fleetConnectEnabled()) {
     try {
-      await fleetSend("DELETE", "/website/content/cache");
+      await fleetSend("DELETE", "/everest_website/content/cache");
     } catch (error) {
       console.error("[admin] fleet_connect cache was not cleared; the change shows within minutes", error);
     }

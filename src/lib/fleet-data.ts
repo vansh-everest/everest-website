@@ -159,11 +159,11 @@ function planPrices(categories: JarvisPlanCategory[] | null): Record<string, Liv
 }
 
 async function readCity(city: JarvisCity): Promise<LiveCity> {
-  const cars = (await records<JarvisCar[]>(`/website/cars?city_id=${city.id}`)) ?? [];
+  const cars = (await records<JarvisCar[]>(`/everest_website/cars?city_id=${city.id}`)) ?? [];
   const priced = await pool(cars, async (car): Promise<LiveCar> => {
     const query = new URLSearchParams({ city_id: String(city.id), car_name: car.car_name });
     if (car.car_fuel_type) query.set("car_fuel_type", car.car_fuel_type);
-    const plans = planPrices(await records<JarvisPlanCategory[]>(`/website/plan-details?${query}`));
+    const plans = planPrices(await records<JarvisPlanCategory[]>(`/everest_website/plan-details?${query}`));
     return {
       name: car.car_name,
       fuel: car.car_fuel_type ?? "",
@@ -190,7 +190,7 @@ async function readCity(city: JarvisCity): Promise<LiveCity> {
 
 async function readLive(): Promise<LiveData | null> {
   // A 404 is a fleet_connect without the website routes yet: no figures, and that answer is cached.
-  const cities = await records<JarvisCity[]>("/website/cities", 404);
+  const cities = await records<JarvisCity[]>("/everest_website/cities", 404);
   if (!cities?.length) return null;
   return { at: new Date().toISOString(), cities: await pool(cities, readCity) };
 }

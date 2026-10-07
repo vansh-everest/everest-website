@@ -105,7 +105,7 @@ export async function POST(request: Request) {
   if (jarvisAdminEnabled()) {
     const upload = new FormData();
     upload.set("file", new File([bytes], name, { type: kind.mime }));
-    const answer = await jarvisAdminForm<{ url: string }>("/website/admin/images", upload);
+    const answer = await jarvisAdminForm<{ url: string }>("/everest_website/admin/images", upload);
     const url = answer.body.data?.records?.url;
     if (answer.status !== 201 || !url) {
       console.error("[upload] Jarvis refused the photo", answer.status, answer.body.message);

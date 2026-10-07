@@ -189,7 +189,7 @@ export type JarvisSignIn =
 /** Who is signed in, checked once per request: the user, or why there is none. */
 export const jarvisSignIn = cache(async (): Promise<JarvisSignIn> => {
   try {
-    const answer = await jarvisAdmin<JarvisUser>("GET", "/website/admin/me");
+    const answer = await jarvisAdmin<JarvisUser>("GET", "/everest_website/admin/me");
     const user = answer.status === 200 ? answer.body.data?.records : null;
     return user ? { user, problem: null } : { user: null, problem: "no-access" };
   } catch (error) {

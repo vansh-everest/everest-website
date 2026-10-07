@@ -10,7 +10,7 @@ import { EXTRA_LOCALES } from "@/lib/i18n";
 export async function refreshLiveDataAction(): Promise<void> {
   await requireAdmin();
   try {
-    await fleetSend("DELETE", "/website/fleet/cache");
+    await fleetSend("DELETE", "/everest_website/fleet/cache");
   } catch {
     // An unreachable fleet_connect still answers from its own cache, which the next read shows.
   }
