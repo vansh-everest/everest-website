@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Car, Clock, Phone, Wallet, Wrench, type LucideIcon } from "lucide-react";
+import { ArrowRight, Phone } from "lucide-react";
 import { WhatsappLogo } from "@phosphor-icons/react/ssr";
 import { PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
 import { LeadForm } from "@/components/driver/lead-form";
@@ -84,60 +84,6 @@ export function HeroActions({ cta }: { cta: Dictionary["cta"] }) {
   );
 }
 
-/**
- * Fixed to the bottom on a phone, so the way to reach a person is never scrolled away. The footer
- * makes room for it (data-contact-bar, in the "Drive With Us (batch 9)" block of globals.css).
- */
-export function StickyBar({ call, whatsapp }: { call: string; whatsapp: string }) {
-  const button = "flex h-12 flex-1 items-center justify-center gap-2 rounded-full text-[15px] font-semibold";
-  return (
-    <>
-      <div
-        data-no-reveal
-        data-contact-bar
-        className="fixed inset-x-0 bottom-0 z-40 flex gap-2 border-t border-line bg-white/95 p-3 shadow-[0_-8px_24px_rgba(6,47,80,0.1)] backdrop-blur md:hidden"
-      >
-        <a href={PHONE_HREF} className={`${button} bg-navy text-white`}>
-          <Phone aria-hidden size={18} strokeWidth={1.75} />
-          {call}
-        </a>
-        <a href={WHATSAPP_HREF} className={`${button} bg-whatsapp text-white`}>
-          <WhatsappLogo aria-hidden size={20} weight="fill" />
-          {whatsapp}
-        </a>
-      </div>
-    </>
-  );
-}
-
-/** One icon per benefit, in the order the dictionary lists them. */
-const BENEFIT_ICONS: LucideIcon[] = [Car, Wallet, Wrench, Clock];
-
-/** "Why drivers choose us": the benefit cards of the plan pages, four across on desktop. */
-export function Benefits({ heading, items }: { heading: string; items: Dictionary["benefits"] }) {
-  return (
-    <section aria-labelledby="driver-benefits" className={`${band} ${tint}`}>
-      <div className={wrap}>
-        <SectionHead id="driver-benefits" title={heading} />
-        <ul className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:mt-12 lg:grid-cols-4 lg:gap-6">
-          {items.map((b, i) => {
-            const Icon = BENEFIT_ICONS[i % BENEFIT_ICONS.length];
-            return (
-              <li key={b.title} className="rounded-2xl border border-[#dfecf6] bg-white px-4 pb-5 pt-4 lg:rounded-3xl lg:px-6 lg:pb-7 lg:pt-6">
-                <span aria-hidden className="grid size-[42px] place-items-center rounded-xl bg-[#eaf3fb] text-brand lg:size-12">
-                  <Icon size={22} strokeWidth={1.9} />
-                </span>
-                <h3 className="mt-4 text-base font-bold leading-[22px] text-navy lg:mt-5 lg:text-xl lg:leading-7">{b.title}</h3>
-                <p className="mt-2 text-sm leading-5 text-ink-soft lg:text-[15px] lg:leading-6">{b.body}</p>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
 /** The city skylines from the home page's cities strip, drawn at half their pixel size. */
 const SKYLINES: Record<string, { file: string; w: number; h: number }> = {
   mumbai: { file: "mumbai", w: 291, h: 227 },
@@ -152,23 +98,20 @@ const SKYLINES: Record<string, { file: string; w: number; h: number }> = {
 export type CityCard = { slug: string; name: string; state: string };
 
 /** City cards: the city's skyline on the brand gradient over its name. */
-export function CityCards({ locale, cities, compact = false }: { locale: Locale; cities: CityCard[]; compact?: boolean }) {
-  const width = compact
-    ? "w-[calc((100%-12px)/2)] sm:w-[calc((100%-32px)/3)] lg:w-[calc((100%-80px)/6)]"
-    : "w-[calc((100%-12px)/2)] sm:w-[calc((100%-32px)/3)] lg:w-[calc((100%-72px)/4)]";
+export function CityCards({ locale, cities }: { locale: Locale; cities: CityCard[] }) {
   return (
-    <ul className={`mt-8 flex flex-wrap justify-center gap-3 sm:gap-4 ${compact ? "" : "lg:mt-12 lg:gap-6"}`}>
+    <ul className="mt-8 flex flex-wrap justify-center gap-3 sm:gap-4 lg:mt-12 lg:gap-6">
       {cities.map((city) => {
         const art = SKYLINES[city.slug];
         return (
-          <li key={city.slug} className={width}>
+          <li key={city.slug} className="w-[calc((100%-12px)/2)] sm:w-[calc((100%-32px)/3)] lg:w-[calc((100%-72px)/4)]">
             <Link
               href={localePath(locale, cityPath(city.slug))}
               className="group block overflow-hidden rounded-2xl border border-line bg-white shadow-[0_8px_24px_rgba(6,47,80,0.06)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_32px_rgba(6,47,80,0.12)]"
             >
               <span
                 aria-hidden
-                className={`flex items-end justify-center bg-[linear-gradient(to_bottom_right,#062f50,#006db8)] px-4 pt-4 ${compact ? "h-[96px]" : "h-[112px] lg:h-[150px]"}`}
+                className="flex h-[112px] items-end justify-center bg-[linear-gradient(to_bottom_right,#062f50,#006db8)] px-4 pt-4 lg:h-[150px]"
               >
                 {art ? (
                   <Image
@@ -177,15 +120,13 @@ export function CityCards({ locale, cities, compact = false }: { locale: Locale;
                     width={art.w}
                     height={art.h}
                     style={{ "--w": `${art.w / 2}px` } as CSSProperties}
-                    className={`h-auto max-h-full w-[calc(var(--w)*0.62)] object-contain object-bottom opacity-90 transition group-hover:opacity-100 ${
-                      compact ? "" : "lg:w-[calc(var(--w)*0.85)]"
-                    }`}
+                    className="h-auto max-h-full w-[calc(var(--w)*0.62)] object-contain object-bottom opacity-90 transition group-hover:opacity-100 lg:w-[calc(var(--w)*0.85)]"
                   />
                 ) : null}
               </span>
               <span className="flex items-center justify-between gap-2 px-4 py-3 lg:px-5 lg:py-4">
                 <span className="min-w-0">
-                  <span className={`block truncate font-bold leading-6 text-navy ${compact ? "text-base" : "text-[17px] lg:text-xl"}`}>
+                  <span className="block truncate text-[17px] font-bold leading-6 text-navy lg:text-xl">
                     {city.name}
                   </span>
                   <span className="block truncate text-[13px] leading-5 text-ink-soft">{city.state}</span>
@@ -202,6 +143,32 @@ export function CityCards({ locale, cities, compact = false }: { locale: Locale;
         );
       })}
     </ul>
+  );
+}
+
+/** The other cities as one row of small links, under a short label. */
+export function CityLinks({ id, label, locale, cities }: { id: string; label: string; locale: Locale; cities: CityCard[] }) {
+  return (
+    <nav aria-labelledby={id} className={`${tint} px-4 py-8 sm:px-6 lg:px-10 lg:py-10`}>
+      <div className={`${wrap} flex flex-col items-center gap-4 lg:flex-row lg:justify-center lg:gap-6`}>
+        <h2 id={id} className="text-lg font-bold leading-6 text-navy lg:text-xl">
+          {label}
+        </h2>
+        <ul className="flex flex-wrap justify-center gap-2">
+          {cities.map((city) => (
+            <li key={city.slug}>
+              <Link
+                href={localePath(locale, cityPath(city.slug))}
+                className="inline-flex h-10 items-center gap-1.5 rounded-full border border-line bg-white px-4 text-[15px] font-semibold text-navy transition hover:border-brand hover:text-brand"
+              >
+                {city.name}
+                <ArrowRight aria-hidden size={14} strokeWidth={2.25} className="text-brand" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
   );
 }
 
