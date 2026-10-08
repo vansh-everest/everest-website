@@ -12,9 +12,11 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, Menu, Phone, X } from "lucide-react";
+import { siteCopy } from "@/content/site-copy";
+import { fill, hrefIn, localeOfPath } from "@/lib/i18n";
 import { FormLink } from "./form-link";
 import { LocaleRow } from "./locale-switch";
-import { NAV, UTILITY_LINKS, isActive, isCurrent } from "./nav-data";
+import { isActive, isCurrent, navFor, utilityLinksFor } from "./nav-data";
 import { PHONE_DISPLAY, PHONE_HREF } from "./ui";
 
 const subscribeNothing = () => () => {};
@@ -28,6 +30,9 @@ const row =
  */
 export function MobileMenu({ home }: { home: string }) {
   const pathname = usePathname();
+  const locale = localeOfPath(pathname);
+  const copy = siteCopy(locale).header;
+  const nav = navFor(locale);
   const id = useId();
   const toggle = useRef<HTMLButtonElement>(null);
   const closer = useRef<HTMLButtonElement>(null);
@@ -42,7 +47,7 @@ export function MobileMenu({ home }: { home: string }) {
   // A group's label goes to its page; its chevron shows its pages. The group of the page
   // being read starts open, so the visitor sees where they are.
   const [shown, setShown] = useState<string[]>(() =>
-    NAV.filter((item) => "items" in item && isActive(item, pathname)).map((item) => item.label),
+    nav.filter((item) => "items" in item && isActive(item, pathname)).map((item) => item.label),
   );
   const [openedAt, setOpenedAt] = useState(pathname);
 
@@ -96,7 +101,7 @@ export function MobileMenu({ home }: { home: string }) {
         type="button"
         aria-expanded={open}
         aria-controls={id}
-        aria-label="Menu"
+        aria-label={copy.menu}
         onClick={() => setOpen(true)}
         className="-mr-2 flex size-11 items-center justify-center rounded-full text-navy transition hover:bg-mist lg:hidden"
       >
@@ -110,14 +115,14 @@ export function MobileMenu({ home }: { home: string }) {
               id={id}
               role="dialog"
               aria-modal="true"
-              aria-label="Menu"
+              aria-label={copy.menu}
               inert={!open}
               className={`fixed inset-0 z-[60] transition-[visibility] duration-300 lg:hidden ${open ? "visible" : "invisible"}`}
             >
               <button
                 type="button"
                 tabIndex={-1}
-                aria-label="Close menu"
+                aria-label={copy.closeMenu}
                 onClick={close}
                 className={`absolute inset-0 bg-navy/90 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"}`}
               />
@@ -127,7 +132,7 @@ export function MobileMenu({ home }: { home: string }) {
                 }`}
               >
                 <div className="flex h-[61px] shrink-0 items-center justify-between border-b border-line pl-3 pr-2">
-                  <Link href="/" onClick={close} className="mt-1">
+                  <Link href={hrefIn(locale, "/")} onClick={close} className="mt-1">
                     <Image
                       src="/figma/logo.png"
                       alt="Everest Fleet"
@@ -139,7 +144,7 @@ export function MobileMenu({ home }: { home: string }) {
                   <button
                     ref={closer}
                     type="button"
-                    aria-label="Close menu"
+                    aria-label={copy.closeMenu}
                     onClick={() => {
                       close();
                       toggle.current?.focus();
@@ -150,9 +155,9 @@ export function MobileMenu({ home }: { home: string }) {
                   </button>
                 </div>
 
-                <nav aria-label="Main">
+                <nav aria-label={copy.main}>
                   <ul>
-                    {NAV.map((item) => {
+                    {nav.map((item) => {
                       const active = isActive(item, pathname);
 
                       if (!("items" in item)) {
@@ -183,7 +188,7 @@ export function MobileMenu({ home }: { home: string }) {
                           type="button"
                           aria-expanded={expanded}
                           aria-controls={list}
-                          aria-label={item.href ? `${item.label} pages` : undefined}
+                          aria-label={item.href ? fill(copy.groupPages, { label: item.label }) : undefined}
                           onClick={() => flipGroup(item.label)}
                           className={
                             item.href
@@ -254,7 +259,7 @@ export function MobileMenu({ home }: { home: string }) {
                 </nav>
 
                 <ul className="mt-1.5 border-y border-line py-1.5">
-                  {UTILITY_LINKS.map(({ label, href }) => (
+                  {utilityLinksFor(locale).map(({ label, href }) => (
                     <li key={href}>
                       <Link
                         href={href}
@@ -275,7 +280,7 @@ export function MobileMenu({ home }: { home: string }) {
                     onClick={close}
                     className="flex h-[50px] w-full items-center justify-center rounded-full bg-sun text-[17px] font-bold text-navy transition hover:brightness-105"
                   >
-                    Drive With Us
+                    {copy.driveWithUs}
                   </FormLink>
                   <a
                     href={PHONE_HREF}
@@ -287,7 +292,7 @@ export function MobileMenu({ home }: { home: string }) {
                       strokeWidth={0}
                       aria-hidden
                     />
-                    Call {PHONE_DISPLAY}
+                    {fill(copy.call, { phone: PHONE_DISPLAY })}
                   </a>
                 </div>
               </div>

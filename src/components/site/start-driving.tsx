@@ -1,4 +1,6 @@
 import { ApplyForm } from "@/components/home/apply-form";
+import { homeCopy } from "@/content/home-copy";
+import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 import { getContent } from "@/lib/store";
 
 /**
@@ -6,8 +8,17 @@ import { getContent } from "@/lib/store";
  * `eyebrow` is the "How it works" line, which only some page designs carry ("phone": only the phone
  * designs). Phones get the compact card from the phone exports; from sm up the roomier one.
  */
-export async function StartDriving({ source, eyebrow = false }: { source: string; eyebrow?: boolean | "phone" }) {
-  const cities = (await getContent()).cities.map((c) => ({ slug: c.slug, name: c.name.en }));
+export async function StartDriving({
+  source,
+  eyebrow = false,
+  locale = DEFAULT_LOCALE,
+}: {
+  source: string;
+  eyebrow?: boolean | "phone";
+  locale?: Locale;
+}) {
+  const copy = homeCopy(locale).start;
+  const cities = (await getContent()).cities.map((c) => ({ slug: c.slug, name: c.name[locale] || c.name.en }));
   return (
     <section
       id="apply"
@@ -21,17 +32,17 @@ export async function StartDriving({ source, eyebrow = false }: { source: string
             }`}
           >
             <span aria-hidden className="h-[3px] w-6 rounded-full bg-sun" />
-            How it works
+            {copy.eyebrow}
             <span aria-hidden className="h-[3px] w-6 rounded-full bg-sun" />
           </p>
         ) : null}
         <h2 className="text-[28px] font-bold leading-[34px] tracking-[-0.5px] text-white sm:text-[34px] sm:leading-tight lg:text-[43px] lg:leading-[52px]">
-          Start Driving Today
+          {copy.title}
         </h2>
       </div>
       {/* relative: the form's sent toast sits over the top of this card. */}
       <div className="relative mx-auto mt-3 max-w-[744px] rounded-lg bg-white p-3 shadow-[0_20px_60px_rgba(0,0,0,0.2)] sm:mt-8 sm:rounded-3xl sm:border sm:border-line sm:px-14 sm:pb-7 sm:pt-11">
-        <ApplyForm cities={cities} source={source} />
+        <ApplyForm cities={cities} source={source} locale={locale} copy={copy.form} />
       </div>
     </section>
   );
