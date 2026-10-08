@@ -14,8 +14,8 @@ function dailyRent(year: OwnNowYear, upfront: number): number {
   return Math.max(0, year.rent - steps * year.rentStep);
 }
 
-/** "Wagon R - 2025" reads as 2025 in the Model year picker; any other name stays whole. */
-const yearLabel = (name: string) => /(\d{4})\s*$/.exec(name)?.[1] ?? name;
+/** "Wagon R - 2025" reads as 2025 in the Model year picker; a car Jarvis prices without years reads "Any year". */
+const yearLabel = (name: string) => (name ? (/(\d{4})\s*$/.exec(name)?.[1] ?? name) : "Any year");
 
 const money = (n: number) => rupees(String(n));
 
