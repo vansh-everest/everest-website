@@ -34,7 +34,7 @@ export async function RootShell({ locale, children }: { locale: Locale; children
           <main className="overflow-x-clip">{children}</main>
           <RevealOnScroll />
           <CardSpotlight />
-          <SiteFooter />
+          <SiteFooter locale={locale} />
           <PreviewBanner />
           <Analytics />
         </LocalePosts>

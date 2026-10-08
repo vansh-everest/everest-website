@@ -68,7 +68,7 @@ export function CarGrid({ cars, locale = DEFAULT_LOCALE }: { cars: CarCardView[]
     // On a phone the design packs the cards tighter and drops the dots: the track's gap and padding
     // and the dot row are overridden here rather than in the shared carousel.
     <div className="mx-auto mt-[17px] max-w-[1184px] max-sm:[&_.snap-x]:scroll-px-[17px] max-sm:[&_.snap-x]:gap-3.5 max-sm:[&_.snap-x]:px-[17px] max-sm:[&_[role=region]>[aria-hidden]]:hidden sm:mt-10 lg:mt-[91px]">
-      <Carousel label={copy.region} item="w-[286px] max-w-[80%] sm:w-[86%] sm:max-w-none md:w-[calc((100%-24px)/2)]" arrowTop="182px">
+      <Carousel label={copy.region} previous={copy.previous} next={copy.next} item="w-[286px] max-w-[80%] sm:w-[86%] sm:max-w-none md:w-[calc((100%-24px)/2)]" arrowTop="182px">
         {cars.map((car) => (
           <HomeCarCard
             key={car.id}

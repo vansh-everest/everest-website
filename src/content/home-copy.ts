@@ -59,13 +59,19 @@ export type HomeCopy = {
     benefits: [Benefit, Benefit, Benefit, Benefit, Benefit];
     footnote: string;
     videoAlt: string;
+    /** The player frame's accessible name. */
+    videoTitle: string;
+    /** The still's play button, for screen readers. */
+    videoPlay: string;
+    tapForSound: string;
   };
   cities: { title: string; region: string; names: Record<StripCity, string> };
   plans: { title: string; region: string; join: string };
   ownNow: { introducing: string; logoAlt: string; photoAlt: string; line: string; perks: [string, string, string]; cta: string };
-  cars: { title: string; subtitle: string; region: string; cta: string };
+  /** `previous` and `next` name the slider's arrows. */
+  cars: { title: string; subtitle: string; region: string; cta: string; previous: string; next: string };
   fleetApp: {
-    /** The heading: `before`, the brand in blue, then `after`. */
+    /** The heading: `before`, the brand in blue, a space, then `after`. */
     before: string;
     brand: string;
     after: string;
@@ -79,9 +85,9 @@ export type HomeCopy = {
     alt: string;
   };
   dost: {
+    /** The heading: `before`, the brand in yellow, then `after` from the desktop layout up. */
     before: string;
     brand: string;
-    /** Shown from the desktop layout up. */
     after: string;
     phoneTitle: [string, string];
     phoneLines: [string, string, string];
@@ -119,6 +125,9 @@ const en: HomeCopy = {
     ],
     footnote: "*Covers normal wear; accident or misuse damage is charged to the driver.",
     videoAlt: "Everest Fleet driver with his car",
+    videoTitle: "Why drivers choose Everest Fleet",
+    videoPlay: "Play the video",
+    tapForSound: "Tap For Sound",
   },
   cities: {
     title: "Cities We Operate In",
@@ -147,11 +156,13 @@ const en: HomeCopy = {
     subtitle: "Drive India's most trusted and well-maintained fleet",
     region: "Our cars",
     cta: "Drive This Car",
+    previous: "Previous",
+    next: "Next",
   },
   fleetApp: {
     before: "Introducing ",
     brand: "Everest Fleet",
-    after: " App",
+    after: "App",
     phoneLines: [
       { lead: "Book ", key: "Appointments", tail: "" },
       { lead: "Know Your ", key: "Earnings", tail: "" },
@@ -238,6 +249,9 @@ const hi: HomeCopy = {
     ],
     footnote: "*आम घिसावट शामिल है; दुर्घटना या गलत इस्तेमाल से हुए नुकसान का खर्च ड्राइवर का।",
     videoAlt: "अपनी गाड़ी के साथ Everest Fleet ड्राइवर",
+    videoTitle: "ड्राइवर Everest Fleet को क्यों चुनते हैं",
+    videoPlay: "वीडियो चलाइए",
+    tapForSound: "आवाज़ के लिए टैप करें",
   },
   cities: {
     title: "हम इन शहरों में हैं",
@@ -266,13 +280,15 @@ const hi: HomeCopy = {
     subtitle: "भारत का सबसे भरोसेमंद और अच्छी हालत वाला फ्लीट चलाइए",
     region: "हमारी गाड़ियाँ",
     cta: "यह गाड़ी चलाइए",
+    previous: "पिछली गाड़ी",
+    next: "अगली गाड़ी",
   },
   fleetApp: {
     before: "पेश है ",
     brand: "Everest Fleet",
-    after: " ऐप",
+    after: "ऐप",
     phoneLines: [
-      { lead: "", key: "अपॉइंटमेंट", tail: " बुक कीजिए" },
+      { lead: "", key: "अपॉइंटमेंट", tail: " बुक करें" },
       { lead: "अपनी ", key: "कमाई", tail: " देखिए" },
       { lead: "100% ", key: "साफ़ हिसाब", tail: "" },
     ],
@@ -357,6 +373,9 @@ const kn: HomeCopy = {
     ],
     footnote: "*ಸಾಮಾನ್ಯ ಸವೆತ ಸೇರಿದೆ; ಅಪಘಾತ ಅಥವಾ ದುರುಪಯೋಗದಿಂದಾದ ಹಾನಿಯ ಖರ್ಚು ಡ್ರೈವರ್‌ದು.",
     videoAlt: "ತನ್ನ ಕಾರಿನ ಜೊತೆ Everest Fleet ಡ್ರೈವರ್",
+    videoTitle: "ಡ್ರೈವರ್‌ಗಳು Everest Fleet ಅನ್ನು ಏಕೆ ಆರಿಸುತ್ತಾರೆ",
+    videoPlay: "ವೀಡಿಯೊ ಪ್ಲೇ ಮಾಡಿ",
+    tapForSound: "ಧ್ವನಿಗಾಗಿ ಟ್ಯಾಪ್ ಮಾಡಿ",
   },
   cities: {
     title: "ನಾವು ಇರುವ ನಗರಗಳು",
@@ -385,13 +404,15 @@ const kn: HomeCopy = {
     subtitle: "ಭಾರತದ ಅತ್ಯಂತ ನಂಬಿಕೆಯ, ಚೆನ್ನಾಗಿ ನೋಡಿಕೊಂಡ ಫ್ಲೀಟ್ ಓಡಿಸಿ",
     region: "ನಮ್ಮ ಕಾರುಗಳು",
     cta: "ಈ ಕಾರು ಓಡಿಸಿ",
+    previous: "ಹಿಂದಿನ ಕಾರು",
+    next: "ಮುಂದಿನ ಕಾರು",
   },
   fleetApp: {
     before: "",
     brand: "Everest Fleet",
-    after: " ಆ್ಯಪ್ ಬಂದಿದೆ",
+    after: "ಆ್ಯಪ್ ಬಂದಿದೆ",
     phoneLines: [
-      { lead: "", key: "ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್", tail: " ಬುಕ್ ಮಾಡಿ" },
+      { lead: "", key: "ಸಮಯ", tail: " ಬುಕ್ ಮಾಡಿ" },
       { lead: "ನಿಮ್ಮ ", key: "ಗಳಿಕೆ", tail: " ನೋಡಿ" },
       { lead: "100% ", key: "ಪಾರದರ್ಶಕ", tail: "" },
     ],
@@ -400,9 +421,9 @@ const kn: HomeCopy = {
       { lead: "ನಿಮ್ಮ ", key: "ಗಳಿಕೆ", tail: " ನೋಡಿ" },
       { lead: "100% ", key: "ಪಾರದರ್ಶಕ", tail: "" },
     ],
-    allInOne: "ಎಲ್ಲವೂ ಒಂದೇ ಆ್ಯಪ್‌ನಲ್ಲಿ",
+    allInOne: "ಎಲ್ಲವೂ ಒಂದೇ ಕಡೆ",
     stop: ".",
-    getItOn: "ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ",
+    getItOn: "ಡೌನ್‌ಲೋಡ್",
     googlePlay: "Google Play",
     alt: "ಈ ವಾರದ ಬಾಡಿಗೆ ಮತ್ತು ಮುಗಿದ ಪಾವತಿ ತೋರಿಸುತ್ತಿರುವ Everest Fleet ಆ್ಯಪ್",
   },

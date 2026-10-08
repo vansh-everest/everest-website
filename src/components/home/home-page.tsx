@@ -80,14 +80,14 @@ export async function HomePage({ locale }: { locale: MainLocale }) {
         dangerouslySetInnerHTML={{ __html: jsonLd([organisation, website]) }}
       />
       <Hero locale={locale} />
-      <HeadlineBand />
-      <WhyChooseUs />
+      <HeadlineBand locale={locale} />
+      <WhyChooseUs locale={locale} />
       <CitiesStrip locale={locale} />
       <Plans content={content} locale={locale} />
       <OwnNowBanner locale={locale} />
-      <CarShowcase content={content} />
-      <FleetApp />
-      <DostApp />
+      <CarShowcase content={content} locale={locale} />
+      <FleetApp locale={locale} />
+      <DostApp locale={locale} />
       {/* Phones show the form before the stories; the desktop design puts the stories first. */}
       <div className="flex flex-col">
         <div className="lg:order-2">
