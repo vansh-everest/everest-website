@@ -25,18 +25,20 @@ export function HeaderShell({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // The gap above the floating pill is the header's own padding: a margin on the pill would
+  // collapse through the sticky header and leave the pill flush with the top of the window.
   return (
     <header
       ref={ref}
       data-stuck={stuck || undefined}
       className={`sticky top-0 z-50 h-[60px] border-b-4 transition-colors duration-500 md:h-[68px] lg:h-[80px] ${
-        stuck ? "border-transparent bg-transparent" : "border-sun bg-white"
+        stuck ? "border-transparent bg-transparent pt-2.5 md:pt-3 lg:pt-3.5" : "border-sun bg-white"
       }`}
     >
       <div
         className={`fx-header-in relative mx-auto flex items-center justify-between gap-3 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           stuck
-            ? "mt-2 h-12 w-[calc(100%-1.5rem)] max-w-[1180px] rounded-full border border-white/70 bg-white/95 px-3 shadow-[0_18px_44px_-20px_rgba(6,47,80,0.5)] pointer-fine:bg-white/75 pointer-fine:backdrop-blur-md pointer-fine:backdrop-saturate-150 md:h-[52px] md:w-[calc(100%-3rem)] md:px-5 lg:h-[60px] lg:px-6"
+            ? "h-12 w-[calc(100%-1.5rem)] max-w-[1180px] rounded-full border border-white/70 bg-white/95 px-3 shadow-[0_18px_44px_-20px_rgba(6,47,80,0.5)] pointer-fine:bg-white/75 pointer-fine:backdrop-blur-md pointer-fine:backdrop-saturate-150 md:h-[52px] md:w-[calc(100%-3rem)] md:px-5 lg:h-[60px] lg:px-6"
             : "h-14 w-full max-w-[1440px] rounded-none border border-transparent px-4 md:h-16 md:px-6 lg:h-[76px] lg:px-12"
         }`}
       >
