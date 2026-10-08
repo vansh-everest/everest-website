@@ -38,12 +38,13 @@ function PlanCard({ plan, join }: { plan: PlanCardView; join: string }) {
               {plan.figures.map((f) => (
                 <div
                   key={f.label}
-                  className={`flex min-h-[66px] flex-col justify-center rounded-lg border px-2.5 lg:min-h-[73px] lg:px-3.5 ${dark ? "border-sun/30 bg-sun/10" : "border-[#f3e7a0] bg-[#fdfae2]"}`}
+                  className={`flex flex-col rounded-lg border px-2.5 py-2.5 lg:px-3.5 lg:py-3 ${dark ? "border-sun/30 bg-sun/10" : "border-[#f3e7a0] bg-[#fdfae2]"}`}
                 >
+                  {/* Label, figure and "Onwards" each on their own line, so every tile lines up whatever the figure's length. */}
                   <dt className={`text-xs font-semibold lg:text-[13px] ${dark ? "text-sun" : "text-brand"}`}>{f.label}</dt>
-                  <dd className="mt-1.5 flex flex-wrap items-baseline gap-x-[3px] lg:gap-x-1">
-                    <span className="whitespace-nowrap text-[15px] font-bold lg:text-lg">{f.value}</span>
-                    <span className={`text-[11px] lg:text-[13px] ${dark ? "text-white/80" : "text-navy/80"}`}>{plan.suffix}</span>
+                  <dd className="mt-1 flex flex-col">
+                    <span className="whitespace-nowrap text-[15px] font-bold leading-5 lg:text-lg lg:leading-6">{f.value}</span>
+                    <span className={`text-[11px] leading-4 lg:text-[13px] lg:leading-5 ${dark ? "text-white/80" : "text-navy/80"}`}>{plan.suffix}</span>
                   </dd>
                 </div>
               ))}
