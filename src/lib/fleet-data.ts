@@ -142,6 +142,15 @@ export function money(value: unknown): number | null {
   return Number.isFinite(rupees) && rupees > 0 && rupees <= MAX_RUPEES ? rupees : null;
 }
 
+/** No rent, deposit or upfront is this small; below it is a typo in Jarvis (₹3 for ₹30,000). */
+const MIN_PRICE = 100;
+
+/** A rent, deposit or upfront figure: money(), with typos too small to be a price dropped. Step sizes stay on money(). */
+export function price(value: unknown): number | null {
+  const rupees = money(value);
+  return rupees !== null && rupees >= MIN_PRICE ? rupees : null;
+}
+
 /** Jarvis's map links, kept only when they are plain https addresses. */
 function mapLink(url: string | null): string | undefined {
   if (!url) return undefined;
@@ -186,10 +195,10 @@ function planPrices(categories: JarvisPlanCategory[] | null): Record<string, Liv
     const id = PLAN_IDS[option.plan_uri];
     if (!id) continue;
     out[id] = {
-      rent: money(option.rent_info?.min_amount),
-      // Own Now's deposit is always zero; its money up front is the upfront. money() drops zeros.
-      deposit: money(option.min_sd_amount),
-      upfront: money(option.upfront_fee),
+      rent: price(option.rent_info?.min_amount),
+      // Own Now's deposit is always zero; its money up front is the upfront. price() drops zeros.
+      deposit: price(option.min_sd_amount),
+      upfront: price(option.upfront_fee),
     };
   }
   return out;
@@ -197,9 +206,9 @@ function planPrices(categories: JarvisPlanCategory[] | null): Record<string, Liv
 
 /** "₹40000.0-₹140000.0" → [40000, 140000]; one figure gives it twice. */
 function range(value: unknown): [number | null, number | null] {
-  if (typeof value !== "string") return [money(value), money(value)];
+  if (typeof value !== "string") return [price(value), price(value)];
   const [low, high] = value.split("-");
-  return [money(low), money(high ?? low)];
+  return [price(low), price(high ?? low)];
 }
 
 /** One model year from Jarvis's figures. The calculator off, or no steps, keeps the money fixed at its lowest. */
@@ -236,21 +245,21 @@ function yearsFromAnswer(answer: JarvisCarYears | null): PlanYear[] {
     const [low, high] = range(row.rent);
     const year =
       "min_upfront" in row
-        ? planYear(label, money(row.min_rent) ?? low, null, money(row.min_upfront), money(row.max_upfront), row.downpayment_stepup, row.rent_stepdown, row.is_calculator_enabled)
-        : planYear(label, low, high, money(row.min_sd_amount), null, null, null, false);
+        ? planYear(label, price(row.min_rent) ?? low, null, price(row.min_upfront), price(row.max_upfront), row.downpayment_stepup, row.rent_stepdown, row.is_calculator_enabled)
+        : planYear(label, low, high, price(row.min_sd_amount), null, null, null, false);
     return year ? [year] : [];
   });
 }
 
 /** A car Jarvis prices without a model-year choice: its plan figures, as one unnamed year. */
 function yearsFromOffer(offer: JarvisPlanOption): PlanYear[] {
-  const low = money(offer.rent_info?.min_amount) ?? range(offer.rent)[0];
-  const high = money(offer.rent_info?.max_amount) ?? range(offer.rent)[1];
+  const low = price(offer.rent_info?.min_amount) ?? range(offer.rent)[0];
+  const high = price(offer.rent_info?.max_amount) ?? range(offer.rent)[1];
   const [upfront, maxUpfront] = range(offer.upfront_fee);
   const year =
     offer.plan_uri === "own-now"
       ? planYear("", low, null, upfront, maxUpfront, offer.downpayment_stepup, offer.rent_stepdown, offer.is_calculator_enabled)
-      : planYear("", low, high, money(offer.min_sd_amount), null, null, null, false);
+      : planYear("", low, high, price(offer.min_sd_amount), null, null, null, false);
   return year ? [year] : [];
 }
 
@@ -280,8 +289,8 @@ async function readCity(city: JarvisCity): Promise<LiveCity> {
     return {
       name: car.car_name,
       fuel: car.car_fuel_type ?? "",
-      rent: money(car.rent),
-      deposit: money(car.min_sd_amount),
+      rent: price(car.rent),
+      deposit: price(car.min_sd_amount),
       photo: car.car_creative?.find((c) => c.image)?.image ?? null,
       recommended: Boolean(car.recommended),
       plans,
