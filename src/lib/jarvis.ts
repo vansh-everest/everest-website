@@ -196,6 +196,19 @@ export async function signInDiagnosis(): Promise<string> {
         signal: AbortSignal.timeout(15_000),
       });
       answers.push(String(res.status));
+      // The first live session: also ask who it is, to tell a missing role from a failing check.
+      if (res.ok && !answers.some((a) => a.startsWith("me "))) {
+        const token = ((await res.json().catch(() => ({}))) as { access_token?: string }).access_token;
+        if (token) {
+          const me = await fetch(`${jarvisUrl()}/everest_website/admin/me`, {
+            cache: "no-store",
+            headers: { authorization: `Bearer ${token}` },
+            signal: AbortSignal.timeout(15_000),
+          });
+          const body = await me.text().catch(() => "");
+          answers.push(`me ${me.status} ${body.replace(/\s+/g, " ").slice(0, 160)}`);
+        }
+      }
     } catch {
       answers.push("no answer");
     }
