@@ -132,6 +132,43 @@ const tones: Record<Tone, { letter: string; tint: string; icon: string; accent: 
 };
 
 /**
+ * Hover colours, written out whole so Tailwind finds them: on a letter card the card takes a soft
+ * tint and its letter and icon deepen; in the values grid the icon circle deepens to its tone.
+ */
+const hovers: Record<Tone, { card: string; letter: string; tile: string; circle: string }> = {
+  blue: {
+    card: "hover:bg-[#f5f9fd]",
+    letter: "group-hover/card:text-[#004f86]",
+    tile: "group-hover/card:bg-[#d4e7f7] group-hover/card:text-[#004f86]",
+    circle: "group-hover/value:bg-[#d4e7f7] group-hover/value:text-brand",
+  },
+  plum: {
+    card: "hover:bg-[#fbf5fa]",
+    letter: "group-hover/card:text-[#7a2c73]",
+    tile: "group-hover/card:bg-[#efd9ec] group-hover/card:text-[#7a2c73]",
+    circle: "group-hover/value:bg-[#efd9ec] group-hover/value:text-plum",
+  },
+  lime: {
+    card: "hover:bg-[#f9fbef]",
+    letter: "group-hover/card:text-[#8ba51f]",
+    tile: "group-hover/card:bg-[#e6f0c2] group-hover/card:text-[#8ba51f]",
+    circle: "group-hover/value:bg-[#e6f0c2] group-hover/value:text-[#8ba51f]",
+  },
+  sun: {
+    card: "hover:bg-[#fffdf0]",
+    letter: "group-hover/card:text-[#021c31]",
+    tile: "group-hover/card:bg-[#fbf0b3] group-hover/card:text-[#c9ae00]",
+    circle: "group-hover/value:bg-[#fbf0b3] group-hover/value:text-[#c9ae00]",
+  },
+};
+
+/** Before its card's turn in the one-time lift (see ImpactRow), a letter and icon wait in grey. */
+const waiting = {
+  letter: "group-data-[lit=off]/card:text-[#c5ccd4]",
+  tile: "group-data-[lit=off]/card:bg-[#eef1f4] group-data-[lit=off]/card:text-[#b9c2cb]",
+};
+
+/**
  * "Our Values Our Foundation": the seven values that spell IMPACTT, as letter cards, then each value
  * in full. Phones put each value on a white card; from lg the values sit in a four-column grid.
  */
@@ -153,19 +190,23 @@ export function Values() {
         <ImpactRow className="mt-[41px] grid grid-cols-4 gap-2 sm:max-w-[520px] lg:mt-[86px] lg:flex lg:max-w-none lg:gap-[13px]">
           {values.map((v) => {
             const t = tones[v.tone];
+            const h = hovers[v.tone];
             const Icon = v.icon;
             return (
-              <li key={v.id} className="min-w-0 lg:flex-1 lg:basis-0">
+              <li key={v.id} className="group/card min-w-0 lg:flex-1 lg:basis-0">
                 <a
                   href={`#${v.id}`}
-                  className="flex h-[120px] flex-col items-center rounded-[14px] bg-white px-1 pt-2.5 text-center shadow-[0_6px_18px_rgba(6,47,80,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(6,47,80,0.1)] lg:h-[262px] lg:rounded-[20px] lg:px-1.5 lg:pt-[13px] xl:px-2"
+                  className={`flex h-[120px] flex-col items-center rounded-[14px] bg-white px-1 pt-2.5 text-center shadow-[0_6px_18px_rgba(6,47,80,0.04)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(6,47,80,0.1)] lg:h-[262px] lg:rounded-[20px] lg:px-1.5 lg:pt-[13px] xl:px-2 ${h.card}`}
                 >
-                  <span aria-hidden className={`text-[28px] font-bold leading-[34px] lg:text-[64px] lg:font-extrabold lg:leading-[96px] xl:text-[80px] ${t.letter}`}>
+                  <span
+                    aria-hidden
+                    className={`text-[28px] font-bold leading-[34px] transition-colors duration-700 lg:text-[64px] lg:font-extrabold lg:leading-[96px] xl:text-[80px] ${t.letter} ${h.letter} ${waiting.letter}`}
+                  >
                     {v.letter}
                   </span>
                   <span
                     aria-hidden
-                    className={`mt-0.5 grid size-9 place-items-center rounded-lg lg:mt-[9px] lg:h-14 lg:w-16 lg:rounded-[14px] ${t.tint} ${t.icon}`}
+                    className={`mt-0.5 grid size-9 place-items-center rounded-lg transition-colors duration-700 lg:mt-[9px] lg:h-14 lg:w-16 lg:rounded-[14px] ${t.tint} ${t.icon} ${h.tile} ${waiting.tile}`}
                   >
                     <Icon className="size-[30px]" strokeWidth={1.5} />
                   </span>
@@ -181,19 +222,23 @@ export function Values() {
         <ol className="mt-[38px] flex flex-col gap-6 md:flex-row md:flex-wrap md:justify-center lg:mt-[101px] lg:gap-x-8 lg:gap-y-[49px] xl:gap-x-14">
           {values.map((v, i) => {
             const t = tones[v.tone];
+            const h = hovers[v.tone];
             const Icon = v.icon;
             const Mark = v.mark;
             return (
               <li
                 key={v.id}
                 id={v.id}
-                className="scroll-mt-28 rounded-[20px] bg-white p-5 text-center shadow-[0_6px_18px_rgba(6,47,80,0.05)] md:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-6rem)/4)] lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none xl:w-[calc((100%-10.5rem)/4)]"
+                className="group/value scroll-mt-28 rounded-[20px] bg-white p-5 text-center shadow-[0_6px_18px_rgba(6,47,80,0.05)] md:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-6rem)/4)] lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none xl:w-[calc((100%-10.5rem)/4)]"
               >
                 <div className="flex flex-col items-center">
                   <span aria-hidden className={`grid size-14 place-items-center rounded-[14px] lg:hidden ${t.tint} ${t.icon}`}>
                     <Icon className="size-[34px]" strokeWidth={1.6} />
                   </span>
-                  <span aria-hidden className={`hidden size-[120px] place-items-center rounded-full text-navy lg:grid ${t.tint}`}>
+                  <span
+                    aria-hidden
+                    className={`hidden size-[120px] place-items-center rounded-full text-navy transition duration-300 group-hover/value:scale-105 lg:grid ${t.tint} ${h.circle}`}
+                  >
                     <Mark className="size-16" strokeWidth={1.5} />
                   </span>
                   <span className="mt-3 text-[36px] font-bold leading-[44px] text-brand lg:mt-[21px] lg:block lg:text-[52px] lg:font-normal lg:leading-[60px] lg:text-navy">
