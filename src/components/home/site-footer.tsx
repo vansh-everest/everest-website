@@ -51,7 +51,7 @@ export function SiteFooter() {
               <Image src="/figma/logo-white.png" alt="Everest Fleet" width={98} height={56} className="h-14 w-[98px]" />
             </Link>
             <p className="-mt-[3px] text-[15px] leading-[23px] lg:-mt-px lg:max-w-[270px] lg:text-sm">
-              India&apos;s largest fleet management company. {COMPANY.vehicles} vehicles. {COMPANY.cities} cities.
+              India&apos;s Largest Fleet Management Company. {COMPANY.vehicles} vehicles. {COMPANY.cities} cities.
               Powering driver earnings and investor returns since {COMPANY.founded}.
             </p>
           </div>

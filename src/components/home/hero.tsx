@@ -16,7 +16,7 @@ export function Hero() {
         />
       </div>
       <p className="absolute left-[13px] top-[14px] rounded-full bg-sun py-[4.5px] pl-1.5 pr-2 text-[11px] font-bold uppercase leading-4 tracking-[1.26px] text-navy sm:left-[35px] sm:top-[68px] sm:py-[11px] sm:pl-[13px] sm:pr-4">
-        <span aria-hidden>⭐</span> India’s largest fleet partner
+        <span aria-hidden>⭐</span> India’s Largest Fleet
       </p>
     </section>
   );

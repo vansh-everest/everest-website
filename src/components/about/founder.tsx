@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { COMPANY } from "@/lib/company";
 
 const FOUNDER = { name: "Siddharth Ladsariya", title: "Founder & CEO" };
 
@@ -10,7 +9,7 @@ export function Founder() {
         Meet Our <span className="text-brand">Founder</span>
       </h2>
       <div className="mx-auto mt-7 grid max-w-[1184px] gap-6 sm:mt-14 sm:gap-16 lg:mt-[98px] lg:grid-cols-[480px_1fr] lg:gap-20">
-        <figure className="relative mx-auto w-full max-w-[280px] sm:max-w-[480px]">
+        <figure className="relative mx-auto w-full max-w-[280px] self-start sm:max-w-[480px]">
           <span
             aria-hidden
             className="absolute -right-4 -top-4 hidden size-[120px] bg-[#d0dbe5] [clip-path:polygon(0_0,100%_0,100%_100%)] sm:block"
@@ -35,24 +34,33 @@ export function Founder() {
         </figure>
         <div className="lg:max-w-[600px] lg:pt-[49px]">
           <p className="text-xl font-bold leading-7 tracking-[-0.3px] text-navy sm:text-[26px] sm:leading-[34px] lg:text-[32px] lg:leading-[42px]">
-            We don&rsquo;t just put drivers on the road.
-            <br /> We put families ahead.
+            Our journey has always been about more than cars.
+            <br /> It has always been about people.
           </p>
           <div className="mt-4 space-y-3 text-sm leading-[22px] text-ink-soft sm:mt-6 sm:space-y-4 sm:text-base sm:leading-[27px]">
             <p>
-              When we started Everest Fleet, we made one promise that every driver who joins us would earn with dignity
-              and grow with security. Today, with {COMPANY.drivers} drivers across {COMPANY.cities} cities, that promise is
-              stronger than ever.
+              When we started Everest Fleet, we wanted to create something that gave drivers a reliable way to earn, grow
+              and build a better future for their families.
             </p>
             <p>
-              Behind every car is a family counting on it. That&rsquo;s why we built more than a fleet. We built a community
-              that supports you, from your first trip to owning your own vehicle.
+              Over the years, Everest has grown in size, in cities and in the number of drivers who are part of our journey.
+              But what has stayed the same is our belief that{" "}
+              <strong className="font-semibold text-navy">
+                every driver deserves respect, opportunity and a chance to move forward.
+              </strong>
             </p>
-            <p>This is just the beginning. Thank you for driving the journey with us.</p>
+            <p>
+              I have seen many drivers begin their journey with us with a simple goal &mdash; to earn more for their
+              families. Some have gone on to build their savings, some have moved towards owning their own cars, and many
+              have simply created a more secure life for the people who depend on them.
+            </p>
+            <p>These are the stories that make Everest what it is today.</p>
+            <p>We still have a long way to go. And I hope we continue to grow together, one journey at a time.</p>
+            <p className="font-semibold text-navy">Thank you for trusting Everest and being a part of our journey.</p>
           </div>
           <p className="mt-8 hidden pl-4 lg:block">
             <span className="block text-base font-bold leading-6 text-navy">{FOUNDER.name}</span>
-            <span className="mt-0.5 block text-sm leading-5 text-gray-400">{FOUNDER.title}</span>
+            <span className="mt-0.5 block text-sm leading-5 text-gray-400">{FOUNDER.title}, Everest Fleet</span>
           </p>
         </div>
       </div>

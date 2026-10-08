@@ -206,7 +206,7 @@ export type SiteContent = {
 };
 
 /** Bump when SiteContent changes shape, so no deployment reads a cache written by an older one. */
-export const CONTENT_VERSION = "7";
+export const CONTENT_VERSION = "8";
 
 export const placeholder = (label: string, alt = ""): ImageSlot => ({ label, url: "", alt });
 
@@ -288,7 +288,7 @@ const PLAN_SEED: Plan[] = [
     tenureNote: "",
     cityPrices: {},
     rows: [{ label: "Ownership", value: "Car transferred to your name at tenure end" }],
-    benefits: ["No CIBIL", "Daily Instalments", "No Insurance", "No Regulatory Charges", "100% Uber incentive"],
+    benefits: ["No CIBIL", "Daily Instalments", "No Insurance", "No Regulatory Charges", "100% Uber incentive", "No paperwork", "No loan required"],
     carIds: ["wagonr", "s-presso", "tigor", "rumion", "swift-dzire"],
     page: {
       headline: "The Easiest Way to",
@@ -404,7 +404,7 @@ const PLAN_SEED: Plan[] = [
     tenureNote: "Flexible",
     cityPrices: {},
     rows: [{ label: "Zero asset", value: "No ownership or loan liability" }],
-    benefits: ["24/7 Support", "100% Uber incentive", "free repair and maintenance"],
+    benefits: ["24/7 Support", "100% Uber incentive", "Free repair and maintenance"],
     carIds: ["wagonr", "s-presso", "tigor", "rumion", "swift-dzire"],
     page: {
       headline: "Earn Without",

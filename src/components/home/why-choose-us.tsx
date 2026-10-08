@@ -21,7 +21,7 @@ const benefits: Benefit[] = [
     tone: "bg-brand text-white",
     title: "Low Deposit",
     titleMd: "Low Deposit Plan",
-    body: "Start with minimal upfront cost",
+    body: "Start with a minimum deposit",
   },
   { icon: Wrench, tone: "bg-navy text-white", title: "₹0 Maintenance*", body: "100% service & repairs covered" },
   {

@@ -10,12 +10,7 @@ function YellowCheck({ className = "" }: { className?: string }) {
   );
 }
 
-/* The phone design words the last perk differently. */
-const perks: { text: string; phone?: string }[] = [
-  { text: "Without loan" },
-  { text: "Without CIBIL score" },
-  { text: "With small deposit", phone: "With small Upfront Payment" },
-];
+const perks = ["Without loan", "Without CIBIL score", "With minimal upfront payment"];
 
 /*
  * Desktop is laid out on the 1440 export frame. --u is one frame pixel: it shrinks with the
@@ -44,10 +39,16 @@ export function OwnNowBanner() {
         </div>
 
         <div className="px-6 pb-6 pt-[22px] text-white lg:absolute lg:left-[calc(var(--u)*811)] lg:top-[calc(var(--u)*33)] lg:p-0">
-          <h2 className="text-center text-xl font-bold leading-7 tracking-[0.35px] lg:text-left lg:text-[length:calc(var(--u)*48)] lg:leading-[calc(var(--u)*60)] lg:tracking-[calc(var(--u)*0.3)]">
-            Introducing <span className="text-sun">Own Now</span> <br className="hidden lg:inline" />
-            <span className="lg:hidden">By</span>
-            <span className="hidden lg:inline">by</span> Everest
+          {/* The logo carries "by Everest" under its wordmark, so the heading keeps the two-line height it had as text. */}
+          <h2 className="flex items-start justify-center gap-2.5 text-xl font-bold leading-7 tracking-[0.35px] lg:h-[calc(var(--u)*120)] lg:justify-start lg:gap-[calc(var(--u)*20)] lg:text-[length:calc(var(--u)*48)] lg:leading-[calc(var(--u)*60)] lg:tracking-[calc(var(--u)*0.3)]">
+            Introducing
+            <Image
+              src="/figma/home/own-now-logo.webp"
+              alt="Own-Now by Everest"
+              width={1017}
+              height={353}
+              className="h-12 w-auto lg:mt-[calc(var(--u)*6)] lg:h-[calc(var(--u)*92)]"
+            />
           </h2>
           <p className="mt-[5px] text-center text-sm leading-5 tracking-[0.2px] lg:mt-[calc(var(--u)*21)] lg:text-left lg:text-[length:calc(var(--u)*24)] lg:font-semibold lg:leading-[calc(var(--u)*29)] lg:tracking-[calc(var(--u)*0.35)]">
             Now become owner of your own car
@@ -55,24 +56,17 @@ export function OwnNowBanner() {
           <ul className="mt-1 lg:mt-[calc(var(--u)*5)]">
             {perks.map((perk) => (
               <li
-                key={perk.text}
+                key={perk}
                 className="flex h-8 items-center gap-2 text-base lg:h-[calc(var(--u)*28)] lg:gap-[calc(var(--u)*6)] lg:text-[length:calc(var(--u)*20)]"
               >
                 <YellowCheck className="size-3.5 lg:size-[calc(var(--u)*15)]" />
-                {perk.phone ? (
-                  <>
-                    <span className="lg:hidden">{perk.phone}</span>
-                    <span className="hidden lg:inline">{perk.text}</span>
-                  </>
-                ) : (
-                  perk.text
-                )}
+                {perk}
               </li>
             ))}
           </ul>
           <Link
             href="/own-now/"
-            className="mt-1.5 flex h-14 w-full items-center justify-center rounded-full bg-sun text-base font-medium tracking-[0.2px] text-navy transition hover:brightness-95 lg:absolute lg:left-[calc(var(--u)*262)] lg:top-[calc(var(--u)*200)] lg:mt-0 lg:h-[calc(var(--u)*55)] lg:w-[calc(var(--u)*154)] lg:text-[length:calc(var(--u)*15)] lg:tracking-[calc(var(--u)*1.2)]"
+            className="mt-1.5 flex h-14 w-full items-center justify-center rounded-full bg-sun text-base font-medium tracking-[0.2px] text-navy transition hover:brightness-95 lg:absolute lg:left-[calc(var(--u)*340)] lg:top-[calc(var(--u)*200)] lg:mt-0 lg:h-[calc(var(--u)*55)] lg:w-[calc(var(--u)*154)] lg:text-[length:calc(var(--u)*15)] lg:tracking-[calc(var(--u)*1.2)]"
           >
             Know more
           </Link>

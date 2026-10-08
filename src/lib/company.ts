@@ -7,16 +7,17 @@
  * Four different answers across our own pages is also the main reason an AI assistant
  * declines to quote us: it cross-checks and finds no agreement.
  *
- * Figures below are the verifiable operating position as at 16 September 2026.
+ * Figures below are the verifiable operating position as at 16 September 2026; the vehicle
+ * count was raised to 23,500+ on 8 October 2026 from Everest's website brief.
  * PENDING: operations to confirm these, and to supply a cumulative drivers-served figure
  * if one is to be published. Update the numbers and the date together, never separately.
  */
 export const COMPANY = {
-  asOf: "September 2026",
+  asOf: "October 2026",
   founded: 2016,
 
   /** Vehicles owned, stated conservatively. */
-  vehicles: "20,000+",
+  vehicles: "23,500+",
   /** Drivers currently on the road, stated conservatively. */
   drivers: "10,000+",
   /** Mumbai, Delhi NCR, Bengaluru, Hyderabad, Pune, Kolkata, Chennai. */
