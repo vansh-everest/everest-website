@@ -1,5 +1,5 @@
 import "server-only";
-import { cookies } from "next/headers";
+import { headers } from "next/headers";
 import { cache } from "react";
 
 /**
@@ -119,18 +119,51 @@ async function exchange(session: string): Promise<string> {
 /** Hawkeye's session ids are UUIDs; Jarvis answers anything else with a 500, so it is never sent. */
 const SESSION_ID = /^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i;
 
-async function accessToken(renew = false): Promise<string> {
-  const session = (await cookies()).get("session_id")?.value;
-  if (!session || !SESSION_ID.test(session)) throw new JarvisAccessError("signed-out");
+/**
+ * Every Hawkeye session id the browser sent. Jarvis sets `session_id` for .everestfleet.com, but a
+ * second cookie of the same name (an old one kept for this host alone, say from a dev sign-in) is
+ * sent alongside it, and cookie readers keep only one of the two. So all of them are read from the
+ * raw header and tried in turn.
+ */
+async function sessionIds(): Promise<string[]> {
+  const raw = (await headers()).get("cookie") ?? "";
+  const ids = raw
+    .split(";")
+    .map((part) => part.trim())
+    .filter((part) => part.startsWith("session_id="))
+    .map((part) => decodeURIComponent(part.slice("session_id=".length)).replace(/^"|"$/g, ""));
+  return [...new Set(ids)].filter((id) => SESSION_ID.test(id));
+}
+
+/** Sessions Jarvis refused lately, so a stale cookie costs one exchange a minute, not one a request. */
+const refused = new Map<string, number>();
+
+async function tokenFor(session: string, renew: boolean): Promise<string> {
   const key = await sessionKey(session);
   const now = Date.now();
+  if ((refused.get(key) ?? 0) > now) throw new JarvisAccessError("signed-out");
   const held = tokens.get(key);
   if (held && held.until > now && (!renew || now - held.at < RENEW_GAP_MS)) return held.token;
   for (const [k, v] of tokens) if (v.until <= now) tokens.delete(k);
+  for (const [k, until] of refused) if (until <= now) refused.delete(k);
   const token = exchange(session);
   tokens.set(key, { at: now, until: now + TOKEN_TTL_MS, token });
-  token.catch(() => tokens.delete(key));
+  token.catch((error) => {
+    tokens.delete(key);
+    if (error instanceof JarvisAccessError) refused.set(key, Date.now() + TOKEN_TTL_MS);
+  });
   return token;
+}
+
+async function accessToken(renew = false): Promise<string> {
+  for (const session of await sessionIds()) {
+    try {
+      return await tokenFor(session, renew);
+    } catch (error) {
+      if (!(error instanceof JarvisAccessError)) throw error;
+    }
+  }
+  throw new JarvisAccessError("signed-out");
 }
 
 /** Sends with the session's token; a 401 means Hawkeye replaced it, so exchange once and resend. */
