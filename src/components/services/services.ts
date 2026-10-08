@@ -74,7 +74,8 @@ export const SERVICES: Service[] = [
     title: "Advertise With Us",
     tags: ["In-cab", "Full wrap", "Sampling"],
     stats: [
-      { value: COMPANY.vehicles, label: "cars in motion" },
+      // Cars carrying ads, as the services design gives it; the fleet total (COMPANY.vehicles) is larger.
+      { value: "15,000+", label: "cars in motion" },
       { value: "₹0.10–0.20", label: "per impression" },
       { value: String(COMPANY.cities), label: "cities" },
     ],

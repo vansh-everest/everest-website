@@ -91,7 +91,9 @@ export function CarStep({
               }`}
             >
               <span className="relative block aspect-[163/96] overflow-hidden rounded-lg bg-mist lg:aspect-[228/140]">
-                <Image src={c.image.url} alt={c.image.alt} fill sizes="(min-width: 1024px) 230px, 45vw" className="object-cover" />
+                {c.image.url ? (
+                  <Image src={c.image.url} alt={c.image.alt} fill sizes="(min-width: 1024px) 230px, 45vw" className="object-cover" />
+                ) : null}
               </span>
               <span className="mt-2.5 flex min-h-6 items-center justify-between gap-2 lg:mt-[11px]">
                 <span className="text-[17px] font-bold leading-6 text-navy">{c.name}</span>

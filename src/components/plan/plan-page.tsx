@@ -5,7 +5,7 @@ import { StartDriving } from "@/components/site/start-driving";
 import { headline, planFor } from "@/lib/content";
 import { getLiveData, planCalculator, wizardCarPrices } from "@/lib/fleet-data";
 import { planIdFor, wizardFor, type PlanPagePath } from "@/lib/plan-pages";
-import { planPage, planWizard } from "@/lib/plan-view";
+import { planPage, planWizard, withJarvisCars } from "@/lib/plan-view";
 import { getContent } from "@/lib/store";
 import { PlanBenefits } from "./plan-benefits";
 import { PlanCalculator } from "./plan-calculator";
@@ -35,10 +35,13 @@ export async function PlanPage({ path }: { path: PlanPagePath }) {
   const { content, plan } = await offered(path);
   if (!plan) notFound();
   const view = planPage(plan);
-  // The calculator priced by Jarvis when it has the plan's cars; otherwise, and on Revenue Share, the wizard.
+  // Priced by Jarvis wherever it has the plan's cars: Own Now as its 3-step picker, Drive to Own and
+  // Drive to Earn as the one-card calculator. Without Jarvis, and on Revenue Share, the admin's picker.
   const live = await getLiveData();
-  const calculator = plan.id === "revenue-share" ? null : planCalculator(content, live, plan.id);
-  const wizard = calculator ? null : planWizard(content, plan, wizardFor(path), wizardCarPrices(content, live, plan.id));
+  const jarvis = plan.id === "revenue-share" ? null : planCalculator(content, live, plan.id);
+  const picker = planWizard(content, plan, wizardFor(path), wizardCarPrices(content, live, plan.id));
+  const wizard = jarvis ? (plan.id === "own-now" && picker ? withJarvisCars(picker, jarvis) : null) : picker;
+  const calculator = jarvis && !wizard ? jarvis : null;
   return (
     <>
       {/* Revenue Share has no edge-to-edge hero artwork yet; its photo is cropped for the split layout. */}

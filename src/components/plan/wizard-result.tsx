@@ -98,7 +98,9 @@ export function ResultStep({
       <YourPlan className="lg:hidden" />
       <div className="mt-4 flex items-center gap-3 lg:mt-0 lg:block">
         <div className="relative aspect-[110/72] w-[110px] shrink-0 overflow-hidden rounded-lg bg-mist lg:aspect-[340/230] lg:w-full lg:rounded-xl">
-          <Image src={car.image.url} alt={car.image.alt} fill sizes="(min-width: 1024px) 340px, 110px" className="object-cover" />
+          {car.image.url ? (
+            <Image src={car.image.url} alt={car.image.alt} fill sizes="(min-width: 1024px) 340px, 110px" className="object-cover" />
+          ) : null}
         </div>
         <div className="min-w-0">
           <StepHeading id={headingId}>
@@ -115,7 +117,9 @@ export function ResultStep({
       <div className="min-w-0">
         <div className="hidden items-center justify-between gap-3 lg:flex">
           <YourPlan />
-          <span className="rounded-full bg-sun px-2.5 py-[3px] text-xs font-semibold leading-[14px] text-navy">Sample numbers</span>
+          {view.byCity ? null : (
+            <span className="rounded-full bg-sun px-2.5 py-[3px] text-xs font-semibold leading-[14px] text-navy">Sample numbers</span>
+          )}
         </div>
 
         {shown.length ? (

@@ -76,11 +76,14 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
 
   const [step, setStep] = useState(0);
   const [city, setCity] = useState(view.cities[0].slug);
-  const [carId, setCarId] = useState(view.cars[0].id);
-  const car = view.cars.find((c) => c.id === carId) ?? view.cars[0];
-  const [year, setYear] = useState(car.years[0] ?? "");
+  const cars = view.byCity?.[city] ?? view.cars;
+  const [carId, setCarId] = useState(cars[0].id);
+  const picked = cars.find((c) => c.id === carId) ?? cars[0];
+  const [year, setYear] = useState(picked.years[0] ?? "");
+  // A car priced per model year slides along that year's points.
+  const car = { ...picked, options: picked.yearOptions?.[year] ?? picked.options };
   const [tenure, setTenure] = useState(view.tenures[0] ?? "");
-  const [index, setIndex] = useState(car.defaultOption);
+  const [index, setIndex] = useState(picked.defaultOption);
 
   const top = useRef<HTMLDivElement>(null);
   const moved = useRef(false);
@@ -97,11 +100,23 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
     setStep(Math.max(0, Math.min(last, to)));
   }
 
-  function pickCar(id: string) {
-    const next = view.cars.find((c) => c.id === id) ?? view.cars[0];
+  function pickCar(id: string, from = cars) {
+    const next = from.find((c) => c.id === id) ?? from[0];
     setCarId(next.id);
     setYear(next.years[0] ?? "");
     setIndex(next.defaultOption);
+  }
+
+  function pickCity(slug: string) {
+    setCity(slug);
+    const offered = view.byCity?.[slug] ?? view.cars;
+    // Keep the car when the new city has it too; otherwise start from that city's first car.
+    if (!offered.some((c) => c.id === carId)) pickCar(offered[0].id, offered);
+  }
+
+  function pickYear(next: string) {
+    setYear(next);
+    setIndex(0);
   }
 
   const cityName = view.cities.find((c) => c.slug === city)?.name ?? "";
@@ -111,7 +126,7 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
   const name = copy.steps[step];
 
   return (
-    <section id="plan" aria-label={copy.title} className="scroll-mt-20 bg-[#f5f8fb] px-4 pt-[30px] sm:px-6 lg:pb-[72px] lg:pt-[73px]">
+    <section id="plan" data-no-reveal aria-label={copy.title} className="scroll-mt-20 bg-[#f5f8fb] px-4 pt-[30px] sm:px-6 lg:pb-[72px] lg:pt-[73px]">
       <div ref={top} className="scroll-mt-20 text-center">
         <p className="hidden text-[13px] font-medium uppercase leading-4 tracking-[1.3px] text-brand lg:block">{view.name}</p>
         <h2 className="text-2xl font-bold leading-[30px] tracking-[-0.3px] text-navy lg:mt-[10px] lg:text-[41px] lg:leading-[48px] lg:tracking-[-0.5px]">
@@ -128,7 +143,7 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
       >
         {step === 0 ? (
           <>
-            <CityStep question={copy.city} cities={view.cities} value={city} onChange={setCity} headingId={headingId} />
+            <CityStep question={copy.city} cities={view.cities} value={city} onChange={pickCity} headingId={headingId} />
             <StepFooter className="mt-[92px] lg:mt-[51px] lg:justify-end" next="Next: choose car" onNext={() => go(1)} />
           </>
         ) : null}
@@ -138,11 +153,11 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
             <CarStep
               question={copy.car}
               yearLabel={copy.year}
-              cars={view.cars}
+              cars={cars}
               value={car.id}
-              onChange={pickCar}
+              onChange={(id) => pickCar(id)}
               year={year}
-              onYear={setYear}
+              onYear={pickYear}
               headingId={headingId}
             />
             <StepFooter

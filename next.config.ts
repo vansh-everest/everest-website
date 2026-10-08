@@ -14,6 +14,8 @@ const nextConfig: NextConfig = {
       // Photos uploaded through Jarvis: its public Cloudflare buckets (production, staging).
       { protocol: "https", hostname: "efpp.everestfleet.com", pathname: "/website/**" },
       { protocol: "https", hostname: "efps.everestfleet.com", pathname: "/website/**" },
+      // Jarvis's car photos, used for a car the admin has no photo of.
+      { protocol: "https", hostname: "*.r2.dev", pathname: "/onboard/**" },
     ],
   },
   // Until everestfleet.com points here, the site answers only on its host's own addresses

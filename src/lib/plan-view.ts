@@ -1,3 +1,4 @@
+import type { PlanCalculatorView, PlanYear } from "@/lib/fleet-data";
 import {
   fillFigures,
   fillOrDrop,
@@ -245,6 +246,8 @@ export type WizardCar = {
   /** Upfront-to-daily points from the calculator. None means the plan's own figures apply. */
   options: DepositOption[];
   defaultOption: number;
+  /** Points per model year, when they differ by year (Jarvis's Own Now); "" for a car without years. */
+  yearOptions?: Record<string, DepositOption[]>;
 };
 
 /** The plan's own figures in one city, for a car the calculator does not price. `money` is the upfront, or else the deposit. */
@@ -260,6 +263,8 @@ export type PlanWizardView = {
   prices: Record<string, WizardPrice>;
   /** Jarvis's figures for one car in one city (city slug, then car id); they win over `prices`. */
   carPrices: Record<string, Record<string, WizardPrice>>;
+  /** The cars on offer in each city, when they differ by city (Jarvis); otherwise `cars` everywhere. */
+  byCity?: Record<string, WizardCar[]>;
   /** The plan's third figure, e.g. Liability: Zero. */
   term: Row;
   /** The plan's first tag, e.g. "Rental plan". */
@@ -320,5 +325,50 @@ export function planWizard(
     carPrices,
     term: term.label && term.value ? term : { label: "", value: "" },
     tag: plan.page.tags.map((t) => fillOrDrop(t, plan.price)).find(Boolean) ?? "",
+  };
+}
+
+/** Every step from the lowest upfront to the highest, each with its daily rent; one point without steps. */
+function stepPoints(year: PlanYear): DepositOption[] {
+  if (year.money === null) return [];
+  const high = year.maxMoney ?? year.money;
+  if (!year.moneyStep) return [{ deposit: String(year.money), daily: String(year.rent) }];
+  const out: DepositOption[] = [];
+  for (let i = 0, paid = year.money; paid <= high && i < 400; i++, paid += year.moneyStep) {
+    out.push({ deposit: String(paid), daily: String(Math.max(0, year.rent - i * year.rentStep)) });
+  }
+  return out;
+}
+
+/** "Wagon R - 2025" is offered as 2025; a model name without a year stays whole. */
+const yearChip = (name: string) => /(\d{4})\s*$/.exec(name)?.[1] ?? name;
+
+/**
+ * The plan picker with Jarvis's cities, cars, model years and upfront steps in place of the
+ * admin's sample points. Words, tenures and the plan's term stay the admin's.
+ */
+export function withJarvisCars(base: PlanWizardView, calculator: PlanCalculatorView): PlanWizardView {
+  const byCity = Object.fromEntries(
+    calculator.cities.map((city) => [
+      city.slug,
+      city.cars.map(
+        (car): WizardCar => ({
+          id: car.key,
+          name: car.name,
+          image: car.photo ?? { label: car.name, url: "", alt: car.name },
+          years: car.years.filter((y) => y.name).map((y) => yearChip(y.name)),
+          options: stepPoints(car.years[0]),
+          defaultOption: 0,
+          yearOptions: Object.fromEntries(car.years.map((y) => [y.name ? yearChip(y.name) : "", stepPoints(y)])),
+        })
+      ),
+    ])
+  );
+  return {
+    ...base,
+    cities: calculator.cities.map(({ slug, name }) => ({ slug, name })),
+    cars: byCity[calculator.cities[0].slug],
+    byCity,
+    carPrices: {},
   };
 }

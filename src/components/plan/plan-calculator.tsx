@@ -87,7 +87,7 @@ export function PlanCalculator({ view }: { view: PlanCalculatorView }) {
   const perks = view.perks.map((p) => p.replace("{months}", tenure)).filter((p) => !p.includes("{"));
 
   return (
-    <section id="plan" className="scroll-mt-24 bg-[#eef2f6] px-4 py-14 lg:py-[72px]">
+    <section id="plan" data-no-reveal className="scroll-mt-24 bg-[#eef2f6] px-4 py-14 lg:py-[72px]">
       <div className="mx-auto max-w-[1182px]">
         <p className="text-center text-sm font-semibold uppercase leading-5 tracking-[1.5px] text-brand">Plan calculator</p>
         <h2 className="mt-3 text-center text-[32px] font-extrabold leading-10 tracking-[-0.5px] text-navy lg:text-[56px] lg:leading-[64px]">
