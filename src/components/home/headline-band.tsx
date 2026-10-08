@@ -14,13 +14,13 @@ export function HeadlineBand() {
       <div className="relative mt-6 flex flex-wrap items-center justify-center gap-[5px] lg:mt-[34px] lg:gap-5">
         <a
           href="#apply"
-          className="flex h-9 items-center justify-center rounded-full bg-sun px-4 text-[13px] font-medium tracking-[0.4px] text-navy transition hover:brightness-95 lg:h-14 lg:w-[251px] lg:px-0 lg:text-xl lg:font-semibold lg:tracking-[-0.2px]"
+          className="fx-shine flex h-9 items-center justify-center rounded-full bg-sun px-4 text-[13px] font-medium tracking-[0.4px] text-navy transition [--fx-glow:rgb(241_214_20/0.6)] hover:brightness-105 lg:h-14 lg:w-[251px] lg:px-0 lg:text-xl lg:font-semibold lg:tracking-[-0.2px]"
         >
           Join As Driver
         </a>
         <a
           href={PHONE_HREF}
-          className="flex h-9 items-center gap-1.5 rounded-full border-2 border-white px-4 text-[13px] font-medium tracking-[0.4px] text-white transition hover:bg-white/10 lg:h-14 lg:gap-2.5 lg:border-[1.5px] lg:border-line lg:bg-white lg:px-8 lg:text-xl lg:font-semibold lg:tracking-[-0.2px] lg:text-navy lg:hover:bg-white lg:hover:brightness-95"
+          className="fx-shine flex h-9 items-center gap-1.5 rounded-full border-2 border-white px-4 text-[13px] font-medium tracking-[0.4px] text-white transition [--fx-shine-delay:1.65s] hover:bg-white/10 lg:h-14 lg:gap-2.5 lg:border-[1.5px] lg:border-line lg:bg-white lg:px-8 lg:text-xl lg:font-semibold lg:tracking-[-0.2px] lg:text-navy lg:[--fx-shine:rgb(0_109_184/0.16)] lg:hover:bg-white"
         >
           <Phone aria-hidden className="size-4 lg:size-[22px]" />
           Call Now

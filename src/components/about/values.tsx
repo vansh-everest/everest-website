@@ -174,7 +174,7 @@ const waiting = {
  */
 export function Values() {
   return (
-    <section className="bg-[#f2f5fd] px-4 pb-14 pt-10 sm:px-6 sm:py-16 lg:px-10 lg:pb-[125px] lg:pt-[108px]">
+    <section className="relative isolate overflow-clip bg-[#f2f5fd] px-4 pb-14 pt-10 sm:px-6 sm:py-16 lg:px-10 lg:pb-[125px] lg:pt-[108px]">
       <div className="mx-auto max-w-[1200px]">
         <p className="mt-3.5 flex items-center gap-3 text-[13px] font-medium uppercase leading-4 tracking-[1px] text-brand sm:mt-0 lg:hidden">
           <span aria-hidden className="h-0.5 w-5 bg-sun" />
@@ -219,45 +219,57 @@ export function Values() {
           })}
         </ImpactRow>
 
-        <ol className="mt-[38px] flex flex-col gap-6 md:flex-row md:flex-wrap md:justify-center lg:mt-[101px] lg:gap-x-8 lg:gap-y-[49px] xl:gap-x-14">
-          {values.map((v, i) => {
-            const t = tones[v.tone];
-            const h = hovers[v.tone];
-            const Icon = v.icon;
-            const Mark = v.mark;
-            return (
-              <li
-                key={v.id}
-                id={v.id}
-                className="group/value scroll-mt-28 rounded-[20px] bg-white p-5 text-center shadow-[0_6px_18px_rgba(6,47,80,0.05)] md:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-6rem)/4)] lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none xl:w-[calc((100%-10.5rem)/4)]"
-              >
-                <div className="flex flex-col items-center">
-                  <span aria-hidden className={`grid size-14 place-items-center rounded-[14px] lg:hidden ${t.tint} ${t.icon}`}>
-                    <Icon className="size-[34px]" strokeWidth={1.6} />
-                  </span>
-                  <span
-                    aria-hidden
-                    className={`hidden size-[120px] place-items-center rounded-full text-navy transition duration-300 group-hover/value:scale-105 lg:grid ${t.tint} ${h.circle}`}
-                  >
-                    <Mark className="size-16" strokeWidth={1.5} />
-                  </span>
-                  <span className="mt-3 text-[36px] font-bold leading-[44px] text-brand lg:mt-[21px] lg:block lg:text-[52px] lg:font-normal lg:leading-[60px] lg:text-navy">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <h3 className="mt-2 text-[28px] font-bold leading-[34px] text-navy lg:mt-1 lg:text-[28px] lg:leading-[34px] lg:text-brand">
-                  {v.name}
-                </h3>
-                <span aria-hidden className={`mx-auto mt-2 block h-[3px] w-10 rounded-full lg:hidden ${t.accent}`} />
-                <ul className="mx-auto mt-[13px] max-w-[280px] space-y-[9px] text-base leading-[26px] text-navy/80 lg:mt-[14px] lg:space-y-3 lg:text-base lg:leading-[21px] lg:text-navy/85">
-                  {v.points.map((p) => (
-                    <li key={p}>{p}</li>
-                  ))}
-                </ul>
-              </li>
-            );
-          })}
-        </ol>
+        <div className="relative mt-[38px] lg:mt-[101px]">
+          {/* Colour flows down from the letter cards in the values' own tints, drifting slowly. */}
+          <div
+            aria-hidden
+            className="values-wash pointer-events-none absolute -bottom-14 -top-6 left-1/2 -z-10 w-screen -translate-x-1/2 sm:-bottom-16 lg:-bottom-[125px] lg:-top-[90px]"
+          >
+            <span className="values-blob values-blob-blue" />
+            <span className="values-blob values-blob-plum" />
+            <span className="values-blob values-blob-lime" />
+            <span className="values-blob values-blob-sun" />
+          </div>
+          <ol className="flex flex-col gap-6 md:flex-row md:flex-wrap md:justify-center lg:gap-x-8 lg:gap-y-[49px] xl:gap-x-14">
+            {values.map((v, i) => {
+              const t = tones[v.tone];
+              const h = hovers[v.tone];
+              const Icon = v.icon;
+              const Mark = v.mark;
+              return (
+                <li
+                  key={v.id}
+                  id={v.id}
+                  className="group/value scroll-mt-28 rounded-[20px] bg-white p-5 text-center shadow-[0_6px_18px_rgba(6,47,80,0.05)] md:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-6rem)/4)] lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none xl:w-[calc((100%-10.5rem)/4)]"
+                >
+                  <div className="flex flex-col items-center">
+                    <span aria-hidden className={`grid size-14 place-items-center rounded-[14px] lg:hidden ${t.tint} ${t.icon}`}>
+                      <Icon className="size-[34px]" strokeWidth={1.6} />
+                    </span>
+                    <span
+                      aria-hidden
+                      className={`hidden size-[120px] place-items-center rounded-full text-navy transition duration-300 group-hover/value:scale-105 lg:grid ${t.tint} ${h.circle}`}
+                    >
+                      <Mark className="size-16" strokeWidth={1.5} />
+                    </span>
+                    <span className="mt-3 text-[36px] font-bold leading-[44px] text-brand lg:mt-[21px] lg:block lg:text-[52px] lg:font-normal lg:leading-[60px] lg:text-navy">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <h3 className="mt-2 text-[28px] font-bold leading-[34px] text-navy lg:mt-1 lg:text-[28px] lg:leading-[34px] lg:text-brand">
+                    {v.name}
+                  </h3>
+                  <span aria-hidden className={`mx-auto mt-2 block h-[3px] w-10 rounded-full lg:hidden ${t.accent}`} />
+                  <ul className="mx-auto mt-[13px] max-w-[280px] space-y-[9px] text-base leading-[26px] text-navy/80 lg:mt-[14px] lg:space-y-3 lg:text-base lg:leading-[21px] lg:text-navy/85">
+                    {v.points.map((p) => (
+                      <li key={p}>{p}</li>
+                    ))}
+                  </ul>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
       </div>
     </section>
   );
