@@ -31,7 +31,12 @@ const stops: JourneyStop[] = milestones.reduce<JourneyStop[]>((years, m) => {
 
 export function Milestones() {
   return (
-    <section data-no-reveal className="relative overflow-x-clip bg-blue-gradient pb-[52px] pt-[15px] lg:pb-24 lg:pt-20">
+    <section data-no-reveal className="relative overflow-x-clip bg-blue-gradient pb-[52px] pt-[95px] lg:pb-24 lg:pt-[200px]">
+      {/* The blue rises out of the values section's colour instead of starting at a line. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-[linear-gradient(180deg,#f2f5fd_0%,rgb(242_245_253/0.85)_22%,rgb(242_245_253/0.35)_60%,rgb(242_245_253/0)_100%)] lg:h-[170px]"
+      />
       <p className="relative flex items-center justify-center gap-2.5 text-[13px] font-semibold uppercase leading-4 tracking-[1px] text-sun lg:hidden">
         <span aria-hidden className="h-0.5 w-[18px] bg-sun" />
         Our Milestones

@@ -380,8 +380,10 @@ body {
    soft blobs that drift slowly. Gradients rather than blur, so phones draw it cheaply. */
 .values-wash {
   background: linear-gradient(180deg, transparent 0%, rgb(255 255 255 / 0.55) 45%, rgb(0 109 184 / 0.06) 100%);
-  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 180px);
-  mask-image: linear-gradient(180deg, transparent 0, #000 180px);
+  /* Fades in under the IMPACT cards and out again before the section ends, so the journey's
+     blue rises out of the plain section colour with no glow cut off at the join. */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 180px, #000 calc(100% - 220px), transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 180px, #000 calc(100% - 220px), transparent 100%);
 }
 .values-blob {
   position: absolute;

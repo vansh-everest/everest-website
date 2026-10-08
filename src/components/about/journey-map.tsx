@@ -52,7 +52,8 @@ export function JourneyMap({ stops }: { stops: JourneyStop[] }) {
         observer.disconnect();
         setPhase("drawing");
       },
-      { threshold: 0.2 }
+      // Starts as the map's top edge comes up the screen, so most of it plays while in view.
+      { rootMargin: "0px 0px -12% 0px" }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -63,7 +64,7 @@ export function JourneyMap({ stops }: { stops: JourneyStop[] }) {
   const road: CSSProperties = {
     strokeDasharray: "1 1",
     strokeDashoffset: hidden ? 1 : 0,
-    transition: animate ? "stroke-dashoffset 2.6s cubic-bezier(0.45, 0, 0.25, 1)" : undefined,
+    transition: animate ? "stroke-dashoffset 1.4s cubic-bezier(0.45, 0, 0.25, 1)" : undefined,
   };
 
   return (
@@ -88,7 +89,7 @@ export function JourneyMap({ stops }: { stops: JourneyStop[] }) {
           strokeLinejoin="round"
           style={{
             opacity: hidden ? 0 : 1,
-            transition: animate ? "opacity 0.5s ease 2.4s" : undefined,
+            transition: animate ? "opacity 0.4s ease 1.25s" : undefined,
           }}
         />
       </svg>
@@ -96,7 +97,7 @@ export function JourneyMap({ stops }: { stops: JourneyStop[] }) {
       <ol>
         {stops.map((stop, i) => {
           const spot = SPOTS[Math.min(i, SPOTS.length - 1)];
-          const delay = 0.35 + (i / Math.max(1, stops.length - 1)) * 2.3;
+          const delay = 0.15 + (i / Math.max(1, stops.length - 1)) * 1.15;
           return (
             <li
               key={stop.year}
@@ -109,19 +110,19 @@ export function JourneyMap({ stops }: { stops: JourneyStop[] }) {
                 style={{
                   opacity: hidden ? 0 : 1,
                   transform: hidden ? "translateY(10px)" : "none",
-                  transition: animate ? `opacity 0.5s ease ${delay + 0.15}s, transform 0.5s ease ${delay + 0.15}s` : undefined,
+                  transition: animate ? `opacity 0.35s ease ${delay + 0.1}s, transform 0.35s ease ${delay + 0.1}s` : undefined,
                 }}
               />
               <span
                 aria-hidden
                 className="h-4 w-0.5 bg-white/80"
-                style={{ opacity: hidden ? 0 : 1, transition: animate ? `opacity 0.3s ease ${delay + 0.1}s` : undefined }}
+                style={{ opacity: hidden ? 0 : 1, transition: animate ? `opacity 0.25s ease ${delay + 0.05}s` : undefined }}
               />
               <span
                 className="block origin-bottom"
                 style={{
                   transform: hidden ? "scale(0)" : "scale(1)",
-                  transition: animate ? `transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) ${delay}s` : undefined,
+                  transition: animate ? `transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) ${delay}s` : undefined,
                 }}
               >
                 <JourneyPin />
