@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Key, MapPin, Phone } from "lucide-react";
+import { CountUp } from "@/components/fx/count-up";
 import { PHONE_HREF } from "@/components/home/ui";
 import { rupees } from "@/lib/content";
 import type { PlanWizardView, WizardCar } from "@/lib/plan-view";
 import type { Said } from "./wizard-copy";
+import { SEQ_GAP_MS, SEQ_START_MS } from "./wizard-motion";
 import { RentStrip } from "./wizard-steps";
 import { rentLabel, Say, StepHeading, type Figures } from "./wizard-ui";
 
@@ -34,12 +36,21 @@ function tiles(view: PlanWizardView, f: Figures): Tile[] {
   return list.filter((t) => t.label && t.value);
 }
 
-function TileBox({ tile }: { tile: Tile }) {
+/** When the n-th block of the result rises in (enterStep), so its figure can count up as it lands. */
+const landsAt = (n: number) => SEQ_START_MS + n * SEQ_GAP_MS + 80;
+
+function TileBox({ tile, seq }: { tile: Tile; seq: number }) {
   return (
-    <div className={`rounded-xl px-3.5 pb-3 pt-3.5 lg:rounded-2xl lg:px-5 lg:pb-[15px] lg:pt-4 ${tile.accent ? "bg-[#e7f1fa]" : "bg-[#f3f6f9]"}`}>
+    <div data-wz-seq={seq} className={`rounded-xl px-3.5 pb-3 pt-3.5 lg:rounded-2xl lg:px-5 lg:pb-[15px] lg:pt-4 ${tile.accent ? "bg-[#e7f1fa]" : "bg-[#f3f6f9]"}`}>
       <p className="text-[13px] leading-4 text-ink-soft lg:leading-5">{tile.label}</p>
       <p className={`mt-1 flex items-baseline gap-1.5 ${tile.accent ? "text-brand" : "text-navy"}`}>
-        <span className="text-[22px] font-bold leading-7 tracking-[-0.3px] lg:text-[32px] lg:leading-10">{tile.value}</span>
+        <CountUp
+          value={tile.value}
+          fromZero
+          delay={landsAt(seq)}
+          duration={800}
+          className="text-[22px] font-bold leading-7 tracking-[-0.3px] tabular-nums lg:text-[32px] lg:leading-10"
+        />
         {tile.unit ? <span className="text-sm font-semibold lg:text-base">{tile.unit}</span> : null}
       </p>
       {tile.note ? (
@@ -124,28 +135,31 @@ export function ResultStep({
 
         {shown.length ? (
           <div className="mt-4 grid grid-cols-2 gap-2.5 lg:mt-[18px] lg:gap-3">
-            {shown.map((tile) => (
-              <TileBox key={tile.label} tile={tile} />
+            {shown.map((tile, i) => (
+              <TileBox key={tile.label} tile={tile} seq={i} />
             ))}
           </div>
         ) : null}
 
         {now ? (
           figures.months ? (
-            <p className="mt-4 inline-flex h-[35px] items-center gap-2.5 rounded-full bg-brand px-4 text-[15px] font-bold text-white lg:mt-[18px] lg:h-[38px] lg:bg-sun lg:text-base lg:text-navy">
+            <p
+              data-wz-seq={shown.length}
+              className="mt-4 inline-flex h-[35px] items-center gap-2.5 rounded-full bg-brand px-4 text-[15px] font-bold text-white lg:mt-[18px] lg:h-[38px] lg:bg-sun lg:text-base lg:text-navy"
+            >
               <Key size={17} strokeWidth={2} className="rotate-180" />
               The Car Is Yours In Month {figures.months}
             </p>
           ) : null
         ) : (
-          <div className="mt-2.5 lg:mt-3">
-            <RentStrip figures={figures} badge={badge}>
+          <div data-wz-seq={shown.length} className="mt-2.5 lg:mt-3">
+            <RentStrip figures={figures} badge={badge} fromZero delay={landsAt(shown.length)}>
               {view.kind === "earn" ? "Keep everything you earn above the rent" : null}
             </RentStrip>
           </div>
         )}
 
-        <div className="mt-4 flex gap-2.5 lg:mt-[18px] lg:gap-3">
+        <div data-wz-seq={shown.length + 1} className="mt-4 flex gap-2.5 lg:mt-[18px] lg:gap-3">
           <Link
             href="#apply"
             className="flex h-12 flex-1 items-center justify-center rounded-full bg-sun px-3 text-[15px] font-medium text-navy transition hover:brightness-95 lg:h-[53px] lg:text-[17px] lg:font-bold"
@@ -161,7 +175,7 @@ export function ResultStep({
           </a>
         </div>
 
-        <div className="mt-3.5 flex items-center justify-between gap-3 lg:mt-[26px] lg:block">
+        <div data-wz-seq={shown.length + 2} className="mt-3.5 flex items-center justify-between gap-3 lg:mt-[26px] lg:block">
           <ChangeLink onChange={onChange} className="lg:hidden" />
           {now && figures.upfront ? (
             <p className="text-[13px] leading-4 text-ink-soft lg:text-sm lg:leading-5">

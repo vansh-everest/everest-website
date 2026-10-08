@@ -1,11 +1,16 @@
 import Image from "next/image";
 import { Check, CircleCheck, MapPin } from "lucide-react";
+import { CountUp } from "@/components/fx/count-up";
 import { rupees } from "@/lib/content";
 import type { CityOption, WizardCar } from "@/lib/plan-view";
 import type { Said } from "./wizard-copy";
 import { rentLabel, Say, shortRupees, StepHeading, type Figures } from "./wizard-ui";
 
 const box = "rounded-xl border border-[#dfe4e8] bg-white";
+
+/** A choice that invites a tap: the cue's light sweeps across it (wizard-motion.ts) and it gives under the finger. */
+const tap = "wz-tap relative overflow-hidden motion-safe:active:scale-[0.97]";
+const Sheen = () => <span aria-hidden className="wz-sheen" />;
 
 export function CityStep({
   question,
@@ -36,12 +41,18 @@ export function CityStep({
               role="radio"
               aria-checked={on}
               onClick={() => onChange(city.slug)}
-              className={`flex h-[57px] w-[calc(50%-6px)] items-center gap-3 rounded-xl border px-[19px] text-left text-[17px] font-semibold leading-5 transition sm:w-[calc(33.333%-8px)] lg:h-[67px] lg:w-[187px] lg:px-5 ${
+              className={`${tap} flex h-[57px] w-[calc(50%-6px)] items-center gap-3 rounded-xl border px-[19px] text-left text-[17px] font-semibold leading-5 transition sm:w-[calc(33.333%-8px)] lg:h-[67px] lg:w-[187px] lg:px-5 ${
                 on ? "border-navy bg-navy text-white" : "border-[#dfe4e8] bg-white text-navy hover:border-brand"
               }`}
             >
               <MapPin size={19} strokeWidth={2} className={`shrink-0 ${on ? "text-sun" : "text-brand"}`} />
               {city.name}
+              {on ? (
+                <span aria-hidden className="wz-check absolute right-2 top-2 grid size-[18px] place-items-center rounded-full bg-sun text-navy">
+                  <Check size={11} strokeWidth={3.5} />
+                </span>
+              ) : null}
+              <Sheen />
             </button>
           );
         })}
@@ -87,7 +98,7 @@ export function CarStep({
               role="radio"
               aria-checked={on}
               onClick={() => onChange(c.id)}
-              className={`w-[calc(50%-6px)] rounded-[14px] border p-[11px] text-left transition sm:w-[calc(33.333%-8px)] lg:w-[calc(33.333%-11px)] lg:p-3 ${
+              className={`${tap} w-[calc(50%-6px)] rounded-[14px] border p-[11px] text-left transition sm:w-[calc(33.333%-8px)] lg:w-[calc(33.333%-11px)] lg:p-3 ${
                 on ? "border-brand bg-[#eaf3fb] ring-1 ring-inset ring-brand" : "border-[#dfe4e8] bg-white hover:border-brand"
               }`}
             >
@@ -99,11 +110,12 @@ export function CarStep({
               <span className="mt-2.5 flex min-h-6 items-center justify-between gap-2 lg:mt-[11px]">
                 <span className="text-[17px] font-bold leading-6 text-navy">{c.name}</span>
                 {on ? (
-                  <span aria-hidden className="grid size-6 shrink-0 place-items-center rounded-full bg-brand text-white">
+                  <span aria-hidden className="wz-check grid size-6 shrink-0 place-items-center rounded-full bg-brand text-white">
                     <Check size={14} strokeWidth={3} />
                   </span>
                 ) : null}
               </span>
+              <Sheen />
             </button>
           );
         })}
@@ -128,11 +140,12 @@ export function CarStep({
                   role="radio"
                   aria-checked={on}
                   onClick={() => onYear(y)}
-                  className={`h-[46px] flex-1 rounded-full px-[22px] text-base font-semibold transition lg:h-[42px] lg:flex-none lg:px-[25px] ${
+                  className={`${tap} h-[46px] flex-1 rounded-full px-[22px] text-base font-semibold transition lg:h-[42px] lg:flex-none lg:px-[25px] ${
                     on ? "bg-navy text-white" : "text-navy hover:bg-white/60"
                   }`}
                 >
                   {y}
+                  <Sheen />
                 </button>
               );
             })}
@@ -143,8 +156,20 @@ export function CarStep({
   );
 }
 
-/** The navy strip with the daily figure, and a yellow note on the right. */
-export function RentStrip({ figures, badge, children }: { figures: Figures; badge?: string; children?: React.ReactNode }) {
+/** The navy strip with the daily figure, and a yellow note on the right. The figure counts to each new value (from zero with `fromZero`). */
+export function RentStrip({
+  figures,
+  badge,
+  fromZero = false,
+  delay = 0,
+  children,
+}: {
+  figures: Figures;
+  badge?: string;
+  fromZero?: boolean;
+  delay?: number;
+  children?: React.ReactNode;
+}) {
   if (!figures.amount) return null;
   return (
     <div className="rounded-2xl bg-navy px-4 pb-4 pt-3.5 text-white lg:px-6 lg:pt-4">
@@ -152,7 +177,13 @@ export function RentStrip({ figures, badge, children }: { figures: Figures; badg
         <p>
           <span className="block text-xs leading-4 text-white/85 lg:text-[13px] lg:leading-5">{rentLabel(figures.unit)}</span>
           <span className="mt-1 flex items-baseline gap-1.5 lg:mt-0.5 lg:gap-2">
-            <span className="text-[34px] font-bold leading-10 tracking-[-0.5px] lg:text-[42px] lg:leading-[48px]">{rupees(figures.amount)}</span>
+            <CountUp
+              value={rupees(figures.amount)}
+              fromZero={fromZero}
+              delay={delay}
+              duration={fromZero ? 700 : 380}
+              className="text-[34px] font-bold leading-10 tracking-[-0.5px] tabular-nums lg:text-[42px] lg:leading-[48px]"
+            />
             <span className="text-[15px] lg:text-[17px]">{figures.unit.replace(/^\+/, "")}</span>
           </span>
         </p>
@@ -238,12 +269,13 @@ export function UpfrontStep({
                       role="radio"
                       aria-checked={on}
                       onClick={() => onTenure(m)}
-                      className={`flex h-[54px] w-[60px] shrink-0 flex-col items-center justify-center rounded-xl border text-navy transition lg:h-11 lg:w-auto lg:flex-row lg:gap-1 lg:rounded-full lg:px-[22px] ${
+                      className={`${tap} flex h-[54px] w-[60px] shrink-0 flex-col items-center justify-center rounded-xl border text-navy transition lg:h-11 lg:w-auto lg:flex-row lg:gap-1 lg:rounded-full lg:px-[22px] ${
                         on ? "border-navy bg-navy text-white" : "border-[#dfe4e8] bg-white hover:border-brand"
                       }`}
                     >
                       <span className="text-lg font-bold leading-5 lg:text-base lg:font-semibold">{m}</span>
                       <span className={`text-[11px] leading-3 lg:text-base lg:font-semibold lg:leading-5 ${on ? "" : "text-ink-soft lg:text-navy"}`}>Months</span>
+                      <Sheen />
                     </button>
                   );
                 })}
@@ -254,8 +286,8 @@ export function UpfrontStep({
           {options.length ? (
             <div className={`mt-3 px-4 pb-[15px] pt-[19px] lg:mt-4 lg:rounded-2xl lg:px-6 lg:pb-[17px] lg:pt-[23px] ${box}`}>
               <p className="text-xs font-semibold uppercase leading-4 tracking-[1px] text-brand">Upfront · paid once</p>
-              <p className="mt-1.5 text-[30px] font-extrabold leading-9 tracking-[-0.5px] text-navy lg:mt-2 lg:text-[40px] lg:leading-[48px]">
-                {rupees(options[point].deposit)}
+              <p className="mt-1.5 text-[30px] font-extrabold leading-9 tracking-[-0.5px] text-navy tabular-nums lg:mt-2 lg:text-[40px] lg:leading-[48px]">
+                <CountUp value={rupees(options[point].deposit)} duration={380} />
               </p>
               {ends.length ? (
                 <>

@@ -266,3 +266,150 @@ body {
 :is(a, button).bg-sun:hover::after {
   transform: translateX(120%);
 }
+
+/* ===================================================================== Plan wizard (batch 9)
+   The plan picker (plan-wizard.tsx) and plan calculator guide a first-time visitor without words.
+   wizard-motion.ts plays the one-off moves (intro, tap cues, step slides, the slider nudge); this
+   block holds the looks those moves use and the few that CSS alone can drive. Reduced motion
+   keeps every one of them still. */
+
+/* The slider's nudge and ring, animated on the input and inherited by its thumb. */
+@property --wz-nudge {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@property --wz-ring {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+.range-slider {
+  background: linear-gradient(
+    to right,
+    var(--color-navy) calc(var(--fill, 50%) + var(--wz-nudge)),
+    var(--color-fog) calc(var(--fill, 50%) + var(--wz-nudge))
+  );
+}
+.range-slider::-webkit-slider-thumb {
+  transform: translateX(var(--wz-nudge));
+  box-shadow:
+    0 2px 6px rgb(6 47 80 / 0.25),
+    0 0 0 var(--wz-ring) rgb(241 214 20 / 0.5);
+}
+.range-slider::-moz-range-thumb {
+  transform: translateX(var(--wz-nudge));
+  box-shadow:
+    0 2px 6px rgb(6 47 80 / 0.25),
+    0 0 0 var(--wz-ring) rgb(241 214 20 / 0.5);
+}
+
+/* The light that sweeps across a choice when it is cued; parked off the edge the rest of the time. */
+.wz-sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 25%, var(--wz-sheen, rgb(0 109 184 / 0.16)) 50%, transparent 75%);
+  transform: translateX(-110%);
+}
+[aria-checked="true"] > .wz-sheen {
+  --wz-sheen: rgb(255 255 255 / 0.3);
+}
+
+/* The glint on the stepper line toward the next step, parked before the line starts. */
+.wz-comet {
+  transform: translateX(-100%);
+}
+
+@keyframes wz-ring {
+  from {
+    box-shadow: 0 0 0 0 rgb(241 214 20 / 0.65);
+  }
+  to {
+    box-shadow: 0 0 0 11px rgb(241 214 20 / 0);
+  }
+}
+@keyframes wz-comet {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(200%);
+  }
+}
+@keyframes wz-pick {
+  0% {
+    scale: 0.95;
+  }
+  55% {
+    scale: 1.03;
+  }
+  100% {
+    scale: 1;
+  }
+}
+@keyframes wz-check-in {
+  from {
+    scale: 0;
+    opacity: 0;
+  }
+  60% {
+    scale: 1.2;
+    opacity: 1;
+  }
+  to {
+    scale: 1;
+  }
+}
+@keyframes wz-wake {
+  from {
+    box-shadow: 0 0 0 0 rgb(241 214 20 / 0.75);
+  }
+  to {
+    box-shadow: 0 0 0 14px rgb(241 214 20 / 0);
+  }
+}
+@keyframes wz-arrow {
+  50% {
+    translate: 4px 0;
+  }
+}
+@keyframes wz-swap {
+  from {
+    opacity: 0;
+    translate: 0 5px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Until the picker has been seen, its title, steps and card wait unseen (PlanWizard sets data-wz). */
+  [data-wz="wait"] :is(.wz-word, .wz-eyebrow, .wz-step, .wz-card) {
+    opacity: 0;
+  }
+  /* The step in hand pulses gently, and a glint runs along the line to the next one. */
+  [data-wz-live] .wz-pulse {
+    animation: wz-ring 1.6s 0.9s ease-out 3 backwards;
+  }
+  [data-wz-live] .wz-comet {
+    animation: wz-comet 1.3s 1s cubic-bezier(0.45, 0, 0.2, 1) 2 both;
+  }
+  /* A choice gives a small bounce as it is picked, and its tick pops in. */
+  [data-wz-picked] .wz-tap[aria-checked="true"] {
+    animation: wz-pick 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  }
+  .wz-check {
+    animation: wz-check-in 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+  }
+  /* The way forward glows twice as it wakes up, its arrow leaning on. */
+  .wz-wake {
+    animation: wz-wake 1.1s 0.1s ease-out 2;
+  }
+  .wz-wake svg {
+    animation: wz-arrow 0.6s 0.2s ease-in-out 3;
+  }
+  .wz-swap {
+    animation: wz-swap 0.4s ease-out both;
+  }
+}
