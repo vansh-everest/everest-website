@@ -410,12 +410,12 @@ export function withLiveData(content: SiteContent, live: LiveData | null): SiteC
   }
   if (!bySlug.size) return content;
 
-  /** Per site plan, per site city: the figures of the city's cheapest car, kept together. */
+  /** Per site plan, per site city: the lowest of each figure across the city's cars ("from"). */
   const planCity = new Map<string, Map<string, LivePlanPrice>>();
   for (const [slug, cities] of bySlug) {
     const cars = cities.flatMap((c) => c.cars);
     for (const planId of Object.values(PLAN_IDS)) {
-      const price = cheapest(cars.map((car) => car.plans[planId]).filter(Boolean));
+      const price = lowestEach(cars.map((car) => car.plans[planId]).filter(Boolean));
       if (!price) continue;
       if (!planCity.has(planId)) planCity.set(planId, new Map());
       planCity.get(planId)!.set(slug, price);
@@ -458,28 +458,30 @@ export function withLiveData(content: SiteContent, live: LiveData | null): SiteC
       let cityPrices: CityPrices = {};
       for (const city of content.cities) cityPrices[city.slug] = BLANK;
       for (const [slug, price] of live) cityPrices = merge(cityPrices, slug, price);
-      return { ...plan, cityPrices, price: whole(plan.price, cheapest([...live.values()])) };
+      return { ...plan, cityPrices, price: whole(plan.price, lowestEach([...live.values()])) };
     }),
     cars: content.cars.map((car) => {
       const live = carCity.get(car.id) ?? new Map<string, LivePlanPrice>();
       let cityPrices: CityPrices = {};
       for (const city of content.cities) cityPrices[city.slug] = BLANK;
       for (const [slug, price] of live) cityPrices = merge(cityPrices, slug, price);
-      return { ...car, cityPrices, price: whole(car.price, cheapest([...live.values()])) };
+      return { ...car, cityPrices, price: whole(car.price, lowestEach([...live.values()])) };
     }),
   };
 }
 
+const lowest = (values: (number | null)[]): number | null => {
+  const real = values.filter((v): v is number => v !== null);
+  return real.length ? Math.min(...real) : null;
+};
+
 /**
- * The lowest-rent quote, whole: its deposit and upfront belong to the same car, never the lowest of
- * each figure from different cars. Rentless quotes count only when no car has a rent.
+ * The "from" figures a summary shows (a city's plan card, a plan's "onwards" figures): each the
+ * lowest on offer. A page about one car never uses these; it shows that car's own figures.
  */
-function cheapest(quotes: LivePlanPrice[]): LivePlanPrice | null {
-  const usable = quotes.filter((q) => q.rent !== null || q.deposit !== null || q.upfront !== null);
-  const rated = usable.filter((q) => q.rent !== null);
-  const pool = rated.length ? rated : usable;
-  if (!pool.length) return null;
-  return pool.reduce((best, q) => ((q.rent ?? Infinity) < (best.rent ?? Infinity) ? q : best));
+function lowestEach(quotes: LivePlanPrice[]): LivePlanPrice | null {
+  const price = { rent: lowest(quotes.map((q) => q.rent)), deposit: lowest(quotes.map((q) => q.deposit)), upfront: lowest(quotes.map((q) => q.upfront)) };
+  return price.rent === null && price.deposit === null && price.upfront === null ? null : price;
 }
 
 /** Jarvis's figures for each site car in each site city, as the plan wizard shows one car. */
