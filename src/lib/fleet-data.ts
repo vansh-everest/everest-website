@@ -9,9 +9,10 @@ import { fleetConnectEnabled, fleetGet } from "@/lib/jarvis";
  * city, as the driver app quotes them.
  *
  * The admin's content stays the source for words, photos and which cars and cities the site
- * shows. Jarvis supplies the numbers: ready cars per city, plan prices per city (and the lowest of
- * them as the national "starting from"), and hubs for a city whose hub list the admin left empty.
- * With fleet_connect unset, or Jarvis unreachable, the site shows the admin's numbers.
+ * shows. Jarvis supplies the numbers: ready cars per city, plan prices per city, and hubs for a
+ * city whose hub list the admin left empty. A city Jarvis has no prices for, and every page not
+ * tied to a city, shows the admin's numbers, never another city's. With fleet_connect unset, or
+ * Jarvis unreachable, the site shows the admin's numbers.
  */
 
 export const FLEET_DATA_TAG = "fleet-data";
@@ -325,13 +326,7 @@ export function withLiveData(content: SiteContent, live: LiveData | null): SiteC
       if (!live) return plan;
       let cityPrices = plan.cityPrices;
       for (const [slug, price] of live) cityPrices = merge(cityPrices, slug, price);
-      const all = [...live.values()];
-      const national = merge({ all: plan.price }, "all", {
-        rent: lowest(all.map((p) => p.rent)),
-        deposit: lowest(all.map((p) => p.deposit)),
-        upfront: lowest(all.map((p) => p.upfront)),
-      }).all;
-      return { ...plan, cityPrices, price: { ...plan.price, ...national } };
+      return { ...plan, cityPrices };
     }),
   };
 }
