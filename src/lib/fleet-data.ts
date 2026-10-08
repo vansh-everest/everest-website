@@ -1,6 +1,6 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
-import type { CityPrices, Hub, Price, SiteContent } from "@/lib/content";
+import type { CityPrices, Hub, ImageSlot, Price, SiteContent } from "@/lib/content";
 import { fleetConnectEnabled, fleetGet } from "@/lib/jarvis";
 
 /**
@@ -43,11 +43,25 @@ type JarvisCar = {
 };
 type JarvisPlanOption = {
   plan_uri: string;
+  rent: string | null;
   rent_info?: { min_amount: number | string; max_amount: number | string } | null;
   min_sd_amount?: string | null;
   upfront_fee?: string | null;
+  car_year_screen?: boolean;
 };
 type JarvisPlanCategory = { uri: string; options?: JarvisPlanOption[] };
+/** One Own Now row of car-year-info: the rent at the lowest upfront, and how the rent steps down. */
+type JarvisOwnNowYear = {
+  car_year?: string;
+  min_rent?: number | string | null;
+  min_upfront?: number | string | null;
+  max_upfront?: number | string | null;
+  rent_stepdown?: number | string | null;
+  downpayment_stepup?: number | string | null;
+  is_calculator_enabled?: boolean | null;
+};
+/** Jarvis's flat answer: one key per model, next to `model_years` and `creatives`. */
+type JarvisCarYears = { model_years?: string[] } & Record<string, unknown>;
 
 /** Jarvis's plan names for the site's plans. */
 const PLAN_IDS: Record<string, string> = {
@@ -61,6 +75,12 @@ const PLAN_IDS: Record<string, string> = {
 
 export type LivePlanPrice = { rent: number | null; deposit: number | null; upfront: number | null };
 
+/**
+ * One model year on the Own Now calculator. The daily rent is `rent` at `minUpfront` and drops by
+ * `rentStep` for every `upfrontStep` paid on top, up to `maxUpfront`.
+ */
+export type OwnNowYear = { name: string; rent: number; minUpfront: number; maxUpfront: number; upfrontStep: number; rentStep: number };
+
 export type LiveCar = {
   name: string;
   fuel: string;
@@ -69,6 +89,7 @@ export type LiveCar = {
   photo: string | null;
   recommended: boolean;
   plans: Record<string, LivePlanPrice>;
+  ownNow: OwnNowYear[];
 };
 
 export type LiveCity = {
@@ -160,6 +181,22 @@ function planPrices(categories: JarvisPlanCategory[] | null): Record<string, Liv
   return out;
 }
 
+function ownNowYears(answer: JarvisCarYears | null): OwnNowYear[] {
+  const out: OwnNowYear[] = [];
+  for (const name of answer?.model_years ?? []) {
+    const row = answer?.[name] as JarvisOwnNowYear | undefined;
+    const rent = money(row?.min_rent);
+    const minUpfront = money(row?.min_upfront);
+    if (!row || rent === null || minUpfront === null) continue;
+    const upfrontStep = money(row.downpayment_stepup) ?? 0;
+    // A row with the calculator off, or without steps, offers its lowest upfront only.
+    const slides = row.is_calculator_enabled !== false && upfrontStep > 0;
+    const maxUpfront = slides ? Math.max(minUpfront, money(row.max_upfront) ?? minUpfront) : minUpfront;
+    out.push({ name: row.car_year || name, rent, minUpfront, maxUpfront, upfrontStep, rentStep: slides ? (money(row.rent_stepdown) ?? 0) : 0 });
+  }
+  return out;
+}
+
 async function readCity(city: JarvisCity): Promise<LiveCity> {
   // A car with no model name can be neither priced nor matched to the site's cars.
   const cars = ((await records<JarvisCar[]>(`/everest_website/cars?city_id=${city.id}`)) ?? []).filter((car) => car.car_name);
@@ -167,7 +204,14 @@ async function readCity(city: JarvisCity): Promise<LiveCity> {
     const query = new URLSearchParams({ city_id: String(city.id), car_name: car.car_name });
     if (car.car_fuel_type) query.set("car_fuel_type", car.car_fuel_type);
     // A 400 is Jarvis refusing this one car's data, so the car goes unpriced instead of the whole read failing.
-    const plans = planPrices(await records<JarvisPlanCategory[]>(`/everest_website/plan-details?${query}`, [400, 404]));
+    const categories = await records<JarvisPlanCategory[]>(`/everest_website/plan-details?${query}`, [400, 404]);
+    const plans = planPrices(categories);
+    const ownNowOffer = (categories ?? []).flatMap((c) => c.options ?? []).find((o) => o.plan_uri === "own-now");
+    let ownNow: OwnNowYear[] = [];
+    if (ownNowOffer?.rent && ownNowOffer.car_year_screen) {
+      query.set("plan_uri", "own-now");
+      ownNow = ownNowYears(await records<JarvisCarYears>(`/everest_website/plan-years?${query}`, [400, 404]));
+    }
     return {
       name: car.car_name,
       fuel: car.car_fuel_type ?? "",
@@ -176,6 +220,7 @@ async function readCity(city: JarvisCity): Promise<LiveCity> {
       photo: car.car_creative?.find((c) => c.image)?.image ?? null,
       recommended: Boolean(car.recommended),
       plans,
+      ownNow,
     };
   });
   return {
@@ -204,7 +249,7 @@ async function readLive(): Promise<LiveData | null> {
  * render tries again. The page keeps its fifteen-minute refresh either way, since Next records the
  * revalidate before running the read.
  */
-const cachedLive = unstable_cache(readLive, ["fleet-data", "v2"], { revalidate: REFRESH_SECONDS, tags: [FLEET_DATA_TAG] });
+const cachedLive = unstable_cache(readLive, ["fleet-data", "v3"], { revalidate: REFRESH_SECONDS, tags: [FLEET_DATA_TAG] });
 
 /** Jarvis's figures and, when the last read failed with nothing to fall back on, why. */
 export async function getLiveStatus(): Promise<{ live: LiveData | null; error: string | null }> {
@@ -328,5 +373,41 @@ export function withLiveData(content: SiteContent, live: LiveData | null): SiteC
       for (const [slug, price] of live) cityPrices = merge(cityPrices, slug, price);
       return { ...plan, cityPrices };
     }),
+  };
+}
+
+/* ------------------------------------------------------------- Own Now calculator */
+
+export type CalculatorCarView = { key: string; name: string; photo: ImageSlot | null; years: OwnNowYear[] };
+export type CalculatorCityView = { slug: string; name: string; cars: CalculatorCarView[] };
+export type OwnNowCalculatorView = { label: string; tenures: string[]; perks: string[]; cities: CalculatorCityView[] };
+
+/**
+ * The Own Now calculator: for each city that offers Own Now, the cars Jarvis prices there and
+ * their model years. Words, tenures and photos come from the admin; null when Jarvis has none.
+ */
+export function ownNowCalculator(content: SiteContent, live: LiveData | null): OwnNowCalculatorView | null {
+  if (!live) return null;
+  const calculator = content.calculators.find((c) => c.planId === "own-now");
+  const cities: CalculatorCityView[] = [];
+  for (const city of content.cities) {
+    if (!city.plans.includes("own-now")) continue;
+    const cars = new Map<string, CalculatorCarView>();
+    for (const liveCity of live.cities.filter((c) => siteCityFor(c, content) === city.slug)) {
+      for (const car of liveCity.cars) {
+        if (!car.ownNow?.length || cars.has(key(car.name))) continue;
+        const siteCar = content.cars.find((c) => c.id === siteCarFor(car.name, content));
+        const photo = calculator?.cars.find((c) => c.carId === siteCar?.id)?.image ?? siteCar?.image;
+        cars.set(key(car.name), { key: key(car.name), name: siteCar?.name || car.name, photo: photo?.url ? photo : null, years: car.ownNow });
+      }
+    }
+    if (cars.size) cities.push({ slug: city.slug, name: city.name.en, cars: [...cars.values()] });
+  }
+  if (!cities.length) return null;
+  return {
+    label: calculator?.depositLabel || "Upfront payment",
+    tenures: calculator?.tenures ?? [],
+    perks: calculator?.perks ?? [],
+    cities,
   };
 }

@@ -3,10 +3,12 @@ import { notFound } from "next/navigation";
 import { Testimonials } from "@/components/home/testimonials";
 import { StartDriving } from "@/components/site/start-driving";
 import { headline, planFor } from "@/lib/content";
+import { getLiveData, ownNowCalculator } from "@/lib/fleet-data";
 import { planIdFor, wizardFor, type PlanPagePath } from "@/lib/plan-pages";
 import { planPage, planWizard } from "@/lib/plan-view";
 import { getContent } from "@/lib/store";
 import { PlanBenefits } from "./plan-benefits";
+import { OwnNowCalculator } from "./own-now-calculator";
 import { PlanHero } from "./plan-hero";
 import { PlanWizard } from "./plan-wizard";
 
@@ -33,12 +35,14 @@ export async function PlanPage({ path }: { path: PlanPagePath }) {
   const { content, plan } = await offered(path);
   if (!plan) notFound();
   const view = planPage(plan);
-  const wizard = planWizard(content, plan, wizardFor(path));
+  // Own Now prices from Jarvis when it has them; otherwise, and on every other plan, the admin's wizard.
+  const calculator = plan.id === "own-now" ? ownNowCalculator(content, await getLiveData()) : null;
+  const wizard = calculator ? null : planWizard(content, plan, wizardFor(path));
   return (
     <>
       {/* Revenue Share has no edge-to-edge hero artwork yet; its photo is cropped for the split layout. */}
-      <PlanHero view={view} startHref={wizard ? "#plan" : "#apply"} wide={path !== "/revenue-share"} />
-      {wizard ? <PlanWizard view={wizard} /> : null}
+      <PlanHero view={view} startHref={calculator || wizard ? "#plan" : "#apply"} wide={path !== "/revenue-share"} />
+      {calculator ? <OwnNowCalculator view={calculator} /> : wizard ? <PlanWizard view={wizard} /> : null}
       <PlanBenefits view={view} />
       <Testimonials variant="page" title={view.storiesTitle} />
       <StartDriving source={`plan/${plan.id}`} eyebrow />
