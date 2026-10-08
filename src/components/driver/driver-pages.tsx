@@ -1,15 +1,15 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight, Clock, FileCheck, MapPin, Plus } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, Clock, FileCheck, Plus } from "lucide-react";
 import { DriverHero } from "@/components/driver/driver-hero";
+import { StickyBar } from "@/components/driver/sticky-bar";
 import {
   ApplyBand,
-  Benefits,
   CityCards,
+  CityLinks,
   HeroActions,
   HeroChip,
   LanguageSwitch,
   SectionHead,
-  StickyBar,
   band,
   tint,
   wrap,
@@ -19,6 +19,7 @@ import { SITE_URL } from "@/lib/company";
 import { cityPath } from "@/lib/city-route";
 import { findCity, planFor, priceIn, rupees, type City, type Plan, type SiteContent } from "@/lib/content";
 import { localePath, type Locale } from "@/lib/i18n";
+import { PLAN_PAGES } from "@/lib/plan-pages";
 
 /** The cities as cards, in the page's language. */
 function cityCards(content: SiteContent, locale: Locale) {
@@ -52,8 +53,6 @@ export function DriverHub({ locale, content }: { locale: Locale; content: SiteCo
         </div>
       </section>
 
-      <Benefits heading={dict.hub.benefitsHeading} items={dict.benefits} />
-
       <ApplyBand locale={locale} dict={dict} cities={formCities(content, locale)} source="drive-with-us" />
 
       <StickyBar call={dict.cta.call} whatsapp={dict.cta.whatsapp} />
@@ -61,7 +60,17 @@ export function DriverHub({ locale, content }: { locale: Locale; content: SiteCo
   );
 }
 
-/** A plan's figures in one city, blank ones dropped. None at all shows "pending approval". */
+/** The visible plans a city offers, in the city's order. */
+function offeredPlans(content: SiteContent, city: City): Plan[] {
+  return city.plans.map((id) => planFor(content, id)).filter((p): p is Plan => Boolean(p?.visible));
+}
+
+/** A plan's line on a city page: the dictionary's wording, else the summary set in the admin. */
+function planLine(plan: Plan, dict: Dictionary, locale: Locale): string {
+  return (dict.plans as Record<string, string | undefined>)[plan.id] ?? plan.summary[locale];
+}
+
+/** A plan's figures in one city, blank ones dropped. */
 function figuresFor(plan: Plan, city: string, labels: Dictionary["figures"]): [string, string][] {
   const price = priceIn(plan.price, plan.cityPrices, city);
   const rows: [string, string][] = [
@@ -86,15 +95,26 @@ function cityTitle(template: string, name: string) {
   );
 }
 
-/** One plan as a card: its summary, its figures as tiles, and the way in. */
+/** One plan as a card that opens the plan's own page: its line and its figures as tiles. */
 function PlanCard({ plan, city, locale, dict }: { plan: Plan; city: string; locale: Locale; dict: Dictionary }) {
   const figures = figuresFor(plan, city, dict.figures);
-  return (
-    <li className="flex flex-col rounded-3xl border border-line bg-white p-5 shadow-[0_8px_24px_rgba(6,47,80,0.06)] lg:p-7">
-      <h3 className="text-[22px] font-bold leading-7 text-navy lg:text-[26px] lg:leading-8">{plan.name[locale]}</h3>
-      <p className="mt-2 text-[15px] leading-6 text-ink-soft">{plan.summary[locale]}</p>
+  const page = PLAN_PAGES.find((p) => p.planId === plan.id);
+  const body = (
+    <>
+      <span className="flex items-center justify-between gap-3">
+        <h3 className="text-[22px] font-bold leading-7 text-navy lg:text-[26px] lg:leading-8">{plan.name[locale]}</h3>
+        {page ? (
+          <span
+            aria-hidden
+            className="grid size-9 shrink-0 place-items-center rounded-full bg-[#eaf3fb] text-brand transition group-hover:bg-brand group-hover:text-white"
+          >
+            <ArrowRight size={18} strokeWidth={2} />
+          </span>
+        ) : null}
+      </span>
+      <p className="mt-2 text-[15px] leading-6 text-ink-soft">{planLine(plan, dict, locale)}</p>
       {figures.length ? (
-        <dl className="mt-5 grid grid-cols-2 gap-2 lg:gap-3">
+        <dl className="mt-auto grid grid-cols-2 gap-2 pt-5 lg:gap-3">
           {figures.map(([label, value]) => (
             <div key={label} className={`rounded-xl border border-[#e8eaed] px-3 pb-2.5 pt-3 lg:rounded-2xl lg:px-4 ${tint}`}>
               <dt className="text-[11px] font-medium uppercase leading-[13px] tracking-[0.6px] text-ink-soft lg:text-xs lg:leading-4">{label}</dt>
@@ -102,91 +122,96 @@ function PlanCard({ plan, city, locale, dict }: { plan: Plan; city: string; loca
             </div>
           ))}
         </dl>
-      ) : (
-        <p className="mt-5 w-fit rounded-full bg-sun/25 px-3 py-1 text-xs font-semibold text-navy">{dict.common.pending}</p>
-      )}
-      <div className="mt-auto pt-6">
-        <a
-          href="#apply"
-          className="flex h-12 items-center justify-center rounded-full border-2 border-brand text-base font-semibold text-brand transition hover:bg-brand hover:text-white"
+      ) : null}
+    </>
+  );
+  const card = "flex h-full flex-col rounded-3xl border border-line bg-white p-5 shadow-[0_8px_24px_rgba(6,47,80,0.06)] lg:p-7";
+  return (
+    <li>
+      {page ? (
+        <Link
+          href={`${page.path}/`}
+          className={`group ${card} transition hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-[0_14px_32px_rgba(6,47,80,0.12)]`}
         >
-          {dict.cta.apply}
-        </a>
-      </div>
+          {body}
+        </Link>
+      ) : (
+        <div className={card}>{body}</div>
+      )}
     </li>
   );
 }
 
 /** "Plans in {city}": every visible plan the city offers. */
-function Plans({ city, locale, dict }: { city: City & { offered: Plan[] }; locale: Locale; dict: Dictionary }) {
-  const vars = { city: city.name[locale] };
+function Plans({ city, plans, locale, dict }: { city: City; plans: Plan[]; locale: Locale; dict: Dictionary }) {
   return (
     <section aria-labelledby="city-plans" className={band}>
       <div className={wrap}>
-        <SectionHead id="city-plans" title={fill(dict.city.plansHeading, vars)} />
+        <SectionHead id="city-plans" title={fill(dict.city.plansHeading, { city: city.name[locale] })} />
         <ul className="mt-8 grid gap-4 md:grid-cols-2 lg:mt-12 lg:grid-cols-3 lg:gap-6">
-          {city.offered.map((plan) => (
+          {plans.map((plan) => (
             <PlanCard key={plan.id} plan={plan} city={city.slug} locale={locale} dict={dict} />
           ))}
         </ul>
-        <p className="mt-5 text-center text-xs leading-5 text-ink-soft lg:text-[13px]">{dict.city.earningsNote}</p>
       </div>
     </section>
   );
 }
 
-/** "What to bring", then the city's hubs when it has any. */
+/** A heading for one of two columns, smaller than a band's centred heading. */
+const columnHead = "text-2xl font-bold leading-8 tracking-[-0.3px] text-navy lg:text-[30px] lg:leading-[38px]";
+
+/** "What to bring" beside the city's hubs; the documents take the full width when it has none. */
 function DocumentsAndHubs({ city, locale, dict }: { city: City; locale: Locale; dict: Dictionary }) {
-  const vars = { city: city.name[locale] };
+  const hubs = city.hubs;
   return (
     <section aria-labelledby="city-documents" className={`${band} ${tint}`}>
-      <div className={wrap}>
-        <SectionHead id="city-documents" title={dict.city.documentsHeading} />
-        <ul className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:mt-12 lg:grid-cols-4 lg:gap-6">
-          {dict.documents.map((doc) => (
-            <li
-              key={doc}
-              className="flex flex-col gap-4 rounded-2xl border border-[#dfecf6] bg-white px-4 pb-5 pt-4 lg:flex-row lg:items-center lg:rounded-3xl lg:px-6 lg:py-6"
-            >
-              <span aria-hidden className="grid size-[42px] shrink-0 place-items-center rounded-xl bg-[#eaf3fb] text-brand lg:size-12">
-                <FileCheck size={22} strokeWidth={1.9} />
-              </span>
-              <span className="text-base font-bold leading-[22px] text-navy lg:text-lg lg:leading-6">{doc}</span>
-            </li>
-          ))}
-        </ul>
+      <div className={`${wrap} grid gap-10 ${hubs.length ? "lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-14" : ""}`}>
+        <div>
+          <h2 id="city-documents" className={columnHead}>
+            {dict.city.documentsHeading}
+          </h2>
+          <ul className={`mt-4 grid grid-cols-2 gap-2 lg:mt-6 lg:gap-3 ${hubs.length ? "lg:grid-cols-1" : "sm:grid-cols-4"}`}>
+            {dict.documents.map((doc) => (
+              <li
+                key={doc}
+                className="flex items-center gap-2.5 rounded-xl border border-[#dfecf6] bg-white px-3 py-3 text-[15px] font-semibold leading-5 text-navy lg:px-4 lg:text-base"
+              >
+                <FileCheck aria-hidden size={18} strokeWidth={1.9} className="shrink-0 text-brand" />
+                {doc}
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        {city.hubs.length > 0 ? (
-          <div className="mt-12 lg:mt-20">
-            <SectionHead title={fill(dict.city.hubsHeading, vars)} />
-            <ul className="mt-8 flex flex-wrap justify-center gap-4 lg:mt-10 lg:gap-6">
-              {city.hubs.map((hub) => (
-                <li
-                  key={`${hub.name}|${hub.address}`}
-                  className="flex w-full gap-4 rounded-2xl border border-[#dfecf6] bg-white p-5 md:w-[calc((100%-16px)/2)] lg:w-[calc((100%-48px)/3)] lg:rounded-3xl lg:p-6"
-                >
-                  <span aria-hidden className="grid size-[42px] shrink-0 place-items-center rounded-xl bg-[#eaf3fb] text-brand">
-                    <MapPin size={21} strokeWidth={1.9} />
-                  </span>
-                  <div className="min-w-0">
-                    <h3 className="text-[17px] font-bold leading-6 text-navy">
-                      {hub.mapUrl ? (
-                        <a href={hub.mapUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-start gap-1 transition hover:text-brand">
-                          {hub.name}
-                          <ArrowUpRight aria-hidden size={16} strokeWidth={2} className="mt-1 shrink-0" />
-                        </a>
-                      ) : (
-                        hub.name
-                      )}
-                    </h3>
-                    <p className="mt-1 text-sm leading-6 text-ink-soft">{hub.address}</p>
-                    {hub.hours ? (
-                      <p className="mt-1.5 flex items-center gap-1.5 text-sm text-ink-soft">
-                        <Clock aria-hidden size={14} strokeWidth={2} className="shrink-0" />
-                        {hub.hours}
-                      </p>
+        {hubs.length ? (
+          <div>
+            <h2 className={columnHead}>{fill(dict.city.hubsHeading, { city: city.name[locale] })}</h2>
+            <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:mt-6 lg:gap-3">
+              {hubs.map((hub) => (
+                <li key={`${hub.name}|${hub.address}`} className="rounded-xl border border-[#dfecf6] bg-white px-4 py-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-base font-bold leading-6 text-navy">{hub.name}</h3>
+                    {hub.mapUrl ? (
+                      <a
+                        href={hub.mapUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${dict.city.map}: ${hub.name}`}
+                        className="inline-flex shrink-0 items-center gap-0.5 text-sm font-semibold leading-6 text-brand transition hover:underline"
+                      >
+                        {dict.city.map}
+                        <ArrowUpRight aria-hidden size={15} strokeWidth={2} />
+                      </a>
                     ) : null}
                   </div>
+                  <p className="mt-0.5 text-sm leading-5 text-ink-soft">{hub.address}</p>
+                  {hub.hours ? (
+                    <p className="mt-1 flex items-center gap-1.5 text-sm leading-5 text-ink-soft">
+                      <Clock aria-hidden size={14} strokeWidth={2} className="shrink-0" />
+                      {hub.hours}
+                    </p>
+                  ) : null}
                 </li>
               ))}
             </ul>
@@ -239,7 +264,7 @@ export function CityPage({
 
   const name = city.name[locale];
   const vars = { city: name };
-  const offered = city.plans.map((id) => planFor(content, id)).filter((p): p is Plan => Boolean(p?.visible));
+  const plans = offeredPlans(content, city);
 
   return (
     <>
@@ -260,20 +285,18 @@ export function CityPage({
         actions={<HeroActions cta={dict.cta} />}
       />
 
-      <Benefits heading={dict.hub.benefitsHeading} items={dict.benefits} />
-
-      {offered.length ? <Plans city={{ ...city, offered }} locale={locale} dict={dict} /> : null}
+      {plans.length ? <Plans city={city} plans={plans} locale={locale} dict={dict} /> : null}
 
       <DocumentsAndHubs city={city} locale={locale} dict={dict} />
 
       <Faq dict={dict} />
 
-      <section aria-labelledby="city-others" className={`${band} ${tint}`}>
-        <div className={wrap}>
-          <SectionHead id="city-others" title={dict.city.otherCities} />
-          <CityCards locale={locale} cities={cityCards(content, locale).filter((c) => c.slug !== slug)} compact />
-        </div>
-      </section>
+      <CityLinks
+        id="city-others"
+        label={dict.city.otherCities}
+        locale={locale}
+        cities={cityCards(content, locale).filter((c) => c.slug !== slug)}
+      />
 
       <ApplyBand locale={locale} dict={dict} cities={formCities(content, locale)} defaultCity={slug} source={`city/${slug}`} />
 
@@ -290,7 +313,8 @@ const escapeHtml = (text: string) => text.replace(/&/g, "&amp;").replace(/</g, "
  *
  * The live WordPress city pages carry JobPosting, which is a material reason they rank.
  * Reproducing it here is what stops the migration losing those positions. Salary is omitted
- * entirely rather than guessed, because an unapproved figure is worse than no figure.
+ * entirely rather than guessed, because an unapproved figure is worse than no figure. The
+ * description says only what the page itself says: the job, the plans and the documents.
  *
  * Hiring is continuous, so the posting renews each month: it is dated the first of the month
  * and valid to the end of the next, and the page regenerates daily to roll it over. A posting
@@ -311,15 +335,16 @@ export function cityJsonLd({
   const city = findCity(content, slug);
   if (!city) return null;
   const name = city.name[locale];
+  const plans = offeredPlans(content, city);
 
   const now = new Date();
   const posted = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
   const validThrough = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 2, 0, 23, 59, 59));
-  const description = [
-    `<p>${escapeHtml(fill(dict.city.intro, { city: name }))}</p>`,
-    `<ul>${dict.benefits.map((b) => `<li><strong>${escapeHtml(b.title)}</strong>: ${escapeHtml(b.body)}</li>`).join("")}</ul>`,
-    `<p><strong>${escapeHtml(dict.city.documentsHeading)}</strong>: ${dict.documents.map(escapeHtml).join(", ")}</p>`,
-  ].join("");
+  const intro = `<p>${escapeHtml(fill(dict.city.intro, { city: name }))}</p>`;
+  const planItems = plans.map((p) => `<li><strong>${escapeHtml(p.name[locale])}</strong>: ${escapeHtml(planLine(p, dict, locale))}</li>`);
+  const planList = planItems.length ? `<ul>${planItems.join("")}</ul>` : "";
+  const documents = `<p><strong>${escapeHtml(dict.city.documentsHeading)}</strong>: ${dict.documents.map(escapeHtml).join(", ")}</p>`;
+  const description = intro + planList + documents;
 
   const posting = {
     "@context": "https://schema.org",
@@ -329,7 +354,7 @@ export function cityJsonLd({
     identifier: { "@type": "PropertyValue", name: "Everest Fleet", value: `driver-${city.slug}` },
     datePosted: posted.toISOString().slice(0, 10),
     validThrough: validThrough.toISOString(),
-    employmentType: ["FULL_TIME", "PART_TIME", "CONTRACTOR"],
+    employmentType: ["FULL_TIME", "CONTRACTOR"],
     directApply: true,
     hiringOrganization: {
       "@type": "Organization",
@@ -350,6 +375,7 @@ export function cityJsonLd({
     url,
   };
 
+  // Exactly the questions and answers the page shows.
   const faq = {
     "@context": "https://schema.org",
     "@type": "FAQPage",

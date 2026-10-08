@@ -268,13 +268,9 @@ body {
 }
 
 /* Drive With Us (batch 9) */
-/* The driver pages fix a call and WhatsApp bar to the bottom of a phone screen (StickyBar in
-   src/components/driver/driver-ui.tsx). The footer leaves room under its last line for it. */
-@media (width < 48rem) {
-  body:has([data-contact-bar]) > footer {
-    padding-bottom: 72px;
-  }
-}
+/* The driver pages' call and WhatsApp bar on phones (StickyBar, src/components/driver/sticky-bar.tsx)
+   slides away once the apply form is on screen and stays away over the footer, so the footer
+   needs no room kept for it. */
 
 /* ===================================================================== Chrome (batch 9)
    The logo's mark, the shiny call-to-action buttons (.fx-shine), and the wash behind the About
