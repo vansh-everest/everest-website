@@ -33,6 +33,9 @@ export type Figures = { amount: string; unit: string; money: string; upfront: bo
  */
 export function figuresFor(view: PlanWizardView, car: WizardCar, city: string, tenure: string, index: number): Figures {
   const base = view.prices[city] ?? { amount: "", unit: "/day", money: "", upfront: false, months: "" };
+  // Jarvis's figures for this very car beat both the admin's sample point and the city's.
+  const own = view.carPrices[city]?.[car.id];
+  if (own) return { ...own, months: tenure || own.months || base.months };
   const option = car.options.length ? car.options[Math.min(index, car.options.length - 1)] : undefined;
   const months = tenure || base.months;
   // The calculator's slider is the upfront on a plan with an upfront step, the deposit elsewhere.

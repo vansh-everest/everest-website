@@ -258,6 +258,8 @@ export type PlanWizardView = {
   /** Months offered on the upfront step. */
   tenures: string[];
   prices: Record<string, WizardPrice>;
+  /** Jarvis's figures for one car in one city (city slug, then car id); they win over `prices`. */
+  carPrices: Record<string, Record<string, WizardPrice>>;
   /** The plan's third figure, e.g. Liability: Zero. */
   term: Row;
   /** The plan's first tag, e.g. "Rental plan". */
@@ -290,7 +292,12 @@ function wizardCars(content: SiteContent, plan: Plan): WizardCar[] {
 }
 
 /** A plan page's picker, or null when the plan has no city, no car with a photo, or no figures to offer. */
-export function planWizard(content: SiteContent, plan: Plan, kind: WizardKind): PlanWizardView | null {
+export function planWizard(
+  content: SiteContent,
+  plan: Plan,
+  kind: WizardKind,
+  carPrices: Record<string, Record<string, WizardPrice>> = {}
+): PlanWizardView | null {
   const cities = planCities(content, plan.id);
   const cars = wizardCars(content, plan);
   if (!cities.length || !cars.length) return null;
@@ -310,6 +317,7 @@ export function planWizard(content: SiteContent, plan: Plan, kind: WizardKind): 
     cars,
     tenures: content.calculators.find((c) => c.planId === plan.id)?.tenures ?? [],
     prices,
+    carPrices,
     term: term.label && term.value ? term : { label: "", value: "" },
     tag: plan.page.tags.map((t) => fillOrDrop(t, plan.price)).find(Boolean) ?? "",
   };

@@ -1,6 +1,7 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
-import type { CityPrices, Hub, ImageSlot, Price, SiteContent } from "@/lib/content";
+import type { CityPrices, Hub, ImageSlot, SiteContent } from "@/lib/content";
+import type { WizardPrice } from "@/lib/plan-view";
 import { fleetConnectEnabled, fleetGet } from "@/lib/jarvis";
 
 /**
@@ -132,11 +133,6 @@ function mapLink(url: string | null): string | undefined {
     return undefined;
   }
 }
-
-const lowest = (values: (number | null)[]): number | null => {
-  const real = values.filter((v): v is number => v !== null);
-  return real.length ? Math.min(...real) : null;
-};
 
 async function pool<T, R>(items: T[], run: (item: T) => Promise<R>): Promise<R[]> {
   const out: R[] = new Array(items.length);
@@ -312,14 +308,22 @@ export function siteCarFor(name: string, content: SiteContent): string | null {
 
 const digits = (n: number | null) => (n === null ? "" : String(n));
 
+/**
+ * A quote with a rent replaces the admin's rent, deposit and upfront together, so a figure Jarvis
+ * leaves out (Own Now's deposit) shows as nothing rather than as the admin's number.
+ */
 function merge(prices: CityPrices, slug: string, live: LivePlanPrice): CityPrices {
-  const next: Partial<Price> = { ...prices[slug] };
+  const next: CityPrices[string] = { ...prices[slug] };
   if (live.rent !== null) {
     next.amount = digits(live.rent);
     next.unit = "/day";
+    next.deposit = digits(live.deposit);
+    next.upfront = digits(live.upfront);
+    next.exact = true;
+  } else {
+    if (live.deposit !== null) next.deposit = digits(live.deposit);
+    if (live.upfront !== null) next.upfront = digits(live.upfront);
   }
-  if (live.deposit !== null) next.deposit = digits(live.deposit);
-  if (live.upfront !== null) next.upfront = digits(live.upfront);
   return { ...prices, [slug]: next };
 }
 
@@ -337,19 +341,13 @@ export function withLiveData(content: SiteContent, live: LiveData | null): SiteC
   }
   if (!bySlug.size) return content;
 
-  /** Per site plan, per site city: the lowest of each figure across that city's cars. */
+  /** Per site plan, per site city: the figures of the city's cheapest car, kept together. */
   const planCity = new Map<string, Map<string, LivePlanPrice>>();
   for (const [slug, cities] of bySlug) {
     const cars = cities.flatMap((c) => c.cars);
     for (const planId of Object.values(PLAN_IDS)) {
-      const quotes = cars.map((car) => car.plans[planId]).filter(Boolean);
-      if (!quotes.length) continue;
-      const price = {
-        rent: lowest(quotes.map((q) => q.rent)),
-        deposit: lowest(quotes.map((q) => q.deposit)),
-        upfront: lowest(quotes.map((q) => q.upfront)),
-      };
-      if (price.rent === null && price.deposit === null && price.upfront === null) continue;
+      const price = cheapest(cars.map((car) => car.plans[planId]).filter(Boolean));
+      if (!price) continue;
       if (!planCity.has(planId)) planCity.set(planId, new Map());
       planCity.get(planId)!.set(slug, price);
     }
@@ -374,6 +372,41 @@ export function withLiveData(content: SiteContent, live: LiveData | null): SiteC
       return { ...plan, cityPrices };
     }),
   };
+}
+
+/**
+ * The lowest-rent quote, whole: its deposit and upfront belong to the same car, never the lowest of
+ * each figure from different cars. Rentless quotes count only when no car has a rent.
+ */
+function cheapest(quotes: LivePlanPrice[]): LivePlanPrice | null {
+  const usable = quotes.filter((q) => q.rent !== null || q.deposit !== null || q.upfront !== null);
+  const rated = usable.filter((q) => q.rent !== null);
+  const pool = rated.length ? rated : usable;
+  if (!pool.length) return null;
+  return pool.reduce((best, q) => ((q.rent ?? Infinity) < (best.rent ?? Infinity) ? q : best));
+}
+
+/** Jarvis's figures for each site car in each site city, as the plan wizard shows one car. */
+export function wizardCarPrices(content: SiteContent, live: LiveData | null, planId: string): Record<string, Record<string, WizardPrice>> {
+  const out: Record<string, Record<string, WizardPrice>> = {};
+  for (const city of live?.cities ?? []) {
+    const slug = siteCityFor(city, content);
+    if (!slug) continue;
+    for (const car of city.cars) {
+      const carId = siteCarFor(car.name, content);
+      const quote = carId ? car.plans[planId] : undefined;
+      if (!carId || !quote || quote.rent === null || out[slug]?.[carId]) continue;
+      const money = quote.upfront ?? quote.deposit;
+      (out[slug] ??= {})[carId] = {
+        amount: String(quote.rent),
+        unit: "/day",
+        money: money === null ? "" : String(money),
+        upfront: quote.upfront !== null,
+        months: "",
+      };
+    }
+  }
+  return out;
 }
 
 /* ------------------------------------------------------------- Own Now calculator */

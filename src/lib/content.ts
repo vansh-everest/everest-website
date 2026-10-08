@@ -37,8 +37,11 @@ export const PRICE_FIELDS = ["amount", "unit", "deposit", "upfront", "tenureMont
 /** Fields that hold digits. `unit` is the only free-text price field. */
 export const DIGIT_FIELDS = ["amount", "deposit", "upfront", "tenureMonths"] as const satisfies readonly (keyof Price)[];
 
-/** City slug to the fields that differ from the national figure. A missing field inherits. */
-export type CityPrices = Record<string, Partial<Price>>;
+/**
+ * City slug to the fields that differ from the national figure. A missing field inherits, except
+ * in an `exact` entry (Jarvis's figures for that city), where a blank figure stays blank.
+ */
+export type CityPrices = Record<string, Partial<Price> & { exact?: boolean }>;
 
 export type Row = { label: string; value: string };
 
@@ -755,6 +758,7 @@ export function priceIn(base: Price, overrides: CityPrices, city?: string): Pric
   for (const field of PRICE_FIELDS) {
     const value = own[field];
     if (value) out[field] = value;
+    else if (own.exact && field !== "tenureMonths") out[field] = "";
   }
   return out;
 }

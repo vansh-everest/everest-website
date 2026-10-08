@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Testimonials } from "@/components/home/testimonials";
 import { StartDriving } from "@/components/site/start-driving";
 import { headline, planFor } from "@/lib/content";
-import { getLiveData, ownNowCalculator } from "@/lib/fleet-data";
+import { getLiveData, ownNowCalculator, wizardCarPrices } from "@/lib/fleet-data";
 import { planIdFor, wizardFor, type PlanPagePath } from "@/lib/plan-pages";
 import { planPage, planWizard } from "@/lib/plan-view";
 import { getContent } from "@/lib/store";
@@ -36,8 +36,9 @@ export async function PlanPage({ path }: { path: PlanPagePath }) {
   if (!plan) notFound();
   const view = planPage(plan);
   // Own Now prices from Jarvis when it has them; otherwise, and on every other plan, the admin's wizard.
-  const calculator = plan.id === "own-now" ? ownNowCalculator(content, await getLiveData()) : null;
-  const wizard = calculator ? null : planWizard(content, plan, wizardFor(path));
+  const live = await getLiveData();
+  const calculator = plan.id === "own-now" ? ownNowCalculator(content, live) : null;
+  const wizard = calculator ? null : planWizard(content, plan, wizardFor(path), wizardCarPrices(content, live, plan.id));
   return (
     <>
       {/* Revenue Share has no edge-to-edge hero artwork yet; its photo is cropped for the split layout. */}
