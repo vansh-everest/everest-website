@@ -5,12 +5,12 @@ import Link from "next/link";
 import { ChevronDown, CircleCheck, MapPin, Phone } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
 import { rupees } from "@/lib/content";
-import type { OwnNowCalculatorView, OwnNowYear } from "@/lib/fleet-data";
+import type { PlanCalculatorView, PlanYear } from "@/lib/fleet-data";
 
 /** Jarvis's rule: the rent at the lowest upfront, less one step for every step paid on top. */
-function dailyRent(year: OwnNowYear, upfront: number): number {
-  if (!year.upfrontStep || !year.rentStep) return year.rent;
-  const steps = Math.round((upfront - year.minUpfront) / year.upfrontStep);
+function dailyRent(year: PlanYear, paid: number): number {
+  if (!year.moneyStep || !year.rentStep || year.money === null) return year.rent;
+  const steps = Math.round((paid - year.money) / year.moneyStep);
   return Math.max(0, year.rent - steps * year.rentStep);
 }
 
@@ -45,8 +45,11 @@ function Picker({ label, value, onChange, options }: { label: string; value: str
   );
 }
 
-/** The Own Now plan calculator: city, car, model year and tenure, then the upfront slider. */
-export function OwnNowCalculator({ view }: { view: OwnNowCalculatorView }) {
+/**
+ * A plan's calculator: city, car, model year and tenure, then what is paid first and the daily rent.
+ * The slider appears where Jarvis gives steps (Own Now); elsewhere the car's own range and deposit.
+ */
+export function PlanCalculator({ view }: { view: PlanCalculatorView }) {
   const cityId = useId();
   const [citySlug, setCitySlug] = useState(view.cities[0].slug);
   const city = view.cities.find((c) => c.slug === citySlug) ?? view.cities[0];
@@ -55,28 +58,30 @@ export function OwnNowCalculator({ view }: { view: OwnNowCalculatorView }) {
   const [yearIndex, setYearIndex] = useState(0);
   const year = car.years[yearIndex] ?? car.years[0];
   const [tenure, setTenure] = useState(view.tenures[0] ?? "");
-  const [upfront, setUpfront] = useState(year.minUpfront);
-  const paid = Math.min(Math.max(upfront, year.minUpfront), year.maxUpfront);
-  const daily = dailyRent(year, paid);
-  const slides = year.maxUpfront > year.minUpfront && year.upfrontStep > 0;
-  const fill = slides ? ((paid - year.minUpfront) / (year.maxUpfront - year.minUpfront)) * 100 : 0;
+  const [upfront, setUpfront] = useState(year.money ?? 0);
+  const low = year.money ?? 0;
+  const high = year.maxMoney ?? low;
+  const paid = Math.min(Math.max(upfront, low), high);
+  const slides = year.money !== null && high > low && year.moneyStep > 0;
+  const daily = slides ? money(dailyRent(year, paid)) : year.rentMax > year.rent ? `${money(year.rent)}–${money(year.rentMax)}` : money(year.rent);
+  const fill = slides ? ((paid - low) / (high - low)) * 100 : 0;
 
   const pickCity = (slug: string) => {
     const next = view.cities.find((c) => c.slug === slug) ?? view.cities[0];
     setCitySlug(next.slug);
     setCarKey(next.cars[0].key);
     setYearIndex(0);
-    setUpfront(next.cars[0].years[0].minUpfront);
+    setUpfront(next.cars[0].years[0].money ?? 0);
   };
   const pickCar = (key: string) => {
     const next = city.cars.find((c) => c.key === key) ?? city.cars[0];
     setCarKey(next.key);
     setYearIndex(0);
-    setUpfront(next.years[0].minUpfront);
+    setUpfront(next.years[0].money ?? 0);
   };
   const pickYear = (i: number) => {
     setYearIndex(i);
-    setUpfront((car.years[i] ?? car.years[0]).minUpfront);
+    setUpfront((car.years[i] ?? car.years[0]).money ?? 0);
   };
 
   const perks = view.perks.map((p) => p.replace("{months}", tenure)).filter((p) => !p.includes("{"));
@@ -152,17 +157,19 @@ export function OwnNowCalculator({ view }: { view: OwnNowCalculatorView }) {
               ) : null}
             </div>
 
-            <div className="mt-9 flex items-baseline justify-between gap-4">
-              <p className="text-lg leading-6 text-navy">{view.label}</p>
-              <p className="text-[28px] font-extrabold leading-8 text-navy">{money(paid)}</p>
-            </div>
+            {year.money !== null ? (
+              <div className="mt-9 flex items-baseline justify-between gap-4">
+                <p className="text-lg leading-6 text-navy">{view.label}</p>
+                <p className="text-[28px] font-extrabold leading-8 text-navy">{money(paid)}</p>
+              </div>
+            ) : null}
             {slides ? (
               <>
                 <input
                   type="range"
-                  min={year.minUpfront}
-                  max={year.maxUpfront}
-                  step={year.upfrontStep}
+                  min={low}
+                  max={high}
+                  step={year.moneyStep}
                   value={paid}
                   onChange={(e) => setUpfront(Number(e.target.value))}
                   aria-label={view.label}
@@ -171,25 +178,27 @@ export function OwnNowCalculator({ view }: { view: OwnNowCalculatorView }) {
                   className="range-slider mt-6 w-full"
                 />
                 <div className="mt-3 flex justify-between gap-3 text-xs leading-4 text-ink-soft lg:text-[13px]">
-                  <span>{money(year.minUpfront)}</span>
+                  <span>{money(low)}</span>
                   <span className="hidden sm:inline">Higher {view.label.toLowerCase()} → lower daily</span>
-                  <span>{money(year.maxUpfront)}</span>
+                  <span>{money(high)}</span>
                 </div>
               </>
             ) : null}
 
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+            <div className={`mt-8 grid gap-3 ${year.money !== null ? "sm:grid-cols-2" : ""}`}>
               <div className="rounded-2xl border border-line px-5 py-4">
                 <p className="text-sm leading-5 text-ink-soft">You pay each day</p>
                 <p className="mt-1.5 text-navy">
-                  <span className="text-[32px] font-extrabold leading-10">{money(daily)}</span>
+                  <span className="text-[32px] font-extrabold leading-10">{daily}</span>
                   {tenure ? <span className="ml-2 text-xl leading-7">for {tenure} months</span> : null}
                 </p>
               </div>
-              <div className="rounded-2xl border border-line px-5 py-4">
-                <p className="text-sm leading-5 text-ink-soft">{view.label}</p>
-                <p className="mt-1.5 text-[32px] font-extrabold leading-10 text-navy">{money(paid)}</p>
-              </div>
+              {year.money !== null ? (
+                <div className="rounded-2xl border border-line px-5 py-4">
+                  <p className="text-sm leading-5 text-ink-soft">{view.label}</p>
+                  <p className="mt-1.5 text-[32px] font-extrabold leading-10 text-navy">{money(paid)}</p>
+                </div>
+              ) : null}
             </div>
 
             <div className="mt-8 flex gap-3">

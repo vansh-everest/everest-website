@@ -54,9 +54,14 @@ type JarvisPlanOption = {
   is_calculator_enabled?: boolean | null;
 };
 type JarvisPlanCategory = { uri: string; options?: JarvisPlanOption[] };
-/** One Own Now row of car-year-info: the rent at the lowest upfront, and how the rent steps down. */
-type JarvisOwnNowYear = {
+/**
+ * One row of car-year-info. Own Now rows give the rent at the lowest upfront and how it steps down;
+ * other plans give a rent range and a deposit.
+ */
+type JarvisYearRow = {
   car_year?: string;
+  rent?: string | null;
+  min_sd_amount?: number | string | null;
   min_rent?: number | string | null;
   min_upfront?: number | string | null;
   max_upfront?: number | string | null;
@@ -80,10 +85,19 @@ const PLAN_IDS: Record<string, string> = {
 export type LivePlanPrice = { rent: number | null; deposit: number | null; upfront: number | null };
 
 /**
- * One model year on the Own Now calculator. The daily rent is `rent` at `minUpfront` and drops by
- * `rentStep` for every `upfrontStep` paid on top, up to `maxUpfront`.
+ * One model year on a plan calculator: `rent` (to `rentMax`) a day after paying `money` first, the
+ * upfront on Own Now and the deposit elsewhere. With steps, every `moneyStep` paid on top, up to
+ * `maxMoney`, takes `rentStep` off the daily rent.
  */
-export type OwnNowYear = { name: string; rent: number; minUpfront: number; maxUpfront: number; upfrontStep: number; rentStep: number };
+export type PlanYear = {
+  name: string;
+  rent: number;
+  rentMax: number;
+  money: number | null;
+  maxMoney: number | null;
+  moneyStep: number;
+  rentStep: number;
+};
 
 export type LiveCar = {
   name: string;
@@ -93,7 +107,8 @@ export type LiveCar = {
   photo: string | null;
   recommended: boolean;
   plans: Record<string, LivePlanPrice>;
-  ownNow: OwnNowYear[];
+  /** Per site plan with a calculator (own-now, drive-to-own, leasing): the car's model years. */
+  years: Record<string, PlanYear[]>;
 };
 
 export type LiveCity = {
@@ -187,44 +202,60 @@ function range(value: unknown): [number | null, number | null] {
   return [money(low), money(high ?? low)];
 }
 
-/** One Own Now year from Jarvis's figures. The calculator off, or no step, offers the lowest upfront only. */
-function ownNowYear(
+/** One model year from Jarvis's figures. The calculator off, or no steps, keeps the money fixed at its lowest. */
+function planYear(
   name: string,
   rent: number | null,
-  minUpfront: number | null,
-  maxUpfront: number | null,
+  rentMax: number | null,
+  paid: number | null,
+  maxPaid: number | null,
   step: unknown,
   rentStep: unknown,
   enabled: boolean | null | undefined
-): OwnNowYear | null {
-  if (rent === null || minUpfront === null) return null;
-  const upfrontStep = money(step) ?? 0;
-  const slides = enabled !== false && upfrontStep > 0;
+): PlanYear | null {
+  if (rent === null) return null;
+  const moneyStep = money(step) ?? 0;
+  const down = money(rentStep) ?? 0;
+  const slides = paid !== null && enabled !== false && moneyStep > 0 && down > 0;
   return {
     name,
     rent,
-    minUpfront,
-    maxUpfront: slides ? Math.max(minUpfront, maxUpfront ?? minUpfront) : minUpfront,
-    upfrontStep,
-    rentStep: slides ? (money(rentStep) ?? 0) : 0,
+    rentMax: Math.max(rent, rentMax ?? rent),
+    money: paid,
+    maxMoney: slides ? Math.max(paid, maxPaid ?? paid) : paid,
+    moneyStep: slides ? moneyStep : 0,
+    rentStep: slides ? down : 0,
   };
 }
 
-function ownNowYears(answer: JarvisCarYears | null): OwnNowYear[] {
+function yearsFromAnswer(answer: JarvisCarYears | null): PlanYear[] {
   return (answer?.model_years ?? []).flatMap((name) => {
-    const row = answer?.[name] as JarvisOwnNowYear | undefined;
+    const row = answer?.[name] as JarvisYearRow | undefined;
     if (!row) return [];
-    const year = ownNowYear(row.car_year || name, money(row.min_rent), money(row.min_upfront), money(row.max_upfront), row.downpayment_stepup, row.rent_stepdown, row.is_calculator_enabled);
+    const label = row.car_year || name;
+    const [low, high] = range(row.rent);
+    const year =
+      "min_upfront" in row
+        ? planYear(label, money(row.min_rent) ?? low, null, money(row.min_upfront), money(row.max_upfront), row.downpayment_stepup, row.rent_stepdown, row.is_calculator_enabled)
+        : planYear(label, low, high, money(row.min_sd_amount), null, null, null, false);
     return year ? [year] : [];
   });
 }
 
-/** A car Jarvis prices for Own Now without a model-year choice: its plan figures, as one unnamed year. */
-function ownNowFromOffer(offer: JarvisPlanOption): OwnNowYear[] {
-  const [minUpfront, maxUpfront] = range(offer.upfront_fee);
-  const year = ownNowYear("", money(offer.rent_info?.min_amount ?? offer.rent), minUpfront, maxUpfront, offer.downpayment_stepup, offer.rent_stepdown, offer.is_calculator_enabled);
+/** A car Jarvis prices without a model-year choice: its plan figures, as one unnamed year. */
+function yearsFromOffer(offer: JarvisPlanOption): PlanYear[] {
+  const low = money(offer.rent_info?.min_amount) ?? range(offer.rent)[0];
+  const high = money(offer.rent_info?.max_amount) ?? range(offer.rent)[1];
+  const [upfront, maxUpfront] = range(offer.upfront_fee);
+  const year =
+    offer.plan_uri === "own-now"
+      ? planYear("", low, null, upfront, maxUpfront, offer.downpayment_stepup, offer.rent_stepdown, offer.is_calculator_enabled)
+      : planYear("", low, high, money(offer.min_sd_amount), null, null, null, false);
   return year ? [year] : [];
 }
+
+/** Jarvis's plans that have a calculator on the site; Revenue Share has none. */
+const CALCULATOR_URIS = ["own-now", "drive-to-own", "dte-single"];
 
 async function readCity(city: JarvisCity): Promise<LiveCity> {
   // A car with no model name can be neither priced nor matched to the site's cars.
@@ -235,14 +266,16 @@ async function readCity(city: JarvisCity): Promise<LiveCity> {
     // A 400 is Jarvis refusing this one car's data, so the car goes unpriced instead of the whole read failing.
     const categories = await records<JarvisPlanCategory[]>(`/everest_website/plan-details?${query}`, [400, 404]);
     const plans = planPrices(categories);
-    const ownNowOffer = (categories ?? []).flatMap((c) => c.options ?? []).find((o) => o.plan_uri === "own-now");
-    let ownNow: OwnNowYear[] = [];
-    if (ownNowOffer?.rent) {
-      if (ownNowOffer.car_year_screen) {
-        query.set("plan_uri", "own-now");
-        ownNow = ownNowYears(await records<JarvisCarYears>(`/everest_website/plan-years?${query}`, [400, 404]));
+    const years: Record<string, PlanYear[]> = {};
+    for (const offer of (categories ?? []).flatMap((c) => c.options ?? [])) {
+      if (!offer.rent || !CALCULATOR_URIS.includes(offer.plan_uri)) continue;
+      let found: PlanYear[] = [];
+      if (offer.car_year_screen) {
+        const byYear = new URLSearchParams(query);
+        byYear.set("plan_uri", offer.plan_uri);
+        found = yearsFromAnswer(await records<JarvisCarYears>(`/everest_website/plan-years?${byYear}`, [400, 404]));
       }
-      if (!ownNow.length) ownNow = ownNowFromOffer(ownNowOffer);
+      years[PLAN_IDS[offer.plan_uri]] = found.length ? found : yearsFromOffer(offer);
     }
     return {
       name: car.car_name,
@@ -252,7 +285,7 @@ async function readCity(city: JarvisCity): Promise<LiveCity> {
       photo: car.car_creative?.find((c) => c.image)?.image ?? null,
       recommended: Boolean(car.recommended),
       plans,
-      ownNow,
+      years,
     };
   });
   return {
@@ -281,7 +314,7 @@ async function readLive(): Promise<LiveData | null> {
  * render tries again. The page keeps its fifteen-minute refresh either way, since Next records the
  * revalidate before running the read.
  */
-const cachedLive = unstable_cache(readLive, ["fleet-data", "v3"], { revalidate: REFRESH_SECONDS, tags: [FLEET_DATA_TAG] });
+const cachedLive = unstable_cache(readLive, ["fleet-data", "v4"], { revalidate: REFRESH_SECONDS, tags: [FLEET_DATA_TAG] });
 
 /** Jarvis's figures and, when the last read failed with nothing to fall back on, why. */
 export async function getLiveStatus(): Promise<{ live: LiveData | null; error: string | null }> {
@@ -472,39 +505,40 @@ export function wizardCarPrices(content: SiteContent, live: LiveData | null, pla
   return out;
 }
 
-/* ------------------------------------------------------------- Own Now calculator */
+/* ----------------------------------------------------------------- plan calculators */
 
-export type CalculatorCarView = { key: string; name: string; photo: ImageSlot | null; years: OwnNowYear[] };
+export type CalculatorCarView = { key: string; name: string; photo: ImageSlot | null; years: PlanYear[] };
 export type CalculatorCityView = { slug: string; name: string; cars: CalculatorCarView[] };
-export type OwnNowCalculatorView = { label: string; tenures: string[]; perks: string[]; cities: CalculatorCityView[] };
+export type PlanCalculatorView = { label: string; tenures: string[]; perks: string[]; cities: CalculatorCityView[] };
 
 /**
- * The Own Now calculator: for each city that offers Own Now, the cars Jarvis prices there and
+ * A plan page's calculator: for each city that offers the plan, the cars Jarvis prices there and
  * their model years. Words, tenures and photos come from the admin; null when Jarvis has none.
  */
-export function ownNowCalculator(content: SiteContent, live: LiveData | null): OwnNowCalculatorView | null {
+export function planCalculator(content: SiteContent, live: LiveData | null, planId: string): PlanCalculatorView | null {
   if (!live) return null;
-  const calculator = content.calculators.find((c) => c.planId === "own-now");
+  const calculator = content.calculators.find((c) => c.planId === planId);
   const cities: CalculatorCityView[] = [];
   for (const city of content.cities) {
-    if (!city.plans.includes("own-now")) continue;
+    if (!city.plans.includes(planId)) continue;
     const cars = new Map<string, CalculatorCarView>();
     for (const liveCity of live.cities.filter((c) => siteCityFor(c, content) === city.slug)) {
       for (const car of liveCity.cars) {
-        if (!car.ownNow?.length || cars.has(key(car.name))) continue;
+        const years = car.years?.[planId] ?? [];
+        if (!years.length || cars.has(key(car.name))) continue;
         const siteCar = content.cars.find((c) => c.id === siteCarFor(car.name, content));
         const name = siteCar?.name || car.name;
         const own = calculator?.cars.find((c) => c.carId === siteCar?.id)?.image ?? siteCar?.image;
         // The admin's studio photo first; a car only Jarvis knows takes Jarvis's own car image.
         const photo = own?.url ? own : car.photo && /\.(png|jpe?g|webp)$/i.test(car.photo) ? { label: name, url: car.photo, alt: name } : null;
-        cars.set(key(car.name), { key: key(car.name), name, photo, years: car.ownNow });
+        cars.set(key(car.name), { key: key(car.name), name, photo, years });
       }
     }
     if (cars.size) cities.push({ slug: city.slug, name: city.name.en, cars: [...cars.values()] });
   }
   if (!cities.length) return null;
   return {
-    label: calculator?.depositLabel || "Upfront payment",
+    label: calculator?.depositLabel || (planId === "own-now" ? "Upfront payment" : "Deposit"),
     tenures: calculator?.tenures ?? [],
     perks: calculator?.perks ?? [],
     cities,
