@@ -41,7 +41,7 @@ export async function PlanPage({ path }: { path: PlanPagePath }) {
       {wizard ? <PlanWizard view={wizard} /> : null}
       <PlanBenefits view={view} />
       <Testimonials variant="page" title={view.storiesTitle} />
-      <StartDriving source={`plan:${plan.id}`} eyebrow />
+      <StartDriving source={`plan/${plan.id}`} eyebrow />
     </>
   );
 }

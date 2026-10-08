@@ -263,7 +263,7 @@ export function CityPage({
             <div className="rounded-3xl border border-line bg-white p-6 shadow-sm lg:sticky lg:top-6">
               <h2 className="text-xl font-bold text-navy">{dict.cta.formTitle}</h2>
               <div className="mt-5">
-                <LeadForm dict={dict} locale={locale} cities={cities} defaultCity={slug} source={`city:${slug}`} />
+                <LeadForm dict={dict} locale={locale} cities={cities} defaultCity={slug} source={`city/${slug}`} />
               </div>
             </div>
           </div>
