@@ -162,6 +162,8 @@ export function TestimonialReel({ stories, copy }: { stories: Story[]; copy: Sto
           events: {
             onReady: (e: YTEvent) => {
               if (!alive) return;
+              // Its methods exist only from here; a pause asked for earlier would throw.
+              player.current = e.target;
               if (soundOn.current) e.target.unMute();
               else e.target.mute();
               if (!inView.current) {
@@ -192,7 +194,6 @@ export function TestimonialReel({ stories, copy }: { stories: Story[]; copy: Sto
             },
           },
         });
-        player.current = made;
       })
       .catch(() => {
         // The still stays up with its play button; nothing else to do.
