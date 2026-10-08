@@ -1,6 +1,8 @@
 import { getImageProps } from "next/image";
 import type { Icon } from "@phosphor-icons/react";
 import { Car, CurrencyInr, Headset, LockSimpleOpen, Wrench } from "@phosphor-icons/react/ssr";
+import { youtubeId } from "@/lib/youtube";
+import { WhyVideo } from "./why-video";
 
 type Benefit = {
   icon: Icon;
@@ -53,9 +55,11 @@ function Copy({ text, md }: { text: string; md?: string }) {
 }
 
 const videoAlt = "Everest Fleet driver with his car";
+// The link is a fixed, valid watch address, so the id is always there.
+const videoId = youtubeId("https://www.youtube.com/watch?v=oxH7PnSsMsQ")!;
 
-/** Two Figma frames, two photos: the phone frame shows a different shot at a different crop. */
-function VideoThumbnail() {
+/** The video, behind a still from the Figma frames: the phone frame shows a different shot at a different crop. */
+function Video() {
   const {
     props: { srcSet: desktop },
   } = getImageProps({ src: "/figma/home/why-video.webp", alt: videoAlt, width: 1116, height: 626, sizes: "558px" });
@@ -70,21 +74,17 @@ function VideoThumbnail() {
   });
 
   return (
-    <div className="relative mx-auto aspect-[372/206] w-full max-w-[656px] overflow-hidden rounded-[10px] ring-2 ring-white xl:mx-0 xl:aspect-[558/314] xl:max-w-[558px] xl:rounded-xl xl:shadow-[0_12px_28px_rgba(6,47,80,0.16)] xl:ring-0">
+    <WhyVideo
+      id={videoId}
+      title="Why drivers choose Everest Fleet"
+      label="Play the video"
+      className="relative mx-auto aspect-video w-full max-w-[656px] overflow-hidden rounded-[10px] bg-navy ring-2 ring-white xl:mx-0 xl:max-w-[558px] xl:rounded-xl xl:shadow-[0_12px_28px_rgba(6,47,80,0.16)] xl:ring-0"
+    >
       <picture>
         <source media="(min-width: 1280px)" srcSet={desktop} sizes="558px" />
         <img {...img} src={src} srcSet={mobile} alt={videoAlt} className="size-full object-cover" />
       </picture>
-      {/* Stands in for the video until one is published, so it is a picture rather than a control. */}
-      <span
-        aria-hidden
-        className="absolute left-1/2 top-1/2 grid h-12 w-[68px] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-xl bg-[#ff0000] xl:h-[50px] xl:w-[72px] xl:rounded-[14px]"
-      >
-        <svg viewBox="0 0 20 22" className="ml-1 h-[25px] w-[22px] fill-white xl:ml-0 xl:h-[21px] xl:w-[19px]">
-          <path d="M0 0 20 11 0 22z" />
-        </svg>
-      </span>
-    </div>
+    </WhyVideo>
   );
 }
 
@@ -95,7 +95,7 @@ export function WhyChooseUs() {
         Why Drivers Choose Us
       </h2>
       <div className="mx-auto max-w-[696px] px-5 pb-[21px] pt-[25px] lg:pb-[55px] lg:pt-16 xl:grid xl:max-w-[1328px] xl:grid-cols-[minmax(0,1fr)_656px] xl:items-start xl:gap-[66px] xl:px-6">
-        <VideoThumbnail />
+        <Video />
         <div className="mx-auto mt-[21px] w-full max-w-[656px] xl:mt-0">
           <ul className="grid gap-[18px] md:grid-cols-2 md:gap-5">
             {benefits.map(({ icon: BenefitIcon, bold, tone, title, titleMd, body, bodyMd, wide }) => (

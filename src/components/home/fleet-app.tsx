@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ArriveOnScroll } from "@/components/fx/arrive-on-scroll";
 import { PLAY_STORE_HREF } from "./ui";
 
 function PlayMark({ className = "" }: { className?: string }) {
@@ -27,10 +28,17 @@ const phoneLines: [string, string][] = [
 /*
  * The section is drawn on the export frame (412 wide on phones, 1440 on desktop). --u is one
  * frame pixel, so the pill, phones and copy scale together; on desktop it stops at 1px past 1440.
+ *
+ * The top blends out of the car section above (.fleet-blend). The phones are four layers cut from
+ * one export, all on the same 960x1560 canvas so they stack exactly at any size: as the section
+ * scrolls in they rise together, then the back phone slides out, its success badge pops, the rent
+ * bar fills and light crosses both screens.
  */
+const phoneSizes = "(min-width: 1024px) min(480px, 34vw), 41vw";
+
 export function FleetApp() {
   return (
-    <section className="@container overflow-hidden bg-fog">
+    <section className="fleet-blend @container overflow-hidden">
       <div className="relative mx-auto h-[calc(var(--u)*349)] w-[calc(var(--u)*412)] [--u:calc(100cqw/412)] lg:h-[calc(var(--u)*1082)] lg:w-[calc(var(--u)*1440)] lg:[--u:calc(min(100cqw,1440px)/1440)]">
         <h2 className="absolute inset-x-0 top-[calc(var(--u)*16.7)] text-center text-[length:calc(var(--u)*24)] font-bold leading-[calc(var(--u)*29)] tracking-[calc(var(--u)*0.35)] lg:tracking-[calc(var(--u)*0.5)] text-navy lg:top-[calc(var(--u)*83.7)] lg:text-[length:calc(var(--u)*64)] lg:leading-[calc(var(--u)*77)]">
           Introducing <span className="text-brand">Everest Fleet</span> <span className="lg:hidden">App</span>
@@ -40,14 +48,23 @@ export function FleetApp() {
         {/* Past 1440 the pill keeps running to the left edge of the window. */}
         <div className="absolute left-0 right-[calc(100%-var(--u)*384)] top-[calc(var(--u)*107)] h-[calc(var(--u)*197)] rounded-r-full bg-blue-gradient lg:left-[calc((var(--u)*1440-100cqw)/2)] lg:right-[calc(100%-var(--u)*1352)] lg:top-[calc(var(--u)*378)] lg:h-[calc(var(--u)*519)]" />
 
-        <div className="absolute left-[calc(var(--u)*12.75)] top-[calc(var(--u)*59.1)] h-[calc(var(--u)*269.1)] w-[calc(var(--u)*165.6)] drop-shadow-[0_calc(var(--u)*8)_calc(var(--u)*11)_rgba(6,47,80,0.3)] lg:left-[calc(var(--u)*160)] lg:top-[calc(var(--u)*242)] lg:h-[calc(var(--u)*780)] lg:w-[calc(var(--u)*480)] lg:drop-shadow-[0_calc(var(--u)*22)_calc(var(--u)*32)_rgba(6,47,80,0.3)]">
-          <Image
-            src="/figma/home/fleet-phones.webp"
-            alt="Everest Fleet app showing this week's rent paid and a completed payment"
-            fill
-            sizes="(min-width: 1024px) min(480px, 34vw), 41vw"
-          />
-        </div>
+        <ArriveOnScroll className="absolute left-[calc(var(--u)*12.75)] top-[calc(var(--u)*59.1)] h-[calc(var(--u)*269.1)] w-[calc(var(--u)*165.6)] drop-shadow-[0_calc(var(--u)*8)_calc(var(--u)*11)_rgba(6,47,80,0.3)] lg:left-[calc(var(--u)*160)] lg:top-[calc(var(--u)*242)] lg:h-[calc(var(--u)*780)] lg:w-[calc(var(--u)*480)] lg:drop-shadow-[0_calc(var(--u)*22)_calc(var(--u)*32)_rgba(6,47,80,0.3)]">
+          <div className="fleet-phones absolute inset-0">
+            <div className="fleet-back absolute inset-0">
+              <Image src="/figma/home/fleet-phone-back.webp" alt="" fill sizes={phoneSizes} />
+              <span aria-hidden className="fleet-glass fleet-glass-back" />
+              <Image src="/figma/home/fleet-phone-badge.webp" alt="" fill sizes={phoneSizes} className="fleet-badge" />
+            </div>
+            <Image
+              src="/figma/home/fleet-phone-front.webp"
+              alt="Everest Fleet app showing this week's rent paid and a completed payment"
+              fill
+              sizes={phoneSizes}
+            />
+            <Image src="/figma/home/fleet-phone-track.webp" alt="" fill sizes={phoneSizes} className="fleet-track" />
+            <span aria-hidden className="fleet-glass fleet-glass-front" />
+          </div>
+        </ArriveOnScroll>
 
         <div className="absolute left-[calc(var(--u)*191)] top-[calc(var(--u)*139.7)] lg:left-[calc(var(--u)*734)] lg:top-[calc(var(--u)*509.5)]">
           <h3 className="text-[length:calc(var(--u)*18)] font-bold leading-[calc(var(--u)*22)] text-white lg:text-[length:calc(var(--u)*40)] lg:uppercase lg:leading-[calc(var(--u)*48)] lg:tracking-[calc(var(--u)*-0.2)]">

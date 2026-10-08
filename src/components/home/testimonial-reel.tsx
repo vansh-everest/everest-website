@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, VolumeX } from "lucide-react";
 import type { VideoShape } from "@/lib/content";
+import { joinPlayers, loadApi, type YTEvent, type YTPlayer } from "./youtube-api";
 
 export type Story = {
   id: string;
@@ -11,54 +12,6 @@ export type Story = {
   detail: string;
   quote: string;
 };
-
-/* ------------------------------------------------------------------ YouTube IFrame API */
-
-type YTPlayer = {
-  playVideo(): void;
-  pauseVideo(): void;
-  mute(): void;
-  unMute(): void;
-  setVolume(volume: number): void;
-  getPlayerState(): number;
-  destroy(): void;
-};
-type YTEvent = { target: YTPlayer; data: number };
-type YTApi = {
-  Player: new (el: HTMLElement, options: Record<string, unknown>) => YTPlayer;
-  PlayerState: { ENDED: number; PLAYING: number; BUFFERING: number };
-};
-
-declare global {
-  interface Window {
-    YT?: YTApi;
-    onYouTubeIframeAPIReady?: () => void;
-  }
-}
-
-let api: Promise<YTApi> | null = null;
-
-/** The IFrame API, loaded once per page; it is what reports a video ending. */
-function loadApi(): Promise<YTApi> {
-  if (api) return api;
-  api = new Promise<YTApi>((resolve, reject) => {
-    if (window.YT?.Player) return resolve(window.YT);
-    const previous = window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady = () => {
-      previous?.();
-      if (window.YT) resolve(window.YT);
-    };
-    const script = document.createElement("script");
-    script.src = "https://www.youtube.com/iframe_api";
-    script.async = true;
-    script.onerror = () => {
-      api = null;
-      reject(new Error("The YouTube player could not load"));
-    };
-    document.head.appendChild(script);
-  });
-  return api;
-}
 
 /* ----------------------------------------------------------------------------- cards */
 
@@ -177,6 +130,14 @@ export function TestimonialReel({ stories }: { stories: Story[] }) {
 
   // One player, for the middle story only; a new story takes the old player down first.
   const story = stories[index];
+  // Another video on the page starting pauses this one.
+  const others = useRef<ReturnType<typeof joinPlayers> | null>(null);
+  useEffect(() => {
+    const joined = joinPlayers(() => player.current?.pauseVideo());
+    others.current = joined;
+    return joined.leave;
+  }, []);
+
   useEffect(() => {
     const box = host.current;
     if (!started || !box) return;
@@ -220,7 +181,10 @@ export function TestimonialReel({ stories }: { stories: Story[] }) {
             },
             onStateChange: (e: YTEvent) => {
               if (!alive) return;
-              if (e.data === YT.PlayerState.PLAYING) setReady(true);
+              if (e.data === YT.PlayerState.PLAYING) {
+                setReady(true);
+                others.current?.claim();
+              }
               // The story ended: the next one takes the middle, and its own player starts it.
               if (e.data === YT.PlayerState.ENDED) setIndex((i) => (i + 1) % count);
             },
