@@ -1,6 +1,6 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
-import type { CityPrices, Hub, ImageSlot, SiteContent } from "@/lib/content";
+import type { CityPrices, Hub, ImageSlot, Price, SiteContent } from "@/lib/content";
 import type { WizardPrice } from "@/lib/plan-view";
 import { fleetConnectEnabled, fleetGet } from "@/lib/jarvis";
 
@@ -389,11 +389,31 @@ export function withLiveData(content: SiteContent, live: LiveData | null): SiteC
     }
   }
 
+  /** Per site car, per site city: the figures Jarvis's car list gives, as the driver app lists them. */
+  const carCity = new Map<string, Map<string, LivePlanPrice>>();
+  for (const [slug, cities] of bySlug) {
+    for (const car of cities.flatMap((c) => c.cars)) {
+      const id = siteCarFor(car.name, content);
+      if (!id || (car.rent === null && car.deposit === null) || carCity.get(id)?.has(slug)) continue;
+      if (!carCity.has(id)) carCity.set(id, new Map());
+      carCity.get(id)!.set(slug, { rent: car.rent, deposit: car.deposit, upfront: null });
+    }
+  }
+
+  // Once Jarvis answers, every figure on the site is Jarvis's: a city or car it has none for shows
+  // none, never the admin's number or another city's.
+  const BLANK = { exact: true } as const;
+  const nothing = (price: Price): Price => ({ ...price, amount: "", deposit: "", upfront: "" });
+  const whole = (price: Price, live: LivePlanPrice | null): Price =>
+    live
+      ? { ...price, amount: digits(live.rent), unit: live.rent === null ? price.unit : "/day", deposit: digits(live.deposit), upfront: digits(live.upfront) }
+      : nothing(price);
+
   return {
     ...content,
     cities: content.cities.map((city) => {
       const found = bySlug.get(city.slug);
-      if (!found) return city;
+      if (!found) return { ...city, readyCars: 0 };
       return {
         ...city,
         readyCars: found.reduce((sum, c) => sum + c.readyCars, 0),
@@ -401,11 +421,18 @@ export function withLiveData(content: SiteContent, live: LiveData | null): SiteC
       };
     }),
     plans: content.plans.map((plan) => {
-      const live = planCity.get(plan.id);
-      if (!live) return plan;
-      let cityPrices = plan.cityPrices;
+      const live = planCity.get(plan.id) ?? new Map<string, LivePlanPrice>();
+      let cityPrices: CityPrices = {};
+      for (const city of content.cities) cityPrices[city.slug] = BLANK;
       for (const [slug, price] of live) cityPrices = merge(cityPrices, slug, price);
-      return { ...plan, cityPrices };
+      return { ...plan, cityPrices, price: whole(plan.price, cheapest([...live.values()])) };
+    }),
+    cars: content.cars.map((car) => {
+      const live = carCity.get(car.id) ?? new Map<string, LivePlanPrice>();
+      let cityPrices: CityPrices = {};
+      for (const city of content.cities) cityPrices[city.slug] = BLANK;
+      for (const [slug, price] of live) cityPrices = merge(cityPrices, slug, price);
+      return { ...car, cityPrices, price: whole(car.price, cheapest([...live.values()])) };
     }),
   };
 }
