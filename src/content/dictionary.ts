@@ -13,6 +13,7 @@ export type Dictionary = {
     title: string;
     intro: string;
     pickCity: string;
+    benefitsHeading: string;
     metaTitle: string;
     metaDescription: string;
   };
@@ -39,6 +40,8 @@ export type Dictionary = {
   benefits: { title: string; body: string }[];
   faq: { q: string; a: string }[];
   blog: { title: string; intro: string; readMore: string; empty: string; back: string; metaDescription: string };
+  /** Labels for a plan's figures on a city page; {n} is the number of months. */
+  figures: { from: string; deposit: string; upfront: string; term: string; months: string };
   common: { pending: string; languages: string };
 };
 
@@ -49,6 +52,7 @@ const en: Dictionary = {
     intro:
       "Driver jobs in seven cities, with the car, the insurance and the permit from Everest Fleet. You drive on Uber and keep what you earn after the daily rent. Pick your city to see plans, hub addresses and what to bring.",
     pickCity: "Choose Your City",
+    benefitsHeading: "Why Drivers Choose Us",
     metaTitle: "Driver Jobs in 7 Cities, Car Included",
     metaDescription:
       "Apply for a cab driver job in Mumbai, Delhi NCR, Bengaluru, Hyderabad, Chennai, Pune or Kolkata. Car, insurance and permit included. Weekly payouts.",
@@ -111,6 +115,7 @@ const en: Dictionary = {
     back: "All Guides",
     metaDescription: "Guides for drivers on renting a car, earnings, documents and plans across Indian cities.",
   },
+  figures: { from: "From", deposit: "Deposit", upfront: "Upfront", term: "Term", months: "{n} Months" },
   common: { pending: "Pending Approval", languages: "Languages" },
 };
 
@@ -121,6 +126,7 @@ const hi: Dictionary = {
     intro:
       "सात शहरों में ड्राइवर की नौकरी, और गाड़ी, बीमा और परमिट Everest Fleet का। आप Uber पर चलाइए और रोज़ का किराया देने के बाद जो कमाई बचे वह आपकी। प्लान, हब का पता और ज़रूरी कागज़ देखने के लिए अपना शहर चुनिए।",
     pickCity: "अपना शहर चुनिए",
+    benefitsHeading: "ड्राइवर हमें क्यों चुनते हैं",
     metaTitle: "Driver Job Chahiye: ड्राइवर की नौकरी, गाड़ी हमारी",
     metaDescription:
       "Driver job chahiye to 7 शहरों में अप्लाई कीजिए: गाड़ी, बीमा और परमिट Everest Fleet का, आप Uber चलाइए। हफ़्ते की पेमेंट।",
@@ -182,6 +188,7 @@ const hi: Dictionary = {
     back: "सभी गाइड",
     metaDescription: "गाड़ी किराए पर लेने, कमाई, कागज़ात और प्लान के बारे में ड्राइवरों के लिए गाइड।",
   },
+  figures: { from: "किराया", deposit: "डिपॉज़िट", upfront: "शुरुआती रकम", term: "अवधि", months: "{n} महीने" },
   common: { pending: "मंज़ूरी बाकी", languages: "भाषाएँ" },
 };
 
@@ -192,6 +199,7 @@ const te: Dictionary = {
     intro:
       "ఏడు నగరాల్లో డ్రైవర్ ఉద్యోగాలు, కారు, బీమా మరియు పర్మిట్ Everest Fleet ఇస్తుంది. మీరు Uber లో నడిపి, రోజువారీ అద్దె పోను మిగిలినది మీరే తీసుకుంటారు. ప్లాన్లు, హబ్ చిరునామా మరియు కావలసిన పత్రాల కోసం మీ నగరాన్ని ఎంచుకోండి.",
     pickCity: "మీ నగరాన్ని ఎంచుకోండి",
+    benefitsHeading: "డ్రైవర్లు మమ్మల్ని ఎందుకు ఎంచుకుంటారు",
     metaTitle: "Driver Job: 7 నగరాల్లో డ్రైవర్ ఉద్యోగాలు, కారు మాది",
     metaDescription:
       "ఏడు నగరాల్లో క్యాబ్ డ్రైవర్ ఉద్యోగం: కారు, బీమా మరియు పర్మిట్ Everest Fleet ఇస్తుంది, మీరు Uber నడపండి. వారానికి చెల్లింపు.",
@@ -253,6 +261,7 @@ const te: Dictionary = {
     back: "అన్ని గైడ్‌లు",
     metaDescription: "కారు అద్దె, సంపాదన, పత్రాలు మరియు ప్లాన్ల గురించి డ్రైవర్ల కోసం గైడ్‌లు.",
   },
+  figures: { from: "అద్దె", deposit: "డిపాజిట్", upfront: "ముందస్తు మొత్తం", term: "వ్యవధి", months: "{n} నెలలు" },
   common: { pending: "ఆమోదం పెండింగ్", languages: "భాషలు" },
 };
 
@@ -263,6 +272,7 @@ const mr: Dictionary = {
     intro:
       "सात शहरांमध्ये ड्रायव्हरची नोकरी, आणि गाडी, विमा व परमिट Everest Fleet चे. तुम्ही Uber वर गाडी चालवा आणि रोजचे भाडे वजा करून उरलेली कमाई तुमची. प्लॅन, हबचा पत्ता आणि लागणारी कागदपत्रे पाहण्यासाठी तुमचे शहर निवडा.",
     pickCity: "तुमचे शहर निवडा",
+    benefitsHeading: "ड्रायव्हर आम्हाला का निवडतात",
     metaTitle: "Driver Job: 7 शहरांत ड्रायव्हरची नोकरी, गाडी आमची",
     metaDescription:
       "मुंबई, पुणे आणि आणखी 5 शहरांत कॅब ड्रायव्हरच्या नोकरीसाठी अर्ज करा: गाडी, विमा आणि परमिट Everest Fleet चे, तुम्ही Uber चालवा, पेमेंट दर आठवड्याला.",
@@ -324,6 +334,7 @@ const mr: Dictionary = {
     back: "सर्व गाइड",
     metaDescription: "गाडी भाड्याने घेणे, कमाई, कागदपत्रे आणि प्लॅनबद्दल ड्रायव्हरसाठी गाइड.",
   },
+  figures: { from: "भाडे", deposit: "डिपॉझिट", upfront: "सुरुवातीची रक्कम", term: "कालावधी", months: "{n} महिने" },
   common: { pending: "मंजुरी बाकी", languages: "भाषा" },
 };
 
@@ -334,6 +345,7 @@ const kn: Dictionary = {
     intro:
       "ಏಳು ನಗರಗಳಲ್ಲಿ ಡ್ರೈವರ್ ಕೆಲಸ, ಕಾರು, ವಿಮೆ ಮತ್ತು ಪರ್ಮಿಟ್ Everest Fleet ನಿಂದ. ನೀವು Uber ನಲ್ಲಿ ಓಡಿಸಿ, ದಿನದ ಬಾಡಿಗೆ ಕಳೆದು ಉಳಿದ ಗಳಿಕೆ ನಿಮ್ಮದು. ಪ್ಲಾನ್‌ಗಳು, ಹಬ್ ವಿಳಾಸ ಮತ್ತು ಬೇಕಾದ ದಾಖಲೆಗಳನ್ನು ನೋಡಲು ನಿಮ್ಮ ನಗರವನ್ನು ಆರಿಸಿ.",
     pickCity: "ನಿಮ್ಮ ನಗರವನ್ನು ಆರಿಸಿ",
+    benefitsHeading: "ಚಾಲಕರು ನಮ್ಮನ್ನು ಏಕೆ ಆಯ್ಕೆ ಮಾಡುತ್ತಾರೆ",
     metaTitle: "Driver Job: 7 ನಗರಗಳಲ್ಲಿ ಡ್ರೈವರ್ ಕೆಲಸ, ಕಾರು ನಮ್ಮದು",
     metaDescription:
       "ಬೆಂಗಳೂರು ಸೇರಿದಂತೆ 7 ನಗರಗಳಲ್ಲಿ ಕ್ಯಾಬ್ ಡ್ರೈವರ್ ಕೆಲಸಕ್ಕೆ ಅರ್ಜಿ ಹಾಕಿ: ಕಾರು, ವಿಮೆ ಮತ್ತು ಪರ್ಮಿಟ್ Everest Fleet ನದು, ನೀವು Uber ಓಡಿಸಿ, ಪಾವತಿ ಪ್ರತಿ ವಾರ.",
@@ -395,6 +407,7 @@ const kn: Dictionary = {
     back: "ಎಲ್ಲಾ ಗೈಡ್‌ಗಳು",
     metaDescription: "ಕಾರು ಬಾಡಿಗೆ, ಗಳಿಕೆ, ದಾಖಲೆಗಳು ಮತ್ತು ಪ್ಲಾನ್‌ಗಳ ಬಗ್ಗೆ ಡ್ರೈವರ್‌ಗಳಿಗಾಗಿ ಗೈಡ್‌ಗಳು.",
   },
+  figures: { from: "ಬಾಡಿಗೆ", deposit: "ಠೇವಣಿ", upfront: "ಆರಂಭಿಕ ಮೊತ್ತ", term: "ಅವಧಿ", months: "{n} ತಿಂಗಳು" },
   common: { pending: "ಅನುಮೋದನೆ ಬಾಕಿ", languages: "ಭಾಷೆಗಳು" },
 };
 
@@ -405,6 +418,7 @@ const bn: Dictionary = {
     intro:
       "সাতটি শহরে ড্রাইভারের চাকরি, গাড়ি, বিমা আর পারমিট Everest Fleet-এর। আপনি Uber-এ গাড়ি চালান, রোজের ভাড়া বাদ দিয়ে যা আয় থাকে তা আপনার। প্ল্যান, হাবের ঠিকানা আর কী কী কাগজ লাগবে দেখতে আপনার শহর বেছে নিন।",
     pickCity: "আপনার শহর বেছে নিন",
+    benefitsHeading: "ড্রাইভাররা কেন আমাদের বেছে নেন",
     metaTitle: "Driver Job: 7টি শহরে ড্রাইভারের চাকরি, গাড়ি আমাদের",
     metaDescription:
       "কলকাতা সহ 7টি শহরে ক্যাব ড্রাইভারের চাকরির জন্য আবেদন করুন: গাড়ি, বিমা আর পারমিট Everest Fleet-এর, আপনি Uber চালান, পেমেন্ট প্রতি সপ্তাহে।",
@@ -466,6 +480,7 @@ const bn: Dictionary = {
     back: "সব গাইড",
     metaDescription: "গাড়ি ভাড়া, আয়, কাগজপত্র আর প্ল্যান নিয়ে ড্রাইভারদের জন্য গাইড।",
   },
+  figures: { from: "ভাড়া", deposit: "ডিপোজিট", upfront: "শুরুর টাকা", term: "মেয়াদ", months: "{n} মাস" },
   common: { pending: "অনুমোদন বাকি", languages: "ভাষা" },
 };
 
@@ -476,6 +491,7 @@ const ta: Dictionary = {
     intro:
       "ஏழு நகரங்களில் டிரைவர் வேலை, கார், காப்பீடு மற்றும் பெர்மிட் Everest Fleet தருகிறது. நீங்கள் Uber-இல் ஓட்டுங்கள், தினசரி வாடகை போக மீதி வருமானம் உங்களுடையது. திட்டங்கள், ஹப் முகவரி மற்றும் தேவையான ஆவணங்களைப் பார்க்க உங்கள் நகரத்தைத் தேர்ந்தெடுங்கள்.",
     pickCity: "உங்கள் நகரத்தைத் தேர்ந்தெடுங்கள்",
+    benefitsHeading: "ஓட்டுநர்கள் ஏன் எங்களைத் தேர்வு செய்கிறார்கள்",
     metaTitle: "Driver Job: 7 நகரங்களில் டிரைவர் வேலை, கார் எங்களுடையது",
     metaDescription:
       "சென்னை உட்பட 7 நகரங்களில் கேப் டிரைவர் வேலைக்கு விண்ணப்பியுங்கள்: கார், காப்பீடு மற்றும் பெர்மிட் Everest Fleet-உடையது, நீங்கள் Uber ஓட்டுங்கள், பணம் ஒவ்வொரு வாரமும்.",
@@ -537,6 +553,7 @@ const ta: Dictionary = {
     back: "அனைத்து வழிகாட்டிகளும்",
     metaDescription: "கார் வாடகை, வருமானம், ஆவணங்கள் மற்றும் திட்டங்கள் பற்றி டிரைவர்களுக்கான வழிகாட்டிகள்.",
   },
+  figures: { from: "வாடகை", deposit: "டெபாசிட்", upfront: "முன்பணம்", term: "காலம்", months: "{n} மாதங்கள்" },
   common: { pending: "ஒப்புதல் நிலுவையில்", languages: "மொழிகள்" },
 };
 

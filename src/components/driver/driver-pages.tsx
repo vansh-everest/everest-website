@@ -1,145 +1,226 @@
 import Link from "next/link";
-import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
-import { LeadForm } from "@/components/driver/lead-form";
-import { SiteImage } from "@/components/site/site-image";
-import { fill, getDictionary } from "@/content/dictionary";
+import { ArrowLeft, ArrowUpRight, Clock, FileCheck, MapPin, Plus } from "lucide-react";
+import { DriverHero } from "@/components/driver/driver-hero";
+import {
+  ApplyBand,
+  Benefits,
+  CityCards,
+  HeroActions,
+  HeroChip,
+  LanguageSwitch,
+  SectionHead,
+  StickyBar,
+  band,
+  tint,
+  wrap,
+} from "@/components/driver/driver-ui";
+import { fill, getDictionary, type Dictionary } from "@/content/dictionary";
 import { SITE_URL } from "@/lib/company";
 import { cityPath } from "@/lib/city-route";
-import { findCity, planFor, priceIn, rupees, type Plan, type SiteContent } from "@/lib/content";
-import { LOCALE_META, LOCALES, localePath, type Locale } from "@/lib/i18n";
+import { findCity, planFor, priceIn, rupees, type City, type Plan, type SiteContent } from "@/lib/content";
+import { localePath, type Locale } from "@/lib/i18n";
 
-const wrap = "mx-auto w-full max-w-[1120px] px-5";
-
-function LanguageSwitch({ locale, path, label }: { locale: Locale; path: string; label: string }) {
-  return (
-    <nav aria-label={label} className="flex flex-wrap items-center gap-2 text-[13px]">
-      {LOCALES.map((l) => (
-        <Link
-          key={l}
-          href={localePath(l, path)}
-          hrefLang={LOCALE_META[l].htmlLang}
-          aria-current={l === locale ? "page" : undefined}
-          className={`rounded-full border px-3 py-1 font-semibold transition ${
-            l === locale
-              ? "border-sun bg-sun text-navy"
-              : "border-white/35 text-white hover:border-white"
-          }`}
-        >
-          {LOCALE_META[l].label}
-        </Link>
-      ))}
-    </nav>
-  );
+/** The cities as cards, in the page's language. */
+function cityCards(content: SiteContent, locale: Locale) {
+  return content.cities.map((c) => ({ slug: c.slug, name: c.name[locale], state: c.state }));
 }
 
-function Actions({ apply, call, whatsapp }: { apply: string; call: string; whatsapp: string }) {
-  return (
-    <div className="flex flex-wrap gap-3">
-      <a href="#apply" className="flex h-12 items-center rounded-full bg-sun px-7 text-sm font-bold text-navy">
-        {apply}
-      </a>
-      <a href={PHONE_HREF} className="flex h-12 items-center rounded-full bg-navy px-7 text-sm font-bold text-white">
-        {call} {PHONE_DISPLAY}
-      </a>
-      <a href={WHATSAPP_HREF} className="flex h-12 items-center rounded-full bg-whatsapp px-7 text-sm font-bold text-white">
-        {whatsapp}
-      </a>
-    </div>
-  );
-}
-
-/** Fixed to the bottom on a phone, so the way to reach a person is never scrolled away. */
-function StickyBar({ call, whatsapp }: { call: string; whatsapp: string }) {
-  return (
-    <div className="fixed inset-x-0 bottom-0 z-40 flex gap-2 border-t border-line bg-white p-3 shadow-[0_-4px_16px_rgba(6,47,80,0.08)] md:hidden">
-      <a href={PHONE_HREF} className="flex h-12 flex-1 items-center justify-center rounded-full bg-navy text-sm font-bold text-white">
-        {call}
-      </a>
-      <a href={WHATSAPP_HREF} className="flex h-12 flex-1 items-center justify-center rounded-full bg-whatsapp text-sm font-bold text-white">
-        {whatsapp}
-      </a>
-    </div>
-  );
-}
-
-function Benefits({ items }: { items: { title: string; body: string }[] }) {
-  return (
-    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {items.map((b) => (
-        <li key={b.title} className="rounded-2xl border border-line bg-white p-5">
-          <h3 className="text-base font-bold text-navy">{b.title}</h3>
-          <p className="mt-1.5 text-sm leading-6 text-ink-soft">{b.body}</p>
-        </li>
-      ))}
-    </ul>
-  );
+/** The cities for the form's picker, in the page's language. */
+function formCities(content: SiteContent, locale: Locale) {
+  return content.cities.map((c) => ({ slug: c.slug, label: c.name[locale] }));
 }
 
 /** /drive-with-us/ in every locale. */
 export function DriverHub({ locale, content }: { locale: Locale; content: SiteContent }) {
   const dict = getDictionary(locale);
-  const cities = content.cities.map((c) => ({ slug: c.slug, label: c.name[locale] }));
 
   return (
     <>
-      <section className="bg-blue-gradient pb-14 pt-10 text-white">
-        <div className={`${wrap} grid gap-7`}>
-          <LanguageSwitch locale={locale} path="/drive-with-us" label={dict.common.languages} />
-          <p className="text-xs font-bold uppercase tracking-[1.5px] text-sun">{dict.hub.eyebrow}</p>
-          <h1 className="max-w-[18ch] text-[34px] font-extrabold leading-tight lg:text-[56px]">{dict.hub.title}</h1>
-          <p className="max-w-[60ch] text-base leading-7 text-white/85">{dict.hub.intro}</p>
-          <Actions apply={dict.cta.apply} call={dict.cta.call} whatsapp={dict.cta.whatsapp} />
-        </div>
-      </section>
+      <DriverHero
+        photo={content.images["driver-hub-hero"]}
+        top={<LanguageSwitch locale={locale} path="/drive-with-us" label={dict.common.languages} />}
+        chip={<HeroChip>{dict.hub.eyebrow}</HeroChip>}
+        title={dict.hub.title}
+        intro={dict.hub.intro}
+        actions={<HeroActions cta={dict.cta} />}
+      />
 
-      <section className={`${wrap} py-12`}>
-        <h2 className="text-2xl font-bold text-navy">{dict.hub.pickCity}</h2>
-        <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {content.cities.map((city) => (
-            <li key={city.slug}>
-              <Link
-                href={localePath(locale, cityPath(city.slug))}
-                className="flex items-center justify-between rounded-2xl border border-line bg-white px-5 py-4 transition hover:border-brand"
-              >
-                <span className="text-lg font-bold text-navy">{city.name[locale]}</span>
-                <span className="text-sm text-ink-soft">{city.state}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="bg-mist py-12">
+      <section aria-labelledby="driver-cities" className={band}>
         <div className={wrap}>
-          <Benefits items={dict.benefits} />
+          <SectionHead id="driver-cities" title={dict.hub.pickCity} />
+          <CityCards locale={locale} cities={cityCards(content, locale)} />
         </div>
       </section>
 
-      <section id="apply" className={`${wrap} scroll-mt-6 py-12`}>
-        <div className="mx-auto max-w-[520px] rounded-3xl border border-line bg-white p-6 shadow-sm">
-          <h2 className="text-xl font-bold text-navy">{dict.cta.formTitle}</h2>
-          <div className="mt-5">
-            <LeadForm dict={dict} locale={locale} cities={cities} source="drive-with-us" />
-          </div>
-        </div>
-      </section>
+      <Benefits heading={dict.hub.benefitsHeading} items={dict.benefits} />
 
-      <div className="h-16 md:hidden" />
+      <ApplyBand locale={locale} dict={dict} cities={formCities(content, locale)} source="drive-with-us" />
+
       <StickyBar call={dict.cta.call} whatsapp={dict.cta.whatsapp} />
     </>
   );
 }
 
 /** A plan's figures in one city, blank ones dropped. None at all shows "pending approval". */
-function figuresFor(plan: Plan, city: string): [string, string][] {
+function figuresFor(plan: Plan, city: string, labels: Dictionary["figures"]): [string, string][] {
   const price = priceIn(plan.price, plan.cityPrices, city);
   const rows: [string, string][] = [
-    ["From", price.amount ? `${rupees(price.amount)}${price.unit}` : ""],
-    ["Deposit", rupees(price.deposit)],
-    ["Upfront", rupees(price.upfront)],
-    ["Term", price.tenureMonths ? `${price.tenureMonths} months` : ""],
+    [labels.from, price.amount ? `${rupees(price.amount)}${price.unit}` : ""],
+    [labels.deposit, rupees(price.deposit)],
+    [labels.upfront, rupees(price.upfront)],
+    [labels.term, price.tenureMonths ? fill(labels.months, { n: String(price.tenureMonths) }) : ""],
   ];
   return rows.filter(([, value]) => value);
+}
+
+/** The city's name in the sun yellow of the plan heroes, wherever the title's wording puts it. */
+function cityTitle(template: string, name: string) {
+  const [before, ...rest] = template.split("{city}");
+  if (!rest.length) return template;
+  return (
+    <>
+      {before}
+      <span className="text-sun">{name}</span>
+      {rest.join(name)}
+    </>
+  );
+}
+
+/** One plan as a card: its summary, its figures as tiles, and the way in. */
+function PlanCard({ plan, city, locale, dict }: { plan: Plan; city: string; locale: Locale; dict: Dictionary }) {
+  const figures = figuresFor(plan, city, dict.figures);
+  return (
+    <li className="flex flex-col rounded-3xl border border-line bg-white p-5 shadow-[0_8px_24px_rgba(6,47,80,0.06)] lg:p-7">
+      <h3 className="text-[22px] font-bold leading-7 text-navy lg:text-[26px] lg:leading-8">{plan.name[locale]}</h3>
+      <p className="mt-2 text-[15px] leading-6 text-ink-soft">{plan.summary[locale]}</p>
+      {figures.length ? (
+        <dl className="mt-5 grid grid-cols-2 gap-2 lg:gap-3">
+          {figures.map(([label, value]) => (
+            <div key={label} className={`rounded-xl border border-[#e8eaed] px-3 pb-2.5 pt-3 lg:rounded-2xl lg:px-4 ${tint}`}>
+              <dt className="text-[11px] font-medium uppercase leading-[13px] tracking-[0.6px] text-ink-soft lg:text-xs lg:leading-4">{label}</dt>
+              <dd className="mt-1 whitespace-nowrap text-lg font-bold leading-6 text-navy lg:text-[22px] lg:leading-8">{value}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : (
+        <p className="mt-5 w-fit rounded-full bg-sun/25 px-3 py-1 text-xs font-semibold text-navy">{dict.common.pending}</p>
+      )}
+      <div className="mt-auto pt-6">
+        <a
+          href="#apply"
+          className="flex h-12 items-center justify-center rounded-full border-2 border-brand text-base font-semibold text-brand transition hover:bg-brand hover:text-white"
+        >
+          {dict.cta.apply}
+        </a>
+      </div>
+    </li>
+  );
+}
+
+/** "Plans in {city}": every visible plan the city offers. */
+function Plans({ city, locale, dict }: { city: City & { offered: Plan[] }; locale: Locale; dict: Dictionary }) {
+  const vars = { city: city.name[locale] };
+  return (
+    <section aria-labelledby="city-plans" className={band}>
+      <div className={wrap}>
+        <SectionHead id="city-plans" title={fill(dict.city.plansHeading, vars)} />
+        <ul className="mt-8 grid gap-4 md:grid-cols-2 lg:mt-12 lg:grid-cols-3 lg:gap-6">
+          {city.offered.map((plan) => (
+            <PlanCard key={plan.id} plan={plan} city={city.slug} locale={locale} dict={dict} />
+          ))}
+        </ul>
+        <p className="mt-5 text-center text-xs leading-5 text-ink-soft lg:text-[13px]">{dict.city.earningsNote}</p>
+      </div>
+    </section>
+  );
+}
+
+/** "What to bring", then the city's hubs when it has any. */
+function DocumentsAndHubs({ city, locale, dict }: { city: City; locale: Locale; dict: Dictionary }) {
+  const vars = { city: city.name[locale] };
+  return (
+    <section aria-labelledby="city-documents" className={`${band} ${tint}`}>
+      <div className={wrap}>
+        <SectionHead id="city-documents" title={dict.city.documentsHeading} />
+        <ul className="mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:mt-12 lg:grid-cols-4 lg:gap-6">
+          {dict.documents.map((doc) => (
+            <li
+              key={doc}
+              className="flex flex-col gap-4 rounded-2xl border border-[#dfecf6] bg-white px-4 pb-5 pt-4 lg:flex-row lg:items-center lg:rounded-3xl lg:px-6 lg:py-6"
+            >
+              <span aria-hidden className="grid size-[42px] shrink-0 place-items-center rounded-xl bg-[#eaf3fb] text-brand lg:size-12">
+                <FileCheck size={22} strokeWidth={1.9} />
+              </span>
+              <span className="text-base font-bold leading-[22px] text-navy lg:text-lg lg:leading-6">{doc}</span>
+            </li>
+          ))}
+        </ul>
+
+        {city.hubs.length > 0 ? (
+          <div className="mt-12 lg:mt-20">
+            <SectionHead title={fill(dict.city.hubsHeading, vars)} />
+            <ul className="mt-8 flex flex-wrap justify-center gap-4 lg:mt-10 lg:gap-6">
+              {city.hubs.map((hub) => (
+                <li
+                  key={`${hub.name}|${hub.address}`}
+                  className="flex w-full gap-4 rounded-2xl border border-[#dfecf6] bg-white p-5 md:w-[calc((100%-16px)/2)] lg:w-[calc((100%-48px)/3)] lg:rounded-3xl lg:p-6"
+                >
+                  <span aria-hidden className="grid size-[42px] shrink-0 place-items-center rounded-xl bg-[#eaf3fb] text-brand">
+                    <MapPin size={21} strokeWidth={1.9} />
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="text-[17px] font-bold leading-6 text-navy">
+                      {hub.mapUrl ? (
+                        <a href={hub.mapUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-start gap-1 transition hover:text-brand">
+                          {hub.name}
+                          <ArrowUpRight aria-hidden size={16} strokeWidth={2} className="mt-1 shrink-0" />
+                        </a>
+                      ) : (
+                        hub.name
+                      )}
+                    </h3>
+                    <p className="mt-1 text-sm leading-6 text-ink-soft">{hub.address}</p>
+                    {hub.hours ? (
+                      <p className="mt-1.5 flex items-center gap-1.5 text-sm text-ink-soft">
+                        <Clock aria-hidden size={14} strokeWidth={2} className="shrink-0" />
+                        {hub.hours}
+                      </p>
+                    ) : null}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+/** The questions as the FAQ page draws them: one card each, opened in place. */
+function Faq({ dict }: { dict: Dictionary }) {
+  return (
+    <section aria-labelledby="city-faq" className={band}>
+      <div className="mx-auto max-w-[840px]">
+        <SectionHead id="city-faq" title={dict.city.faqHeading} />
+        <ul className="mt-8 space-y-3 lg:mt-10">
+          {dict.faq.map((item) => (
+            <li key={item.q} className="overflow-hidden rounded-2xl border border-line bg-white">
+              <details className="group">
+                <summary className="flex cursor-pointer list-none items-center gap-4 px-5 py-4 lg:px-6 lg:py-5 [&::-webkit-details-marker]:hidden">
+                  <span className="flex-1 text-base font-semibold leading-6 text-navy lg:text-lg lg:leading-7">{item.q}</span>
+                  <span aria-hidden className="grid size-8 shrink-0 place-items-center rounded-full bg-[#eaf3fb] text-brand transition group-open:rotate-45">
+                    <Plus size={16} strokeWidth={2.25} />
+                  </span>
+                </summary>
+                <p className="px-5 pb-5 text-[15px] leading-6 text-ink-soft lg:px-6 lg:text-base lg:leading-7">{item.a}</p>
+              </details>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
 }
 
 /** /drive-with-us/driver-job-in-<city>/ in every locale. */
@@ -158,149 +239,44 @@ export function CityPage({
 
   const name = city.name[locale];
   const vars = { city: name };
-  const cities = content.cities.map((c) => ({ slug: c.slug, label: c.name[locale] }));
-  const plans = city.plans.map((id) => planFor(content, id)).filter((p): p is Plan => Boolean(p?.visible));
+  const offered = city.plans.map((id) => planFor(content, id)).filter((p): p is Plan => Boolean(p?.visible));
 
   return (
     <>
-      <section className="bg-blue-gradient pb-14 pt-10 text-white">
-        <div className={`${wrap} grid gap-7`}>
-          <LanguageSwitch
-            locale={locale}
-            path={cityPath(slug)}
-            label={dict.common.languages}
-          />
-          <h1 className="max-w-[20ch] text-[32px] font-extrabold leading-tight lg:text-[52px]">
-            {fill(dict.city.title, vars)}
-          </h1>
-          <p className="max-w-[60ch] text-base leading-7 text-white/85">{fill(dict.city.intro, vars)}</p>
-          {city.readyCars > 0 ? (
-            <p className="text-lg font-bold text-sun">
-              {city.readyCars} · {fill(dict.city.readyCars, vars)}
-            </p>
-          ) : null}
-          <Actions apply={dict.cta.apply} call={dict.cta.call} whatsapp={dict.cta.whatsapp} />
+      <DriverHero
+        photo={city.heroImage}
+        top={<LanguageSwitch locale={locale} path={cityPath(slug)} label={dict.common.languages} />}
+        chip={
+          <Link href={localePath(locale, "/drive-with-us")} className="transition hover:opacity-85">
+            <HeroChip>
+              <ArrowLeft aria-hidden size={14} strokeWidth={2.25} />
+              {dict.hub.eyebrow}
+            </HeroChip>
+          </Link>
+        }
+        title={cityTitle(dict.city.title, name)}
+        intro={fill(dict.city.intro, vars)}
+        figure={city.readyCars > 0 ? { label: fill(dict.city.readyCars, vars), value: String(city.readyCars) } : undefined}
+        actions={<HeroActions cta={dict.cta} />}
+      />
+
+      <Benefits heading={dict.hub.benefitsHeading} items={dict.benefits} />
+
+      {offered.length ? <Plans city={{ ...city, offered }} locale={locale} dict={dict} /> : null}
+
+      <DocumentsAndHubs city={city} locale={locale} dict={dict} />
+
+      <Faq dict={dict} />
+
+      <section aria-labelledby="city-others" className={`${band} ${tint}`}>
+        <div className={wrap}>
+          <SectionHead id="city-others" title={dict.city.otherCities} />
+          <CityCards locale={locale} cities={cityCards(content, locale).filter((c) => c.slug !== slug)} compact />
         </div>
       </section>
 
-      <section className={`${wrap} py-12`}>
-        <div className="relative aspect-[16/6] overflow-hidden rounded-3xl">
-          <SiteImage slot={city.heroImage} sizes="(max-width: 1120px) 100vw, 1120px" priority />
-        </div>
-      </section>
+      <ApplyBand locale={locale} dict={dict} cities={formCities(content, locale)} defaultCity={slug} source={`city/${slug}`} />
 
-      <section className={`${wrap} pb-12`}>
-        <Benefits items={dict.benefits} />
-      </section>
-
-      <section className="bg-mist py-12">
-        <div className={`${wrap} grid gap-10 lg:grid-cols-[1fr_420px]`}>
-          <div className="grid gap-10">
-            <div>
-              <h2 className="text-2xl font-bold text-navy">{fill(dict.city.plansHeading, vars)}</h2>
-              <ul className="mt-5 grid gap-3">
-                {plans.map((plan) => (
-                  <li key={plan.id} className="rounded-2xl border border-line bg-white p-5">
-                    <h3 className="text-lg font-bold text-navy">{plan.name[locale]}</h3>
-                    <p className="mt-1.5 text-sm leading-6 text-ink-soft">{plan.summary[locale]}</p>
-                    {figuresFor(plan, city.slug).length ? (
-                      <dl className="mt-3 flex flex-wrap gap-x-8 gap-y-1 text-sm text-navy">
-                        {figuresFor(plan, city.slug).map(([label, value]) => (
-                          <div key={label}>
-                            <dt className="inline text-ink-soft">{label} </dt>
-                            <dd className="inline font-bold">{value}</dd>
-                          </div>
-                        ))}
-                      </dl>
-                    ) : (
-                      <p className="mt-3 inline-block rounded-full bg-sun/25 px-3 py-1 text-xs font-semibold text-navy">
-                        {dict.common.pending}
-                      </p>
-                    )}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-3 text-xs text-ink-soft">{dict.city.earningsNote}</p>
-            </div>
-
-            <div>
-              <h2 className="text-2xl font-bold text-navy">{dict.city.documentsHeading}</h2>
-              <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-                {dict.documents.map((doc) => (
-                  <li key={doc} className="flex items-center gap-2.5 rounded-xl bg-white px-4 py-3 text-sm text-navy">
-                    <span aria-hidden className="size-2 rounded-full bg-sun" />
-                    {doc}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {city.hubs.length > 0 ? (
-              <div>
-                <h2 className="text-2xl font-bold text-navy">{fill(dict.city.hubsHeading, vars)}</h2>
-                <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {city.hubs.map((hub) => (
-                    <li key={`${hub.name}|${hub.address}`} className="rounded-2xl bg-white p-5">
-                      <h3 className="text-base font-bold text-navy">
-                        {hub.mapUrl ? (
-                          <a href={hub.mapUrl} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">
-                            {hub.name}
-                          </a>
-                        ) : (
-                          hub.name
-                        )}
-                      </h3>
-                      <p className="mt-1 text-sm leading-6 text-ink-soft">{hub.address}</p>
-                      {hub.hours ? <p className="mt-1 text-sm text-ink-soft">{hub.hours}</p> : null}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-          </div>
-
-          <div id="apply" className="scroll-mt-6">
-            <div className="rounded-3xl border border-line bg-white p-6 shadow-sm lg:sticky lg:top-6">
-              <h2 className="text-xl font-bold text-navy">{dict.cta.formTitle}</h2>
-              <div className="mt-5">
-                <LeadForm dict={dict} locale={locale} cities={cities} defaultCity={slug} source={`city/${slug}`} />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className={`${wrap} py-12`}>
-        <h2 className="text-2xl font-bold text-navy">{dict.city.faqHeading}</h2>
-        <dl className="mt-5 grid gap-3">
-          {dict.faq.map((item) => (
-            <div key={item.q} className="rounded-2xl border border-line bg-white p-5">
-              <dt className="text-base font-bold text-navy">{item.q}</dt>
-              <dd className="mt-1.5 text-sm leading-6 text-ink-soft">{item.a}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      <section className={`${wrap} pb-16`}>
-        <h2 className="text-lg font-bold text-navy">{dict.city.otherCities}</h2>
-        <ul className="mt-4 flex flex-wrap gap-2">
-          {content.cities
-            .filter((c) => c.slug !== slug)
-            .map((c) => (
-              <li key={c.slug}>
-                <Link
-                  href={localePath(locale, cityPath(c.slug))}
-                  className="inline-flex rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-navy transition hover:border-brand"
-                >
-                  {c.name[locale]}
-                </Link>
-              </li>
-            ))}
-        </ul>
-      </section>
-
-      <div className="h-16 md:hidden" />
       <StickyBar call={dict.cta.call} whatsapp={dict.cta.whatsapp} />
     </>
   );
