@@ -1,14 +1,36 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, type MouseEvent } from "react";
 import type Lenis from "lenis";
 import "lenis/dist/lenis.css";
 
+/** The running inertia scroll, for links that move the page without changing it. */
+let running: Lenis | null = null;
+
+/** Scrolls to the top: through the inertia scroll when it runs, otherwise natively. */
+export function scrollToTop() {
+  if (running) {
+    running.scrollTo(0);
+    return;
+  }
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+}
+
 /**
- * Inertia scrolling for wheel and trackpad. Phones keep native scrolling and never download the
- * library; reduced motion skips it too.
+ * The logo takes the reader to the top of the page they are on rather than away from it, and
+ * drops any #anchor from the address. New-tab and modified clicks still follow the link.
  */
+export function toTopInstead(event: MouseEvent<HTMLAnchorElement>) {
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  if (window.location.hash) {
+    window.history.replaceState(window.history.state, "", window.location.pathname + window.location.search);
+  }
+  requestAnimationFrame(scrollToTop);
+}
+
 export function SmoothScroll() {
   const pathname = usePathname();
   const lenisRef = useRef<Lenis | null>(null);
@@ -36,6 +58,7 @@ export function SmoothScroll() {
         allowNestedScroll: true,
       });
       lenisRef.current = lenis;
+      running = lenis;
       const loop = (time: number) => {
         lenis.raf(time);
         raf = requestAnimationFrame(loop);
@@ -50,6 +73,7 @@ export function SmoothScroll() {
       cancelAnimationFrame(raf);
       destroy();
       lenisRef.current = null;
+      running = null;
     };
   }, []);
 

@@ -12,6 +12,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, Menu, Phone, X } from "lucide-react";
+import { toTopInstead } from "@/components/fx/smooth-scroll";
 import { siteCopy } from "@/content/site-copy";
 import { fill, hrefIn, localeOfPath } from "@/lib/i18n";
 import { FormLink } from "./form-link";
@@ -132,7 +133,14 @@ export function MobileMenu({ home }: { home: string }) {
                 }`}
               >
                 <div className="flex h-[61px] shrink-0 items-center justify-between border-b border-line pl-3 pr-2">
-                  <Link href={hrefIn(locale, "/")} onClick={close} className="mt-1">
+                  <Link
+                    href={hrefIn(locale, "/")}
+                    onClick={(event) => {
+                      close();
+                      toTopInstead(event);
+                    }}
+                    className="mt-1"
+                  >
                     <Image
                       src="/figma/logo.png"
                       alt="Everest Fleet"

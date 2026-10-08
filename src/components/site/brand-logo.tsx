@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, type CSSProperties } from "react";
+import { toTopInstead } from "@/components/fx/smooth-scroll";
 
 /**
  * The four triangles of the Everest mark, traced from /figma/logo.png in that file's own
@@ -24,9 +25,10 @@ const BURST = 140;
  * The Everest logo as a link home. The wordmark is the original artwork with the mark cut out;
  * the mark is drawn over it as four triangles, so at rest it looks exactly like the PNG.
  *
- * A click sends the triangles spinning out one after another and snaps them back into the mark.
- * The link navigates as usual while they move. Mouse screens get a small hover hint (globals.css,
- * "Chrome (batch 9)"); reduced motion gets neither.
+ * A click sends the triangles spinning out one after another and snaps them back into the mark,
+ * and takes the reader to the top of the page they are on (a new-tab click still opens home).
+ * Mouse screens get a small hover hint (globals.css, "Chrome (batch 9)"); reduced motion gets
+ * neither.
  */
 export function BrandLogo({
   href = "/",
@@ -70,7 +72,14 @@ export function BrandLogo({
   };
 
   return (
-    <Link href={href} onClick={burst} className={`brand-logo block ${className}`}>
+    <Link
+      href={href}
+      onClick={(event) => {
+        burst();
+        toTopInstead(event);
+      }}
+      className={`brand-logo block ${className}`}
+    >
       <span className="relative block h-14 w-[98px]">
         <Image
           src={tone === "light" ? "/figma/logo-word-white.png" : "/figma/logo-word.png"}
