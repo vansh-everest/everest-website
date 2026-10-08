@@ -166,6 +166,39 @@ async function accessToken(renew = false): Promise<string> {
   throw new JarvisAccessError("signed-out");
 }
 
+/**
+ * For /admin/?debug=1 when the sign-in fails: how many session cookies arrived, which Jarvis was
+ * asked, and its answer to each. Status codes only; no cookie or token value is shown.
+ */
+export async function signInDiagnosis(): Promise<string> {
+  const raw = (await headers()).get("cookie") ?? "";
+  const parts = raw.split(";").map((part) => part.trim()).filter(Boolean);
+  const named = parts.filter((part) => part.startsWith("session_id=")).length;
+  const ids = await sessionIds();
+  let host = "not set";
+  try {
+    host = new URL(jarvisUrl()).host;
+  } catch {
+    // JARVIS_API_URL is empty or not an address.
+  }
+  const answers: string[] = [];
+  for (const id of ids) {
+    try {
+      const res = await fetch(`${jarvisUrl()}/api/refresh-token/`, {
+        method: "POST",
+        cache: "no-store",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ session_id: id }),
+        signal: AbortSignal.timeout(15_000),
+      });
+      answers.push(String(res.status));
+    } catch {
+      answers.push("no answer");
+    }
+  }
+  return `cookies ${parts.length}, session_id ${named} (${ids.length} usable) · Jarvis ${host} · answers ${answers.join(", ") || "none"}`;
+}
+
 /** Sends with the session's token; a 401 means Hawkeye replaced it, so exchange once and resend. */
 async function authorized(send: (token: string) => Promise<Response>): Promise<Response> {
   const res = await send(await accessToken());

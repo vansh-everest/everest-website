@@ -5,7 +5,7 @@ import { signOutAction } from "@/app/(admin)/admin/actions";
 import { Editor } from "@/components/admin/editor";
 import { LoginForm } from "@/components/admin/login-form";
 import { authConfigured, readSession } from "@/lib/auth";
-import { fleetConnectEnabled, hawkeyeUrl, jarvisAdminEnabled, jarvisSignIn } from "@/lib/jarvis";
+import { fleetConnectEnabled, hawkeyeUrl, jarvisAdminEnabled, jarvisSignIn, signInDiagnosis } from "@/lib/jarvis";
 import { PREVIEW_PAGES } from "@/lib/preview";
 import { getEditorState, listVersions, storeMode } from "@/lib/store";
 
@@ -16,12 +16,14 @@ const NOTICES: Record<string, string> = {
   "discard-failed": "The draft could not be discarded.",
 };
 
-export default async function AdminPage({ searchParams }: { searchParams: Promise<{ notice?: string }> }) {
-  const notice = NOTICES[(await searchParams).notice ?? ""];
+export default async function AdminPage({ searchParams }: { searchParams: Promise<{ notice?: string; debug?: string }> }) {
+  const params = await searchParams;
+  const notice = NOTICES[params.notice ?? ""];
   const session = await readSession();
 
   if (!session && jarvisAdminEnabled()) {
     const { problem } = await jarvisSignIn();
+    const diagnosis = params.debug === "1" ? await signInDiagnosis() : null;
     return (
       <div className="grid min-h-screen place-items-center px-4 py-12">
         <div className="w-full max-w-[380px]">
@@ -41,6 +43,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
                 </a>
               </>
             )}
+            {diagnosis ? <p className="mt-4 break-words font-mono text-[11px] leading-4 text-ink-soft">{diagnosis}</p> : null}
           </div>
         </div>
       </div>
