@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, VolumeX } from "lucide-react";
+import type { StoryCopy } from "@/content/home-copy";
 import type { VideoShape } from "@/lib/content";
+import { fill } from "@/lib/i18n";
 import { joinPlayers, loadApi, type YTEvent, type YTPlayer } from "./youtube-api";
 
 export type Story = {
@@ -82,7 +84,7 @@ const smallArrow = "grid size-9 place-items-center rounded-full bg-white text-na
  * once the section is half in view for a moment, and from the start with sound when tapped. When it
  * ends the next one takes over. Only the middle card ever holds a player; the others are stills.
  */
-export function TestimonialReel({ stories }: { stories: Story[] }) {
+export function TestimonialReel({ stories, copy }: { stories: Story[]; copy: StoryCopy }) {
   const [index, setIndex] = useState(0);
   const [started, setStarted] = useState(false);
   const [ready, setReady] = useState(false);
@@ -223,14 +225,14 @@ export function TestimonialReel({ stories }: { stories: Story[] }) {
 
   const prev = stories.length > 2 ? stories[(index - 1 + stories.length) % stories.length] : null;
   const next = many ? stories[(index + 1) % stories.length] : null;
-  const label = current.name ? `Play ${current.name}'s story` : "Play this driver's story";
+  const label = current.name ? fill(copy.play, { name: current.name }) : copy.playAnon;
 
   return (
     <div
       ref={root}
       role="region"
       aria-roledescription="carousel"
-      aria-label="Driver stories"
+      aria-label={copy.region}
       onKeyDown={(e) => {
         if (!many) return;
         if (e.key === "ArrowLeft") go(index - 1);
@@ -250,7 +252,7 @@ export function TestimonialReel({ stories }: { stories: Story[] }) {
         }}
       >
         {prev ? (
-          <button type="button" aria-label="Previous story" onClick={() => go(index - 1)} className="group hidden w-[200px] shrink-0 opacity-60 hover:opacity-90 motion-safe:transition lg:block">
+          <button type="button" aria-label={copy.previous} onClick={() => go(index - 1)} className="group hidden w-[200px] shrink-0 opacity-60 hover:opacity-90 motion-safe:transition lg:block">
             <Frame story={prev}>
               <Still story={prev} small />
             </Frame>
@@ -280,14 +282,14 @@ export function TestimonialReel({ stories }: { stories: Story[] }) {
                 className="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-navy/80 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm hover:bg-navy"
               >
                 <VolumeX aria-hidden size={14} />
-                Tap For Sound
+                {copy.tapForSound}
               </button>
             ) : null}
           </Frame>
         </div>
 
         {next ? (
-          <button type="button" aria-label="Next story" onClick={() => go(index + 1)} className="group hidden w-[200px] shrink-0 opacity-60 hover:opacity-90 motion-safe:transition lg:block">
+          <button type="button" aria-label={copy.next} onClick={() => go(index + 1)} className="group hidden w-[200px] shrink-0 opacity-60 hover:opacity-90 motion-safe:transition lg:block">
             <Frame story={next}>
               <Still story={next} small />
             </Frame>
@@ -296,10 +298,10 @@ export function TestimonialReel({ stories }: { stories: Story[] }) {
 
         {many ? (
           <>
-            <button type="button" aria-label="Previous story" onClick={() => go(index - 1)} className={`${sideArrow} left-0`}>
+            <button type="button" aria-label={copy.previous} onClick={() => go(index - 1)} className={`${sideArrow} left-0`}>
               <ChevronLeft size={22} />
             </button>
-            <button type="button" aria-label="Next story" onClick={() => go(index + 1)} className={`${sideArrow} right-0`}>
+            <button type="button" aria-label={copy.next} onClick={() => go(index + 1)} className={`${sideArrow} right-0`}>
               <ChevronRight size={22} />
             </button>
           </>
@@ -314,7 +316,7 @@ export function TestimonialReel({ stories }: { stories: Story[] }) {
 
       {many ? (
         <div className="mt-4 flex items-center justify-center gap-3 lg:mt-6">
-          <button type="button" aria-label="Previous story" onClick={() => go(index - 1)} className={smallArrow}>
+          <button type="button" aria-label={copy.previous} onClick={() => go(index - 1)} className={smallArrow}>
             <ChevronLeft size={18} />
           </button>
           <div className="flex gap-1.5">
@@ -322,14 +324,14 @@ export function TestimonialReel({ stories }: { stories: Story[] }) {
               <button
                 key={s.id + i}
                 type="button"
-                aria-label={`Story ${i + 1}`}
+                aria-label={fill(copy.story, { n: i + 1 })}
                 aria-current={i === index ? "true" : undefined}
                 onClick={() => go(i)}
                 className={`h-2 rounded-full motion-safe:transition-all ${i === index ? "w-7 bg-navy" : "w-2 bg-navy/20"}`}
               />
             ))}
           </div>
-          <button type="button" aria-label="Next story" onClick={() => go(index + 1)} className={smallArrow}>
+          <button type="button" aria-label={copy.next} onClick={() => go(index + 1)} className={smallArrow}>
             <ChevronRight size={18} />
           </button>
         </div>

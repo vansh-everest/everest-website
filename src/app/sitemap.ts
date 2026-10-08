@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/company";
 import { cityPath } from "@/lib/city-route";
 import { planFor, postsFor } from "@/lib/content";
-import { DEFAULT_LOCALE, LOCALES, alternatesFor, localePath } from "@/lib/i18n";
+import { DEFAULT_LOCALE, LOCALES, MAIN_LOCALES, alternatesFor, localePath, type Locale } from "@/lib/i18n";
 import { PLAN_PAGES } from "@/lib/plan-pages";
 import { getContent } from "@/lib/store";
 
@@ -15,9 +15,9 @@ function url(path: string): string {
 }
 
 /** A sitemap hreflang has to be an absolute address; the metadata block may be relative. */
-function absoluteAlternates(path: string): Record<string, string> {
+function absoluteAlternates(path: string, locales: readonly Locale[] = LOCALES): Record<string, string> {
   return Object.fromEntries(
-    Object.entries(alternatesFor(path)).map(([lang, href]) => [lang, `${SITE_URL}${href}`])
+    Object.entries(alternatesFor(path, locales)).map(([lang, href]) => [lang, `${SITE_URL}${href}`])
   );
 }
 
@@ -29,7 +29,6 @@ function absoluteAlternates(path: string): Record<string, string> {
  * pages the company currently ranks for and the paths must survive the migration.
  */
 const fixed: Array<{ path: string; priority: number; changeFrequency: Freq }> = [
-  { path: "/", priority: 1, changeFrequency: "weekly" },
   { path: "/our-plans", priority: 0.9, changeFrequency: "weekly" },
   { path: "/own-now", priority: 0.9, changeFrequency: "weekly" },
   { path: "/drive-to-own", priority: 0.9, changeFrequency: "weekly" },
@@ -51,6 +50,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
   const content = await getContent();
   const entries: MetadataRoute.Sitemap = [];
+
+  // The home page in English, Hindi and Kannada, each declaring the other two.
+  for (const locale of MAIN_LOCALES) {
+    entries.push({
+      url: url(localePath(locale, "/")),
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 1,
+      alternates: { languages: absoluteAlternates("/", MAIN_LOCALES) },
+    });
+  }
 
   // A plan switched off in the admin has no page, so it has no address to list either.
   const hidden = new Set(PLAN_PAGES.filter((p) => !planFor(content, p.planId)?.visible).map((p) => p.path as string));

@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Carousel } from "@/components/site/carousel";
+import { homeCopy, seedText } from "@/content/home-copy";
+import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 import type { CarCardView } from "@/lib/plan-view";
 
 function FuelBadge({ fuel }: { fuel: string }) {
@@ -16,7 +18,7 @@ function FuelBadge({ fuel }: { fuel: string }) {
 }
 
 /** A car on the home page: its photo, name and fuel, and a way in. Prices live on the plan pages. */
-function HomeCarCard({ car }: { car: CarCardView }) {
+function HomeCarCard({ car, cta }: { car: CarCardView; cta: string }) {
   return (
     <article className="flex min-w-0 flex-col items-center">
       {car.highlight ? (
@@ -49,7 +51,7 @@ function HomeCarCard({ car }: { car: CarCardView }) {
             href="#apply"
             className="flex h-[26px] w-full items-center justify-center gap-2 rounded-full bg-brand px-6 text-xs font-semibold tracking-[0.5px] text-white transition hover:brightness-110 sm:h-9 sm:whitespace-nowrap sm:text-[15px] sm:tracking-[0.5px] lg:w-[222px] lg:shrink-0"
           >
-            Drive This Car
+            {cta}
             <ArrowRight aria-hidden className="size-3.5 sm:size-[18px]" />
           </a>
         </div>
@@ -58,14 +60,21 @@ function HomeCarCard({ car }: { car: CarCardView }) {
   );
 }
 
-export function CarGrid({ cars }: { cars: CarCardView[] }) {
+/** The home page's car slider. In Hindi or Kannada a car's tab and photo text read in that language while they match the seeded English. */
+export function CarGrid({ cars, locale = DEFAULT_LOCALE }: { cars: CarCardView[]; locale?: Locale }) {
+  const copy = homeCopy(locale).cars;
+  const t = (text: string) => seedText(text, locale);
   return (
     // On a phone the design packs the cards tighter and drops the dots: the track's gap and padding
     // and the dot row are overridden here rather than in the shared carousel.
     <div className="mx-auto mt-[17px] max-w-[1184px] max-sm:[&_.snap-x]:scroll-px-[17px] max-sm:[&_.snap-x]:gap-3.5 max-sm:[&_.snap-x]:px-[17px] max-sm:[&_[role=region]>[aria-hidden]]:hidden sm:mt-10 lg:mt-[91px]">
-      <Carousel label="Our cars" item="w-[286px] max-w-[80%] sm:w-[86%] sm:max-w-none md:w-[calc((100%-24px)/2)]" arrowTop="182px">
+      <Carousel label={copy.region} item="w-[286px] max-w-[80%] sm:w-[86%] sm:max-w-none md:w-[calc((100%-24px)/2)]" arrowTop="182px">
         {cars.map((car) => (
-          <HomeCarCard key={car.id} car={car} />
+          <HomeCarCard
+            key={car.id}
+            car={{ ...car, highlight: t(car.highlight), image: { ...car.image, alt: t(car.image.alt) } }}
+            cta={copy.cta}
+          />
         ))}
       </Carousel>
     </div>

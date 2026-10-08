@@ -7,7 +7,7 @@ function pointSize(i: number, dark: boolean) {
   return dark ? "text-[13px] lg:text-sm" : "text-[13px] lg:text-[15px]";
 }
 
-function PlanCard({ plan }: { plan: PlanCardView }) {
+function PlanCard({ plan, join }: { plan: PlanCardView; join: string }) {
   const dark = plan.theme === "dark";
   return (
     <article className="flex h-full flex-col items-center">
@@ -62,7 +62,7 @@ function PlanCard({ plan }: { plan: PlanCardView }) {
               href="#apply"
               className="flex h-12 w-full items-center justify-center rounded-full bg-sun text-[21px] font-medium text-navy transition hover:brightness-95 lg:text-[22px]"
             >
-              Join Now
+              {join}
             </a>
           </div>
         </div>
@@ -75,16 +75,16 @@ function PlanCard({ plan }: { plan: PlanCardView }) {
  * The plan cards: side by side on a wide screen, and a row a phone swipes one card at a time.
  * Nothing moves on its own.
  */
-export function PlanGrid({ cards }: { cards: PlanCardView[] }) {
+export function PlanGrid({ cards, label, join }: { cards: PlanCardView[]; label: string; join: string }) {
   return (
     <div
       role="region"
-      aria-label="Plans"
+      aria-label={label}
       className="mt-[30px] flex snap-x snap-mandatory gap-4 overflow-x-auto px-[7%] py-4 [scrollbar-width:none] sm:mt-10 sm:gap-6 sm:px-6 lg:mx-auto lg:mt-[46px] lg:max-w-[1260px] lg:snap-none lg:justify-center lg:overflow-visible lg:px-6 xl:gap-[66px] [&::-webkit-scrollbar]:hidden"
     >
       {cards.map((plan) => (
         <div key={plan.id} className="w-[86%] max-w-[340px] shrink-0 snap-center snap-always sm:w-[372px] sm:max-w-none lg:w-auto lg:max-w-[372px] lg:flex-1">
-          <PlanCard plan={plan} />
+          <PlanCard plan={plan} join={join} />
         </div>
       ))}
     </div>

@@ -1,3 +1,5 @@
+import { homeCopy, seedText } from "@/content/home-copy";
+import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 import { getContent } from "@/lib/store";
 import { isShort, youtubeId } from "@/lib/youtube";
 import { TestimonialReel, type Story } from "./testimonial-reel";
@@ -5,17 +7,21 @@ import { TestimonialReel, type Story } from "./testimonial-reel";
 /** "Real Drivers Real Stories": the driver videos listed in the admin, each in a card of its own shape. None, no section. */
 export async function Testimonials({
   variant = "home",
-  title = "Real Drivers Real Stories",
+  title,
+  locale = DEFAULT_LOCALE,
 }: {
   variant?: "home" | "page";
   title?: string;
+  locale?: Locale;
 }) {
+  const copy = homeCopy(locale).stories;
+  const t = (text: string) => seedText(text, locale);
   const { testimonials } = await getContent();
-  const stories = testimonials.flatMap((t): Story[] => {
-    const id = youtubeId(t.video);
+  const stories = testimonials.flatMap((s): Story[] => {
+    const id = youtubeId(s.video);
     if (!id) return [];
     // A Shorts link is vertical whatever the admin picked.
-    return [{ id, shape: isShort(t.video) ? "short" : t.shape, name: t.name, detail: t.detail, quote: t.quote }];
+    return [{ id, shape: isShort(s.video) ? "short" : s.shape, name: t(s.name), detail: t(s.detail), quote: t(s.quote) }];
   });
   if (!stories.length) return null;
 
@@ -29,7 +35,7 @@ export async function Testimonials({
           }`}
         >
           <span aria-hidden className={`h-[3px] w-7 rounded-full bg-sun ${page ? "lg:w-6" : ""}`} />
-          Hear it from them
+          {copy.eyebrow}
           <span aria-hidden className="h-[3px] w-7 rounded-full bg-sun lg:hidden" />
         </p>
         <h2
@@ -37,10 +43,10 @@ export async function Testimonials({
             page ? "lg:tracking-[-0.5px]" : "lg:tracking-[-0.25px]"
           }`}
         >
-          {title}
+          {title ?? copy.title}
         </h2>
       </div>
-      <TestimonialReel stories={stories} />
+      <TestimonialReel stories={stories} copy={copy.reel} />
     </section>
   );
 }

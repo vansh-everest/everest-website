@@ -2,12 +2,29 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { Check, ChevronDown, Globe } from "lucide-react";
-import { DEFAULT_LOCALE, EXTRA_LOCALES, LOCALES, LOCALE_META, isLocale, localePath, type Locale } from "@/lib/i18n";
+import { siteCopy } from "@/content/site-copy";
+import {
+  DEFAULT_LOCALE,
+  LOCALE_META,
+  MAIN_LOCALES,
+  basePath,
+  existsIn,
+  localeOfPath,
+  localePath,
+  type Locale,
+  type MainLocale,
+} from "@/lib/i18n";
 
-/** Paths that exist in every locale. Everything else sends the reader to the driver hub. */
-const TRANSLATED = ["/drive-with-us", "/blog"];
+/** The slugs of the blog posts published in each language: a post opens in another language only when it exists there. */
+export type PostSlugs = Partial<Record<Locale, string[]>>;
+
+const Posts = createContext<PostSlugs>({});
+
+export function LocalePosts({ posts, children }: { posts: PostSlugs; children: ReactNode }) {
+  return <Posts.Provider value={posts}>{children}</Posts.Provider>;
+}
 
 /** Each language in its own script, then in English for anyone who cannot read that script. */
 const NAMES: Record<Locale, { native: string; english: string }> = {
@@ -20,26 +37,29 @@ const NAMES: Record<Locale, { native: string; english: string }> = {
   ta: { native: "தமிழ்", english: "Tamil" },
 };
 
-function basePath(pathname: string): string {
-  const [, first, ...rest] = pathname.split("/");
-  const stripped = isLocale(first) && first !== DEFAULT_LOCALE ? `/${rest.join("/")}` : pathname;
-  const clean = stripped.replace(/\/+$/, "") || "/";
-  return TRANSLATED.some((p) => clean === p || clean.startsWith(`${p}/`)) ? clean : "/drive-with-us";
+/**
+ * Where picking a language goes: this page in that language when it is published there, otherwise
+ * that language's home page.
+ */
+function target(locale: MainLocale, path: string, posts: PostSlugs): string {
+  const post = /^\/blog\/([^/]+)$/.exec(path);
+  const there = post ? (posts[locale] ?? []).includes(post[1]) : existsIn(locale, path);
+  return localePath(locale, there ? path : "/");
 }
 
 function useLocaleTarget() {
   const pathname = usePathname();
-  const [, first] = pathname.split("/");
-  const current: Locale = isLocale(first) && (EXTRA_LOCALES as readonly string[]).includes(first) ? first : DEFAULT_LOCALE;
-  return { current, path: basePath(pathname) };
+  const posts = useContext(Posts);
+  const path = basePath(pathname);
+  return { current: localeOfPath(pathname), href: (locale: MainLocale) => target(locale, path, posts) };
 }
 
-function Option({ locale, current, path, cell }: { locale: Locale; current: Locale; path: string; cell: string }) {
+function Option({ locale, current, href, cell }: { locale: MainLocale; current: Locale; href: string; cell: string }) {
   const on = locale === current;
   return (
     <li>
       <Link
-        href={localePath(locale, path)}
+        href={href}
         hrefLang={LOCALE_META[locale].htmlLang}
         lang={LOCALE_META[locale].htmlLang}
         aria-current={on ? "true" : undefined}
@@ -59,7 +79,10 @@ function Option({ locale, current, path, cell }: { locale: Locale; current: Loca
 
 /** The pill in the top bar: a two-column card on a wide screen, a titled list on a phone. */
 export function LocaleSwitch() {
-  const { current, path } = useLocaleTarget();
+  const { current, href } = useLocaleTarget();
+  const { title, titleLocal } = siteCopy(current).language;
+  // Under the heading, the same words in a second language: Hindi under English, English under the others.
+  const second: Locale = current === "hi" || current === "kn" ? DEFAULT_LOCALE : "hi";
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
 
@@ -95,18 +118,18 @@ export function LocaleSwitch() {
       {open ? (
         <div className="fixed right-0 top-11 z-50 w-[calc(100%-40px)] max-w-[372px] overflow-hidden rounded-l-[20px] bg-white shadow-[0_16px_40px_rgba(6,47,80,0.28)] md:absolute md:top-full md:mt-2 md:w-[320px] md:max-w-none md:rounded-[20px] md:border md:border-[#dfe5ee] md:p-[15px]">
           <div className="border-b border-line px-4 pb-3 pt-[18px] md:hidden">
-            <p className="text-[17px] font-bold leading-6 text-navy">Select Language</p>
-            <p lang="hi-IN" className="font-deva text-[13px] leading-5 text-ink-soft">
-              भाषा चुनें
+            <p className="text-[17px] font-bold leading-6 text-navy">{title}</p>
+            <p lang={LOCALE_META[second].htmlLang} className={`${LOCALE_META[second].fontVar} text-[13px] leading-5 text-ink-soft`}>
+              {titleLocal}
             </p>
           </div>
           <ul className="py-2 md:grid md:grid-cols-2 md:gap-x-2 md:gap-y-[5px] md:py-0">
-            {LOCALES.map((l) => (
+            {MAIN_LOCALES.map((l) => (
               <Option
                 key={l}
                 locale={l}
                 current={current}
-                path={path}
+                href={href(l)}
                 cell="ml-0 h-[75px] rounded-l-xl px-4 md:h-[60px] md:rounded-xl md:px-[14px]"
               />
             ))}
@@ -119,7 +142,7 @@ export function LocaleSwitch() {
 
 /** The language row at the foot of the phone menu. The list opens in place, inside the menu. */
 export function LocaleRow() {
-  const { current, path } = useLocaleTarget();
+  const { current, href } = useLocaleTarget();
   const [open, setOpen] = useState(false);
   return (
     <div>
@@ -135,8 +158,8 @@ export function LocaleRow() {
       </button>
       {open ? (
         <ul className="pb-2">
-          {LOCALES.map((l) => (
-            <Option key={l} locale={l} current={current} path={path} cell="h-[64px] px-4" />
+          {MAIN_LOCALES.map((l) => (
+            <Option key={l} locale={l} current={current} href={href(l)} cell="h-[64px] px-4" />
           ))}
         </ul>
       ) : null}

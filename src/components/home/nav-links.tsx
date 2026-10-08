@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { NAV, isActive, isCurrent } from "./nav-data";
+import { siteCopy } from "@/content/site-copy";
+import { fill, localeOfPath } from "@/lib/i18n";
+import { isActive, isCurrent, navFor } from "./nav-data";
 
 // The bottom padding reserves the underline's room on every item, so the active one does not
 // sit lower than its neighbours.
@@ -12,6 +14,8 @@ const label = "relative pb-2 text-base leading-6 tracking-[-0.2px] transition";
 
 export function NavLinks() {
   const pathname = usePathname();
+  const locale = localeOfPath(pathname);
+  const copy = siteCopy(locale).header;
   const [open, setOpen] = useState<string | null>(null);
   const [openedAt, setOpenedAt] = useState(pathname);
   const nav = useRef<HTMLElement>(null);
@@ -41,8 +45,8 @@ export function NavLinks() {
   }, []);
 
   return (
-    <nav ref={nav} aria-label="Main" className="hidden items-center gap-6 lg:flex xl:gap-7">
-      {NAV.map((item) => {
+    <nav ref={nav} aria-label={copy.main} className="hidden items-center gap-6 lg:flex xl:gap-7">
+      {navFor(locale).map((item) => {
         const active = isActive(item, pathname);
         const tone = active ? "font-semibold text-brand" : "font-medium text-navy hover:text-brand";
 
@@ -80,7 +84,7 @@ export function NavLinks() {
                 <button
                   type="button"
                   aria-expanded={shown}
-                  aria-label={`${item.label} pages`}
+                  aria-label={fill(copy.groupPages, { label: item.label })}
                   onClick={flip}
                   className="-my-1 -mr-1 rounded p-1 hover:text-brand"
                 >

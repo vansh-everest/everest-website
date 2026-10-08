@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ChevronDown, Phone } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_HREF } from "./ui";
+import type { FormCopy } from "@/content/home-copy";
 import { trackLead } from "@/lib/analytics";
+import { fill, type Locale } from "@/lib/i18n";
 
 const input =
   "mt-1.5 h-12 w-full rounded border border-line bg-white px-4 text-base text-navy placeholder:text-[#9ca3af] focus:border-brand focus:outline-none";
@@ -37,7 +39,17 @@ function useWide() {
  * came from. The button wakes up once all three are filled. A sent form keeps its values and
  * shows a toast over the top of the card, which StartDriving positions.
  */
-export function ApplyForm({ cities, source }: { cities: { slug: string; name: string }[]; source: string }) {
+export function ApplyForm({
+  cities,
+  source,
+  locale,
+  copy,
+}: {
+  cities: { slug: string; name: string }[];
+  source: string;
+  locale: Locale;
+  copy: FormCopy;
+}) {
   const [state, setState] = useState<"idle" | "sending" | "done" | "failed">("idle");
   const [ready, setReady] = useState(false);
   const wide = useWide();
@@ -59,7 +71,7 @@ export function ApplyForm({ cities, source }: { cities: { slug: string; name: st
     if (state === "done") return;
     setState("sending");
     const data = new FormData(event.currentTarget);
-    data.set("locale", "en");
+    data.set("locale", locale);
     data.set("source", source);
     data.set("page", window.location.pathname);
     data.set("referrer", document.referrer);
@@ -80,23 +92,23 @@ export function ApplyForm({ cities, source }: { cities: { slug: string; name: st
           role="status"
           className="absolute inset-x-[18px] -top-[58px] z-10 sm:-top-8 rounded-lg border-l-4 border-leaf bg-[#f0fdf4] px-3 py-2.5 shadow-[0_8px_24px_rgba(6,47,80,0.18)] sm:inset-x-14"
         >
-          <p className="text-base font-medium leading-6 text-navy">Application submitted successfully!</p>
-          <p className="text-sm leading-5 text-ink-soft">We&apos;ll contact you within 24 hours.</p>
+          <p className="text-base font-medium leading-6 text-navy">{copy.done}</p>
+          <p className="text-sm leading-5 text-ink-soft">{copy.doneNote}</p>
         </div>
       ) : null}
       <label className={label}>
-        Name
+        {copy.name}
         <Required />
         <input
           name="name"
           required
           autoComplete="name"
-          placeholder={wide ? "Your full name" : "e.g. Ravi Kumar"}
+          placeholder={wide ? copy.nameFull : copy.nameExample}
           className={input}
         />
       </label>
       <label className={label}>
-        Mobile Number
+        {copy.mobile}
         <Required />
         <input
           name="mobile"
@@ -106,17 +118,17 @@ export function ApplyForm({ cities, source }: { cities: { slug: string; name: st
           pattern="[6-9][0-9]{9}"
           maxLength={10}
           autoComplete="tel-national"
-          placeholder="10-digit mobile number"
+          placeholder={copy.mobilePlaceholder}
           className={input}
         />
       </label>
       <label className={label}>
-        City
+        {copy.city}
         <Required />
         <span className="relative block">
           <select name="city" required defaultValue="" className={`${input} appearance-none pr-12 invalid:text-[#9ca3af]`}>
             <option value="" disabled>
-              Select your city
+              {copy.selectCity}
             </option>
             {cities.map((c) => (
               <option key={c.slug} value={c.slug}>
@@ -138,19 +150,19 @@ export function ApplyForm({ cities, source }: { cities: { slug: string; name: st
           disabled={!ready || state === "sending"}
           className="h-11 rounded-full bg-brand text-sm font-medium tracking-[0.2px] text-white transition hover:brightness-110 disabled:bg-brand/45 disabled:hover:brightness-100 sm:h-14 sm:text-[17px]"
         >
-          {state === "sending" ? "Sending" : "Submit & Apply"}
+          {state === "sending" ? copy.sending : copy.submit}
         </button>
         <a
           href={PHONE_HREF}
           className="flex h-11 items-center justify-center gap-2 rounded-full border-[1.5px] border-brand text-sm font-medium tracking-[0.2px] text-brand transition hover:bg-brand/5 sm:h-14 sm:border-2 sm:text-[17px]"
         >
           <Phone aria-hidden size={18} strokeWidth={1.75} className="sm:size-5" />
-          Call Now
+          {copy.call}
         </a>
       </div>
       {state === "failed" ? (
         <p role="alert" className="text-center text-sm text-[#b3261e]">
-          Not sent. Try again, or call {PHONE_DISPLAY}.
+          {fill(copy.failed, { phone: PHONE_DISPLAY })}
         </p>
       ) : null}
     </form>
