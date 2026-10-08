@@ -81,13 +81,16 @@ export class JarvisAccessError extends Error {
 }
 
 /**
- * A Jarvis access token for the Hawkeye session. Jarvis rotates the session's refresh token on
- * every exchange, so the token is kept for a minute per session and callers arriving together
- * share one exchange; React's cache() does not cover server actions or route handlers. One retry
- * covers Hawkeye refreshing the same session at the same moment.
+ * A Jarvis access token for the Hawkeye session. Jarvis keeps one valid access token per session
+ * and replaces it on every exchange, so Hawkeye (open in another tab) and this panel invalidate each
+ * other's token in turn. Hawkeye answers a 401 by exchanging again and retrying, and so does this
+ * panel (see `authorized`). A token is kept for a minute per session and callers arriving together
+ * share one exchange; React's cache() does not cover server actions or route handlers.
  */
 const TOKEN_TTL_MS = 60_000;
-const tokens = new Map<string, { until: number; token: Promise<string> }>();
+/** A refused token is replaced at most once in this window, so a burst of 401s shares one exchange. */
+const RENEW_GAP_MS = 5_000;
+const tokens = new Map<string, { at: number; until: number; token: Promise<string> }>();
 
 async function sessionKey(session: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(session));
@@ -113,18 +116,27 @@ async function exchange(session: string): Promise<string> {
   throw new JarvisAccessError("signed-out");
 }
 
-async function accessToken(): Promise<string> {
+/** Hawkeye's session ids are UUIDs; Jarvis answers anything else with a 500, so it is never sent. */
+const SESSION_ID = /^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i;
+
+async function accessToken(renew = false): Promise<string> {
   const session = (await cookies()).get("session_id")?.value;
-  if (!session) throw new JarvisAccessError("signed-out");
+  if (!session || !SESSION_ID.test(session)) throw new JarvisAccessError("signed-out");
   const key = await sessionKey(session);
   const now = Date.now();
   const held = tokens.get(key);
-  if (held && held.until > now) return held.token;
+  if (held && held.until > now && (!renew || now - held.at < RENEW_GAP_MS)) return held.token;
   for (const [k, v] of tokens) if (v.until <= now) tokens.delete(k);
   const token = exchange(session);
-  tokens.set(key, { until: now + TOKEN_TTL_MS, token });
+  tokens.set(key, { at: now, until: now + TOKEN_TTL_MS, token });
   token.catch(() => tokens.delete(key));
   return token;
+}
+
+/** Sends with the session's token; a 401 means Hawkeye replaced it, so exchange once and resend. */
+async function authorized(send: (token: string) => Promise<Response>): Promise<Response> {
+  const res = await send(await accessToken());
+  return res.status === 401 ? send(await accessToken(true)) : res;
 }
 
 export async function jarvisAdmin<T>(
@@ -132,17 +144,18 @@ export async function jarvisAdmin<T>(
   path: string,
   json?: unknown
 ): Promise<Answer<T>> {
-  const token = await accessToken();
-  const res = await fetch(`${jarvisUrl()}${path}`, {
-    method,
-    cache: "no-store",
-    headers: {
-      authorization: `Bearer ${token}`,
-      ...(json === undefined ? {} : { "content-type": "application/json" }),
-    },
-    body: json === undefined ? undefined : JSON.stringify(json),
-    signal: AbortSignal.timeout(20_000),
-  });
+  const res = await authorized((token) =>
+    fetch(`${jarvisUrl()}${path}`, {
+      method,
+      cache: "no-store",
+      headers: {
+        authorization: `Bearer ${token}`,
+        ...(json === undefined ? {} : { "content-type": "application/json" }),
+      },
+      body: json === undefined ? undefined : JSON.stringify(json),
+      signal: AbortSignal.timeout(20_000),
+    })
+  );
   if (res.status === 401) throw new JarvisAccessError("signed-out");
   if (res.status === 403) throw new JarvisAccessError("no-access");
   return { status: res.status, body: await readJson<T>(res) };
@@ -150,14 +163,15 @@ export async function jarvisAdmin<T>(
 
 /** A multipart upload (the admin's photos); the browser-facing checks have already run. */
 export async function jarvisAdminForm<T>(path: string, form: FormData): Promise<Answer<T>> {
-  const token = await accessToken();
-  const res = await fetch(`${jarvisUrl()}${path}`, {
-    method: "POST",
-    cache: "no-store",
-    headers: { authorization: `Bearer ${token}` },
-    body: form,
-    signal: AbortSignal.timeout(60_000),
-  });
+  const res = await authorized((token) =>
+    fetch(`${jarvisUrl()}${path}`, {
+      method: "POST",
+      cache: "no-store",
+      headers: { authorization: `Bearer ${token}` },
+      body: form,
+      signal: AbortSignal.timeout(60_000),
+    })
+  );
   if (res.status === 401) throw new JarvisAccessError("signed-out");
   if (res.status === 403) throw new JarvisAccessError("no-access");
   return { status: res.status, body: await readJson<T>(res) };
@@ -165,12 +179,13 @@ export async function jarvisAdminForm<T>(path: string, form: FormData): Promise<
 
 /** The raw response, for downloads such as the leads CSV. */
 export async function jarvisAdminRaw(path: string): Promise<Response> {
-  const token = await accessToken();
-  return fetch(`${jarvisUrl()}${path}`, {
-    cache: "no-store",
-    headers: { authorization: `Bearer ${token}` },
-    signal: AbortSignal.timeout(30_000),
-  });
+  return authorized((token) =>
+    fetch(`${jarvisUrl()}${path}`, {
+      cache: "no-store",
+      headers: { authorization: `Bearer ${token}` },
+      signal: AbortSignal.timeout(30_000),
+    })
+  );
 }
 
 /** The message Jarvis gave for a refusal, falling back to a plain one. */
