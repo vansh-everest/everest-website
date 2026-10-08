@@ -266,3 +266,12 @@ body {
 :is(a, button).bg-sun:hover::after {
   transform: translateX(120%);
 }
+
+/* Drive With Us (batch 9) */
+/* The driver pages fix a call and WhatsApp bar to the bottom of a phone screen (StickyBar in
+   src/components/driver/driver-ui.tsx). The footer leaves room under its last line for it. */
+@media (width < 48rem) {
+  body:has([data-contact-bar]) > footer {
+    padding-bottom: 72px;
+  }
+}
