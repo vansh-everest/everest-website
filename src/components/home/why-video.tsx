@@ -20,6 +20,7 @@ export function WhyVideo({
   id,
   title,
   label,
+  tapForSound,
   className,
   children,
 }: {
@@ -28,6 +29,8 @@ export function WhyVideo({
   title: string;
   /** The still's play button, for screen readers. */
   label: string;
+  /** The button that turns the sound on when the browser started it muted. */
+  tapForSound: string;
   className: string;
   /** The still shown until the first frame plays. */
   children: React.ReactNode;
@@ -253,7 +256,7 @@ export function WhyVideo({
           className="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-navy/80 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm hover:bg-navy"
         >
           <VolumeX aria-hidden size={14} />
-          Tap For Sound
+          {tapForSound}
         </button>
       ) : null}
     </div>

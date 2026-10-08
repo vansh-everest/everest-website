@@ -19,10 +19,15 @@ export function Carousel({
   arrowTop = "50%",
   resetKey,
   dots = true,
+  previous = "Previous",
+  next = "Next",
 }: {
   children: ReactNode;
   item: string;
   label: string;
+  /** The arrows' accessible names. */
+  previous?: string;
+  next?: string;
   /** Where the arrows sit, measured from the top of the row. */
   arrowTop?: string;
   /** A change here (a new city or filter) sends the row back to its first card. */
@@ -73,7 +78,7 @@ export function Carousel({
   return (
     <div role="region" aria-label={label}>
       <div className="relative">
-        <button type="button" aria-label="Previous" disabled={edges.start} onClick={() => step(-1)} className={`${arrow} -left-6`} style={{ top: arrowTop }}>
+        <button type="button" aria-label={previous} disabled={edges.start} onClick={() => step(-1)} className={`${arrow} -left-6`} style={{ top: arrowTop }}>
           <ChevronLeft size={22} />
         </button>
         <div
@@ -87,7 +92,7 @@ export function Carousel({
             </div>
           ))}
         </div>
-        <button type="button" aria-label="Next" disabled={edges.end} onClick={() => step(1)} className={`${arrow} -right-6`} style={{ top: arrowTop }}>
+        <button type="button" aria-label={next} disabled={edges.end} onClick={() => step(1)} className={`${arrow} -right-6`} style={{ top: arrowTop }}>
           <ChevronRight size={22} />
         </button>
       </div>

@@ -29,10 +29,13 @@ const BURST = 140;
  * "Chrome (batch 9)"); reduced motion gets neither.
  */
 export function BrandLogo({
+  href = "/",
   tone = "dark",
   className = "",
   preload = false,
 }: {
+  /** The home page it links to: the one in the page's language. */
+  href?: string;
   /** "dark" for the navy wordmark on light backgrounds, "light" for the white one. */
   tone?: "dark" | "light";
   className?: string;
@@ -67,7 +70,7 @@ export function BrandLogo({
   };
 
   return (
-    <Link href="/" onClick={burst} className={`brand-logo block ${className}`}>
+    <Link href={href} onClick={burst} className={`brand-logo block ${className}`}>
       <span className="relative block h-14 w-[98px]">
         <Image
           src={tone === "light" ? "/figma/logo-word-white.png" : "/figma/logo-word.png"}
