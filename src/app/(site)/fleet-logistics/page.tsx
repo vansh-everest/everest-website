@@ -52,7 +52,7 @@ export default function FleetLogisticsPage() {
         title="Four Steps From Your Door To Theirs"
         steps={[
           { title: "Tell Us Your Route", body: "Pick-up, drop, temperature and the time it has to land" },
-          { title: "We Assign The Van", body: "Ambient, chilled, frozen or air-conditioned — whichever the load needs" },
+          { title: "We Assign The Van", body: "Ambient, chilled, frozen or air-conditioned, to suit the load" },
           { title: "Track The Whole Trip", body: "Live location from the moment it leaves you" },
           { title: "Delivered, With Proof", body: "A real-time notification the moment it is handed over" },
         ]}
@@ -72,7 +72,7 @@ export default function FleetLogisticsPage() {
           { label: "EV 3-Wheeler", count: 19, tone: "lime" },
           { label: "Air-Conditioned Van", count: 4 },
         ]}
-        note="The 19 EV three-wheelers run last-mile drops — zero tailpipe emissions inside city limits."
+        note="The 19 EV three-wheelers run last-mile drops with zero tailpipe emissions inside city limits."
       />
       <Commitments
         items={[

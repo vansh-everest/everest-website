@@ -14,16 +14,18 @@ export function Commitments({ items, tone = "slate" }: { items: Commitment[]; to
           Everything else is detail. These are the promises worth arguing about.
         </p>
       </div>
-      <ul className="mx-auto mt-[25px] grid max-w-[560px] gap-4 lg:mt-[48px] lg:max-w-[1104px] lg:grid-cols-3 lg:gap-[25px]">
+      {/* Desktop: each card spans two shared rows (icon and title, then points), so a title that wraps
+          to two lines pushes all three lists down together and their first points line up. */}
+      <ul className="mx-auto mt-[25px] grid max-w-[560px] gap-4 lg:mt-[48px] lg:max-w-[1104px] lg:grid-cols-3 lg:gap-x-[25px] lg:gap-y-0">
         {items.map(({ icon: Icon, title, points }) => (
-          <li key={title} className="rounded-2xl border border-line bg-white px-5 pb-[19px] pt-5 lg:rounded-[20px] lg:px-[30px] lg:pb-[30px] lg:pt-[33px]">
+          <li key={title} className="rounded-2xl border border-line bg-white px-5 pb-[19px] pt-5 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:gap-y-0 lg:rounded-[20px] lg:px-[30px] lg:pb-[30px] lg:pt-[33px]">
             <div className="flex items-center gap-2.5 lg:block">
               <IconTile className="size-6 rounded-md lg:size-12 lg:rounded-xl">
                 <Icon aria-hidden strokeWidth={1.75} className="size-3.5 lg:size-[22px]" />
               </IconTile>
               <h3 className="text-[17px] font-bold leading-6 text-navy lg:mt-[22px] lg:text-2xl lg:leading-[30px]">{title}</h3>
             </div>
-            <ul className="mt-[11px] grid gap-0 text-sm leading-[19px] text-ink-soft lg:mt-6 lg:gap-[13px] lg:text-[15px] lg:leading-[23px] lg:tracking-[-0.25px]">
+            <ul className="mt-[11px] grid content-start gap-0 text-sm leading-[19px] text-ink-soft lg:mt-6 lg:gap-[13px] lg:text-[15px] lg:leading-[23px] lg:tracking-[-0.25px]">
               {points.map((p) => (
                 <li key={p} className="flex gap-2.5 lg:gap-3">
                   <span aria-hidden className="lg:hidden">·</span>

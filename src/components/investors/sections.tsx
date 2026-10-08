@@ -1,7 +1,7 @@
-import type { CSSProperties } from "react";
 import { Leaf, ShieldCheck, Users } from "lucide-react";
 import { COMPANY } from "@/lib/company";
 import { ESG_REPORT_URL, HIGHLIGHTS, IMPACT, MARKET, MILESTONES, STEPS, type ImpactCard } from "./data";
+import { MilestoneLine } from "./milestone-line";
 import { Heading, Kicker, Label } from "./ui";
 
 const wrap = "mx-auto w-full max-w-[1104px]";
@@ -112,23 +112,7 @@ export function Growth() {
             </>
           ) : null}
           <Label className={highlights.length ? "mt-6 lg:mt-10" : ""}>Milestones</Label>
-          <ol
-            className="mt-4 grid gap-[14px] lg:mt-[22px] lg:grid-cols-[repeat(var(--n),minmax(0,1fr))] lg:gap-0"
-            style={{ "--n": MILESTONES.length } as CSSProperties}
-          >
-            {MILESTONES.map((m, i) => (
-              <li key={m.year} className="flex items-baseline gap-3 lg:block">
-                <div className="flex items-center self-center lg:self-auto">
-                  <span aria-hidden className={`size-2.5 shrink-0 rounded-full lg:size-3 ${m.current ? "bg-sun" : "bg-brand"}`} />
-                  {i < MILESTONES.length - 1 ? (
-                    <span aria-hidden className="ml-2 mr-[26px] hidden h-0.5 flex-1 bg-[#d7e4f2] lg:block" />
-                  ) : null}
-                </div>
-                <p className="w-[44px] shrink-0 text-[17px] font-bold leading-6 text-navy lg:mt-3 lg:w-auto lg:text-xl lg:leading-7">{m.year}</p>
-                <p className="text-sm leading-5 text-ink-soft lg:mt-1.5 lg:max-w-[118px] lg:text-[15px]">{m.text}</p>
-              </li>
-            ))}
-          </ol>
+          <MilestoneLine items={MILESTONES} />
         </div>
       </div>
     </section>

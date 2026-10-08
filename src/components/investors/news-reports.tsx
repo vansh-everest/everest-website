@@ -1,19 +1,15 @@
-import { ArrowUpRight, Download, FileText, Lock, type LucideIcon } from "lucide-react";
-import { COMPANY_PROFILE_URL, ESG_REPORT_URL } from "./data";
+import { ArrowUpRight, Download, FileText, Lock } from "lucide-react";
+import { DOCUMENTS, type InvestorDocument } from "./data";
 import { PRESS, pressDate } from "./press";
 import { Heading, Kicker } from "./ui";
 
-type Doc = { icon: LucideIcon; title: string; meta: string; href: string; action: string; short: string; download: boolean };
+const ICONS = { file: FileText, lock: Lock };
 
-const DOCS: Doc[] = [
-  { icon: FileText, title: "ESG Report, FY 2024-25", meta: "PDF · 44 pages", href: ESG_REPORT_URL, action: "Download", short: "Download", download: true },
-  { icon: FileText, title: "Company Profile", meta: "PDF", href: COMPANY_PROFILE_URL, action: "Download", short: "Download", download: true },
-  { icon: Lock, title: "Investor Presentation", meta: "Shared on request", href: "#contact", action: "Request Access", short: "Request", download: false },
-];
+/** A document without a file is requested through the investor relations form at the foot of the page. */
+const REQUEST_HREF = "#contact";
 
 /** "In the news" and the documents row, on one navy band. */
 export function NewsAndReports() {
-  const docs = DOCS.filter((d) => d.href);
   return (
     <section className="bg-navy px-4 pb-12 pt-[46px] sm:px-6 lg:px-10 lg:pb-[89px] lg:pt-[96px]">
       <div className="mx-auto w-full max-w-[1280px]">
@@ -46,43 +42,46 @@ export function NewsAndReports() {
           </>
         ) : null}
 
-        {docs.length ? (
-          <div id="reports" className="scroll-mt-28">
-            <p className="mt-[30px] text-[13px] font-bold uppercase leading-4 tracking-[1.5px] text-sun lg:mt-[65px] lg:text-sm">
-              Reports &amp; documents
-            </p>
-            <ul className="mt-6 grid gap-2.5 lg:mt-4 lg:grid-cols-[repeat(auto-fill,minmax(380px,1fr))] lg:gap-5">
-              {docs.map((d) => (
-                <DocCard key={d.title} doc={d} />
-              ))}
-            </ul>
-          </div>
-        ) : null}
+        <div id="reports" className={`scroll-mt-28 ${PRESS.length ? "mt-[30px] lg:mt-[65px]" : ""}`}>
+          <p className="text-[13px] font-bold uppercase leading-4 tracking-[1.5px] text-sun lg:text-sm">Reports &amp; documents</p>
+          <ul className="mt-4 grid gap-3 lg:mt-5 lg:grid-cols-3 lg:gap-5">
+            {DOCUMENTS.map((d) => (
+              <DocCard key={d.title} doc={d} />
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );
 }
 
-function DocCard({ doc }: { doc: Doc }) {
-  const Icon = doc.icon;
-  const Arrow = doc.download ? Download : ArrowUpRight;
+/**
+ * One document as a card that is its own link. With a file it downloads ("PDF · N pages");
+ * without one it leads to the request form. The title gets the card's full width and the action
+ * sits at the right of the line under it, so titles stay on one line at every width.
+ */
+function DocCard({ doc }: { doc: InvestorDocument }) {
+  const Icon = ICONS[doc.icon];
+  const ready = Boolean(doc.url);
+  const Arrow = ready ? Download : ArrowUpRight;
+  const meta = ready ? (doc.pages ? `PDF · ${doc.pages} pages` : "PDF") : "Shared on request";
   return (
-    <li className="flex items-center gap-3 rounded-xl border border-white/15 bg-white/[0.08] px-3.5 py-3.5 lg:min-h-[103px] lg:gap-4 lg:rounded-2xl lg:px-5">
-      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-white/10 text-white lg:size-11 lg:rounded-xl">
-        <Icon aria-hidden className="size-[18px] lg:size-[22px]" strokeWidth={1.75} />
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="text-[15px] font-bold leading-5 text-white lg:text-[17px] lg:leading-6">{doc.title}</p>
-        <p className="text-[13px] leading-[18px] text-white/70 lg:text-sm lg:leading-5">{doc.meta}</p>
-      </div>
+    <li className="@container">
+      {/* A card under 330px wide (three across on a small laptop) stacks icon, title, line and action. */}
       <a
-        href={doc.href}
-        {...(doc.download ? { download: true } : {})}
-        className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-sun hover:brightness-110 lg:text-[15px]"
+        href={ready ? doc.url : REQUEST_HREF}
+        {...(ready ? { download: "" } : {})}
+        className="fx-doc group grid h-full content-center justify-items-start gap-y-0.5 rounded-xl border border-white/15 bg-white/[0.08] px-4 py-4 hover:border-white/25 hover:bg-white/[0.12] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sun @min-[330px]:grid-cols-[auto_minmax(0,1fr)_auto] @min-[330px]:gap-x-3.5 lg:rounded-2xl lg:px-5 lg:py-[22px] @min-[330px]:lg:gap-x-4"
       >
-        <span className="lg:hidden">{doc.short}</span>
-        <span className="hidden lg:inline">{doc.action}</span>
-        <Arrow aria-hidden className="hidden size-4 lg:block" strokeWidth={2.25} />
+        <span className="mb-3 grid size-10 place-items-center self-center rounded-lg bg-white/10 text-white @min-[330px]:row-span-2 @min-[330px]:mb-0 lg:size-12 lg:rounded-xl">
+          <Icon aria-hidden className="size-[18px] lg:size-[22px]" strokeWidth={1.75} />
+        </span>
+        <span className="text-[15px] font-bold leading-5 text-white @min-[330px]:col-span-2 lg:text-[17px] lg:leading-6">{doc.title}</span>
+        <span className="self-baseline text-[13px] leading-[18px] text-white/60 lg:text-sm lg:leading-5">{meta}</span>
+        <span className="mt-2.5 inline-flex items-center gap-1.5 self-baseline text-sm font-semibold leading-5 text-sun @min-[330px]:mt-0 lg:text-[15px]">
+          {ready ? "Download" : "Request Access"}
+          <Arrow aria-hidden className={`fx-doc-arrow size-4 ${ready ? "fx-doc-arrow-down" : ""}`} strokeWidth={2.25} />
+        </span>
       </a>
     </li>
   );
