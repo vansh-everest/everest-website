@@ -2,7 +2,7 @@ import { getContent } from "@/lib/store";
 import { isShort, youtubeId } from "@/lib/youtube";
 import { TestimonialReel, type Story } from "./testimonial-reel";
 
-/** "Real Drivers Real Stories": the driver videos listed in the admin, as vertical cards. None, no section. */
+/** "Real Drivers Real Stories": the driver videos listed in the admin, each in a card of its own shape. None, no section. */
 export async function Testimonials({
   variant = "home",
   title = "Real Drivers Real Stories",
@@ -14,8 +14,8 @@ export async function Testimonials({
   const stories = testimonials.flatMap((t): Story[] => {
     const id = youtubeId(t.video);
     if (!id) return [];
-    const short = isShort(t.video);
-    return [{ id, short, crop: t.pillarboxed && !short, name: t.name, detail: t.detail, quote: t.quote }];
+    // A Shorts link is vertical whatever the admin picked.
+    return [{ id, shape: isShort(t.video) ? "short" : t.shape, name: t.name, detail: t.detail, quote: t.quote }];
   });
   if (!stories.length) return null;
 

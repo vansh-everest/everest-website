@@ -193,12 +193,18 @@ export type Post = {
   coverImage: ImageSlot;
 };
 
+/**
+ * How a story's video is framed, which sets the card it plays in: "vertical" is vertical footage
+ * uploaded in a 16:9 frame (the 9:16 card crops its black side bars away), "landscape" plays in a
+ * 16:9 card, "short" is a YouTube Short, vertical already.
+ */
+export type VideoShape = "vertical" | "landscape" | "short";
+
 /** A driver's story on YouTube, in "Real Drivers Real Stories". */
 export type Testimonial = {
   /** The YouTube link: a watch, youtu.be or Shorts address. */
   video: string;
-  /** Vertical footage uploaded in a 16:9 frame: the card crops the black side bars away. */
-  pillarboxed: boolean;
+  shape: VideoShape;
   name: string;
   /** The line under the name, e.g. "Mumbai · 1.5 years with Everest". */
   detail: string;
@@ -223,7 +229,7 @@ export type SiteContent = {
 };
 
 /** Bump when SiteContent changes shape, so no deployment reads a cache written by an older one. */
-export const CONTENT_VERSION = "9";
+export const CONTENT_VERSION = "10";
 
 export const placeholder = (label: string, alt = ""): ImageSlot => ({ label, url: "", alt });
 
@@ -740,8 +746,11 @@ export const DEFAULT_CONTENT: SiteContent = {
   cars: CAR_SEED,
   calculators: CALCULATOR_SEED,
   posts: SEED_POSTS,
+  // Names as the videos' own titles give them; nothing else is known about these drivers yet.
   testimonials: [
-    { video: "https://www.youtube.com/watch?v=EV2mBRswdjA", pillarboxed: true, name: "", detail: "", quote: "" },
+    { video: "https://youtu.be/EV2mBRswdjA", shape: "vertical", name: "", detail: "", quote: "" },
+    { video: "https://youtu.be/AFBBvNGeK40", shape: "landscape", name: "Hasan Karim Shah", detail: "", quote: "" },
+    { video: "https://youtu.be/oxH7PnSsMsQ", shape: "landscape", name: "Somnath Lamkane", detail: "", quote: "" },
   ],
   images: {
     "driver-hub-hero": placeholder("Drive with us, hero image", "A driver beside an Everest Fleet car"),

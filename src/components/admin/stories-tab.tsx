@@ -1,9 +1,16 @@
 "use client";
 
-import type { SiteContent, Testimonial } from "@/lib/content";
+import type { SiteContent, Testimonial, VideoShape } from "@/lib/content";
 import { isShort, youtubeId } from "@/lib/youtube";
-import { AddByName, Badge, Collapsible, ListControls, Row, Section, Text, Toggle, move } from "./fields";
+import { AddByName, Badge, Collapsible, ListControls, Row, Section, Select, Text, move } from "./fields";
 import type { Setter } from "./shared";
+
+/** Picks the card each video plays in. */
+const SHAPES: { value: VideoShape; label: string }[] = [
+  { value: "vertical", label: "Vertical, with black side bars (cropped to a tall card)" },
+  { value: "landscape", label: "Landscape (wide card)" },
+  { value: "short", label: "YouTube Short (tall card)" },
+];
 
 /** The driver videos in "Real Drivers Real Stories", in the order the carousel shows them. */
 export function StoriesTab({ content, setContent, locked }: { content: SiteContent; setContent: Setter; locked: boolean }) {
@@ -11,7 +18,7 @@ export function StoriesTab({ content, setContent, locked }: { content: SiteConte
     setContent((c) => ({ ...c, testimonials: c.testimonials.map((x, j) => (j === i ? { ...x, ...p } : x)) }));
 
   function add(video: string) {
-    const testimonial: Testimonial = { video, pillarboxed: !isShort(video), name: "", detail: "", quote: "" };
+    const testimonial: Testimonial = { video, shape: isShort(video) ? "short" : "landscape", name: "", detail: "", quote: "" };
     setContent((c) => ({ ...c, testimonials: [...c.testimonials, testimonial] }));
   }
 
@@ -46,11 +53,12 @@ export function StoriesTab({ content, setContent, locked }: { content: SiteConte
           >
             <Section title="Video">
               <Text label="YouTube link" value={t.video} disabled={locked} onChange={(video) => patch(i, { video })} />
-              <Toggle
-                label="Crop the black side bars"
-                checked={t.pillarboxed}
+              <Select<VideoShape>
+                label="Video shape"
+                value={t.shape}
+                options={SHAPES}
                 disabled={locked}
-                onChange={(pillarboxed) => patch(i, { pillarboxed })}
+                onChange={(shape) => patch(i, { shape })}
               />
             </Section>
             <Section title="Driver">

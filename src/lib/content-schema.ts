@@ -24,7 +24,9 @@ import {
   type Row,
   type SiteContent,
   type Testimonial,
+  type VideoShape,
 } from "@/lib/content";
+import { isShort } from "@/lib/youtube";
 import { LOCALES, type Locale } from "@/lib/i18n";
 
 /**
@@ -416,17 +418,24 @@ function posts(v: unknown): Post[] {
   return [...saved, ...structuredClone(seeded)];
 }
 
+const SHAPES: readonly VideoShape[] = ["vertical", "landscape", "short"];
+
 function testimonials(v: unknown): Testimonial[] {
   if (!Array.isArray(v)) return structuredClone(DEFAULT_CONTENT.testimonials);
   return list(v, 12)
     .map(obj)
-    .map((t) => ({
-      video: text(t.video, 200),
-      pillarboxed: flag(t.pillarboxed, false),
-      name: text(t.name, 60),
-      detail: text(t.detail, 80),
-      quote: text(t.quote, 160),
-    }))
+    .map((t) => {
+      const video = text(t.video, 200);
+      // Saved before the shape existed: the crop toggle meant vertical footage in a 16:9 frame.
+      const legacy: VideoShape = flag(t.pillarboxed, false) ? "vertical" : isShort(video) ? "short" : "landscape";
+      return {
+        video,
+        shape: SHAPES.includes(t.shape as VideoShape) ? (t.shape as VideoShape) : legacy,
+        name: text(t.name, 60),
+        detail: text(t.detail, 80),
+        quote: text(t.quote, 160),
+      };
+    })
     .filter((t) => t.video);
 }
 

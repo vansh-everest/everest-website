@@ -1,18 +1,74 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, VolumeX } from "lucide-react";
+import type { VideoShape } from "@/lib/content";
 
 export type Story = {
   id: string;
-  /** Vertical footage inside a 16:9 upload: the player is widened so its black side bars fall outside the card. */
-  crop: boolean;
-  /** A Shorts video: vertical already. */
-  short: boolean;
+  shape: VideoShape;
   name: string;
   detail: string;
   quote: string;
 };
+
+/* ------------------------------------------------------------------ YouTube IFrame API */
+
+type YTPlayer = {
+  playVideo(): void;
+  pauseVideo(): void;
+  mute(): void;
+  unMute(): void;
+  setVolume(volume: number): void;
+  getPlayerState(): number;
+  destroy(): void;
+};
+type YTEvent = { target: YTPlayer; data: number };
+type YTApi = {
+  Player: new (el: HTMLElement, options: Record<string, unknown>) => YTPlayer;
+  PlayerState: { ENDED: number; PLAYING: number; BUFFERING: number };
+};
+
+declare global {
+  interface Window {
+    YT?: YTApi;
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
+
+let api: Promise<YTApi> | null = null;
+
+/** The IFrame API, loaded once per page; it is what reports a video ending. */
+function loadApi(): Promise<YTApi> {
+  if (api) return api;
+  api = new Promise<YTApi>((resolve, reject) => {
+    if (window.YT?.Player) return resolve(window.YT);
+    const previous = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      previous?.();
+      if (window.YT) resolve(window.YT);
+    };
+    const script = document.createElement("script");
+    script.src = "https://www.youtube.com/iframe_api";
+    script.async = true;
+    script.onerror = () => {
+      api = null;
+      reject(new Error("The YouTube player could not load"));
+    };
+    document.head.appendChild(script);
+  });
+  return api;
+}
+
+/* ----------------------------------------------------------------------------- cards */
+
+/** Vertical stories play in a 9:16 card, landscape ones in a 16:9 card. */
+const tall = (story: Story) => story.shape !== "landscape";
+
+/** A still for the card: the 16:9 frame (its middle, in a 9:16 card), or a Short's own vertical frame. */
+function poster(story: Story) {
+  return `https://i.ytimg.com/vi/${story.id}/${story.shape === "short" ? "oardefault" : "maxresdefault"}.jpg`;
+}
 
 function PlayMark({ small }: { small?: boolean }) {
   return (
@@ -24,90 +80,203 @@ function PlayMark({ small }: { small?: boolean }) {
   );
 }
 
-/** A still for the card: the 16:9 frame's middle for a cropped upload, the vertical frame for a Short. */
-function poster(story: Story) {
-  return `https://i.ytimg.com/vi/${story.id}/${story.short ? "oardefault" : "maxresdefault"}.jpg`;
-}
-
-function StoryCard({ story, active, playing, onPlay }: { story: Story; active: boolean; playing: boolean; onPlay: () => void }) {
-  const label = story.name ? `Play ${story.name}'s story` : "Play this driver's story";
+function Frame({ story, children }: { story: Story; children: React.ReactNode }) {
   return (
-    <div className="relative aspect-[9/16] w-full overflow-hidden rounded-[18px] bg-navy shadow-[0_12px_32px_rgba(6,47,80,0.18)] lg:rounded-[22px]">
-      {playing ? (
-        <iframe
-          src={`https://www.youtube-nocookie.com/embed/${story.id}?autoplay=1&playsinline=1&rel=0&modestbranding=1`}
-          title={story.name ? `${story.name}'s story` : "Driver story"}
-          allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-          allowFullScreen
-          // A 9:16 card is 16/9 x 16/9 = 3.16 times narrower than a 16:9 player of the same height.
-          className={story.crop ? "absolute left-1/2 top-0 h-full w-[316.05%] -translate-x-1/2" : "absolute inset-0 size-full"}
-        />
-      ) : (
-        <Cover active={active} onPlay={onPlay} label={label}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={poster(story)}
-            alt=""
-            loading="lazy"
-            onError={(e) => {
-              const img = e.currentTarget;
-              if (!img.src.endsWith("/hqdefault.jpg")) img.src = `https://i.ytimg.com/vi/${story.id}/hqdefault.jpg`;
-            }}
-            className="absolute inset-0 size-full object-cover"
-          />
-          <span aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,47,80,0.35)_0%,rgba(6,47,80,0.05)_40%,rgba(6,47,80,0.15)_70%,rgba(6,47,80,0.7)_100%)]" />
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition group-hover:scale-105">
-            <PlayMark small={!active} />
-          </span>
-          {story.name || story.detail ? (
-            <span className="absolute inset-x-0 bottom-0 px-4 pb-4 text-left lg:px-5 lg:pb-5">
-              {story.name ? <span className="block text-sm font-semibold leading-5 text-white lg:text-base">{story.name}</span> : null}
-              {story.detail ? <span className="block text-xs leading-4 text-white/85">{story.detail}</span> : null}
-            </span>
-          ) : null}
-        </Cover>
-      )}
+    <div
+      className={`relative w-full overflow-hidden rounded-[18px] bg-navy shadow-[0_12px_32px_rgba(6,47,80,0.18)] lg:rounded-[22px] ${
+        tall(story) ? "aspect-[9/16]" : "aspect-video"
+      }`}
+    >
+      {children}
     </div>
   );
 }
 
-/** The middle card's cover is the play button; a neighbour's sits inside its own "go to" button. */
-function Cover({ active, onPlay, label, children }: { active: boolean; onPlay: () => void; label: string; children: React.ReactNode }) {
-  return active ? (
-    <button type="button" onClick={onPlay} aria-label={label} className="group absolute inset-0">
-      {children}
-    </button>
-  ) : (
-    <span className="group absolute inset-0">{children}</span>
+function Still({ story, small }: { story: Story; small?: boolean }) {
+  return (
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={poster(story)}
+        alt=""
+        loading="lazy"
+        onError={(e) => {
+          const img = e.currentTarget;
+          if (!img.src.endsWith("/hqdefault.jpg")) img.src = `https://i.ytimg.com/vi/${story.id}/hqdefault.jpg`;
+        }}
+        className="absolute inset-0 size-full object-cover"
+      />
+      <span aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,47,80,0.35)_0%,rgba(6,47,80,0.05)_40%,rgba(6,47,80,0.15)_70%,rgba(6,47,80,0.7)_100%)]" />
+      <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 motion-safe:transition group-hover:scale-105">
+        <PlayMark small={small} />
+      </span>
+      {story.name || story.detail ? (
+        <span className="absolute inset-x-0 bottom-0 px-4 pb-4 text-left lg:px-5 lg:pb-5">
+          {story.name ? <span className="block text-sm font-semibold leading-5 text-white lg:text-base">{story.name}</span> : null}
+          {story.detail ? <span className="block text-xs leading-4 text-white/85">{story.detail}</span> : null}
+        </span>
+      ) : null}
+    </>
   );
 }
 
-const arrow =
-  "absolute top-1/2 z-10 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white text-navy shadow-[0_6px_18px_rgba(6,47,80,0.18)] transition hover:bg-mist lg:size-[52px]";
+const sideArrow =
+  "absolute top-1/2 z-10 hidden size-[52px] -translate-y-1/2 place-items-center rounded-full bg-white text-navy shadow-[0_6px_18px_rgba(6,47,80,0.18)] hover:bg-mist motion-safe:transition lg:grid";
+const smallArrow = "grid size-9 place-items-center rounded-full bg-white text-navy shadow-[0_4px_12px_rgba(6,47,80,0.16)] lg:hidden";
 
 /**
- * Driver stories as vertical cards: the one in the middle plays, its neighbours step in with the
- * arrows, a swipe or a tap. Moving to another story stops the one that was playing.
+ * Driver stories, each in a card of its video's shape. The middle one plays: on its own, muted,
+ * once the section is half in view for a moment, and from the start with sound when tapped. When it
+ * ends the next one takes over. Only the middle card ever holds a player; the others are stills.
  */
 export function TestimonialReel({ stories }: { stories: Story[] }) {
   const [index, setIndex] = useState(0);
-  const [playing, setPlaying] = useState<number | null>(null);
+  const [started, setStarted] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const root = useRef<HTMLDivElement>(null);
+  const host = useRef<HTMLDivElement>(null);
+  const player = useRef<YTPlayer | null>(null);
+  const inView = useRef(false);
+  const soundOn = useRef(false);
   const touch = useRef<number | null>(null);
   const many = stories.length > 1;
-
-  const go = (to: number) => {
-    setPlaying(null);
-    setIndex((to + stories.length) % stories.length);
-  };
-
-  const prev = many ? stories[(index - 1 + stories.length) % stories.length] : null;
-  const next = stories.length > 2 ? stories[(index + 1) % stories.length] : stories.length === 2 ? stories[(index + 1) % 2] : null;
   const current = stories[index];
 
+  const count = stories.length;
+  const go = (to: number) => setIndex((to + count) % count);
+
+  // Start once the section has been at least half in view for a beat, so a fast scroll past it
+  // never starts a player; leaving pauses it and coming back carries on.
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    let dwell = 0;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const visible = entry.isIntersecting && entry.intersectionRatio >= 0.5;
+        inView.current = visible;
+        window.clearTimeout(dwell);
+        if (visible) {
+          dwell = window.setTimeout(() => {
+            setStarted(true);
+            player.current?.playVideo();
+          }, 250);
+        } else {
+          player.current?.pauseVideo();
+        }
+      },
+      { threshold: [0, 0.5, 1] }
+    );
+    observer.observe(el);
+    return () => {
+      window.clearTimeout(dwell);
+      observer.disconnect();
+    };
+  }, []);
+
+  // One player, for the middle story only; a new story takes the old player down first.
+  const story = stories[index];
+  useEffect(() => {
+    const box = host.current;
+    if (!started || !box) return;
+    // False once this player is gone: a late API load or event from it is then ignored.
+    let alive = true;
+    const mount = document.createElement("div");
+    box.replaceChildren(mount);
+    let made: YTPlayer | null = null;
+    let fallback = 0;
+
+    loadApi()
+      .then((YT) => {
+        if (!alive) return;
+        made = new YT.Player(mount, {
+          host: "https://www.youtube-nocookie.com",
+          videoId: story.id,
+          width: "100%",
+          height: "100%",
+          playerVars: { autoplay: 1, mute: soundOn.current ? 0 : 1, playsinline: 1, rel: 0, modestbranding: 1 },
+          events: {
+            onReady: (e: YTEvent) => {
+              if (!alive) return;
+              if (soundOn.current) e.target.unMute();
+              else e.target.mute();
+              if (!inView.current) {
+                e.target.pauseVideo();
+                return;
+              }
+              e.target.playVideo();
+              // A browser may refuse sound without a fresh tap: it then plays muted instead.
+              fallback = window.setTimeout(() => {
+                if (!alive) return;
+                const state = e.target.getPlayerState();
+                if (state !== YT.PlayerState.PLAYING && state !== YT.PlayerState.BUFFERING && inView.current) {
+                  soundOn.current = false;
+                  setMuted(true);
+                  e.target.mute();
+                  e.target.playVideo();
+                }
+              }, 1500);
+            },
+            onStateChange: (e: YTEvent) => {
+              if (!alive) return;
+              if (e.data === YT.PlayerState.PLAYING) setReady(true);
+              // The story ended: the next one takes the middle, and its own player starts it.
+              if (e.data === YT.PlayerState.ENDED) setIndex((i) => (i + 1) % count);
+            },
+          },
+        });
+        player.current = made;
+      })
+      .catch(() => {
+        // The still stays up with its play button; nothing else to do.
+      });
+
+    return () => {
+      alive = false;
+      window.clearTimeout(fallback);
+      player.current = null;
+      setReady(false);
+      try {
+        made?.destroy();
+      } catch {
+        // Already gone with the page.
+      }
+      box.replaceChildren();
+    };
+  }, [started, story.id, count]);
+
+  function playWithSound() {
+    soundOn.current = true;
+    setMuted(false);
+    if (player.current) {
+      player.current.unMute();
+      player.current.setVolume(100);
+      player.current.playVideo();
+    }
+    setStarted(true);
+  }
+
+  const prev = stories.length > 2 ? stories[(index - 1 + stories.length) % stories.length] : null;
+  const next = many ? stories[(index + 1) % stories.length] : null;
+  const label = current.name ? `Play ${current.name}'s story` : "Play this driver's story";
+
   return (
-    <div className="mx-auto mt-6 max-w-[1184px] lg:mt-12">
+    <div
+      ref={root}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Driver stories"
+      onKeyDown={(e) => {
+        if (!many) return;
+        if (e.key === "ArrowLeft") go(index - 1);
+        if (e.key === "ArrowRight") go(index + 1);
+      }}
+      className="mx-auto mt-6 max-w-[1184px] lg:mt-12"
+    >
       <div
-        className="relative flex items-center justify-center gap-6 lg:gap-10"
+        // The tallest card's height, so changing story never moves the page.
+        className="relative flex min-h-[427px] items-center justify-center gap-6 sm:min-h-[534px] lg:min-h-[614px] lg:gap-10 lg:px-[60px]"
         onTouchStart={(e) => (touch.current = e.touches[0].clientX)}
         onTouchEnd={(e) => {
           if (touch.current === null || !many) return;
@@ -116,47 +285,89 @@ export function TestimonialReel({ stories }: { stories: Story[] }) {
           if (Math.abs(dx) > 40) go(index + (dx < 0 ? 1 : -1));
         }}
       >
-        {prev && stories.length > 2 ? (
-          <button type="button" aria-label="Previous story" onClick={() => go(index - 1)} className="hidden w-[242px] shrink-0 opacity-60 transition hover:opacity-90 lg:block">
-            <StoryCard story={prev} active={false} playing={false} onPlay={() => go(index - 1)} />
+        {prev ? (
+          <button type="button" aria-label="Previous story" onClick={() => go(index - 1)} className="group hidden w-[200px] shrink-0 opacity-60 hover:opacity-90 motion-safe:transition lg:block">
+            <Frame story={prev}>
+              <Still story={prev} small />
+            </Frame>
           </button>
         ) : null}
-        <div className="w-[240px] shrink-0 sm:w-[300px] lg:w-[345px]">
-          <StoryCard story={current} active playing={playing === index} onPlay={() => setPlaying(index)} />
+
+        <div className={`shrink-0 ${tall(current) ? "w-[240px] sm:w-[300px] lg:w-[345px]" : "w-full sm:w-[560px]"}`}>
+          <Frame story={current}>
+            <div
+              ref={host}
+              className={
+                current.shape === "vertical"
+                  ? // A 9:16 card is 16/9 x 16/9 = 3.16 times narrower than a 16:9 player of its height.
+                    "absolute inset-0 [&>*]:absolute [&>*]:left-1/2 [&>*]:top-0 [&>*]:h-full [&>*]:w-[316.05%] [&>*]:-translate-x-1/2"
+                  : "absolute inset-0 [&>*]:absolute [&>*]:inset-0 [&>*]:size-full"
+              }
+            />
+            {ready ? null : (
+              <button type="button" onClick={playWithSound} aria-label={label} className="group absolute inset-0">
+                <Still story={current} />
+              </button>
+            )}
+            {ready && muted ? (
+              <button
+                type="button"
+                onClick={playWithSound}
+                className="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-full bg-navy/80 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm hover:bg-navy"
+              >
+                <VolumeX aria-hidden size={14} />
+                Tap For Sound
+              </button>
+            ) : null}
+          </Frame>
         </div>
+
         {next ? (
-          <button type="button" aria-label="Next story" onClick={() => go(index + 1)} className="hidden w-[242px] shrink-0 opacity-60 transition hover:opacity-90 lg:block">
-            <StoryCard story={next} active={false} playing={false} onPlay={() => go(index + 1)} />
+          <button type="button" aria-label="Next story" onClick={() => go(index + 1)} className="group hidden w-[200px] shrink-0 opacity-60 hover:opacity-90 motion-safe:transition lg:block">
+            <Frame story={next}>
+              <Still story={next} small />
+            </Frame>
           </button>
         ) : null}
+
         {many ? (
           <>
-            <button type="button" aria-label="Previous story" onClick={() => go(index - 1)} className={`${arrow} left-0`}>
+            <button type="button" aria-label="Previous story" onClick={() => go(index - 1)} className={`${sideArrow} left-0`}>
               <ChevronLeft size={22} />
             </button>
-            <button type="button" aria-label="Next story" onClick={() => go(index + 1)} className={`${arrow} right-0`}>
+            <button type="button" aria-label="Next story" onClick={() => go(index + 1)} className={`${sideArrow} right-0`}>
               <ChevronRight size={22} />
             </button>
           </>
         ) : null}
       </div>
+
       {current.quote ? (
         <p className="mx-auto mt-5 max-w-[640px] px-4 text-center text-base font-semibold leading-6 text-navy lg:mt-8 lg:text-[28px] lg:leading-[39px]">
           {current.quote}
         </p>
       ) : null}
+
       {many ? (
-        <div className="mt-4 flex justify-center gap-1.5 lg:mt-6">
-          {stories.map((s, i) => (
-            <button
-              key={s.id + i}
-              type="button"
-              aria-label={`Story ${i + 1}`}
-              aria-current={i === index ? "true" : undefined}
-              onClick={() => go(i)}
-              className={`h-2 rounded-full transition-all ${i === index ? "w-7 bg-navy" : "w-2 bg-navy/20"}`}
-            />
-          ))}
+        <div className="mt-4 flex items-center justify-center gap-3 lg:mt-6">
+          <button type="button" aria-label="Previous story" onClick={() => go(index - 1)} className={smallArrow}>
+            <ChevronLeft size={18} />
+          </button>
+          <div className="flex gap-1.5">
+            {stories.map((s, i) => (
+              <button
+                key={s.id + i}
+                type="button"
+                aria-label={`Story ${i + 1}`}
+                aria-current={i === index ? "true" : undefined}
+                onClick={() => go(i)}
+                className={`h-2 rounded-full motion-safe:transition-all ${i === index ? "w-7 bg-navy" : "w-2 bg-navy/20"}`}
+              />
+            ))}
+          </div>
+          <button type="button" aria-label="Next story" onClick={() => go(index + 1)} className={smallArrow}>
+            <ChevronRight size={18} />
+          </button>
         </div>
       ) : null}
     </div>
