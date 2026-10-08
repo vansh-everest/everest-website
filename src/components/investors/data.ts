@@ -91,9 +91,25 @@ export const IMPACT: ImpactCard[] = [
 
 /** PENDING: the ESG report PDF. Every "Download ESG report" control appears once this is set. */
 export const ESG_REPORT_URL = "";
+/** Its page count, shown as "PDF · 44 pages" once the URL is set. */
+export const ESG_REPORT_PAGES: number | null = 44;
 
 /** PENDING: the company profile PDF. */
 export const COMPANY_PROFILE_URL = "";
+/** Its page count; null shows plain "PDF". */
+export const COMPANY_PROFILE_PAGES: number | null = null;
+
+export type InvestorDocument = { icon: "file" | "lock"; title: string; url: string; pages: number | null };
+
+/**
+ * The documents row above the contact form. A document with a URL downloads; one without is
+ * shared on request through the investor relations form.
+ */
+export const DOCUMENTS: InvestorDocument[] = [
+  { icon: "file", title: "ESG Report, FY 2024-25", url: ESG_REPORT_URL, pages: ESG_REPORT_PAGES },
+  { icon: "file", title: "Company Profile", url: COMPANY_PROFILE_URL, pages: COMPANY_PROFILE_PAGES },
+  { icon: "lock", title: "Investor Presentation", url: "", pages: null },
+];
 
 export const FOUNDERS = [
   { initials: "SL", name: "Siddharth Ladsariya", role: "Founder & CEO" },

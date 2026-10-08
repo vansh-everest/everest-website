@@ -1,3 +1,4 @@
+import { FleetMixBars, type MixRow } from "./fleet-mix-bars";
 import { Eyebrow, SectionTitle } from "./ui";
 
 /** A navy strip with one headline figure. */
@@ -37,32 +38,13 @@ function FigureCard({ eyebrow, children, flush = false }: { eyebrow: string; chi
   );
 }
 
-export type MixRow = { label: string; count: number; tone?: "brand" | "lime" };
+export type { MixRow } from "./fleet-mix-bars";
 
-/** Vehicle mix as bars, each scaled against the largest group. */
+/** Vehicle mix as bars, each scaled against the largest group; they fill as the card scrolls in. */
 export function FleetMix({ eyebrow, rows, note }: { eyebrow: string; rows: MixRow[]; note: string }) {
-  const max = Math.max(...rows.map((r) => r.count));
   return (
     <FigureCard eyebrow={eyebrow}>
-      <ul className="mt-[14px] grid gap-3 lg:mt-[21px] lg:gap-[21px]">
-        {rows.map((row) => {
-          const lime = row.tone === "lime";
-          return (
-            <li key={row.label}>
-              <p className="flex items-baseline justify-between text-sm font-semibold leading-[18px] text-navy lg:text-[15px]">
-                {row.label}
-                <span className={`font-bold ${lime ? "text-lime" : "text-brand"}`}>{row.count}</span>
-              </p>
-              <span aria-hidden className="mt-1 block h-2 overflow-hidden rounded-full bg-[#e8eef4] lg:mt-2 lg:h-2.5">
-                <span
-                  className={`block h-full rounded-full ${lime ? "bg-lime" : "bg-brand"}`}
-                  style={{ width: `${Math.max((row.count / max) * 100, 2)}%` }}
-                />
-              </span>
-            </li>
-          );
-        })}
-      </ul>
+      <FleetMixBars rows={rows} />
       <p className="mt-[21px] hidden text-[13px] leading-[18px] text-ink-soft lg:block">{note}</p>
     </FigureCard>
   );

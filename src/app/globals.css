@@ -654,3 +654,107 @@ body {
     animation: fx-glass-sweep 1.4s cubic-bezier(0.45, 0, 0.25, 1) 0.75s both;
   }
 }
+
+/* ===================================================================== B2B and Investors (batch 9)
+   The investors milestones line and the documents cards. The milestones play once, when
+   MilestoneLine sets data-play: "armed" holds every part at its first frame (each animation sits
+   paused inside its delay), "on" runs them. Without data-play, or with reduced motion, the line
+   is simply drawn. */
+
+@keyframes fx-ms-draw-y {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes fx-ms-draw-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes fx-ms-pop {
+  from {
+    transform: scale(0);
+  }
+}
+
+@keyframes fx-ms-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+}
+
+@keyframes fx-ms-pulse {
+  from {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(3.2);
+  }
+}
+
+/* The ring the current year's dot sends out once. */
+.fx-ms-now::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--color-sun);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* One stretch of line per gap, each taking --seg, so together they read as one stroke. Dot i
+     pops just before the stroke reaches it; its year and text rise after it. */
+  .fx-ms {
+    --seg: 0.45s;
+  }
+  .fx-ms[data-play] .fx-ms-seg {
+    animation: fx-ms-draw-y var(--seg) linear calc(0.15s + var(--i) * var(--seg)) both;
+  }
+  .fx-ms[data-play] .fx-ms-dot {
+    animation: fx-ms-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) calc(0.05s + var(--i) * var(--seg)) both;
+  }
+  .fx-ms[data-play] .fx-ms-copy {
+    animation: fx-ms-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) calc(0.2s + var(--i) * var(--seg)) both;
+  }
+  .fx-ms[data-play] .fx-ms-now::after {
+    animation: fx-ms-pulse 1.3s cubic-bezier(0.22, 1, 0.36, 1) calc(0.55s + var(--i) * var(--seg)) both;
+  }
+  .fx-ms[data-play="armed"] :is(.fx-ms-seg, .fx-ms-dot, .fx-ms-copy),
+  .fx-ms[data-play="armed"] .fx-ms-now::after {
+    animation-play-state: paused;
+  }
+  @media (width >= 64rem) {
+    .fx-ms[data-play] .fx-ms-seg {
+      animation-name: fx-ms-draw-x;
+    }
+  }
+
+  /* Documents: the card lifts a little and its arrow leans the way it goes. */
+  .fx-doc {
+    transition:
+      transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 0.3s,
+      border-color 0.3s,
+      box-shadow 0.3s;
+  }
+  .fx-doc:hover {
+    transform: translate3d(0, -4px, 0);
+    box-shadow: 0 16px 32px rgb(0 0 0 / 0.22);
+  }
+  .fx-doc-arrow {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .fx-doc:hover .fx-doc-arrow {
+    transform: translate3d(2px, -2px, 0);
+  }
+  .fx-doc:hover .fx-doc-arrow-down {
+    transform: translate3d(0, 3px, 0);
+  }
+}
