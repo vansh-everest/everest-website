@@ -173,7 +173,11 @@ async function accessToken(renew = false): Promise<string> {
 export async function signInDiagnosis(): Promise<string> {
   const raw = (await headers()).get("cookie") ?? "";
   const parts = raw.split(";").map((part) => part.trim()).filter(Boolean);
-  const named = parts.filter((part) => part.startsWith("session_id=")).length;
+  const values = parts.filter((part) => part.startsWith("session_id=")).map((part) => part.slice("session_id=".length));
+  const named = values.length;
+  // Each cookie's shape, never its value: "uuid", or its length when it is something else.
+  const shapes = values.map((v) => (SESSION_ID.test(decodeURIComponent(v).replace(/^"|"$/g, "")) ? "uuid" : `len ${v.length}`));
+  const copies = named - new Set(values).size;
   const ids = await sessionIds();
   let host = "not set";
   try {
@@ -196,7 +200,8 @@ export async function signInDiagnosis(): Promise<string> {
       answers.push("no answer");
     }
   }
-  return `cookies ${parts.length}, session_id ${named} (${ids.length} usable) · Jarvis ${host} · answers ${answers.join(", ") || "none"}`;
+  const shapeNote = named ? ` [${shapes.join(", ")}${copies ? `, ${copies} identical` : ""}]` : "";
+  return `cookies ${parts.length}, session_id ${named}${shapeNote} (${ids.length} usable) · Jarvis ${host} · answers ${answers.join(", ") || "none"}`;
 }
 
 /** Sends with the session's token; a 401 means Hawkeye replaced it, so exchange once and resend. */
