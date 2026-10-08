@@ -80,3 +80,189 @@ body {
     outline-offset: 6px;
   }
 }
+
+/* ===================================================================== Motion layer
+   Argo's effects in Everest colours, kept light. Everything sits behind prefers-reduced-motion,
+   and touch screens get no blur: blur is the costliest thing a budget phone can draw. The
+   headline keeps full opacity from the first frame, so it never delays the largest paint. */
+
+@keyframes fx-rise-in {
+  from {
+    transform: translate3d(0, 12px, 0);
+  }
+}
+
+@keyframes fx-blur-in {
+  from {
+    filter: blur(5px);
+    transform: translate3d(0, 12px, 0);
+  }
+}
+
+@keyframes fx-header-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -14px, 0);
+  }
+}
+
+@keyframes fx-progress {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes fx-exit {
+  to {
+    scale: 1.04;
+    opacity: 0.5;
+  }
+}
+
+@keyframes fx-exit-blur {
+  to {
+    filter: blur(6px);
+    scale: 1.06;
+    opacity: 0.5;
+  }
+}
+
+/* A hairline across the top that fills as the page scrolls, in the four colours of the Everest
+   mark. It is driven by the scroll position itself, so it costs no script. The gradient is
+   uncovered rather than stretched: yellow leads and purple arrives at the end of the page. */
+.fx-progress {
+  display: none;
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 60;
+  height: 3px;
+  pointer-events: none;
+  background: linear-gradient(90deg, #f1d614 0%, #b9d532 33%, #006db8 67%, #a03f97 100%);
+  clip-path: inset(0 100% 0 0);
+}
+@supports (animation-timeline: scroll()) {
+  .fx-progress {
+    display: block;
+    animation-name: fx-progress;
+    animation-duration: auto;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  main h1,
+  .fx-blur-in {
+    animation: fx-rise-in 0.9s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .fx-header-in {
+    animation: fx-header-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* Blocks below the fold rise into place (RevealOnScroll sets data-fx). */
+  [data-fx] {
+    transition:
+      opacity 0.8s cubic-bezier(0.21, 0.47, 0.32, 0.98),
+      transform 0.8s cubic-bezier(0.21, 0.47, 0.32, 0.98);
+    transition-delay: var(--fx-delay, 0ms);
+  }
+  [data-fx="out"] {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+
+  /* Hero photos dim and grow a little as they scroll away. */
+  @supports (animation-timeline: view()) {
+    .fx-scroll-exit {
+      animation-name: fx-exit;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+  }
+
+  /* Mouse and trackpad screens add a light blur to the same moves. */
+  @media (hover: hover) and (pointer: fine) {
+    main h1,
+    .fx-blur-in {
+      animation-name: fx-blur-in;
+    }
+    [data-fx] {
+      transition-property: opacity, transform, filter;
+    }
+    [data-fx="out"] {
+      filter: blur(4px);
+    }
+    @supports (animation-timeline: view()) {
+      .fx-scroll-exit {
+        animation-name: fx-exit-blur;
+      }
+    }
+  }
+}
+
+@media print {
+  [data-fx] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* The card spotlight overlay (CardSpotlight): a soft light under the cursor and an edge that
+   lights up in the four Everest colours near it. */
+.fx-spot > span {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.fx-spot[data-tone="light"] {
+  --fx-glow: rgb(0 109 184 / 0.08);
+}
+.fx-spot[data-tone="dark"] {
+  --fx-glow: rgb(255 255 255 / 0.14);
+}
+.fx-spot-glow {
+  background: radial-gradient(260px circle at var(--mx) var(--my), var(--fx-glow), transparent 62%);
+}
+.fx-spot-ring {
+  padding: 1.5px;
+  background: linear-gradient(120deg, #f1d614 0%, #b9d532 33%, #006db8 67%, #a03f97 100%);
+  -webkit-mask:
+    radial-gradient(220px circle at var(--mx) var(--my), #000 0%, transparent 72%),
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: source-in, xor;
+  mask:
+    radial-gradient(220px circle at var(--mx) var(--my), #000 0%, transparent 72%),
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: intersect, exclude;
+}
+
+/* A light sheen sweeps across the yellow buttons on hover. Positioning sits in the base layer so
+   a button's own absolute placement still wins. */
+@layer base {
+  :is(a, button).bg-sun {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+}
+:is(a, button).bg-sun::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(105deg, transparent 30%, rgb(255 255 255 / 0.6) 46%, rgb(255 255 255 / 0.15) 54%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+:is(a, button).bg-sun:hover::after {
+  transform: translateX(120%);
+}

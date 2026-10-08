@@ -3,16 +3,18 @@ import { COMPANY } from "@/lib/company";
 
 export function AboutHero() {
   return (
-    <section className="relative isolate overflow-hidden bg-navy lg:h-[600px]">
-      <Image
-        src="/figma/about/hero.webp"
-        alt="Everest Fleet cars on a Bengaluru road at sunset"
-        fill
-        preload
-        loading="eager"
-        sizes="100vw"
-        className="-z-10 object-cover object-[52%_center] sm:object-[71%_center] lg:object-center"
-      />
+    <section className="relative isolate overflow-clip bg-navy lg:h-[600px]">
+      <div className="fx-scroll-exit absolute inset-0 -z-10">
+        <Image
+          src="/figma/about/hero.webp"
+          alt="Everest Fleet cars on a Bengaluru road at sunset"
+          fill
+          preload
+          loading="eager"
+          sizes="100vw"
+          className="object-cover object-[52%_center] sm:object-[71%_center] lg:object-center"
+        />
+      </div>
       {/* The photo carries its own navy wash on the left. Narrow screens crop that side away, so they get one here:
           a left-edge wash on phones, where the text is short enough to sit over the photo, and a top-down one from sm. */}
       <div
