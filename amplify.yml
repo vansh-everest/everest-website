@@ -16,6 +16,8 @@ frontend:
       commands:
         - nvm install 22 && nvm use 22
         - npm ci
+        # The cached .next/cache keeps the last build's Jarvis answers; dropping them makes each build read fresh prices and content.
+        - rm -rf .next/cache/fetch-cache
     build:
       commands:
         - env | grep -e SESSION_SECRET -e ADMIN_ -e VIEWER_ -e BLOB_READ_WRITE_TOKEN -e LEAD_WEBHOOK_URL -e VERCEL_ENV -e FLEET_CONNECT_ -e JARVIS_API_URL -e HAWKEYE_URL -e NEXT_PUBLIC_GA_ID -e NEXT_PUBLIC_GTM_ID >> .env.production || true
