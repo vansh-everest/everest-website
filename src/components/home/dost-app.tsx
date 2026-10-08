@@ -1,10 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArriveOnScroll } from "@/components/fx/arrive-on-scroll";
 
 /*
  * The photo band is drawn on the export frame (412 wide on phones, 1440 on desktop); --u is one
  * frame pixel, so the card and the phone render keep the frame's geometry at every width. The
  * band photos are the background alone; the card and phone are drawn here on top of them.
+ *
+ * The photo fades into the white page at its foot and, past 1440, at its sides (.dost-photo).
+ * As the band scrolls in, the phone travels into place and the card follows once it lands.
  */
 export function DostApp() {
   return (
@@ -17,32 +21,26 @@ export function DostApp() {
           </h2>
         </div>
 
-        <div className="relative overflow-hidden">
-          {/* Past 1440 the band keeps its size; a blurred copy of the photo fills the sides. */}
-          <Image
-            src="/figma/home/dost-band.webp"
-            alt=""
-            fill
-            sizes="480px"
-            className="hidden scale-110 object-cover blur-2xl min-[1441px]:block"
-          />
-          <div className="relative mx-auto aspect-[412/310] w-[calc(var(--u)*412)] lg:aspect-[1440/752] lg:w-[calc(var(--u)*1440)]">
-            <Image
-              src="/figma/home/dost-band-mobile.webp"
-              alt="Everest Dost partner checking the app on his phone"
-              fill
-              sizes="(min-width: 1024px) 0px, 100vw"
-              className="object-cover lg:hidden"
-            />
-            <Image
-              src="/figma/home/dost-band.webp"
-              alt="Everest Dost partner checking the app on his phone"
-              fill
-              sizes="(min-width: 1024px) min(1440px, 100vw), 0px"
-              className="hidden object-cover lg:block"
-            />
+        <div className="dost-fill relative overflow-hidden">
+          <ArriveOnScroll className="relative mx-auto aspect-[412/310] w-[calc(var(--u)*412)] lg:aspect-[1440/752] lg:w-[calc(var(--u)*1440)]">
+            <div className="dost-photo absolute inset-0">
+              <Image
+                src="/figma/home/dost-band-mobile.webp"
+                alt="Everest Dost partner checking the app on his phone"
+                fill
+                sizes="(min-width: 1024px) 0px, 100vw"
+                className="object-cover lg:hidden"
+              />
+              <Image
+                src="/figma/home/dost-band.webp"
+                alt="Everest Dost partner checking the app on his phone"
+                fill
+                sizes="(min-width: 1024px) min(1440px, 100vw), 0px"
+                className="hidden object-cover lg:block"
+              />
+            </div>
 
-            <div className="absolute left-[calc(var(--u)*112)] top-[calc(var(--u)*79)] h-[calc(var(--u)*151)] w-[calc(var(--u)*184)] rounded-[calc(var(--u)*8)] bg-white pl-[calc(var(--u)*18.75)] pt-[calc(var(--u)*18.5)] text-navy lg:left-[calc(var(--u)*340)] lg:top-[calc(var(--u)*228)] lg:h-[calc(var(--u)*266)] lg:w-[calc(var(--u)*560)] lg:rounded-[calc(var(--u)*20)] lg:pl-[calc(var(--u)*35)] lg:pt-[calc(var(--u)*28)]">
+            <div className="dost-card absolute left-[calc(var(--u)*112)] top-[calc(var(--u)*79)] h-[calc(var(--u)*151)] w-[calc(var(--u)*184)] rounded-[calc(var(--u)*8)] bg-white pl-[calc(var(--u)*18.75)] pt-[calc(var(--u)*18.5)] text-navy lg:left-[calc(var(--u)*340)] lg:top-[calc(var(--u)*228)] lg:h-[calc(var(--u)*266)] lg:w-[calc(var(--u)*560)] lg:rounded-[calc(var(--u)*20)] lg:pl-[calc(var(--u)*35)] lg:pt-[calc(var(--u)*28)]">
               <h3 className="text-[length:calc(var(--u)*14.5)] font-bold leading-[calc(var(--u)*17)] lg:hidden">
                 Become An Everest
                 <br />
@@ -70,7 +68,7 @@ export function DostApp() {
               </Link>
             </div>
 
-            <div className="absolute left-[calc(var(--u)*9.5)] top-[calc(var(--u)*37)] h-[calc(var(--u)*229.5)] w-[calc(var(--u)*110.75)] drop-shadow-[0_calc(var(--u)*8)_calc(var(--u)*12)_rgba(6,47,80,0.4)] lg:left-[calc(var(--u)*72.75)] lg:top-[calc(var(--u)*39.5)] lg:h-[calc(var(--u)*598)] lg:w-[calc(var(--u)*289.5)] lg:drop-shadow-[0_calc(var(--u)*20)_calc(var(--u)*32)_rgba(6,47,80,0.4)]">
+            <div className="dost-phone absolute left-[calc(var(--u)*9.5)] top-[calc(var(--u)*37)] h-[calc(var(--u)*229.5)] w-[calc(var(--u)*110.75)] drop-shadow-[0_calc(var(--u)*8)_calc(var(--u)*12)_rgba(6,47,80,0.4)] lg:left-[calc(var(--u)*72.75)] lg:top-[calc(var(--u)*39.5)] lg:h-[calc(var(--u)*598)] lg:w-[calc(var(--u)*289.5)] lg:drop-shadow-[0_calc(var(--u)*20)_calc(var(--u)*32)_rgba(6,47,80,0.4)]">
               <Image
                 src="/figma/home/dost-phone.webp"
                 alt="Everest Dost app with referral payouts and follow-ups"
@@ -78,7 +76,7 @@ export function DostApp() {
                 sizes="(min-width: 1024px) min(290px, 21vw), 27vw"
               />
             </div>
-          </div>
+          </ArriveOnScroll>
         </div>
       </div>
     </section>
