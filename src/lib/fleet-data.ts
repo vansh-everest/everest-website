@@ -131,12 +131,13 @@ async function pool<T, R>(items: T[], run: (item: T) => Promise<R>): Promise<R[]
 
 /**
  * One read through fleet_connect. Anything short of a fresh 200 throws, so a refresh that fails
- * part way keeps the last good figures instead of caching a gap; `missing` names the one answer
- * that means "nothing here" rather than "something broke".
+ * part way keeps the last good figures instead of caching a gap; `skip` names the answers that
+ * mean "nothing usable here" (404 for routes not live yet, 400 for one record Jarvis rejects)
+ * rather than "something broke".
  */
-async function records<T>(path: string, missing?: 404): Promise<T | null> {
+async function records<T>(path: string, skip: number[] = []): Promise<T | null> {
   const answer = await fleetGet<T>(path, { cache: "no-store" });
-  if (answer.status === missing) return null;
+  if (skip.includes(answer.status)) return null;
   if (answer.status !== 200 || answer.stale) {
     throw new Error(`fleet_connect ${path.split("?")[0]} answered ${answer.status}${answer.stale ? " (stale)" : ""}`);
   }
@@ -159,11 +160,13 @@ function planPrices(categories: JarvisPlanCategory[] | null): Record<string, Liv
 }
 
 async function readCity(city: JarvisCity): Promise<LiveCity> {
-  const cars = (await records<JarvisCar[]>(`/everest_website/cars?city_id=${city.id}`)) ?? [];
+  // A car with no model name can be neither priced nor matched to the site's cars.
+  const cars = ((await records<JarvisCar[]>(`/everest_website/cars?city_id=${city.id}`)) ?? []).filter((car) => car.car_name);
   const priced = await pool(cars, async (car): Promise<LiveCar> => {
     const query = new URLSearchParams({ city_id: String(city.id), car_name: car.car_name });
     if (car.car_fuel_type) query.set("car_fuel_type", car.car_fuel_type);
-    const plans = planPrices(await records<JarvisPlanCategory[]>(`/everest_website/plan-details?${query}`));
+    // A 400 is Jarvis refusing this one car's data, so the car goes unpriced instead of the whole read failing.
+    const plans = planPrices(await records<JarvisPlanCategory[]>(`/everest_website/plan-details?${query}`, [400, 404]));
     return {
       name: car.car_name,
       fuel: car.car_fuel_type ?? "",
@@ -190,7 +193,7 @@ async function readCity(city: JarvisCity): Promise<LiveCity> {
 
 async function readLive(): Promise<LiveData | null> {
   // A 404 is a fleet_connect without the website routes yet: no figures, and that answer is cached.
-  const cities = await records<JarvisCity[]>("/everest_website/cities", 404);
+  const cities = await records<JarvisCity[]>("/everest_website/cities", [404]);
   if (!cities?.length) return null;
   return { at: new Date().toISOString(), cities: await pool(cities, readCity) };
 }
