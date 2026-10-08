@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { PlanCardView } from "@/lib/plan-view";
+import { PlanCarousel } from "./plan-carousel";
 
 /* The dark card leads with a larger first point; its other points are a size smaller than a light card's. */
 function pointSize(i: number, dark: boolean) {
@@ -73,21 +74,21 @@ function PlanCard({ plan, join }: { plan: PlanCardView; join: string }) {
 }
 
 /**
- * The plan cards: side by side on a wide screen, and a row a phone swipes one card at a time.
- * Nothing moves on its own.
+ * The plan cards: side by side on a wide screen. On a phone they are a carousel, one card at a
+ * time, with dots under it (PlanCarousel).
  */
 export function PlanGrid({ cards, label, join }: { cards: PlanCardView[]; label: string; join: string }) {
   return (
-    <div
-      role="region"
-      aria-label={label}
-      className="mt-[30px] flex snap-x snap-mandatory gap-4 overflow-x-auto px-[7%] py-4 [scrollbar-width:none] sm:mt-10 sm:gap-6 sm:px-6 lg:mx-auto lg:mt-[46px] lg:max-w-[1260px] lg:snap-none lg:justify-center lg:overflow-visible lg:px-6 xl:gap-[66px] [&::-webkit-scrollbar]:hidden"
+    <PlanCarousel
+      label={label}
+      names={cards.map((c) => c.name)}
+      className="relative mt-[30px] flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-[7%] py-4 [scrollbar-width:none] sm:mt-10 sm:gap-6 sm:px-6 lg:mx-auto lg:mt-[46px] lg:max-w-[1260px] lg:snap-none lg:justify-center lg:overflow-visible lg:px-6 xl:gap-[66px] [&::-webkit-scrollbar]:hidden"
     >
       {cards.map((plan) => (
         <div key={plan.id} className="w-[86%] max-w-[340px] shrink-0 snap-center snap-always sm:w-[372px] sm:max-w-none lg:w-auto lg:max-w-[372px] lg:flex-1">
           <PlanCard plan={plan} join={join} />
         </div>
       ))}
-    </div>
+    </PlanCarousel>
   );
 }

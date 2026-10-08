@@ -488,8 +488,8 @@ export function homeCopy(locale: Locale): HomeCopy {
  */
 const SEED_TEXT: Record<string, Record<Exclude<MainLocale, "en">, string>> = {
   // Plan cards: the tab above the card.
-  "Ownership model": { hi: "मालिकाना मॉडल", kn: "ಮಾಲೀಕತ್ವದ ಮಾದರಿ" },
-  "Renting model": { hi: "किराये का मॉडल", kn: "ಬಾಡಿಗೆ ಮಾದರಿ" },
+  "Ownership Plan": { hi: "मालिकाना प्लान", kn: "ಮಾಲೀಕತ್ವದ ಪ್ಲಾನ್" },
+  "Renting Plan": { hi: "किराये का प्लान", kn: "ಬಾಡಿಗೆ ಪ್ಲಾನ್" },
   "Earning model": { hi: "कमाई का मॉडल", kn: "ಗಳಿಕೆಯ ಮಾದರಿ" },
   // Plan cards: the figure boxes.
   "Rent/day": { hi: "किराया/दिन", kn: "ಬಾಡಿಗೆ/ದಿನ" },
@@ -500,7 +500,7 @@ const SEED_TEXT: Record<string, Record<Exclude<MainLocale, "en">, string>> = {
   Deposit: { hi: "डिपॉज़िट", kn: "ಠೇವಣಿ" },
   Onwards: { hi: "से शुरू", kn: "ರಿಂದ" },
   // Plan cards: the bullet points.
-  "Car transferred to your name at tenure end": { hi: "अवधि पूरी होने पर गाड़ी आपके नाम", kn: "ಅವಧಿ ಮುಗಿದಾಗ ಕಾರು ನಿಮ್ಮ ಹೆಸರಿಗೆ" },
+  "Own your car in 12 months": { hi: "12 महीने में गाड़ी आपकी", kn: "12 ತಿಂಗಳಲ್ಲಿ ಕಾರು ನಿಮ್ಮದು" },
   "No fixed rent - earnings-linked model": { hi: "तय किराया नहीं, कमाई से जुड़ा मॉडल", kn: "ನಿಗದಿತ ಬಾಡಿಗೆ ಇಲ್ಲ, ಗಳಿಕೆಗೆ ತಕ್ಕ ಮಾದರಿ" },
   "No ownership or loan liability": { hi: "न गाड़ी की ज़िम्मेदारी, न लोन", kn: "ಕಾರಿನ ಹೊಣೆ ಇಲ್ಲ, ಸಾಲವೂ ಇಲ್ಲ" },
   "No CIBIL": { hi: "CIBIL की ज़रूरत नहीं", kn: "CIBIL ಬೇಕಿಲ್ಲ" },
@@ -508,12 +508,8 @@ const SEED_TEXT: Record<string, Record<Exclude<MainLocale, "en">, string>> = {
   "No Insurance": { hi: "बीमा का खर्च नहीं", kn: "ವಿಮೆ ಖರ್ಚು ಇಲ್ಲ" },
   "No Regulatory Charges": { hi: "कोई रेगुलेटरी चार्ज नहीं", kn: "ರೆಗ್ಯುಲೇಟರಿ ಶುಲ್ಕ ಇಲ್ಲ" },
   "100% Uber incentive": { hi: "Uber इंसेंटिव 100% आपका", kn: "Uber ಇನ್ಸೆಂಟಿವ್ 100% ನಿಮ್ಮದು" },
-  "No paperwork": { hi: "कागज़ी झंझट नहीं", kn: "ಕಾಗದಪತ್ರದ ಕಿರಿಕಿರಿ ಇಲ್ಲ" },
-  "No loan required": { hi: "लोन की ज़रूरत नहीं", kn: "ಸಾಲ ಬೇಕಿಲ್ಲ" },
   "Free Repair & Maintenance": { hi: "मुफ़्त मरम्मत और मेंटेनेंस", kn: "ಉಚಿತ ರಿಪೇರಿ ಮತ್ತು ನಿರ್ವಹಣೆ" },
-  "Free repair and maintenance": { hi: "मुफ़्त मरम्मत और मेंटेनेंस", kn: "ಉಚಿತ ರಿಪೇರಿ ಮತ್ತು ನಿರ್ವಹಣೆ" },
   "24×7 Support": { hi: "24×7 मदद", kn: "24×7 ಸಹಾಯ" },
-  "24/7 Support": { hi: "24/7 मदद", kn: "24/7 ಸಹಾಯ" },
   // Cars: the tab above the card, and the photos.
   "India’s Most Driven & Trusted Choice": { hi: "भारत की सबसे ज़्यादा चलने वाली भरोसेमंद गाड़ी", kn: "ಭಾರತದಲ್ಲಿ ಹೆಚ್ಚು ಓಡುವ, ನಂಬಿಕೆಯ ಕಾರು" },
   "Our Most Popular Eco-Friendly Favorite": { hi: "हमारी सबसे पसंदीदा इको-फ़्रेंडली गाड़ी", kn: "ನಮ್ಮ ಅತ್ಯಂತ ಜನಪ್ರಿಯ ಪರಿಸರ ಸ್ನೇಹಿ ಕಾರು" },
