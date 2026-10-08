@@ -12,7 +12,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, Menu, Phone, X } from "lucide-react";
-import { toTopInstead } from "@/components/fx/smooth-scroll";
+import { goHome, holdScroll } from "@/components/fx/smooth-scroll";
 import { siteCopy } from "@/content/site-copy";
 import { fill, hrefIn, localeOfPath } from "@/lib/i18n";
 import { FormLink } from "./form-link";
@@ -60,9 +60,11 @@ export function MobileMenu({ home }: { home: string }) {
 
   useEffect(() => {
     if (!open) return;
-    // The page behind must not scroll while the drawer covers it.
+    // The page behind must not scroll while the drawer covers it, natively or through the inertia
+    // scroll; the drawer scrolls on its own (data-lenis-prevent).
     const { overflow } = document.body.style;
     document.body.style.overflow = "hidden";
+    const release = holdScroll();
     // Keyboard focus has to stay in the drawer rather than wander onto the page it covers.
     const behind = [...document.body.children].filter(
       (el) => !el.contains(toggle.current) && !el.contains(drawer.current),
@@ -82,6 +84,7 @@ export function MobileMenu({ home }: { home: string }) {
     wide.addEventListener("change", widen);
     return () => {
       document.body.style.overflow = overflow;
+      release();
       for (const el of behind) el.removeAttribute("inert");
       document.removeEventListener("keydown", escape);
       wide.removeEventListener("change", widen);
@@ -128,6 +131,7 @@ export function MobileMenu({ home }: { home: string }) {
                 className={`absolute inset-0 bg-navy/90 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"}`}
               />
               <div
+                data-lenis-prevent
                 className={`absolute inset-y-0 right-0 flex w-[80%] max-w-[320px] flex-col overflow-y-auto overscroll-contain bg-white transition-transform duration-300 ease-out ${
                   open ? "translate-x-0" : "translate-x-full"
                 }`}
@@ -137,7 +141,7 @@ export function MobileMenu({ home }: { home: string }) {
                     href={hrefIn(locale, "/")}
                     onClick={(event) => {
                       close();
-                      toTopInstead(event);
+                      goHome(event);
                     }}
                     className="mt-1"
                   >

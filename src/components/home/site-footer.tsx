@@ -1,6 +1,7 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { ArrowRight } from "lucide-react";
-import { InstagramLogo, LinkedinLogo } from "@phosphor-icons/react/ssr";
+import { FacebookLogo, InstagramLogo, LinkedinLogo, YoutubeLogo } from "@phosphor-icons/react/ssr";
 import { BrandLogo } from "@/components/site/brand-logo";
 import { siteCopy, type LinkKey } from "@/content/site-copy";
 import { COMPANY } from "@/lib/company";
@@ -42,9 +43,19 @@ const columns: { title: "drivers" | "company" | "investors"; links: { key: LinkK
 const heading = "text-[11px] font-bold uppercase leading-[17px] tracking-[1.8px] text-sun";
 const list = "mt-3 space-y-1.5 text-sm leading-[21px]";
 const item = "text-white transition hover:text-sun";
+// The hero buttons' shine (.fx-shine, globals.css "Chrome (batch 9)") with the lift, glow and
+// press it brings; the band is lighter here so it shows on navy, and white over the yellow hover.
 const social =
-  "group grid size-9 place-items-center rounded-full border border-white/15 bg-white/[0.06] text-white transition duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-sun hover:bg-sun hover:text-navy hover:shadow-[0_8px_20px_-8px_rgba(241,214,20,0.7)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sun motion-safe:hover:-translate-y-0.5 motion-safe:active:scale-95";
+  "fx-shine group grid size-9 place-items-center rounded-full border border-white/15 bg-white/[0.06] text-white transition duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] [--fx-glow:rgb(241_214_20/0.6)] [--fx-shine:rgb(255_255_255/0.4)] hover:border-sun hover:bg-sun hover:text-navy hover:[--fx-shine:rgb(255_255_255/0.75)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sun";
 const socialIcon = "size-[18px] transition-transform duration-300 motion-safe:group-hover:-rotate-6 motion-safe:group-hover:scale-110";
+
+// One after another, so the shine runs along the row.
+const socials = [
+  { key: "instagram", href: "https://www.instagram.com/everest_fleet/", Icon: InstagramLogo },
+  { key: "linkedin", href: "https://www.linkedin.com/company/everest-fleet-pvt-ltd/", Icon: LinkedinLogo },
+  { key: "facebook", href: "https://www.facebook.com/EverestFleetIndia", Icon: FacebookLogo },
+  { key: "youtube", href: "https://www.youtube.com/@everestfleet3846", Icon: YoutubeLogo },
+] as const;
 
 export function SiteFooter({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
   const { links, footer } = siteCopy(locale);
@@ -59,24 +70,19 @@ export function SiteFooter({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
               {fill(footer.blurb, { vehicles: COMPANY.vehicles, cities: COMPANY.cities, founded: COMPANY.founded })}
             </p>
             <div className="mt-4 flex gap-2.5 lg:mt-5">
-              <a
-                href="https://www.instagram.com/everest_fleet/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={footer.instagram}
-                className={social}
-              >
-                <InstagramLogo aria-hidden className={socialIcon} />
-              </a>
-              <a
-                href="https://www.linkedin.com/company/everest-fleet-pvt-ltd/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={footer.linkedin}
-                className={social}
-              >
-                <LinkedinLogo aria-hidden className={socialIcon} />
-              </a>
+              {socials.map(({ key, href, Icon }, i) => (
+                <a
+                  key={key}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={footer[key]}
+                  className={social}
+                  style={{ "--fx-shine-delay": `${1.2 + i * 0.14}s` } as CSSProperties}
+                >
+                  <Icon aria-hidden className={socialIcon} />
+                </a>
+              ))}
             </div>
           </div>
           {columns.map((col) => (

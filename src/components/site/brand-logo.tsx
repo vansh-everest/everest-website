@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, type CSSProperties } from "react";
-import { toTopInstead } from "@/components/fx/smooth-scroll";
+import { useEffect, useRef, type CSSProperties } from "react";
+import { goHome, LOGO_BURST } from "@/components/fx/smooth-scroll";
 
 /**
  * The four triangles of the Everest mark, traced from /figma/logo.png in that file's own
@@ -21,20 +21,47 @@ const MARK = [
 /** How far a triangle flies out, in the artwork's pixels (about 8 screen pixels at header size). */
 const BURST = 140;
 
+/** Spins the mark's triangles out one after another and snaps them back into place. */
+function burst(mark: SVGSVGElement | null) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  mark?.querySelectorAll("polygon").forEach((triangle, i) => {
+    const { dx, dy, spin } = MARK[i];
+    triangle.getAnimations().forEach((a) => a.cancel());
+    triangle.animate(
+      [
+        { transform: "translate(0, 0) rotate(0deg) scale(1)", easing: "cubic-bezier(0.2, 0.8, 0.3, 1)" },
+        {
+          transform: `translate(${dx * BURST}px, ${dy * BURST}px) rotate(${spin * 180}deg) scale(0.78)`,
+          offset: 0.42,
+          easing: "cubic-bezier(0.55, 0, 0.6, 1)",
+        },
+        {
+          transform: `translate(${-dx * 14}px, ${-dy * 14}px) rotate(${spin * 360}deg) scale(1.08)`,
+          offset: 0.8,
+          easing: "cubic-bezier(0.25, 1, 0.5, 1)",
+        },
+        { transform: `translate(0, 0) rotate(${spin * 360}deg) scale(1)` },
+      ],
+      { duration: 620, delay: i * 55 }
+    );
+  });
+}
+
 /**
  * The Everest logo as a link home. The wordmark is the original artwork with the mark cut out;
  * the mark is drawn over it as four triangles, so at rest it looks exactly like the PNG.
  *
  * A click sends the triangles spinning out one after another and snaps them back into the mark,
- * and takes the reader to the top of the page they are on (a new-tab click still opens home).
- * Mouse screens get a small hover hint (globals.css, "Chrome (batch 9)"); reduced motion gets
- * neither.
+ * and goes to the home page; on the home page itself it glides to the top. With `twinkle`, a fast
+ * flick back up the page plays the same burst (SmoothScroll sends LOGO_BURST). Mouse screens get a
+ * small hover hint (globals.css, "Chrome (batch 9)"); reduced motion gets none of it.
  */
 export function BrandLogo({
   href = "/",
   tone = "dark",
   className = "",
   preload = false,
+  twinkle = false,
 }: {
   /** The home page it links to: the one in the page's language. */
   href?: string;
@@ -42,41 +69,24 @@ export function BrandLogo({
   tone?: "dark" | "light";
   className?: string;
   preload?: boolean;
+  /** Burst when the visitor scrolls back up fast: for the header's logo. */
+  twinkle?: boolean;
 }) {
   const mark = useRef<SVGSVGElement>(null);
 
-  const burst = () => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const triangles = mark.current?.querySelectorAll("polygon");
-    triangles?.forEach((triangle, i) => {
-      const { dx, dy, spin } = MARK[i];
-      triangle.getAnimations().forEach((a) => a.cancel());
-      triangle.animate(
-        [
-          { transform: "translate(0, 0) rotate(0deg) scale(1)", easing: "cubic-bezier(0.2, 0.8, 0.3, 1)" },
-          {
-            transform: `translate(${dx * BURST}px, ${dy * BURST}px) rotate(${spin * 180}deg) scale(0.78)`,
-            offset: 0.42,
-            easing: "cubic-bezier(0.55, 0, 0.6, 1)",
-          },
-          {
-            transform: `translate(${-dx * 14}px, ${-dy * 14}px) rotate(${spin * 360}deg) scale(1.08)`,
-            offset: 0.8,
-            easing: "cubic-bezier(0.25, 1, 0.5, 1)",
-          },
-          { transform: `translate(0, 0) rotate(${spin * 360}deg) scale(1)` },
-        ],
-        { duration: 620, delay: i * 55 }
-      );
-    });
-  };
+  useEffect(() => {
+    if (!twinkle) return;
+    const onBurst = () => burst(mark.current);
+    window.addEventListener(LOGO_BURST, onBurst);
+    return () => window.removeEventListener(LOGO_BURST, onBurst);
+  }, [twinkle]);
 
   return (
     <Link
       href={href}
       onClick={(event) => {
-        burst();
-        toTopInstead(event);
+        burst(mark.current);
+        goHome(event);
       }}
       className={`brand-logo block ${className}`}
     >

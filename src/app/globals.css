@@ -83,8 +83,9 @@ body {
 
 /* ===================================================================== Motion layer
    Argo's effects in Everest colours, kept light. Everything sits behind prefers-reduced-motion,
-   and touch screens get no blur: blur is the costliest thing a budget phone can draw. The
-   headline keeps full opacity from the first frame, so it never delays the largest paint. */
+   and touch screens draw a lighter blur ("Mobile motion and logo (batch 10)"): blur is the
+   costliest thing a budget phone can draw. The headline keeps full opacity from the first frame,
+   so it never delays the largest paint. */
 
 @keyframes fx-rise-in {
   from {
@@ -184,22 +185,21 @@ body {
     }
   }
 
-  /* Mouse and trackpad screens add a light blur to the same moves. */
-  @media (hover: hover) and (pointer: fine) {
-    main h1,
-    .fx-blur-in {
-      animation-name: fx-blur-in;
-    }
-    [data-fx] {
-      transition-property: opacity, transform, filter;
-    }
-    [data-fx="out"] {
-      filter: blur(4px);
-    }
-    @supports (animation-timeline: view()) {
-      .fx-scroll-exit {
-        animation-name: fx-exit-blur;
-      }
+  /* Every screen adds a light blur to the same moves; touch screens use the smaller radii in
+     "Mobile motion and logo (batch 10)". */
+  main h1,
+  .fx-blur-in {
+    animation-name: fx-blur-in;
+  }
+  [data-fx] {
+    transition-property: opacity, transform, filter;
+  }
+  [data-fx="out"] {
+    filter: blur(4px);
+  }
+  @supports (animation-timeline: view()) {
+    .fx-scroll-exit {
+      animation-name: fx-exit-blur;
     }
   }
 }
@@ -902,4 +902,53 @@ body {
   .wz-swap {
     animation: wz-swap 0.4s ease-out both;
   }
+}
+
+/* ===================================================================== Mobile motion and logo (batch 10)
+   Touch screens get the Motion layer's blur reveals at smaller radii, the cheapest that still
+   reads as a blur on a phone. A block is promoted to its own layer only while it moves. Reduced
+   motion still gets none of it. */
+
+@keyframes fx-blur-in-soft {
+  from {
+    filter: blur(3px);
+    transform: translate3d(0, 12px, 0);
+  }
+}
+
+@keyframes fx-exit-blur-soft {
+  to {
+    filter: blur(3px);
+    scale: 1.04;
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-fx="in"] {
+    will-change: transform, opacity, filter;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (pointer: coarse) {
+  main h1,
+  .fx-blur-in {
+    animation-name: fx-blur-in-soft;
+  }
+  [data-fx="out"] {
+    filter: blur(3px);
+  }
+  @supports (animation-timeline: view()) {
+    .fx-scroll-exit {
+      animation-name: fx-exit-blur-soft;
+    }
+  }
+}
+
+/* While the phone menu holds the page (holdScroll), body's overflow: hidden is the lock. Lenis'
+   own lock clips html instead, which stops body's overflow reaching the window: body becomes the
+   scroll box, the sticky header sticks to it and slides out of view, and closing the menu jumps
+   the page to the top. */
+html.lenis.lenis-stopped:not(.lenis-autoToggle) {
+  overflow: visible;
 }

@@ -59,6 +59,8 @@ export type SiteCopy = {
     /** The social buttons' accessible names. */
     instagram: string;
     linkedin: string;
+    facebook: string;
+    youtube: string;
   };
 };
 
@@ -109,6 +111,8 @@ const en: SiteCopy = {
     rights: "© {year} Everest Fleet Pvt Ltd. All rights reserved.",
     instagram: "Everest Fleet on Instagram",
     linkedin: "Everest Fleet on LinkedIn",
+    facebook: "Everest Fleet on Facebook",
+    youtube: "Everest Fleet on YouTube",
   },
 };
 
@@ -159,6 +163,8 @@ const hi: SiteCopy = {
     rights: "© {year} Everest Fleet Pvt Ltd. सर्वाधिकार सुरक्षित।",
     instagram: "Instagram पर Everest Fleet",
     linkedin: "LinkedIn पर Everest Fleet",
+    facebook: "Facebook पर Everest Fleet",
+    youtube: "YouTube पर Everest Fleet",
   },
 };
 
@@ -209,6 +215,8 @@ const kn: SiteCopy = {
     rights: "© {year} Everest Fleet Pvt Ltd. ಎಲ್ಲಾ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.",
     instagram: "Instagram ನಲ್ಲಿ Everest Fleet",
     linkedin: "LinkedIn ನಲ್ಲಿ Everest Fleet",
+    facebook: "Facebook ನಲ್ಲಿ Everest Fleet",
+    youtube: "YouTube ನಲ್ಲಿ Everest Fleet",
   },
 };
 
