@@ -60,18 +60,22 @@ export function StepHeading({ id, children }: { id: string; children: ReactNode 
 /**
  * The way forward. On a phone it is a white band pinned to the bottom of the screen while the step
  * is in view, the choices so far above the buttons; on a desktop one row at the foot of the card.
+ * Until a choice is made on the step the Next button sits back in a pale yellow; `awake` fills it
+ * and it glows twice.
  */
 export function StepFooter({
   next,
   onNext,
   onBack,
   summary,
+  awake = true,
   className = "",
 }: {
   next: string;
   onNext: () => void;
   onBack?: () => void;
   summary?: string;
+  awake?: boolean;
   className?: string;
 }) {
   return (
@@ -88,7 +92,7 @@ export function StepFooter({
           <button
             type="button"
             onClick={onBack}
-            className="flex h-[49px] items-center gap-2 rounded-full border-[1.5px] border-[#d5dbe1] bg-white px-[21px] text-base font-medium text-navy transition hover:border-navy lg:order-1 lg:h-auto lg:border-0 lg:bg-transparent lg:px-0 lg:text-[17px] lg:text-ink-soft lg:hover:text-navy"
+            className="flex h-[49px] items-center gap-2 rounded-full border-[1.5px] border-[#d5dbe1] bg-white px-[21px] text-base font-medium text-navy transition hover:border-navy motion-safe:active:scale-[0.98] lg:order-1 lg:h-auto lg:border-0 lg:bg-transparent lg:px-0 lg:text-[17px] lg:text-ink-soft lg:hover:text-navy"
           >
             <ArrowLeft size={17} strokeWidth={2} className="hidden lg:block" />
             Back
@@ -97,7 +101,9 @@ export function StepFooter({
         <button
           type="button"
           onClick={onNext}
-          className="flex h-[49px] flex-1 items-center justify-center gap-2.5 rounded-full bg-sun text-base font-bold text-navy transition hover:brightness-95 lg:order-3 lg:ml-auto lg:h-[54px] lg:flex-none lg:px-[26px] lg:text-[17px]"
+          className={`flex h-[49px] flex-1 items-center justify-center gap-2.5 rounded-full text-base font-bold transition duration-300 hover:brightness-95 motion-safe:active:scale-[0.98] lg:order-3 lg:ml-auto lg:h-[54px] lg:flex-none lg:px-[26px] lg:text-[17px] ${
+            awake ? "wz-wake bg-sun text-navy" : "bg-sun/35 text-navy/70"
+          }`}
         >
           {next}
           <ArrowRight size={18} strokeWidth={2.25} className="hidden lg:block" />
