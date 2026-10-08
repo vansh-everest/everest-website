@@ -9,6 +9,8 @@ const ENDED = 0;
 const PLAYING = 1;
 const PAUSED = 2;
 const BUFFERING = 3;
+/** Sound level out of 100: the video plays under the page, not over it. */
+const VOLUME = 30;
 
 /**
  * A YouTube video behind its own still. The player loads once the frame is near the screen and
@@ -76,7 +78,7 @@ export function WhyVideo({
     window.clearTimeout(check.current);
     if (sound.current) {
       p.unMute();
-      p.setVolume(100);
+      p.setVolume(VOLUME);
     } else {
       p.mute();
     }
@@ -191,6 +193,7 @@ export function WhyVideo({
             onReady: () => {
               if (!alive) return;
               player.current = made;
+              made?.setVolume(VOLUME);
               if (queued.current || (inView.current && autoplay.current)) {
                 queued.current = false;
                 start();
