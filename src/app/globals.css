@@ -266,3 +266,219 @@ body {
 :is(a, button).bg-sun:hover::after {
   transform: translateX(120%);
 }
+
+/* ===================================================================== Chrome (batch 9)
+   The logo's mark, the shiny call-to-action buttons (.fx-shine), and the wash behind the About
+   page values. Every movement sits behind prefers-reduced-motion. */
+
+/* The logo mark (BrandLogo): each triangle turns about its own middle. The click burst is played
+   from the component; on mouse screens the four part a little on hover, as a hint. */
+.brand-tri {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .brand-tri {
+    transition: translate 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .brand-logo:hover .brand-tri,
+  .brand-logo:focus-visible .brand-tri {
+    translate: calc(var(--dx) * 26px) calc(var(--dy) * 26px);
+  }
+}
+
+/* A shiny button: a band of light sweeps across now and then, and at once on hover, where the
+   button also lifts and glows; it presses in when tapped. Set --fx-shine for the band's colour
+   (a brand tint reads better on white), --fx-glow for the hover glow and --fx-shine-delay to
+   offset neighbouring buttons. Positioning sits in a layer so a button's own placement wins. */
+@layer components {
+  .fx-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+/* The doubled class outranks the hover sheen every yellow button gets (above). */
+.fx-shine.fx-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 32%,
+    var(--fx-shine, rgb(255 255 255 / 0.72)) 46%,
+    var(--fx-shine, rgb(255 255 255 / 0.72)) 50%,
+    transparent 64%
+  );
+  transform: translateX(-140%);
+  transition: none;
+  pointer-events: none;
+}
+
+@keyframes fx-shine-idle {
+  0%,
+  68% {
+    transform: translateX(-140%);
+  }
+  100% {
+    transform: translateX(140%);
+  }
+}
+@keyframes fx-shine-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(140%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fx-shine.fx-shine::after {
+    animation: fx-shine-idle 4.6s cubic-bezier(0.3, 0.5, 0.4, 1) var(--fx-shine-delay, 1.2s) infinite;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .fx-shine {
+      transition:
+        transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 0.3s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+    }
+    .fx-shine:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 14px 30px -12px var(--fx-glow, rgb(255 255 255 / 0.55)),
+        0 0 22px -6px var(--fx-glow, rgb(255 255 255 / 0.55));
+    }
+    .fx-shine.fx-shine:hover::after {
+      animation: fx-shine-sweep 1s cubic-bezier(0.25, 0.6, 0.35, 1) both;
+    }
+  }
+  .fx-shine:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: 0 4px 12px -6px var(--fx-glow, rgb(255 255 255 / 0.55));
+    transition-duration: 0.08s;
+  }
+}
+
+/* The About page values: colour flows down from the letter cards in the values' own tints, as
+   soft blobs that drift slowly. Gradients rather than blur, so phones draw it cheaply. */
+.values-wash {
+  background: linear-gradient(180deg, transparent 0%, rgb(255 255 255 / 0.55) 45%, rgb(0 109 184 / 0.06) 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 180px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 180px);
+}
+.values-blob {
+  position: absolute;
+  width: min(120vw, 640px);
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  /* An eased falloff, so no edge shows where the colour ends. */
+  background: radial-gradient(
+    closest-side,
+    var(--blob) 0%,
+    color-mix(in srgb, var(--blob) 72%, transparent) 38%,
+    color-mix(in srgb, var(--blob) 32%, transparent) 66%,
+    color-mix(in srgb, var(--blob) 8%, transparent) 88%,
+    transparent 100%
+  );
+}
+.values-blob-blue {
+  --blob: rgb(0 109 184 / 0.17);
+  --tx: 6vw;
+  --ty: 4%;
+  top: 0;
+  left: -30%;
+}
+.values-blob-plum {
+  --blob: rgb(160 63 151 / 0.14);
+  --tx: -5vw;
+  --ty: 6%;
+  top: 25%;
+  right: -30%;
+}
+.values-blob-lime {
+  --blob: rgb(185 213 50 / 0.24);
+  --tx: 5vw;
+  --ty: -5%;
+  top: 50%;
+  left: -30%;
+}
+.values-blob-sun {
+  --blob: rgb(241 214 20 / 0.24);
+  --tx: -6vw;
+  --ty: -4%;
+  top: 75%;
+  right: -30%;
+}
+@media (min-width: 64rem) {
+  .values-blob {
+    width: min(52vw, 760px);
+  }
+  .values-blob-blue {
+    top: -6%;
+    left: 2%;
+  }
+  .values-blob-plum {
+    top: 0;
+    right: 2%;
+  }
+  .values-blob-lime {
+    top: auto;
+    bottom: -14%;
+    left: 12%;
+  }
+  .values-blob-sun {
+    top: auto;
+    bottom: -18%;
+    right: 12%;
+  }
+}
+
+@keyframes values-drift {
+  50% {
+    transform: translate3d(var(--tx), var(--ty), 0) scale(1.1);
+  }
+  100% {
+    transform: translate3d(calc(var(--tx) * -0.6), calc(var(--ty) * 0.5), 0) scale(0.95);
+  }
+}
+@keyframes values-wash-in {
+  from {
+    opacity: 0.25;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .values-blob {
+    animation: values-drift 22s ease-in-out infinite alternate;
+  }
+  .values-blob-plum {
+    animation-duration: 26s;
+    animation-delay: -6s;
+  }
+  .values-blob-lime {
+    animation-duration: 19s;
+    animation-delay: -11s;
+  }
+  .values-blob-sun {
+    animation-duration: 24s;
+    animation-delay: -3s;
+  }
+  /* The colour gathers as the values scroll in. */
+  @supports (animation-timeline: view()) {
+    .values-wash {
+      animation-name: values-wash-in;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+  }
+}

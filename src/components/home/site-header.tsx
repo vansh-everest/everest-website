@@ -1,6 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
 import { HeaderShell } from "@/components/fx/header-shell";
+import { BrandLogo } from "@/components/site/brand-logo";
 import { DEFAULT_LOCALE, localePath, type Locale } from "@/lib/i18n";
 import { FormLink } from "./form-link";
 import { MobileMenu } from "./mobile-menu";
@@ -12,9 +11,7 @@ export function SiteHeader({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
   return (
     <HeaderShell>
       {/* The artwork carries transparent padding; the offsets put the wordmark on the grid. */}
-      <Link href="/" className="-ml-2 -mr-1.5 mt-[5px] shrink-0">
-        <Image src="/figma/logo.png" alt="Everest Fleet" width={98} height={56} preload className="h-14 w-[98px]" />
-      </Link>
+      <BrandLogo preload className="-ml-2 -mr-1.5 mt-[5px] shrink-0" />
       <NavLinks />
       <div className="flex items-center gap-2">
         <FormLink
