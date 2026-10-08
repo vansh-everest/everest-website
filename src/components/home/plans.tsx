@@ -10,7 +10,7 @@ export function Plans({ content }: { content: SiteContent }) {
       <div className="px-6 text-center">
         <h2 className="text-[25px] font-bold leading-tight tracking-[-0.5px] text-navy sm:text-[34px] lg:text-[64px] lg:leading-[72px]">
           <span className="sm:hidden">We Have Plans For Everyone</span>
-          <span className="hidden sm:inline">We have plans for everyone</span>
+          <span className="hidden sm:inline">We Have Plans For Everyone</span>
         </h2>
       </div>
       <PlanGrid cards={cards} />

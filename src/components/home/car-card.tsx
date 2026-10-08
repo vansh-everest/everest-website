@@ -23,7 +23,7 @@ export function CarCard({ car, city }: { car: CarCardView; city: string; variant
     { label: car.rentLabel, value: car.rent },
     { label: "Deposit", value: car.deposit },
     { label: "Tenure", value: car.tenure },
-    { label: "Models available", value: car.modelYears },
+    { label: "Models Available", value: car.modelYears },
   ].map((t) => (t.value ? t : { ...t, value: "—" }));
 
   return (

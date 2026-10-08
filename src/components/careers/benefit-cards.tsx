@@ -15,7 +15,7 @@ export function BenefitCards() {
     <section className="bg-white px-4 pb-6 pt-[26px] lg:pb-20 lg:pt-[94px]">
       <div className="mx-auto max-w-[1104px]">
         <h2 className="text-center text-[28px] font-bold leading-[34px] text-navy lg:text-left lg:text-[44px] lg:leading-[53px]">
-          Employee benefits
+          Employee Benefits
         </h2>
         <ul className="mt-[15px] grid gap-3 lg:mt-[33px] lg:grid-cols-3 lg:gap-6">
           {BENEFITS.map((benefit, i) => {

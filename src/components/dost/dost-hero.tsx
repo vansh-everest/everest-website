@@ -21,9 +21,9 @@ export function DostHero() {
             Everest Dost
           </p>
           <h1 className="mt-[11px] text-[31px] font-bold capitalize leading-[38px] tracking-[-0.02em] text-white lg:mt-[calc(var(--u)*13.5)] lg:text-[length:calc(var(--u)*64)] lg:normal-case lg:leading-[calc(var(--u)*72)] lg:tracking-[-0.004em]">
-            Refer a driver.
+            Refer A Driver.
             <br />
-            Earn at every milestone.
+            Earn At Every Milestone.
           </h1>
           <div className="relative mt-[13px] aspect-[380/220] overflow-hidden rounded-2xl lg:hidden">
             <Image src="/figma/dost/hero-mobile.webp" alt={ALT} fill preload sizes="(min-width: 1024px) 0px, 100vw" className="object-cover" />
@@ -33,7 +33,7 @@ export function DostHero() {
               href="#apply"
               className="flex h-14 items-center justify-center gap-2 rounded-full bg-sun text-[17px] text-navy transition-[filter] hover:brightness-95 lg:h-[calc(var(--u)*56)] lg:px-[calc(var(--u)*16.5)] lg:text-[length:calc(var(--u)*21)]"
             >
-              Apply to become a Dost
+              Apply To Become A Dost
               <span aria-hidden className="text-xl lg:hidden">
                 &rarr;
               </span>

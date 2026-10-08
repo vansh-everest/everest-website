@@ -18,7 +18,7 @@ export function Culture() {
       />
       <div className="relative lg:absolute lg:left-[67px] lg:top-[118px] lg:w-[520px] lg:rounded-3xl lg:bg-white lg:px-6 lg:pb-[21px] lg:pt-6 lg:shadow-[0_8px_24px_rgba(6,47,80,0.12)]">
         <h2 className="text-center text-[28px] font-bold leading-[34px] text-navy lg:text-left lg:text-[44px] lg:leading-[53px] lg:tracking-[-0.01em]">
-          Our <span className="lg:capitalize">culture</span>
+          Our <span className="lg:capitalize">Culture</span>
         </h2>
         <p className="mt-3 text-[15px] leading-6 text-ink-soft lg:mt-[17px] lg:text-lg lg:leading-[29px]">
           We&rsquo;re more than just colleagues. We&rsquo;re a family. Your growth is our priority, and every win moves the whole team forward.
@@ -35,11 +35,11 @@ export function Culture() {
         </ul>
         <div className="mt-[9px] flex flex-col items-start gap-[7.5px] text-base font-semibold text-brand lg:mt-[21px] lg:flex-row lg:gap-8 lg:whitespace-nowrap lg:text-[15.5px]">
           <Link href={VALUES_HREF} className="inline-flex items-center gap-2.5 hover:underline">
-            Read our values
+            Read Our Values
             <ArrowRight className="size-4" strokeWidth={2.25} />
           </Link>
           <a href={LINKEDIN_URL} target="_blank" rel="noopener" className="inline-flex items-center gap-2 hover:underline">
-            See life at Everest on LinkedIn
+            See Life At Everest On LinkedIn
             <ExternalLink className="size-4" strokeWidth={2.25} />
           </a>
         </div>

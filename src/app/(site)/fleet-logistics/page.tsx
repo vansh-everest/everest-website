@@ -18,12 +18,12 @@ export const metadata: Metadata = {
 };
 
 const LOADS = [
-  { icon: Store, title: "Cloud kitchens & QSRs", body: "Multi-outlet chains and delivery-only kitchens" },
-  { icon: Milk, title: "Milk and dairy", body: "Chilled from your dock to their counter" },
-  { icon: Leaf, title: "Fresh produce", body: "Fruit and veg that lose value by the hour" },
-  { icon: Snowflake, title: "Frozen goods", body: "Held below freezing the entire way" },
-  { icon: Croissant, title: "Bakery & confectionery", body: "Fragile loads, and it shows if you rush them" },
-  { icon: Thermometer, title: "Temperature-sensitive", body: "Anything with a range it must not leave" },
+  { icon: Store, title: "Cloud Kitchens & QSRs", body: "Multi-outlet chains and delivery-only kitchens" },
+  { icon: Milk, title: "Milk And Dairy", body: "Chilled from your dock to their counter" },
+  { icon: Leaf, title: "Fresh Produce", body: "Fruit and veg that lose value by the hour" },
+  { icon: Snowflake, title: "Frozen Goods", body: "Held below freezing the entire way" },
+  { icon: Croissant, title: "Bakery & Confectionery", body: "Fragile loads, and it shows if you rush them" },
+  { icon: Thermometer, title: "Temperature-Sensitive", body: "Anything with a range it must not leave" },
 ];
 
 export default function FleetLogisticsPage() {
@@ -39,7 +39,7 @@ export default function FleetLogisticsPage() {
             Delivering Perfection
           </>
         }
-        primary={{ label: "Get started", href: "#enquire" }}
+        primary={{ label: "Get Started", href: "#enquire" }}
         secondary={{ label: "Call Now", href: PHONE_HREF, phoneIcon: true }}
         media={{
           kind: "photo",
@@ -51,10 +51,10 @@ export default function FleetLogisticsPage() {
       <Steps
         title="Four Steps From Your Door To Theirs"
         steps={[
-          { title: "Tell us your route", body: "Pick-up, drop, temperature and the time it has to land" },
-          { title: "We assign the van", body: "Ambient, chilled, frozen or air-conditioned — whichever the load needs" },
-          { title: "Track the whole trip", body: "Live location from the moment it leaves you" },
-          { title: "Delivered, with proof", body: "A real-time notification the moment it is handed over" },
+          { title: "Tell Us Your Route", body: "Pick-up, drop, temperature and the time it has to land" },
+          { title: "We Assign The Van", body: "Ambient, chilled, frozen or air-conditioned — whichever the load needs" },
+          { title: "Track The Whole Trip", body: "Live location from the moment it leaves you" },
+          { title: "Delivered, With Proof", body: "A real-time notification the moment it is handed over" },
         ]}
       />
       <Features
@@ -67,10 +67,10 @@ export default function FleetLogisticsPage() {
       <FleetMix
         eyebrow="What the 242 are made of"
         rows={[
-          { label: "Ambient 4-wheeler", count: 197 },
-          { label: "Refrigerated van", count: 22 },
-          { label: "EV 3-wheeler", count: 19, tone: "lime" },
-          { label: "Air-conditioned van", count: 4 },
+          { label: "Ambient 4-Wheeler", count: 197 },
+          { label: "Refrigerated Van", count: 22 },
+          { label: "EV 3-Wheeler", count: 19, tone: "lime" },
+          { label: "Air-Conditioned Van", count: 4 },
         ]}
         note="The 19 EV three-wheelers run last-mile drops — zero tailpipe emissions inside city limits."
       />
@@ -78,18 +78,18 @@ export default function FleetLogisticsPage() {
         items={[
           {
             icon: Clock,
-            title: "It arrives when we said",
-            points: ["Timely delivery, route by route", "Live tracking on every trip", "A real-time alert the moment it drops"],
+            title: "It Arrives When We Said",
+            points: ["Timely Delivery, Route By Route", "Live Tracking On Every Trip", "A Real-Time Alert The Moment It Drops"],
           },
           {
             icon: ShieldCheck,
-            title: "Someone is accountable",
-            points: ["A named account manager, not a queue", "Strict quality checks at every handover"],
+            title: "Someone Is Accountable",
+            points: ["A Named Account Manager, Not A Queue", "Strict Quality Checks At Every Handover"],
           },
           {
             icon: Sparkle,
-            title: "It reflects well on you",
-            points: ["Your branding on the van, if you want it", "EV three-wheelers on last-mile drops"],
+            title: "It Reflects Well On You",
+            points: ["Your Branding On The Van, If You Want It", "EV Three-Wheelers On Last-Mile Drops"],
           },
         ]}
       />
@@ -114,7 +114,7 @@ export default function FleetLogisticsPage() {
           { name: "email", label: "Email", type: "email", placeholder: "name@company.com", autoComplete: "email" },
         ]}
         after={[
-          { name: "cargo", label: "What you move", type: "select", placeholder: "Select a cargo type", options: LOADS.map((l) => l.title) },
+          { name: "cargo", label: "What You Move", type: "select", placeholder: "Select a cargo type", options: LOADS.map((l) => l.title) },
         ]}
       />
     </>

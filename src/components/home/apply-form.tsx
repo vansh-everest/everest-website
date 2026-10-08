@@ -96,7 +96,7 @@ export function ApplyForm({ cities, source }: { cities: { slug: string; name: st
         />
       </label>
       <label className={label}>
-        Mobile number
+        Mobile Number
         <Required />
         <input
           name="mobile"

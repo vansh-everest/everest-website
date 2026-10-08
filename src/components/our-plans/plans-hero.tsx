@@ -13,7 +13,7 @@ export function PlansHero({ slot }: { slot: ImageSlot }) {
       <h1 className="px-[13px] pb-2.5 text-[26px] font-bold leading-[31px] tracking-[-0.3px] text-white sm:px-6 sm:pb-10 sm:text-[44px] sm:leading-[50px] sm:tracking-[-0.5px] lg:px-[53px] lg:pb-[62px] lg:text-[54px] lg:leading-[62px] lg:tracking-normal">
         Ownership To Renting
         <br /> <span className="lg:hidden">We Have Plans For Everyone</span>
-        <span className="hidden lg:inline">We have plans for everyone</span>
+        <span className="hidden lg:inline">We Have Plans For Everyone</span>
       </h1>
     </section>
   );

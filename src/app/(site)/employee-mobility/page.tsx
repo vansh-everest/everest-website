@@ -28,31 +28,31 @@ export default function EmployeeMobilityPage() {
             Electric And On Time
           </>
         }
-        primary={{ label: "Get a quote", href: "#enquire" }}
-        secondary={{ label: "Talk to our team", href: PHONE_HREF }}
+        primary={{ label: "Get A Quote", href: "#enquire" }}
+        secondary={{ label: "Talk To Our Team", href: PHONE_HREF }}
         size="md"
         media={{ kind: "car", alt: "White Everest electric sedan" }}
       />
       <Steps
-        title="Four steps from door to desk"
+        title="Four Steps From Door To Desk"
         steps={[
-          { title: "Share your shifts", body: "Office address, shift timings and where your team lives" },
-          { title: "We plan the routes", body: "A cab and a certified driver for every shift" },
-          { title: "Your team rides", body: "Picked up from home, dropped at the office" },
-          { title: "At work, on time", body: "Every shift, without you chasing anyone" },
+          { title: "Share Your Shifts", body: "Office address, shift timings and where your team lives" },
+          { title: "We Plan The Routes", body: "A cab and a certified driver for every shift" },
+          { title: "Your Team Rides", body: "Picked up from home, dropped at the office" },
+          { title: "At Work, On Time", body: "Every shift, without you chasing anyone" },
         ]}
       />
       <Features
         eyebrow="What’s included"
-        title={["One contract,", "six things handled"]}
+        title={["One Contract,", "Six Things Handled"]}
         sub={`Car, driver, tech and support from one partner, across ${COMPANY.cities} metro cities.`}
         items={[
-          { icon: CarFront, title: "Electric cabs", body: "Ready for tomorrow’s emission rules" },
-          { icon: UserCheck, title: "Certified drivers", body: "Trained and certified, every shift" },
-          { icon: Smartphone, title: "Smart technology", body: "Full transparency on every trip" },
-          { icon: Users, title: "An operations team", body: "One connected fleet, run for you" },
-          { icon: RefreshCw, title: "Backup cabs", body: "Ready if a cab breaks down" },
-          { icon: ShieldCheck, title: "Full compliance", body: "100% compliant with every regulation" },
+          { icon: CarFront, title: "Electric Cabs", body: "Ready for tomorrow’s emission rules" },
+          { icon: UserCheck, title: "Certified Drivers", body: "Trained and certified, every shift" },
+          { icon: Smartphone, title: "Smart Technology", body: "Full transparency on every trip" },
+          { icon: Users, title: "An Operations Team", body: "One connected fleet, run for you" },
+          { icon: RefreshCw, title: "Backup Cabs", body: "Ready if a cab breaks down" },
+          { icon: ShieldCheck, title: "Full Compliance", body: "100% compliant with every regulation" },
         ]}
       />
       <Commitments
@@ -60,24 +60,24 @@ export default function EmployeeMobilityPage() {
         items={[
           {
             icon: Clock,
-            title: "They arrive on time",
-            points: ["High reliability, every shift", "Live tracking on every ride", "A hassle-free daily commute"],
+            title: "They Arrive On Time",
+            points: ["High Reliability, Every Shift", "Live Tracking On Every Ride", "A Hassle-Free Daily Commute"],
           },
           {
             icon: Smile,
-            title: "They ride in comfort",
-            points: ["Odour-free, hygienic cabs", "Dedicated support, not a queue", "Happier, more satisfied teams"],
+            title: "They Ride In Comfort",
+            points: ["Odour-Free, Hygienic Cabs", "Dedicated Support, Not A Queue", "Happier, More Satisfied Teams"],
           },
           {
             icon: Leaf,
-            title: "Less cost, less carbon",
-            points: ["Real savings on commute costs", "Pricing that fuel can’t move", "A smaller carbon footprint"],
+            title: "Less Cost, Less Carbon",
+            points: ["Real Savings On Commute Costs", "Pricing That Fuel Can’t Move", "A Smaller Carbon Footprint"],
           },
         ]}
       />
       <LogoWall
         eyebrow="Clients"
-        title="The teams we already move"
+        title="The Teams We Already Move"
         size="large"
         logos={[
           { file: "tcs", name: "Tata Consultancy Services", w: 168, h: 49 },
@@ -87,12 +87,12 @@ export default function EmployeeMobilityPage() {
         ]}
       />
       <Enquiry
-        title="Tell us about your team"
+        title="Tell Us About Your Team"
         source="employee-mobility"
         fields={[
           { name: "name", label: "Name", type: "text", placeholder: "Your full name", autoComplete: "name" },
           { name: "company", label: "Company", type: "text", placeholder: "Your company name", autoComplete: "organization" },
-          { name: "role", label: "Job title", type: "text", placeholder: "Your role", autoComplete: "organization-title" },
+          { name: "role", label: "Job Title", type: "text", placeholder: "Your role", autoComplete: "organization-title" },
           { name: "email", label: "Email", type: "email", placeholder: "name@company.com", autoComplete: "email" },
         ]}
       />

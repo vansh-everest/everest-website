@@ -49,7 +49,7 @@ function HomeCarCard({ car }: { car: CarCardView }) {
             href="#apply"
             className="flex h-[26px] w-full items-center justify-center gap-2 rounded-full bg-brand px-6 text-xs font-semibold tracking-[0.5px] text-white transition hover:brightness-110 sm:h-9 sm:whitespace-nowrap sm:text-[15px] sm:tracking-[0.5px] lg:w-[222px] lg:shrink-0"
           >
-            Drive this car
+            Drive This Car
             <ArrowRight aria-hidden className="size-3.5 sm:size-[18px]" />
           </a>
         </div>

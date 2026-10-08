@@ -80,7 +80,7 @@ export function EnquiryForm({
       {fields.map(renderField)}
 
       <label className={labelCls}>
-        Mobile number{star}
+        Mobile Number{star}
         <input
           name="mobile"
           required

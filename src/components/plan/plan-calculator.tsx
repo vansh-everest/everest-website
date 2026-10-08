@@ -14,8 +14,8 @@ function dailyRent(year: PlanYear, paid: number): number {
   return Math.max(0, year.rent - steps * year.rentStep);
 }
 
-/** "Wagon R - 2025" reads as 2025 in the Model year picker; a car Jarvis prices without years reads "Any year". */
-const yearLabel = (name: string) => (name ? (/(\d{4})\s*$/.exec(name)?.[1] ?? name) : "Any year");
+/** "Wagon R - 2025" reads as 2025 in the Model year picker; a car Jarvis prices without years reads "Any Year". */
+const yearLabel = (name: string) => (name ? (/(\d{4})\s*$/.exec(name)?.[1] ?? name) : "Any Year");
 
 const money = (n: number) => rupees(String(n));
 
@@ -187,7 +187,7 @@ export function PlanCalculator({ view }: { view: PlanCalculatorView }) {
 
             <div className={`mt-8 grid gap-3 ${year.money !== null ? "sm:grid-cols-2" : ""}`}>
               <div className="rounded-2xl border border-line px-5 py-4">
-                <p className="text-sm leading-5 text-ink-soft">You pay each day</p>
+                <p className="text-sm leading-5 text-ink-soft">You Pay Each Day</p>
                 <p className="mt-1.5 text-navy">
                   <span className="text-[32px] font-extrabold leading-10">{daily}</span>
                   {tenure ? <span className="ml-2 text-xl leading-7">for {tenure} months</span> : null}
@@ -213,7 +213,7 @@ export function PlanCalculator({ view }: { view: PlanCalculatorView }) {
                 href="#apply"
                 className="flex h-14 flex-1 items-center justify-center whitespace-nowrap rounded-full bg-brand px-4 text-base font-bold text-white transition hover:brightness-110 lg:px-6 lg:text-lg"
               >
-                Apply for this car
+                Apply For This Car
               </Link>
             </div>
             <p className="mt-5 text-center text-base leading-6 text-navy">

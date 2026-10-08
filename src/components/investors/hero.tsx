@@ -57,7 +57,7 @@ export function InvestorHero() {
               href="#contact"
               className="flex h-14 items-center justify-center rounded-full bg-sun px-8 text-[17px] font-medium tracking-[0.2px] text-navy transition hover:brightness-95 lg:w-[391px] lg:text-xl"
             >
-              Contact investor relations
+              Contact Investor Relations
             </a>
             {ESG_REPORT_URL ? (
               <a

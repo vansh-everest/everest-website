@@ -1,10 +1,10 @@
 import { Eye, IndianRupee, UserPlus, Users, type LucideIcon } from "lucide-react";
 
 const BENEFITS: { icon: LucideIcon; title: string; points: [string, string] }[] = [
-  { icon: IndianRupee, title: "Make it your side business", points: ["Keep your job, refer in your free time", "The more you refer, the more you earn"] },
-  { icon: Eye, title: "Everything is transparent", points: ["Track every referral, stage by stage", "See every payout, itemised in the app"] },
-  { icon: UserPlus, title: "No driving required", points: ["Just refer family, friends and people you know", "No car or driving licence needed"] },
-  { icon: Users, title: "Grow your own network", points: ["Add sub-vendors under you", "You both get paid on their referrals"] },
+  { icon: IndianRupee, title: "Make It Your Side Business", points: ["Keep Your Job, Refer In Your Free Time", "The More You Refer, The More You Earn"] },
+  { icon: Eye, title: "Everything Is Transparent", points: ["Track Every Referral, Stage By Stage", "See Every Payout, Itemised In The App"] },
+  { icon: UserPlus, title: "No Driving Required", points: ["Just Refer Family, Friends And People You Know", "No Car Or Driving Licence Needed"] },
+  { icon: Users, title: "Grow Your Own Network", points: ["Add Sub-Vendors Under You", "You Both Get Paid On Their Referrals"] },
 ];
 
 export function DostBenefits() {
@@ -15,7 +15,7 @@ export function DostBenefits() {
           Benefits
         </p>
         <h2 className="mt-[7px] text-2xl font-bold capitalize leading-[30px] text-navy lg:mt-[11px] lg:text-[52px] lg:normal-case lg:leading-[60px]">
-          What you get as a Dost
+          What You Get As A Dost
         </h2>
       </div>
       <ul className="mx-auto mt-6 grid max-w-[1104px] gap-4 lg:mt-[52px] lg:grid-cols-2 lg:gap-x-6 lg:gap-y-7">

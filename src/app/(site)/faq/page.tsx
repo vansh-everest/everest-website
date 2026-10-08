@@ -11,49 +11,49 @@ import { jsonLd } from "@/lib/json-ld";
  */
 const faqs: { q: string; a: string }[] = [
   {
-    q: "Do I need my own car?",
+    q: "Do I Need My Own Car?",
     a: "No. Everest Fleet provides the car, the commercial permit and the insurance. You bring a valid driving licence and your documents.",
   },
   {
-    q: "What deposit is required?",
+    q: "What Deposit Is Required?",
     a: "A refundable deposit, and the amount depends on the city and the plan you choose. The exact figure is confirmed at the hub before you take a car.",
   },
   {
-    q: "What documents do I need to apply?",
+    q: "What Documents Do I Need To Apply?",
     a: "An Aadhaar card, a PAN card, a driving licence and proof of address. Bring the originals to the hub.",
   },
   {
-    q: "Do I need a commercial licence?",
+    q: "Do I Need A Commercial Licence?",
     a: "A valid driving licence is required. The hub will tell you whether your city also needs a commercial endorsement, because that varies by state.",
   },
   {
-    q: "When am I paid?",
+    q: "When Am I Paid?",
     a: "Every week, directly to your bank account. There is no cash handling and no monthly cycle to wait for.",
   },
   {
-    q: "Who pays for fuel?",
+    q: "Who Pays For Fuel?",
     a: "Fuel or charging is paid by the driver. Insurance, servicing and repairs are covered by Everest Fleet.",
   },
   {
-    q: "Can I really own the car?",
-    a: "Yes. The Own Now plan transfers ownership to you at the end of the term, and Drive to Own does the same through monthly instalments.",
+    q: "Can I Really Own The Car?",
+    a: "Yes. The Own Now plan transfers ownership to you at the end of the term, and Drive To Own does the same through monthly instalments.",
   },
   {
-    q: "Which cities is Everest Fleet available in?",
+    q: "Which Cities Is Everest Fleet Available In?",
     a: "Mumbai, Delhi NCR, Bengaluru, Hyderabad, Chennai, Pune and Kolkata.",
   },
   {
-    q: "Is maintenance and insurance covered?",
+    q: "Is Maintenance And Insurance Covered?",
     a: "Yes. Servicing, repairs and insurance are handled by Everest Fleet for the length of the term.",
   },
   {
-    q: "How do I start?",
+    q: "How Do I Start?",
     a: "Apply online with your name, mobile number and city, or walk into the hub in your city. We call you back to arrange the paperwork.",
   },
 ];
 
 export const metadata: Metadata = {
-  title: "Driver questions answered",
+  title: "Driver Questions Answered",
   description:
     "What you need to drive with Everest Fleet: documents, deposit, payouts, ownership and the cities we operate in.",
   alternates: { canonical: "/faq/" },
@@ -79,7 +79,7 @@ export default function Page() {
         <div className="mx-auto max-w-[840px]">
           <p className="text-xs font-bold uppercase tracking-[1.5px] text-sun">FAQs</p>
           <h1 className="mt-3 text-[34px] font-bold leading-tight tracking-[-0.5px] lg:text-[56px] lg:leading-[1.05]">
-            Questions drivers ask
+            Questions Drivers Ask
           </h1>
           <p className="mt-3 max-w-[60ch] text-base leading-7 text-white/85">
             Everything worth knowing before you start driving with us.
@@ -108,7 +108,7 @@ export default function Page() {
         </ul>
 
         <div className="mx-auto mt-12 max-w-[840px] rounded-2xl bg-navy px-8 py-10 text-center text-white">
-          <h2 className="text-2xl font-bold lg:text-[32px]">Still have a question?</h2>
+          <h2 className="text-2xl font-bold lg:text-[32px]">Still Have A Question?</h2>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <a href={PHONE_HREF} className="flex h-12 items-center rounded-full bg-sun px-7 text-sm font-bold text-navy">
               Call {PHONE_DISPLAY}
@@ -123,7 +123,7 @@ export default function Page() {
               href="/drive-with-us"
               className="flex h-12 items-center rounded-full border border-white/30 px-7 text-sm font-bold text-white"
             >
-              Drive with us
+              Drive With Us
             </Link>
           </div>
         </div>

@@ -160,7 +160,7 @@ function StoryCard({ story }: { story: Story }) {
       </div>
       {story.href ? (
         <Link href={story.href} className="mt-4 inline-flex items-center gap-2 text-[15px] font-medium text-brand lg:mt-6 lg:text-base">
-          Read the story <ArrowRight aria-hidden className="size-4" />
+          Read The Story <ArrowRight aria-hidden className="size-4" />
         </Link>
       ) : null}
     </article>

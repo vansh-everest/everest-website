@@ -8,7 +8,7 @@ import { WhoCanJoin } from "@/components/dost/who-can-join";
 
 export const metadata: Metadata = {
   // The site layout's title template appends " | Everest Fleet".
-  title: "Everest Dost: Refer Drivers and Earn",
+  title: "Everest Dost: Refer Drivers And Earn",
   description:
     "Refer drivers to Everest Fleet through the Everest Dost app and get paid at every milestone, from car allotted to trip targets.",
   alternates: { canonical: "/everest-dost/" },

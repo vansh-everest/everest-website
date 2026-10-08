@@ -43,7 +43,7 @@ export function figuresFor(view: PlanWizardView, car: WizardCar, city: string, t
   return option ? { amount: option.daily, unit: "/day", money: option.deposit, upfront, months } : { ...base, months };
 }
 
-export const rentLabel = (unit: string) => (unit.includes("day") ? "Daily rent" : "Rent");
+export const rentLabel = (unit: string) => (unit.includes("day") ? "Daily Rent" : "Rent");
 
 export function StepHeading({ id, children }: { id: string; children: ReactNode }) {
   return (

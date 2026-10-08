@@ -17,7 +17,8 @@ export function Marquee({
   itemClassName = "",
   className = "",
 }: {
-  items: { key: string; node: ReactNode }[];
+  /** `copyNode`, when given, draws the repeats: a link there keeps working for a pointer but stays out of the tab order. */
+  items: { key: string; node: ReactNode; copyNode?: ReactNode }[];
   label: string;
   /** Time for one copy of the items to pass; longer is slower. */
   seconds: number;
@@ -40,16 +41,18 @@ export function Marquee({
         {halves.flatMap((half) =>
           Array.from({ length: copies }, (_, copy) => {
             const real = half === 0 && copy === 0;
+            // Repeats are inert unless every item drew its own repeat, which can then stay clickable.
+            const live = items.every((item) => item.copyNode !== undefined);
             return (
               <div
                 key={`${half}-${copy}`}
                 aria-hidden={real ? undefined : true}
-                inert={!real}
+                inert={!real && !live}
                 className={`flex ${real ? "" : "motion-reduce:hidden"}`}
               >
                 {items.map((item) => (
                   <div key={item.key} className={`flex shrink-0 ${itemClassName}`}>
-                    {item.node}
+                    {real ? item.node : (item.copyNode ?? item.node)}
                   </div>
                 ))}
               </div>

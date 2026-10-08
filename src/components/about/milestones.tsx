@@ -3,21 +3,21 @@ import { MapPin } from "lucide-react";
 
 /** Everest's journey timeline, oldest first. Words between ** are set in bold, as the timeline sets them. */
 const milestones = [
-  { date: "Oct 2016", text: "Started operations in **Mumbai**" },
-  { date: "Oct 2018", text: "Started operations in **Bengaluru**" },
-  { date: "Nov 2019", text: "Pivoted to funding car purchase via **off balance sheet model**" },
-  { date: "Nov 2020", text: "Launched **MITR** business" },
-  { date: "Mar 2021", text: "Started operations in **Delhi**" },
-  { date: "Nov 2021", text: "Started operations in **Hyderabad**" },
-  { date: "Feb 2022", text: "Launched **Refrigerated Vans** business" },
-  { date: "May 2022", text: "Started operations in **Pune**" },
-  { date: "Aug 2022", text: "Started operations in **Kolkata** and launched **EV Pilot**" },
-  { date: "Nov 2022", text: "Started operations in **Chennai**" },
-  { date: "Jun 2023", text: "Partnered with Uber India to launch **Uber Green**" },
-  { date: "Jul 2023", text: "Launched **Intercity** business" },
-  { date: "Dec 2023", text: "Onboarded first DFI as a lender, **GuarantCo**" },
-  { date: "Jan 2024", text: "Launched **B2B (ETS)** business" },
-  { date: "Oct 2025", text: "**21,000+** cars in India" },
+  { date: "Oct 2016", text: "Started Operations In **Mumbai**" },
+  { date: "Oct 2018", text: "Started Operations In **Bengaluru**" },
+  { date: "Nov 2019", text: "Pivoted To Funding Car Purchase Via **Off Balance Sheet Model**" },
+  { date: "Nov 2020", text: "Launched **MITR** Business" },
+  { date: "Mar 2021", text: "Started Operations In **Delhi**" },
+  { date: "Nov 2021", text: "Started Operations In **Hyderabad**" },
+  { date: "Feb 2022", text: "Launched **Refrigerated Vans** Business" },
+  { date: "May 2022", text: "Started Operations In **Pune**" },
+  { date: "Aug 2022", text: "Started Operations In **Kolkata** And Launched **EV Pilot**" },
+  { date: "Nov 2022", text: "Started Operations In **Chennai**" },
+  { date: "Jun 2023", text: "Partnered With Uber India To Launch **Uber Green**" },
+  { date: "Jul 2023", text: "Launched **Intercity** Business" },
+  { date: "Dec 2023", text: "Onboarded First DFI As A Lender, **GuarantCo**" },
+  { date: "Jan 2024", text: "Launched **B2B (ETS)** Business" },
+  { date: "Oct 2025", text: "**21,000+** Cars In India" },
 ];
 
 function Text({ text }: { text: string }) {

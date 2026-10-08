@@ -15,7 +15,7 @@ type Benefit = {
 };
 
 const benefits: Benefit[] = [
-  { icon: CurrencyInr, bold: true, tone: "bg-sun text-[#343330]", title: "Earn up to ₹40,000/mo", body: "Direct bank transfer every week" },
+  { icon: CurrencyInr, bold: true, tone: "bg-sun text-[#343330]", title: "Earn Up To ₹40,000/mo", body: "Direct bank transfer every week" },
   {
     icon: LockSimpleOpen,
     tone: "bg-brand text-white",

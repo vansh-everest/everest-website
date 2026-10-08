@@ -100,7 +100,7 @@ export function PlanHero({ view, startHref, wide }: { view: PlanPageView; startH
             className="flex h-14 items-center justify-center rounded-full bg-sun text-[17px] font-bold text-navy transition hover:brightness-95 lg:w-[272px] lg:text-xl lg:font-medium"
           >
             <span className="lg:hidden">Get Started</span>
-            <span className="hidden lg:inline">Get started</span>
+            <span className="hidden lg:inline">Get Started</span>
           </Link>
           <a
             href={PHONE_HREF}

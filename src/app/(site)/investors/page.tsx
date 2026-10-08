@@ -7,7 +7,7 @@ import { NewsAndReports } from "@/components/investors/news-reports";
 import { BusinessModel, Growth, Impact, Opportunity } from "@/components/investors/sections";
 
 export const metadata: Metadata = {
-  title: "For investors",
+  title: "For Investors",
   description: COMPANY_BLURB,
   alternates: { canonical: "/investors/" },
 };

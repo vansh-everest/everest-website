@@ -2,11 +2,11 @@ import Image from "next/image";
 import { Carousel } from "@/components/site/carousel";
 
 const STEPS = [
-  { title: "Log in to the app", body: "Enter your mobile number and you’re in.", alt: "Everest Dost app login screen asking for a mobile number" },
-  { title: "Set up your profile", body: "Details, documents, bank account. Three steps and you’re ready to refer.", alt: "Everest Dost app screen for uploading address details and documents" },
-  { title: "Add Lead details", body: "You know a driver who needs a car. Add a name, number and city.", alt: "Everest Dost app form for adding a driver lead" },
-  { title: "Lead gets referred", body: "From interview to car allotted, see every stage as it happens.", alt: "Everest Dost app lead list showing each referral’s stage" },
-  { title: "Earn at each milestone", body: "Car allotted, first trip, trip targets. Each one pays you.", alt: "Everest Dost app lead details with the payout for each milestone" },
+  { title: "Log In To The App", body: "Enter your mobile number and you’re in.", alt: "Everest Dost app login screen asking for a mobile number" },
+  { title: "Set Up Your Profile", body: "Details, documents, bank account. Three steps and you’re ready to refer.", alt: "Everest Dost app screen for uploading address details and documents" },
+  { title: "Add Lead Details", body: "You know a driver who needs a car. Add a name, number and city.", alt: "Everest Dost app form for adding a driver lead" },
+  { title: "Lead Gets Referred", body: "From interview to car allotted, see every stage as it happens.", alt: "Everest Dost app lead list showing each referral’s stage" },
+  { title: "Earn At Each Milestone", body: "Car allotted, first trip, trip targets. Each one pays you.", alt: "Everest Dost app lead details with the payout for each milestone" },
 ];
 
 /** Five app screens in a row on a wide screen; on a phone, one card at a time with a peek of the next. */

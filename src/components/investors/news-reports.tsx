@@ -7,8 +7,8 @@ type Doc = { icon: LucideIcon; title: string; meta: string; href: string; action
 
 const DOCS: Doc[] = [
   { icon: FileText, title: "ESG Report, FY 2024-25", meta: "PDF · 44 pages", href: ESG_REPORT_URL, action: "Download", short: "Download", download: true },
-  { icon: FileText, title: "Company profile", meta: "PDF", href: COMPANY_PROFILE_URL, action: "Download", short: "Download", download: true },
-  { icon: Lock, title: "Investor presentation", meta: "Shared on request", href: "#contact", action: "Request access", short: "Request", download: false },
+  { icon: FileText, title: "Company Profile", meta: "PDF", href: COMPANY_PROFILE_URL, action: "Download", short: "Download", download: true },
+  { icon: Lock, title: "Investor Presentation", meta: "Shared on request", href: "#contact", action: "Request Access", short: "Request", download: false },
 ];
 
 /** "In the news" and the documents row, on one navy band. */
@@ -37,7 +37,7 @@ export function NewsAndReports() {
                       rel="noopener"
                       className="mt-1.5 inline-flex items-center gap-1.5 text-sm font-semibold text-navy hover:text-brand lg:mt-auto lg:pt-6 lg:text-[15px]"
                     >
-                      Read the story <ArrowUpRight aria-hidden className="size-4" />
+                      Read The Story <ArrowUpRight aria-hidden className="size-4" />
                     </a>
                   ) : null}
                 </li>

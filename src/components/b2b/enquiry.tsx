@@ -8,7 +8,7 @@ export function Enquiry({
   fields,
   after,
   choice,
-  submit = "Send enquiry",
+  submit = "Send Enquiry",
 }: {
   title: string;
   source: string;

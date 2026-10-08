@@ -105,7 +105,7 @@ export function EnquiryForm({ source }: { source: string }) {
         <input name="email" required type="email" autoComplete="email" placeholder="name@company.com" className={input} />
       </label>
       <label className={label}>
-        Mobile number
+        Mobile Number
         <Required />
         <input
           name="mobile"
@@ -120,7 +120,7 @@ export function EnquiryForm({ source }: { source: string }) {
         />
       </label>
       <label className={label}>
-        Service you need
+        Service You Need
         <Required />
         <span className="relative block">
           <select
@@ -152,7 +152,7 @@ export function EnquiryForm({ source }: { source: string }) {
         disabled={!ready || state === "sending" || state === "done"}
         className="mt-1 h-[41px] rounded-full bg-brand text-[17px] font-medium tracking-[0.2px] text-white transition hover:brightness-110 disabled:bg-brand/45 disabled:hover:brightness-100 sm:mt-3 sm:h-14"
       >
-        {state === "sending" ? "Sending" : "Send enquiry"}
+        {state === "sending" ? "Sending" : "Send Enquiry"}
       </button>
       {state === "failed" ? (
         <p role="alert" className="text-center text-sm text-[#b3261e]">

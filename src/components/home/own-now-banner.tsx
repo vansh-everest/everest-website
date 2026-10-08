@@ -10,7 +10,7 @@ function YellowCheck({ className = "" }: { className?: string }) {
   );
 }
 
-const perks = ["Without loan", "Without CIBIL score", "With minimal upfront payment"];
+const perks = ["Without Loan", "Without CIBIL Score", "With Minimal Upfront Payment"];
 
 /*
  * Desktop is laid out on the 1440 export frame. --u is one frame pixel: it shrinks with the
@@ -68,7 +68,7 @@ export function OwnNowBanner() {
             href="/own-now/"
             className="mt-1.5 flex h-14 w-full items-center justify-center rounded-full bg-sun text-base font-medium tracking-[0.2px] text-navy transition hover:brightness-95 lg:absolute lg:left-[calc(var(--u)*340)] lg:top-[calc(var(--u)*200)] lg:mt-0 lg:h-[calc(var(--u)*55)] lg:w-[calc(var(--u)*154)] lg:text-[length:calc(var(--u)*15)] lg:tracking-[calc(var(--u)*1.2)]"
           >
-            Know more
+            Know More
           </Link>
         </div>
       </div>

@@ -60,23 +60,43 @@ export function NavLinks() {
           );
         }
 
+        const shown = open === item.label;
+        const flip = () => setOpen(shown ? null : item.label);
+        const chevron = <ChevronDown size={14} aria-hidden className={`-mr-[3px] transition ${shown ? "rotate-180" : ""}`} />;
         return (
-          <div key={item.label} className="relative" onMouseEnter={() => setOpen(item.label)}>
-            <button
-              type="button"
-              aria-expanded={open === item.label}
-              onClick={() => setOpen(open === item.label ? null : item.label)}
-              className={`flex items-center gap-1.5 ${label} ${tone}`}
-            >
-              {item.label}
-              <ChevronDown size={14} aria-hidden className={`-mr-[3px] transition ${open === item.label ? "rotate-180" : ""}`} />
-              {active && <span aria-hidden className="absolute inset-x-0 bottom-0 h-[3px] bg-brand" />}
-            </button>
-            {open === item.label ? (
-              <div
-                className="absolute left-1/2 top-full z-50 w-[263px] -translate-x-1/2 pt-7"
-                onMouseLeave={() => setOpen(null)}
-              >
+          // Hovering opens the menu; the label itself goes to the group's own page, and the
+          // chevron opens the menu for keyboard and touch.
+          <div
+            key={item.label}
+            className="relative"
+            onMouseEnter={() => setOpen(item.label)}
+            onMouseLeave={() => setOpen((now) => (now === item.label ? null : now))}
+          >
+            {item.href ? (
+              <span className={`flex items-center gap-1.5 ${label} ${tone}`}>
+                <Link href={item.href} aria-current={isCurrent(item.href, pathname) ? "page" : undefined} className="hover:text-brand">
+                  {item.label}
+                </Link>
+                <button
+                  type="button"
+                  aria-expanded={shown}
+                  aria-label={`${item.label} pages`}
+                  onClick={flip}
+                  className="-my-1 -mr-1 rounded p-1 hover:text-brand"
+                >
+                  {chevron}
+                </button>
+                {active && <span aria-hidden className="absolute inset-x-0 bottom-0 h-[3px] bg-brand" />}
+              </span>
+            ) : (
+              <button type="button" aria-expanded={shown} onClick={flip} className={`flex items-center gap-1.5 ${label} ${tone}`}>
+                {item.label}
+                {chevron}
+                {active && <span aria-hidden className="absolute inset-x-0 bottom-0 h-[3px] bg-brand" />}
+              </button>
+            )}
+            {shown ? (
+              <div className="absolute left-1/2 top-full z-50 w-[263px] -translate-x-1/2 pt-7">
                 <ul className="overflow-hidden rounded-xl border border-[#dfe5ee] bg-white py-2 shadow-[0_14px_36px_rgba(6,47,80,0.22)]">
                   {item.items.map((sub) => (
                     <li key={sub.label}>

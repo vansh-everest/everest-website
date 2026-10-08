@@ -66,7 +66,7 @@ export function DostApp() {
                 href="/everest-dost/"
                 className="mt-[calc(var(--u)*11.4)] flex h-[calc(var(--u)*30)] w-[calc(var(--u)*159)] items-center justify-center rounded-full border-[length:calc(var(--u)*2)] border-brand text-[length:calc(var(--u)*14)] tracking-[0.04em] text-brand transition hover:bg-brand/5 lg:-ml-[calc(var(--u)*1)] lg:mt-[calc(var(--u)*16.2)] lg:h-[calc(var(--u)*48)] lg:w-[calc(var(--u)*498)] lg:border-navy lg:text-[length:calc(var(--u)*16)] lg:font-medium lg:text-navy lg:hover:bg-navy/5"
               >
-                Know more
+                Know More
               </Link>
             </div>
 

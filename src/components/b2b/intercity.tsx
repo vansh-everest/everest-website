@@ -26,7 +26,7 @@ export async function IntercityHero() {
       <div className="bg-[linear-gradient(180deg,#08345b_0%,#021831_100%)] px-4 pb-[38px] pt-[9px] lg:bg-none lg:px-[42px] lg:pb-0 lg:pt-16 xl:pt-[136px]">
         <HeroLabel>Intercity</HeroLabel>
         <HeroTitle>
-          City to City,
+          City To City,
           <br />
           One Way Or Round Trip
         </HeroTitle>
@@ -46,10 +46,10 @@ export function BookRide() {
         Book a ride
       </Eyebrow>
       <h2 className="mx-auto mt-[11px] max-w-[300px] text-[28px] font-bold leading-[34px] tracking-[-0.4px] text-white lg:mt-[7px] lg:max-w-none lg:text-[42px] lg:leading-[50px] lg:tracking-normal">
-        Discover new paths for your intercity rides
+        Discover New Paths For Your Intercity Rides
       </h2>
       <HeroActions
-        primary={{ label: "Book now", href: "#book" }}
+        primary={{ label: "Book Now", href: "#book" }}
         secondary={{ label: "Call Now", href: PHONE_HREF, phoneIcon: true }}
         arrow
         className="mt-3 lg:mt-[33px] lg:justify-center"

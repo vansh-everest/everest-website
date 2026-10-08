@@ -24,7 +24,7 @@ export function EvBanner() {
             <CheckItem>₹40,000+ monthly</CheckItem>
           </ul>
           <SunButton href="#plans" className="mt-[23px]">
-            Know more
+            Know More
           </SunButton>
         </div>
         <div className="relative aspect-[660/336] lg:aspect-auto">

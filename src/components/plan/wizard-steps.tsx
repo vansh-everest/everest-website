@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Check, MapPin } from "lucide-react";
+import { Check, CircleCheck, MapPin } from "lucide-react";
 import { rupees } from "@/lib/content";
 import type { CityOption, WizardCar } from "@/lib/plan-view";
 import type { Said } from "./wizard-copy";
@@ -25,7 +25,8 @@ export function CityStep({
       <StepHeading id={headingId}>
         <Say text={question} />
       </StepHeading>
-      <div role="radiogroup" aria-labelledby={headingId} className="mt-[18px] grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-3 lg:mt-[26px] lg:grid-cols-[repeat(4,187px)] lg:gap-x-3.5 lg:gap-y-[15px]">
+      {/* Centred rows, so two cities or seven sit evenly in the card. */}
+      <div role="radiogroup" aria-labelledby={headingId} className="mt-[18px] flex flex-wrap justify-center gap-x-3 gap-y-2.5 lg:mt-[26px] lg:gap-x-3.5 lg:gap-y-[15px]">
         {cities.map((city) => {
           const on = city.slug === value;
           return (
@@ -35,7 +36,7 @@ export function CityStep({
               role="radio"
               aria-checked={on}
               onClick={() => onChange(city.slug)}
-              className={`flex h-[57px] items-center gap-3 rounded-xl border px-[19px] text-left text-[17px] font-semibold leading-5 transition lg:h-[67px] lg:px-5 ${
+              className={`flex h-[57px] w-[calc(50%-6px)] items-center gap-3 rounded-xl border px-[19px] text-left text-[17px] font-semibold leading-5 transition sm:w-[calc(33.333%-8px)] lg:h-[67px] lg:w-[187px] lg:px-5 ${
                 on ? "border-navy bg-navy text-white" : "border-[#dfe4e8] bg-white text-navy hover:border-brand"
               }`}
             >
@@ -76,7 +77,7 @@ export function CarStep({
       <StepHeading id={headingId}>
         <Say text={question} />
       </StepHeading>
-      <div role="radiogroup" aria-labelledby={headingId} className="mt-[18px] grid grid-cols-2 gap-x-[11px] gap-y-3 sm:grid-cols-3 lg:mt-[30px] lg:gap-4">
+      <div role="radiogroup" aria-labelledby={headingId} className="mt-[18px] flex flex-wrap justify-center gap-x-[11px] gap-y-3 lg:mt-[30px] lg:gap-4">
         {cars.map((c) => {
           const on = c.id === value;
           return (
@@ -86,7 +87,7 @@ export function CarStep({
               role="radio"
               aria-checked={on}
               onClick={() => onChange(c.id)}
-              className={`rounded-[14px] border p-[11px] text-left transition lg:p-3 ${
+              className={`w-[calc(50%-6px)] rounded-[14px] border p-[11px] text-left transition sm:w-[calc(33.333%-8px)] lg:w-[calc(33.333%-11px)] lg:p-3 ${
                 on ? "border-brand bg-[#eaf3fb] ring-1 ring-inset ring-brand" : "border-[#dfe4e8] bg-white hover:border-brand"
               }`}
             >
@@ -109,7 +110,7 @@ export function CarStep({
       </div>
 
       {years.length ? (
-        <div className="mt-[22px] lg:mt-7 lg:flex lg:items-center lg:gap-5">
+        <div className="mt-[22px] lg:mt-7 lg:flex lg:items-center lg:justify-center lg:gap-5">
           <p id={`${headingId}-year`} className="text-[17px] font-semibold leading-6 text-navy lg:text-lg lg:font-bold">
             <Say text={yearLabel} />
           </p>
@@ -168,6 +169,9 @@ export function RentStrip({ figures, badge, children }: { figures: Figures; badg
 
 export function UpfrontStep({
   car,
+  carLabel,
+  cityName,
+  perks,
   tenures,
   tenure,
   onTenure,
@@ -177,6 +181,9 @@ export function UpfrontStep({
   headingId,
 }: {
   car: WizardCar;
+  carLabel: string;
+  cityName: string;
+  perks: string[];
   tenures: string[];
   tenure: string;
   onTenure: (months: string) => void;
@@ -188,75 +195,101 @@ export function UpfrontStep({
   const options = car.options;
   const point = options.length ? Math.min(index, options.length - 1) : 0;
   const ends = options.length > 1 ? [options[0], options.length > 2 ? options[Math.floor((options.length - 1) / 2)] : null, options[options.length - 1]] : [];
+  const lines = perks.map((p) => p.replace("{months}", tenure)).filter((p) => !p.includes("{"));
   return (
     <>
-      <StepHeading id={headingId}>Choose your Tenure &amp; Upfront</StepHeading>
+      <StepHeading id={headingId}>Choose Your Tenure &amp; Upfront</StepHeading>
+      <div className="lg:mt-[30px] lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:items-start lg:gap-8">
+        <div className="mt-[18px] flex items-center gap-4 lg:mt-0 lg:block">
+          <span className="relative block aspect-[456/280] w-[44%] shrink-0 overflow-hidden rounded-2xl bg-mist lg:w-full">
+            {car.image.url ? <Image src={car.image.url} alt={car.image.alt} fill sizes="(min-width: 1024px) 360px, 45vw" className="object-cover" /> : null}
+          </span>
+          <span className="block min-w-0 lg:mt-5">
+            <span className="block text-xl font-extrabold leading-7 text-navy lg:text-[28px] lg:leading-9">{carLabel}</span>
+            <span className="mt-1 flex items-center gap-1.5 text-[15px] leading-5 text-navy lg:mt-1.5 lg:text-base">
+              <MapPin aria-hidden size={16} className="shrink-0 text-brand" />
+              {cityName}
+            </span>
+            {lines.length ? (
+              <span className="mt-4 hidden space-y-2.5 lg:block">
+                {lines.map((p) => (
+                  <span key={p} className="flex items-center gap-2.5 text-[15px] leading-5 text-navy">
+                    <CircleCheck aria-hidden size={20} className="shrink-0 fill-leaf text-white" />
+                    {p}
+                  </span>
+                ))}
+              </span>
+            ) : null}
+          </span>
+        </div>
+        <div>
+          {tenures.length ? (
+            <div className={`mt-[18px] px-4 pb-4 pt-[15px] lg:mt-0 lg:rounded-2xl lg:px-6 lg:pb-5 lg:pt-[19px] ${box}`}>
+              <p id={`${headingId}-tenure`} className="text-xs font-semibold uppercase leading-4 tracking-[1px] text-brand">
+                Tenure
+              </p>
+              <div role="radiogroup" aria-labelledby={`${headingId}-tenure`} className="-mx-1 mt-3 flex gap-2 overflow-x-auto px-1 pb-1 lg:mt-[13px] lg:gap-2.5">
+                {tenures.map((m) => {
+                  const on = m === tenure;
+                  return (
+                    <button
+                      key={m}
+                      type="button"
+                      role="radio"
+                      aria-checked={on}
+                      onClick={() => onTenure(m)}
+                      className={`flex h-[54px] w-[60px] shrink-0 flex-col items-center justify-center rounded-xl border text-navy transition lg:h-11 lg:w-auto lg:flex-row lg:gap-1 lg:rounded-full lg:px-[22px] ${
+                        on ? "border-navy bg-navy text-white" : "border-[#dfe4e8] bg-white hover:border-brand"
+                      }`}
+                    >
+                      <span className="text-lg font-bold leading-5 lg:text-base lg:font-semibold">{m}</span>
+                      <span className={`text-[11px] leading-3 lg:text-base lg:font-semibold lg:leading-5 ${on ? "" : "text-ink-soft lg:text-navy"}`}>Months</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
 
-      {tenures.length ? (
-        <div className={`mt-[18px] px-4 pb-4 pt-[15px] lg:mt-[30px] lg:rounded-2xl lg:px-6 lg:pb-5 lg:pt-[19px] ${box}`}>
-          <p id={`${headingId}-tenure`} className="text-xs font-semibold uppercase leading-4 tracking-[1px] text-brand">
-            Tenure
-          </p>
-          <div role="radiogroup" aria-labelledby={`${headingId}-tenure`} className="-mx-1 mt-3 flex gap-2 overflow-x-auto px-1 pb-1 lg:mt-[13px] lg:gap-2.5">
-            {tenures.map((m) => {
-              const on = m === tenure;
-              return (
-                <button
-                  key={m}
-                  type="button"
-                  role="radio"
-                  aria-checked={on}
-                  onClick={() => onTenure(m)}
-                  className={`flex h-[54px] w-[60px] shrink-0 flex-col items-center justify-center rounded-xl border text-navy transition lg:h-11 lg:w-auto lg:flex-row lg:gap-1 lg:rounded-full lg:px-[22px] ${
-                    on ? "border-navy bg-navy text-white" : "border-[#dfe4e8] bg-white hover:border-brand"
-                  }`}
-                >
-                  <span className="text-lg font-bold leading-5 lg:text-base lg:font-semibold">{m}</span>
-                  <span className={`text-[11px] leading-3 lg:text-base lg:font-semibold lg:leading-5 ${on ? "" : "text-ink-soft lg:text-navy"}`}>months</span>
-                </button>
-              );
-            })}
+          {options.length ? (
+            <div className={`mt-3 px-4 pb-[15px] pt-[19px] lg:mt-4 lg:rounded-2xl lg:px-6 lg:pb-[17px] lg:pt-[23px] ${box}`}>
+              <p className="text-xs font-semibold uppercase leading-4 tracking-[1px] text-brand">Upfront · paid once</p>
+              <p className="mt-1.5 text-[30px] font-extrabold leading-9 tracking-[-0.5px] text-navy lg:mt-2 lg:text-[40px] lg:leading-[48px]">
+                {rupees(options[point].deposit)}
+              </p>
+              {ends.length ? (
+                <>
+                  <input
+                    type="range"
+                    min={0}
+                    max={options.length - 1}
+                    step={1}
+                    value={point}
+                    onChange={(e) => onIndex(Number(e.target.value))}
+                    aria-label="Upfront"
+                    aria-valuetext={rupees(options[point].deposit)}
+                    style={{ "--fill": `${(point / (options.length - 1)) * 100}%` } as React.CSSProperties}
+                    className="range-slider mt-4 w-full lg:mt-5"
+                  />
+                  <div className="mt-3.5 flex justify-between text-xs leading-4 text-ink-soft lg:text-sm">
+                    {ends.map((o, i) =>
+                      o ? (
+                        <span key={i}>
+                          <span className="hidden lg:inline">{rupees(o.deposit)}</span>
+                          <span className="lg:hidden">{shortRupees(o.deposit)}</span>
+                        </span>
+                      ) : null
+                    )}
+                  </div>
+                </>
+              ) : null}
+            </div>
+          ) : null}
+
+          <div className="mt-3 lg:mt-4">
+            <RentStrip figures={figures} badge={figures.months ? `Yours In Month ${figures.months}` : undefined} />
           </div>
         </div>
-      ) : null}
-
-      {options.length ? (
-        <div className={`mt-3 px-4 pb-[15px] pt-[19px] lg:mt-4 lg:rounded-2xl lg:px-6 lg:pb-[17px] lg:pt-[23px] ${box}`}>
-          <p className="text-xs font-semibold uppercase leading-4 tracking-[1px] text-brand">Upfront · paid once</p>
-          <p className="mt-1.5 text-[30px] font-extrabold leading-9 tracking-[-0.5px] text-navy lg:mt-2 lg:text-[40px] lg:leading-[48px]">
-            {rupees(options[point].deposit)}
-          </p>
-          {ends.length ? (
-            <>
-              <input
-                type="range"
-                min={0}
-                max={options.length - 1}
-                step={1}
-                value={point}
-                onChange={(e) => onIndex(Number(e.target.value))}
-                aria-label="Upfront"
-                aria-valuetext={rupees(options[point].deposit)}
-                style={{ "--fill": `${(point / (options.length - 1)) * 100}%` } as React.CSSProperties}
-                className="range-slider mt-4 w-full lg:mt-5"
-              />
-              <div className="mt-3.5 flex justify-between text-xs leading-4 text-ink-soft lg:text-sm">
-                {ends.map((o, i) =>
-                  o ? (
-                    <span key={i}>
-                      <span className="hidden lg:inline">{rupees(o.deposit)}</span>
-                      <span className="lg:hidden">{shortRupees(o.deposit)}</span>
-                    </span>
-                  ) : null
-                )}
-              </div>
-            </>
-          ) : null}
-        </div>
-      ) : null}
-
-      <div className="mt-3 lg:mt-4">
-        <RentStrip figures={figures} badge={figures.months ? `Yours in month ${figures.months}` : undefined} />
       </div>
     </>
   );

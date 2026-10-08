@@ -11,9 +11,9 @@
 export type PressItem = { outlet: string; date: string; title: string; url: string };
 
 export const PRESS: PressItem[] = [
-  { outlet: "VCCircle", date: "2024-12-11", title: "BII backs Everest Fleet’s EV growth", url: "" },
-  { outlet: "Forbes", date: "2024-12-11", title: "Everest Fleet at Forbes DGEMS 2024", url: "" },
-  { outlet: "BW Disrupt", date: "2024-09", title: "Siddharth Ladsariya named in 40 Under 40", url: "" },
+  { outlet: "VCCircle", date: "2024-12-11", title: "BII Backs Everest Fleet’s EV Growth", url: "" },
+  { outlet: "Forbes", date: "2024-12-11", title: "Everest Fleet At Forbes DGEMS 2024", url: "" },
+  { outlet: "BW Disrupt", date: "2024-09", title: "Siddharth Ladsariya Named In 40 Under 40", url: "" },
 ];
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

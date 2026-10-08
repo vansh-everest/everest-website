@@ -24,7 +24,7 @@ export function B2BHero({
   secondary,
   size = "lg",
   media,
-  brandLabel = "Your brand here",
+  brandLabel = "Your Brand Here",
   compactTitle = false,
 }: {
   label: string;

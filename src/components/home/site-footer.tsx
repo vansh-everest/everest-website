@@ -10,8 +10,8 @@ const columns = [
     title: "Drivers",
     links: [
       { label: "Own Now", href: "/own-now" },
-      { label: "Drive to Own", href: "/drive-to-own" },
-      { label: "Drive to Earn", href: "/drive-to-earn" },
+      { label: "Drive To Own", href: "/drive-to-own" },
+      { label: "Drive To Earn", href: "/drive-to-earn" },
       { label: "Driver FAQs", href: "/faq" },
       { label: "Benefits", href: "/our-services" },
     ],

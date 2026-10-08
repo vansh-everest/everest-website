@@ -137,14 +137,16 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
       <Progress steps={copy.steps} step={step} />
 
       <div
-        className={`mt-[19px] lg:mx-auto lg:mt-[33px] lg:max-w-[880px] lg:rounded-3xl lg:border lg:border-[#dfe4e8] lg:bg-white lg:px-10 lg:pt-10 ${
+        className={`mt-[19px] lg:mx-auto lg:mt-[33px] lg:rounded-3xl lg:border lg:border-[#dfe4e8] lg:bg-white lg:px-10 lg:pt-10 ${
+          copy.upfront && step === 2 ? "lg:max-w-[1040px]" : "lg:max-w-[880px]"
+        } ${
           step === last ? "pb-7 lg:pb-10" : step === 0 ? "lg:pb-16" : "lg:pb-10"
         }`}
       >
         {step === 0 ? (
           <>
             <CityStep question={copy.city} cities={view.cities} value={city} onChange={pickCity} headingId={headingId} />
-            <StepFooter className="mt-[92px] lg:mt-[51px] lg:justify-end" next="Next: choose car" onNext={() => go(1)} />
+            <StepFooter className="mt-[92px] lg:mt-[51px] lg:justify-end" next="Next: Choose Car" onNext={() => go(1)} />
           </>
         ) : null}
 
@@ -164,7 +166,7 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
               className="mt-12 lg:mt-7"
               summary={cityName}
               onBack={() => go(0)}
-              next={copy.upfront ? "Next: choose upfront" : "See my plan"}
+              next={copy.upfront ? "Next: Choose Upfront" : "See My Plan"}
               onNext={() => go(2)}
             />
           </>
@@ -174,6 +176,9 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
           <>
             <UpfrontStep
               car={car}
+              carLabel={carLabel}
+              cityName={cityName}
+              perks={view.perks}
               tenures={view.tenures}
               tenure={tenure}
               onTenure={setTenure}
@@ -186,7 +191,7 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
               className="mt-12 lg:mt-7"
               summary={`${cityName} · ${carLabel}`}
               onBack={() => go(1)}
-              next="See my plan"
+              next="See My Plan"
               onNext={() => go(3)}
             />
           </>

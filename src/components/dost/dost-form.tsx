@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
 import { trackLead } from "@/lib/analytics";
 
-const OCCUPATIONS = ["Driver sourcing agent", "Agent", "Logistics business", "Someone who knows drivers"];
+const OCCUPATIONS = ["Driver Sourcing Agent", "Agent", "Logistics Business", "Someone Who Knows Drivers"];
 
 const input =
   "mt-1 h-[52px] w-full rounded-[3px] border border-[#dfe3e8] bg-white px-4 text-base text-navy placeholder:text-[#8d99a5] focus:border-brand focus:outline-none lg:mt-1 lg:h-12 lg:text-[15.5px]";
@@ -64,7 +64,7 @@ export function DostForm({ cities }: { cities: { slug: string; name: string }[] 
                 joining === value ? "border-navy bg-navy text-white" : "border-[#dfe3e8] bg-white text-navy hover:border-navy/40"
               }`}
             >
-              {value === "individual" ? "An individual" : "A company"}
+              {value === "individual" ? "An Individual" : "A Company"}
             </button>
           ))}
         </div>
@@ -81,7 +81,7 @@ export function DostForm({ cities }: { cities: { slug: string; name: string }[] 
         />
       </label>
       <label className={`${label} mt-2.5 lg:mt-[18px]`}>
-        Mobile number{star}
+        Mobile Number{star}
         <input
           name="mobile"
           required
@@ -132,7 +132,7 @@ export function DostForm({ cities }: { cities: { slug: string; name: string }[] 
         disabled={!ready || state === "sending"}
         className="mt-3 h-11 w-full rounded-full bg-brand text-[17px] font-medium text-white transition hover:brightness-110 disabled:bg-brand/45 disabled:hover:brightness-100 sm:h-14 lg:mt-6"
       >
-        {state === "sending" ? "Sending" : "Apply to become a Dost"}
+        {state === "sending" ? "Sending" : "Apply To Become A Dost"}
       </button>
       {state === "failed" ? (
         <p role="alert" className="mt-3 text-center text-sm text-[#b3261e]">

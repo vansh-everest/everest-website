@@ -19,13 +19,13 @@ export type WizardCopy = {
 
 const EARN: WizardCopy = {
   title: "Start Earning In 2 Steps",
-  steps: ["City", "Car", "Your plan"],
-  city: "Where do you drive?",
-  car: "Which car do you want?",
-  year: "Model year",
+  steps: ["City", "Car", "Your Plan"],
+  city: "Where Do You Drive?",
+  car: "Which Car Do You Want?",
+  year: "Model Year",
   mark: "rupee",
   upfront: false,
-  apply: ["Check if you qualify", "Apply for this plan"],
+  apply: ["Check If You Qualify", "Apply For This Plan"],
 };
 
 export const WIZARD_COPY: Record<WizardKind, WizardCopy> = {
@@ -33,22 +33,22 @@ export const WIZARD_COPY: Record<WizardKind, WizardCopy> = {
   share: EARN,
   own: {
     title: "Own Your Car In 2 Steps",
-    steps: ["City", "Car", "Your plan"],
-    city: ["Where do you want to drive?", "Where do you drive?"],
-    car: ["Which car do you want to drive?", "Which car do you want?"],
-    year: ["Choose Model Year", "Model year"],
+    steps: ["City", "Car", "Your Plan"],
+    city: ["Where Do You Want To Drive?", "Where Do You Drive?"],
+    car: ["Which Car Do You Want To Drive?", "Which Car Do You Want?"],
+    year: ["Choose Model Year", "Model Year"],
     mark: "key",
     upfront: false,
-    apply: ["Check if you qualify", "Apply for this plan"],
+    apply: ["Check If You Qualify", "Apply For This Plan"],
   },
   now: {
     title: "Own Your Car In 3 Steps",
-    steps: ["Location", "Car", "Upfront", "Your plan"],
-    city: "Where do you drive?",
-    car: "Which car do you want?",
-    year: "Model year",
+    steps: ["Location", "Car", "Upfront", "Your Plan"],
+    city: "Where Do You Drive?",
+    car: "Which Car Do You Want?",
+    year: "Model Year",
     mark: "key",
     upfront: true,
-    apply: "Apply for this plan",
+    apply: "Apply For This Plan",
   },
 };

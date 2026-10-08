@@ -13,6 +13,7 @@ import {
   Zap,
   type LucideIcon,
 } from "lucide-react";
+import { ImpactRow } from "./impact-row";
 
 type Tone = "blue" | "plum" | "lime" | "sun";
 
@@ -149,7 +150,7 @@ export function Values() {
           Seven values that spell IMPACTT. Guiding how we work, empowering who we are.
         </p>
 
-        <ul className="mt-[41px] grid grid-cols-4 gap-2 sm:max-w-[520px] lg:mt-[86px] lg:flex lg:max-w-none lg:gap-[13px]">
+        <ImpactRow className="mt-[41px] grid grid-cols-4 gap-2 sm:max-w-[520px] lg:mt-[86px] lg:flex lg:max-w-none lg:gap-[13px]">
           {values.map((v) => {
             const t = tones[v.tone];
             const Icon = v.icon;
@@ -157,7 +158,7 @@ export function Values() {
               <li key={v.id} className="min-w-0 lg:flex-1 lg:basis-0">
                 <a
                   href={`#${v.id}`}
-                  className="flex h-[120px] flex-col items-center rounded-[14px] bg-white px-1.5 pt-2.5 text-center shadow-[0_6px_18px_rgba(6,47,80,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(6,47,80,0.1)] lg:h-[262px] lg:rounded-[20px] lg:px-2 lg:pt-[13px] xl:px-4"
+                  className="flex h-[120px] flex-col items-center rounded-[14px] bg-white px-1 pt-2.5 text-center shadow-[0_6px_18px_rgba(6,47,80,0.04)] transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(6,47,80,0.1)] lg:h-[262px] lg:rounded-[20px] lg:px-1.5 lg:pt-[13px] xl:px-2"
                 >
                   <span aria-hidden className={`text-[28px] font-bold leading-[34px] lg:text-[64px] lg:font-extrabold lg:leading-[96px] xl:text-[80px] ${t.letter}`}>
                     {v.letter}
@@ -168,16 +169,16 @@ export function Values() {
                   >
                     <Icon className="size-[30px]" strokeWidth={1.5} />
                   </span>
-                  <span className="mt-2 hyphens-auto text-[11px] [overflow-wrap:anywhere] font-bold leading-3 text-navy lg:mt-[17px] lg:text-[15px] lg:leading-[22px] xl:text-2xl xl:leading-[31px]">
+                  <span className="mt-2 text-[10px] font-bold leading-3 text-navy lg:mt-[17px] lg:text-sm lg:leading-[20px] xl:text-xl xl:leading-[28px]">
                     {v.name}
                   </span>
                 </a>
               </li>
             );
           })}
-        </ul>
+        </ImpactRow>
 
-        <ol className="mt-[38px] grid gap-6 md:grid-cols-2 lg:mt-[101px] lg:grid-cols-4 lg:gap-x-8 lg:gap-y-[49px] xl:gap-x-14">
+        <ol className="mt-[38px] flex flex-col gap-6 md:flex-row md:flex-wrap md:justify-center lg:mt-[101px] lg:gap-x-8 lg:gap-y-[49px] xl:gap-x-14">
           {values.map((v, i) => {
             const t = tones[v.tone];
             const Icon = v.icon;
@@ -186,32 +187,26 @@ export function Values() {
               <li
                 key={v.id}
                 id={v.id}
-                className="scroll-mt-28 rounded-[20px] bg-white p-5 shadow-[0_6px_18px_rgba(6,47,80,0.05)] lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none"
+                className="scroll-mt-28 rounded-[20px] bg-white p-5 text-center shadow-[0_6px_18px_rgba(6,47,80,0.05)] md:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-6rem)/4)] lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none xl:w-[calc((100%-10.5rem)/4)]"
               >
-                <div className="flex items-center justify-between lg:block">
+                <div className="flex flex-col items-center">
                   <span aria-hidden className={`grid size-14 place-items-center rounded-[14px] lg:hidden ${t.tint} ${t.icon}`}>
                     <Icon className="size-[34px]" strokeWidth={1.6} />
                   </span>
                   <span aria-hidden className={`hidden size-[120px] place-items-center rounded-full text-navy lg:grid ${t.tint}`}>
                     <Mark className="size-16" strokeWidth={1.5} />
                   </span>
-                  <span className="text-[36px] font-bold leading-[44px] text-brand lg:mt-[21px] lg:block lg:text-[52px] lg:font-normal lg:leading-[60px] lg:text-navy">
+                  <span className="mt-3 text-[36px] font-bold leading-[44px] text-brand lg:mt-[21px] lg:block lg:text-[52px] lg:font-normal lg:leading-[60px] lg:text-navy">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>
-                <h3 className="mt-[18px] text-[28px] font-bold leading-[34px] text-navy lg:mt-1 lg:text-[28px] lg:leading-[34px] lg:text-brand">
+                <h3 className="mt-2 text-[28px] font-bold leading-[34px] text-navy lg:mt-1 lg:text-[28px] lg:leading-[34px] lg:text-brand">
                   {v.name}
                 </h3>
-                <span aria-hidden className={`mt-2 block h-[3px] w-10 rounded-full lg:hidden ${t.accent}`} />
-                <ul className="mt-[13px] space-y-[9px] text-base leading-[26px] text-navy/80 lg:mt-[14px] lg:space-y-3 lg:text-base lg:leading-[19px] lg:text-navy/85">
+                <span aria-hidden className={`mx-auto mt-2 block h-[3px] w-10 rounded-full lg:hidden ${t.accent}`} />
+                <ul className="mx-auto mt-[13px] max-w-[280px] space-y-[9px] text-base leading-[26px] text-navy/80 lg:mt-[14px] lg:space-y-3 lg:text-base lg:leading-[21px] lg:text-navy/85">
                   {v.points.map((p) => (
-                    <li key={p} className="relative pl-4 lg:pl-[18px]">
-                      <span
-                        aria-hidden
-                        className={`absolute left-0 top-[11px] size-[5px] rounded-full lg:top-2 lg:size-1 lg:bg-navy ${t.accent}`}
-                      />
-                      {p}
-                    </li>
+                    <li key={p}>{p}</li>
                   ))}
                 </ul>
               </li>

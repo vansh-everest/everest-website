@@ -23,6 +23,7 @@ import {
   type Price,
   type Row,
   type SiteContent,
+  type Testimonial,
 } from "@/lib/content";
 import { LOCALES, type Locale } from "@/lib/i18n";
 
@@ -415,6 +416,20 @@ function posts(v: unknown): Post[] {
   return [...saved, ...structuredClone(seeded)];
 }
 
+function testimonials(v: unknown): Testimonial[] {
+  if (!Array.isArray(v)) return structuredClone(DEFAULT_CONTENT.testimonials);
+  return list(v, 12)
+    .map(obj)
+    .map((t) => ({
+      video: text(t.video, 200),
+      pillarboxed: flag(t.pillarboxed, false),
+      name: text(t.name, 60),
+      detail: text(t.detail, 80),
+      quote: text(t.quote, 160),
+    }))
+    .filter((t) => t.video);
+}
+
 export function normalizeContent(raw: unknown): SiteContent {
   const o = obj(raw);
   const cityList = DEFAULT_CONTENT.cities.map((c) => c.slug);
@@ -437,6 +452,7 @@ export function normalizeContent(raw: unknown): SiteContent {
     cars: carList,
     calculators: calculators(o, planIds, carIds),
     posts: posts(o.posts),
+    testimonials: testimonials(o.testimonials),
     images: Object.fromEntries(
       Object.entries(DEFAULT_CONTENT.images).map(([key, base]) => [key, image(savedImages[key], base)])
     ),

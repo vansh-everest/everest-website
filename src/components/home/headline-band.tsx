@@ -16,7 +16,7 @@ export function HeadlineBand() {
           href="#apply"
           className="flex h-9 items-center justify-center rounded-full bg-sun px-4 text-[13px] font-medium tracking-[0.4px] text-navy transition hover:brightness-95 lg:h-14 lg:w-[251px] lg:px-0 lg:text-xl lg:font-semibold lg:tracking-[-0.2px]"
         >
-          Join as Driver
+          Join As Driver
         </a>
         <a
           href={PHONE_HREF}

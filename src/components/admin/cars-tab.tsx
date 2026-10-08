@@ -61,7 +61,7 @@ export function CarsTab({ content, setContent, locked }: { content: SiteContent;
 
   return (
     <div className="grid gap-3">
-      <p className="text-[13px] text-ink-soft">Car cards appear in this order, left to right</p>
+      <p className="text-[13px] text-ink-soft">The home page car slider shows the cars with a card, in this order</p>
       {content.cars.map((car, i) => {
         const price = headline(car.price);
         return (
@@ -95,7 +95,7 @@ export function CarsTab({ content, setContent, locked }: { content: SiteContent;
             }
           >
             <Section title="Status">
-              <Toggle label="Show a card for this car" checked={car.visible} disabled={locked} onChange={(visible) => patch(i, { visible })} />
+              <Toggle label="Show in the home page car slider" checked={car.visible} disabled={locked} onChange={(visible) => patch(i, { visible })} />
             </Section>
 
             <Section title="Details">

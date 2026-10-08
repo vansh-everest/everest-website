@@ -52,17 +52,17 @@ export default function AdvertiseWithUsPage() {
             {COMPANY.vehicles} Moving Cabs
           </>
         }
-        primary={{ label: "Request a callback", href: "#enquire" }}
+        primary={{ label: "Request A Callback", href: "#enquire" }}
         secondary={{ label: "Call Now", href: PHONE_HREF, phoneIcon: true }}
         media={{ kind: "brand-car", alt: "White Everest sedan with the door panel marked for a brand" }}
       />
       <Steps
         title="Four Steps From Brief To Street"
         steps={[
-          { title: "Share your brief", body: "Your audience, cities and campaign dates" },
-          { title: "We pick the cabs", body: "The right cars in the right cities" },
-          { title: "Your ads go live", body: "Inside the cab, outside it, or both" },
-          { title: "See the proof", body: "AI-verified photos of every placement" },
+          { title: "Share Your Brief", body: "Your audience, cities and campaign dates" },
+          { title: "We Pick The Cabs", body: "The right cars in the right cities" },
+          { title: "Your Ads Go Live", body: "Inside the cab, outside it, or both" },
+          { title: "See The Proof", body: "AI-verified photos of every placement" },
         ]}
       />
       <Features
@@ -70,41 +70,41 @@ export default function AdvertiseWithUsPage() {
         title={["Four Ways", "To Get Seen"]}
         sub="Every format rides on cabs already on the road, every day."
         items={[
-          { icon: Armchair, title: "In-cab branding", body: "In front of riders for the whole ride" },
-          { icon: CarFront, title: "Cab branding", body: "On the outside, at eye level, citywide" },
-          { icon: Gift, title: "In-cab sampling", body: "Your product, in riders’ hands" },
-          { icon: Layers, title: "Mix and match", body: "Combine formats in one campaign" },
+          { icon: Armchair, title: "In-Cab Branding", body: "In front of riders for the whole ride" },
+          { icon: CarFront, title: "Cab Branding", body: "On the outside, at eye level, citywide" },
+          { icon: Gift, title: "In-Cab Sampling", body: "Your product, in riders’ hands" },
+          { icon: Layers, title: "Mix And Match", body: "Combine formats in one campaign" },
         ]}
       />
-      <FigureBand eyebrow="The reach" title={`${COMPANY.vehicles} cars, 3 Crore Impressions A Day`} />
+      <FigureBand eyebrow="The reach" title={`${COMPANY.vehicles} Cars, 3 Crore Impressions A Day`} />
       <ReachNumbers
         eyebrow="By the numbers"
         stats={[
-          { value: COMPANY.vehicles, label: "Cars in motion" },
-          { value: "1,50,000 km", label: "Driven every day" },
-          { value: "3,00,00,000", label: "Street impressions a day" },
-          { value: "3,00,000", label: "In-cab impressions" },
-          { value: "10–20 paise", label: "Cost per impression" },
-          { value: String(COMPANY.cities), label: "Cities covered" },
+          { value: COMPANY.vehicles, label: "Cars In Motion" },
+          { value: "1,50,000 km", label: "Driven Every Day" },
+          { value: "3,00,00,000", label: "Street Impressions A Day" },
+          { value: "3,00,000", label: "In-Cab Impressions" },
+          { value: "10–20 paise", label: "Cost Per Impression" },
+          { value: String(COMPANY.cities), label: "Cities Covered" },
         ]}
         note="Riding with your brand every day: millennials and Gen Z, corporate employees and homemakers."
       />
       <Commitments
         items={[
-          { icon: Eye, title: "It gets seen", points: ["Guaranteed impressions", "Enhanced visibility, at eye level"] },
-          { icon: MapPin, title: "It meets your buyers", points: ["Close to your customers, every day", "Wider reach, city after city"] },
-          { icon: IndianRupee, title: "More reach per rupee", points: ["Cost-effective outdoor media", "Premium, innovative, always moving"] },
+          { icon: Eye, title: "It Gets Seen", points: ["Guaranteed Impressions", "Enhanced Visibility, At Eye Level"] },
+          { icon: MapPin, title: "It Meets Your Buyers", points: ["Close To Your Customers, Every Day", "Wider Reach, City After City"] },
+          { icon: IndianRupee, title: "More Reach Per Rupee", points: ["Cost-Effective Outdoor Media", "Premium, Innovative, Always Moving"] },
         ]}
       />
-      <LogoWall eyebrow="Clients" title="The brands we already carry" size="wall" logos={BRANDS} />
+      <LogoWall eyebrow="Clients" title="The Brands We Already Carry" size="wall" logos={BRANDS} />
       <Enquiry
-        title="Tell us about your brand"
+        title="Tell Us About Your Brand"
         source="advertise-with-us"
-        submit="Request a callback"
-        choice={{ legend: "Are you a brand or an agency?", name: "client_type", options: ["Brand", "Agency"] }}
+        submit="Request A Callback"
+        choice={{ legend: "Are You A Brand Or An Agency?", name: "client_type", options: ["Brand", "Agency"] }}
         fields={[
           { name: "name", label: "Name", type: "text", placeholder: "Your full name", autoComplete: "name" },
-          { name: "company", label: "Company name", type: "text", placeholder: "Your company name", autoComplete: "organization" },
+          { name: "company", label: "Company Name", type: "text", placeholder: "Your company name", autoComplete: "organization" },
           { name: "role", label: "Designation", type: "text", placeholder: "Your designation", autoComplete: "organization-title" },
           { name: "email", label: "Email", type: "email", placeholder: "name@company.com", autoComplete: "email" },
         ]}

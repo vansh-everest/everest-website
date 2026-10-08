@@ -68,7 +68,7 @@ export function InvestorForm() {
         disabled={!ready}
         className="mt-2 h-10 rounded-full bg-brand text-[17px] font-medium tracking-[0.3px] text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:bg-[#8dbddf] lg:mt-[30px] lg:h-14"
       >
-        Request the investor deck
+        Request The Investor Deck
       </button>
       {tried ? (
         <p role="status" className="text-center text-sm leading-5 text-ink-soft">

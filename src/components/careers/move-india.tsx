@@ -14,7 +14,7 @@ function ExploreJobs({ className }: { className: string }) {
       rel="noopener"
       className={`items-center justify-center gap-[11px] rounded-full bg-sun font-bold text-navy shadow-[0_10px_24px_rgba(6,47,80,0.22)] transition-[filter] hover:brightness-95 ${className}`}
     >
-      Explore jobs
+      Explore Jobs
       <ExternalLink className="size-[18px] lg:size-5" strokeWidth={2.25} />
     </a>
   );

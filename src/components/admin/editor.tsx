@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useMemo, useState } from "react";
-import { Calculator, Car, ExternalLink, History, ImageIcon, Layers, MapPin, Newspaper } from "lucide-react";
+import { Calculator, Car, Clapperboard, ExternalLink, History, ImageIcon, Layers, MapPin, Newspaper } from "lucide-react";
 import { discardDraftAction, editAction, type EditState } from "@/app/(admin)/admin/actions";
 import type { SiteContent } from "@/lib/content";
 import { CalculatorTab } from "./calculator-tab";
@@ -9,6 +9,7 @@ import { CarsTab } from "./cars-tab";
 import { button } from "./fields";
 import { HistoryTab } from "./history-tab";
 import { PlansTab } from "./plans-tab";
+import { StoriesTab } from "./stories-tab";
 import { BlogTab, CitiesTab, ImagesTab } from "./site-tabs";
 
 const TABS = [
@@ -17,6 +18,7 @@ const TABS = [
   { name: "Calculator", icon: Calculator },
   { name: "Cities", icon: MapPin },
   { name: "Blog", icon: Newspaper },
+  { name: "Stories", icon: Clapperboard },
   { name: "Images", icon: ImageIcon },
   { name: "History", icon: History },
 ] as const;
@@ -108,6 +110,7 @@ export function Editor({
     Cars: content.cars.length,
     Cities: content.cities.length,
     Blog: content.posts.length,
+    Stories: content.testimonials.length,
     History: versions.length,
   };
 
@@ -249,6 +252,7 @@ export function Editor({
           {tab === "Calculator" ? <CalculatorTab content={content} setContent={setContent} locked={locked} /> : null}
           {tab === "Cities" ? <CitiesTab content={content} setContent={setContent} locked={locked} /> : null}
           {tab === "Blog" ? <BlogTab content={content} setContent={setContent} locked={locked} /> : null}
+          {tab === "Stories" ? <StoriesTab content={content} setContent={setContent} locked={locked} /> : null}
           {tab === "Images" ? <ImagesTab content={content} setContent={setContent} locked={locked} /> : null}
           {tab === "History" ? <HistoryTab versions={versions} locked={locked} /> : null}
         </div>

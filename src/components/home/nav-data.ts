@@ -3,7 +3,7 @@
  * It lives outside the client components so a server component can read it as data.
  */
 export type NavLink = { label: string; href: string };
-/** `href` on a group is the page that marks the group current without being one of its items. */
+/** `href` on a group is its own page: the label links there and marks the group current. */
 export type NavGroup = { label: string; href?: string; items: NavLink[] };
 export type NavItem = NavLink | NavGroup;
 
@@ -15,13 +15,13 @@ export const NAV: NavItem[] = [
     href: "/our-plans",
     items: [
       { label: "Own Now", href: "/own-now" },
-      { label: "Revenue Share", href: "/revenue-share" },
-      { label: "Drive to Earn", href: "/drive-to-earn" },
-      { label: "Drive to Own", href: "/drive-to-own" },
+      { label: "Drive To Earn", href: "/drive-to-earn" },
+      { label: "Drive To Own", href: "/drive-to-own" },
     ],
   },
   {
     label: "Other Services",
+    href: "/our-services",
     items: [
       { label: "Fleet Logistics", href: "/fleet-logistics" },
       { label: "Employee Mobility", href: "/employee-mobility" },

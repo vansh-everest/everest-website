@@ -193,6 +193,19 @@ export type Post = {
   coverImage: ImageSlot;
 };
 
+/** A driver's story on YouTube, in "Real Drivers Real Stories". */
+export type Testimonial = {
+  /** The YouTube link: a watch, youtu.be or Shorts address. */
+  video: string;
+  /** Vertical footage uploaded in a 16:9 frame: the card crops the black side bars away. */
+  pillarboxed: boolean;
+  name: string;
+  /** The line under the name, e.g. "Mumbai · 1.5 years with Everest". */
+  detail: string;
+  /** The line under the video. */
+  quote: string;
+};
+
 export type SiteContent = {
   /** When and by whom this copy was last saved as a draft. */
   updatedAt: string;
@@ -205,11 +218,12 @@ export type SiteContent = {
   cars: Car[];
   calculators: Calculator[];
   posts: Post[];
+  testimonials: Testimonial[];
   images: Record<string, ImageSlot>;
 };
 
 /** Bump when SiteContent changes shape, so no deployment reads a cache written by an older one. */
-export const CONTENT_VERSION = "8";
+export const CONTENT_VERSION = "9";
 
 export const placeholder = (label: string, alt = ""): ImageSlot => ({ label, url: "", alt });
 
@@ -333,7 +347,7 @@ const PLAN_SEED: Plan[] = [
     id: "drive-to-own",
     visible: true,
     showCard: true,
-    name: same("Drive to Own"),
+    name: same("Drive To Own"),
     shortName: "DTO",
     summary: {
       en: "A deposit and monthly instalments, with ownership at the end of the term.",
@@ -362,7 +376,7 @@ const PLAN_SEED: Plan[] = [
       term: { label: "Ownership", value: "24 Months" },
       tags: ["Ownership plan", "Low deposit · high daily rental plan", "Refundable"],
       whyTag: "Benefits of this plan",
-      whyTitle: "Why Drivers Choose Drive to Own",
+      whyTitle: "Why Drivers Choose Drive To Own",
       whySubtitle: "",
       benefitsImage: { label: "Drive to Own, benefits photo", url: "/figma/plans/drive-to-own-benefits.webp", alt: "An Everest driver standing beside his car" },
       features: [
@@ -376,7 +390,7 @@ const PLAN_SEED: Plan[] = [
       storiesTitle: "Real Drivers. Real Stories. On Camera.",
     },
     overview: {
-      title: "Drive to Own Plan",
+      title: "Drive To Own Plan",
       note: "",
       steps: [],
       image: { label: "Drive to Own, Our Plans photo", url: "/figma/our-plans/drive-to-own.webp", alt: "An Everest manager shaking hands with a driver beside his car" },
@@ -388,7 +402,7 @@ const PLAN_SEED: Plan[] = [
     id: "leasing",
     visible: true,
     showCard: true,
-    name: same("Drive to Earn"),
+    name: same("Drive To Earn"),
     shortName: "DTE",
     summary: {
       en: "A refundable deposit and a daily rent, with no commitment to buy.",
@@ -417,7 +431,7 @@ const PLAN_SEED: Plan[] = [
       term: { label: "Liability", value: "Zero" },
       tags: ["Rental plan", "Low deposit · high daily rental plan", "Refundable"],
       whyTag: "Benefits of this plan",
-      whyTitle: "Why Drivers Choose Drive to Earn",
+      whyTitle: "Why Drivers Choose Drive To Earn",
       whySubtitle: "",
       benefitsImage: { label: "Drive to Earn, benefits photo", url: "/figma/plans/drive-to-earn-benefits.webp", alt: "A smiling driver at the wheel of his car" },
       features: [
@@ -431,7 +445,7 @@ const PLAN_SEED: Plan[] = [
       storiesTitle: "Real Drivers. Real Stories. On Camera.",
     },
     overview: {
-      title: "Drive to Earn",
+      title: "Drive To Earn",
       note: "Leasing Plan",
       steps: [],
       image: { label: "Drive to Earn, Our Plans photo", url: "/figma/our-plans/drive-to-earn.webp", alt: "A driver checking his phone beside an Everest car" },
@@ -441,7 +455,8 @@ const PLAN_SEED: Plan[] = [
   },
   {
     id: "revenue-share",
-    visible: true,
+    // Switched off until the plan is offered again; the admin's toggle brings it back.
+    visible: false,
     showCard: false,
     name: same("Revenue Share"),
     shortName: "RS",
@@ -521,8 +536,8 @@ const CAR_SEED: Car[] = [
   ).map(
     ([id, make, name, url]): Car => ({
       id,
-      // Offered under the plans and shown in their car pickers; no figures yet, so no card of its own.
-      visible: false,
+      // In the home page car slider, after the two featured cars.
+      visible: true,
       make,
       name,
       subtitle: "",
@@ -725,6 +740,9 @@ export const DEFAULT_CONTENT: SiteContent = {
   cars: CAR_SEED,
   calculators: CALCULATOR_SEED,
   posts: SEED_POSTS,
+  testimonials: [
+    { video: "https://www.youtube.com/watch?v=EV2mBRswdjA", pillarboxed: true, name: "", detail: "", quote: "" },
+  ],
   images: {
     "driver-hub-hero": placeholder("Drive with us, hero image", "A driver beside an Everest Fleet car"),
     "blog-hero": placeholder("Driver guides, hero image", ""),

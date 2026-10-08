@@ -31,7 +31,7 @@ export function Carousel({
 }) {
   const items = Children.toArray(children);
   const track = useRef<HTMLDivElement>(null);
-  const [edges, setEdges] = useState({ start: true, end: true, index: 0 });
+  const [edges, setEdges] = useState({ start: true, end: true, index: 0, inView: 1 });
 
   function measure() {
     const el = track.current;
@@ -41,8 +41,13 @@ export function Carousel({
       start: el.scrollLeft <= 2,
       end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 2,
       index: Math.round(el.scrollLeft / (step + GAP)),
+      inView: Math.max(1, Math.round((el.clientWidth + GAP) / (step + GAP))),
     });
   }
+
+  // With several cards in view the row stops fewer times than it has cards: one dot per stop.
+  const stops = Math.max(1, items.length - edges.inView + 1);
+  const active = edges.end ? stops - 1 : Math.min(stops - 1, edges.index);
 
   // Whether the arrows are needed depends on the row's width, which only the browser knows.
   useEffect(() => {
@@ -86,10 +91,10 @@ export function Carousel({
           <ChevronRight size={22} />
         </button>
       </div>
-      {dots && items.length > 1 ? (
+      {dots && stops > 1 ? (
         <div aria-hidden className="mt-4 flex justify-center gap-1.5">
-          {items.map((_, i) => (
-            <span key={i} className={`h-2 rounded-full transition-all ${i === edges.index ? "w-6 bg-navy" : "w-2 bg-navy/15"}`} />
+          {Array.from({ length: stops }, (_, i) => (
+            <span key={i} className={`h-2 rounded-full transition-all ${i === active ? "w-6 bg-navy" : "w-2 bg-navy/15"}`} />
           ))}
         </div>
       ) : null}

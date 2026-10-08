@@ -58,7 +58,7 @@ function YourPlan({ className = "" }: { className?: string }) {
 function ChangeLink({ onChange, className = "" }: { onChange: () => void; className?: string }) {
   return (
     <button type="button" onClick={onChange} className={`text-sm font-semibold leading-5 text-brand hover:underline lg:text-[15px] lg:leading-6 ${className}`}>
-      Change my choices
+      Change My Choices
     </button>
   );
 }
@@ -91,7 +91,7 @@ export function ResultStep({
   const title = year ? `${car.name} ${year}` : car.name;
   const shown = tiles(view, figures);
   const badge =
-    view.kind === "earn" ? "100% Uber incentive" : view.kind === "own" && figures.months ? `Yours in month ${figures.months}` : undefined;
+    view.kind === "earn" ? "100% Uber Incentive" : view.kind === "own" && figures.months ? `Yours In Month ${figures.months}` : undefined;
 
   return (
     <div className="rounded-2xl border border-[#dfe4e8] bg-white px-5 pb-[18px] pt-[19px] lg:grid lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-10 lg:border-0 lg:p-0">
@@ -134,7 +134,7 @@ export function ResultStep({
           figures.months ? (
             <p className="mt-4 inline-flex h-[35px] items-center gap-2.5 rounded-full bg-brand px-4 text-[15px] font-bold text-white lg:mt-[18px] lg:h-[38px] lg:bg-sun lg:text-base lg:text-navy">
               <Key size={17} strokeWidth={2} className="rotate-180" />
-              The car is yours in month {figures.months}
+              The Car Is Yours In Month {figures.months}
             </p>
           ) : null
         ) : (

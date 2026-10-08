@@ -5,7 +5,7 @@ import { ArrowRight, ChevronDown } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_HREF } from "@/components/home/ui";
 import { sendLead } from "./lead";
 
-const TRIPS = ["One way", "Round trip", "Multi way"] as const;
+const TRIPS = ["One Way", "Round Trip", "Multi Way"] as const;
 const TRAVELLERS = [1, 2, 3, 4, 5, 6, 7];
 
 const field =
@@ -23,7 +23,7 @@ function Caret() {
  * city; the individual fields are sent alongside.
  */
 export function IntercityBooking({ cities }: { cities: { slug: string; name: string }[] }) {
-  const [trip, setTrip] = useState<(typeof TRIPS)[number]>("One way");
+  const [trip, setTrip] = useState<(typeof TRIPS)[number]>("One Way");
   const [state, setState] = useState<"idle" | "sending" | "done" | "failed">("idle");
   const [dateType, setDateType] = useState<"text" | "datetime-local">("text");
   const [minDate, setMinDate] = useState<string>();
@@ -64,7 +64,7 @@ export function IntercityBooking({ cities }: { cities: { slug: string; name: str
         onSubmit={onSubmit}
         className="rounded-2xl border border-white/30 bg-white/10 px-4 pb-4 pt-4 lg:rounded-3xl lg:border-white/45 lg:bg-white/15 lg:px-6 lg:py-6 lg:shadow-[0_10px_40px_rgba(0,0,0,0.15)] lg:backdrop-blur-[30px]"
       >
-        <div role="radiogroup" aria-label="Trip type" className="grid grid-cols-3 gap-2 lg:flex lg:justify-center">
+        <div role="radiogroup" aria-label="Trip Type" className="grid grid-cols-3 gap-2 lg:flex lg:justify-center">
           {TRIPS.map((t) => (
             <button
               key={t}
@@ -83,7 +83,7 @@ export function IntercityBooking({ cities }: { cities: { slug: string; name: str
 
         <div className="mt-[11px] grid gap-[11px] lg:mt-5 lg:grid-cols-3 xl:grid-cols-[repeat(5,minmax(0,1fr))_172px] lg:items-end lg:gap-3">
           <label className={label}>
-            Pick-up city{star}
+            Pick-Up City{star}
             <span className="relative block">
               <select name="pickup" required defaultValue="" className={`${field} pr-11 invalid:text-[#8d99a5]`}>
                 <option value="" disabled>
@@ -99,7 +99,7 @@ export function IntercityBooking({ cities }: { cities: { slug: string; name: str
             </span>
           </label>
           <label className={label}>
-            Drop city{star}
+            Drop City{star}
             <span className="relative block">
               <select name="drop" required defaultValue="" className={`${field} pr-11 invalid:text-[#8d99a5]`}>
                 <option value="" disabled>
@@ -115,7 +115,7 @@ export function IntercityBooking({ cities }: { cities: { slug: string; name: str
             </span>
           </label>
           <label className={label}>
-            Date &amp; time{star}
+            Date &amp; Time{star}
             <span className="relative block">
               <input
                 name="when"
@@ -149,7 +149,7 @@ export function IntercityBooking({ cities }: { cities: { slug: string; name: str
             </span>
           </label>
           <label className={label}>
-            Mobile number{star}
+            Mobile Number{star}
             <input
               name="mobile"
               required
@@ -167,7 +167,7 @@ export function IntercityBooking({ cities }: { cities: { slug: string; name: str
             disabled={state === "sending"}
             className="mt-[2px] inline-flex h-14 items-center justify-center gap-2 rounded-full bg-sun text-[17px] font-medium text-navy transition hover:brightness-95 disabled:opacity-60 lg:mt-0 lg:h-12 lg:text-xl"
           >
-            {state === "sending" ? "Sending" : "Book now"}
+            {state === "sending" ? "Sending" : "Book Now"}
             <ArrowRight aria-hidden size={18} className="lg:hidden" />
           </button>
         </div>

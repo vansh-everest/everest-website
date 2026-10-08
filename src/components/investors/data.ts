@@ -13,36 +13,36 @@ export type Figure = { value: string | null; label: string };
 
 /** Hero stats. Company figures come only from COMPANY. */
 export const HERO_STATS: Figure[] = [
-  { value: COMPANY.vehicles, label: "vehicles" },
+  { value: COMPANY.vehicles, label: "Vehicles" },
   // Design: "1,22,605 driver-partners onboarded". COMPANY has no cumulative figure yet.
-  { value: COMPANY.drivers, label: "drivers on the road" },
-  { value: String(COMPANY.cities), label: "cities" },
+  { value: COMPANY.drivers, label: "Drivers On The Road" },
+  { value: String(COMPANY.cities), label: "Cities" },
   // Design: "100% CNG + EV fleet". PENDING: fleet composition source.
-  { value: null, label: "CNG + EV fleet" },
+  { value: null, label: "CNG + EV Fleet" },
 ];
 
 /** Market sizing cards beside "The opportunity". All pending the investor deck. */
 export const MARKET: Figure[] = [
-  { value: null, label: "Ride-hailing market in India" }, // design: [₹ XX,XXX Cr]
-  { value: null, label: "Ride-hailing drivers in India" }, // design: [XX lakh]
-  { value: null, label: "Market growth a year" }, // design: [XX%]
-  { value: null, label: "Drivers without their own car" }, // design: [XX%]
+  { value: null, label: "Ride-Hailing Market In India" }, // design: [₹ XX,XXX Cr]
+  { value: null, label: "Ride-Hailing Drivers In India" }, // design: [XX lakh]
+  { value: null, label: "Market Growth A Year" }, // design: [XX%]
+  { value: null, label: "Drivers Without Their Own Car" }, // design: [XX%]
 ];
 
 export const STEPS = [
-  { title: "We own the fleet", body: "CNG and electric cars, financed with partners like Axis Bank" },
-  { title: "Drivers choose a plan", body: "Own Now, Revenue Share, Drive to Earn or Drive to Own" },
-  { title: "The cars earn on Uber", body: "We are Uber India’s largest electric fleet partner" },
-  { title: "Four more services", body: "Logistics, employee mobility, intercity and cab advertising" },
+  { title: "We Own The Fleet", body: "CNG and electric cars, financed with partners like Axis Bank" },
+  { title: "Drivers Choose A Plan", body: "Own Now, Revenue Share, Drive To Earn or Drive To Own" },
+  { title: "The Cars Earn On Uber", body: "We are Uber India’s largest electric fleet partner" },
+  { title: "Four More Services", body: "Logistics, employee mobility, intercity and cab advertising" },
 ];
 
 /** Financial highlights. None is in the codebase yet, so the block stays hidden. */
 export const HIGHLIGHTS: Figure[] = [
   { value: null, label: "Revenue, FY 2024-25" }, // design: [₹ XX Cr]
-  { value: null, label: "Revenue growth, year on year" }, // design: [XX%]
-  { value: null, label: "EBITDA margin" }, // design: [XX%]
-  { value: null, label: "Asset utilisation, up from 40%" }, // design: 80%
-  { value: null, label: "Series C, led by Uber (2024)" }, // design: ₹251.7 Cr
+  { value: null, label: "Revenue Growth, Year On Year" }, // design: [XX%]
+  { value: null, label: "EBITDA Margin" }, // design: [XX%]
+  { value: null, label: "Asset Utilisation, Up From 40%" }, // design: 80%
+  { value: null, label: "Series C, Led By Uber (2024)" }, // design: ₹251.7 Cr
   { value: null, label: "Employees" }, // design: 1,850+
 ];
 
@@ -53,10 +53,10 @@ const ASOF_YEAR = COMPANY.asOf.split(" ").pop() ?? "";
  * is a funding claim with no source here, so it waits with the other funding figures.
  */
 export const MILESTONES = [
-  { year: "2016", text: "Founded in Mumbai, 10 cars" },
-  { year: "2018", text: "1,000+ vehicles, into Delhi NCR" },
-  { year: "2022", text: "10,000 vehicles, Series B" },
-  { year: ASOF_YEAR, text: `${COMPANY.vehicles} vehicles, ${COMPANY.cities} cities`, current: true },
+  { year: "2016", text: "Founded In Mumbai, 10 Cars" },
+  { year: "2018", text: "1,000+ Vehicles, Into Delhi NCR" },
+  { year: "2022", text: "10,000 Vehicles, Series B" },
+  { year: ASOF_YEAR, text: `${COMPANY.vehicles} Vehicles, ${COMPANY.cities} Cities`, current: true },
 ];
 
 export type ImpactCard = { icon: "leaf" | "users" | "shield"; title: string; points: Figure[] };
@@ -65,26 +65,26 @@ export type ImpactCard = { icon: "leaf" | "users" | "shield"; title: string; poi
 export const IMPACT: ImpactCard[] = [
   {
     icon: "leaf",
-    title: "A cleaner fleet",
+    title: "A Cleaner Fleet",
     points: [
-      { value: null, label: "CNG and electric" }, // design: 100%
-      { value: null, label: "EVs on the road" }, // design: 2,000+
+      { value: null, label: "CNG And Electric" }, // design: 100%
+      { value: null, label: "EVs On The Road" }, // design: 2,000+
     ],
   },
   {
     icon: "users",
-    title: "Drivers grow with us",
+    title: "Drivers Grow With Us",
     points: [
-      { value: null, label: "partners have taken vehicles" }, // design: 1,22,605
+      { value: null, label: "Partners Have Taken Vehicles" }, // design: 1,22,605
       { value: null, label: "Everest Intrapreneurs" }, // design: 250+
     ],
   },
   {
     icon: "shield",
-    title: "Governed properly",
+    title: "Governed Properly",
     points: [
-      { value: "", label: "Three-tier ESG governance" },
-      { value: "", label: "GRI-aligned ESG reporting" },
+      { value: "", label: "Three-Tier ESG Governance" },
+      { value: "", label: "GRI-Aligned ESG Reporting" },
     ],
   },
 ];

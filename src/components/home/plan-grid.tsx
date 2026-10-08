@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Marquee } from "@/components/site/marquee";
 import type { PlanCardView } from "@/lib/plan-view";
 
 /* The dark card leads with a larger first point; its other points are a size smaller than a light card's. */
@@ -72,15 +71,22 @@ function PlanCard({ plan }: { plan: PlanCardView }) {
   );
 }
 
-/** The plan cards drift across the page in a loop, with the same gap between every card. */
+/**
+ * The plan cards: side by side on a wide screen, and a row a phone swipes one card at a time.
+ * Nothing moves on its own.
+ */
 export function PlanGrid({ cards }: { cards: PlanCardView[] }) {
   return (
-    <Marquee
-      label="Plans"
-      seconds={30}
-      items={cards.map((plan) => ({ key: plan.id, node: <div className="w-full"><PlanCard plan={plan} /></div> }))}
-      itemClassName="w-[328px] pr-7 sm:w-[384px] sm:pr-10 lg:w-[438px] lg:pr-[66px]"
-      className="mt-[30px] py-4 [mask-image:linear-gradient(90deg,transparent,#000_24px,#000_calc(100%-24px),transparent)] sm:mt-10 lg:mt-[46px] lg:[mask-image:linear-gradient(90deg,transparent,#000_80px,#000_calc(100%-80px),transparent)]"
-    />
+    <div
+      role="region"
+      aria-label="Plans"
+      className="mt-[30px] flex snap-x snap-mandatory gap-4 overflow-x-auto px-[7%] py-4 [scrollbar-width:none] sm:mt-10 sm:gap-6 sm:px-6 lg:mx-auto lg:mt-[46px] lg:max-w-[1260px] lg:snap-none lg:justify-center lg:overflow-visible lg:px-6 xl:gap-[66px] [&::-webkit-scrollbar]:hidden"
+    >
+      {cards.map((plan) => (
+        <div key={plan.id} className="w-[86%] max-w-[340px] shrink-0 snap-center snap-always sm:w-[372px] sm:max-w-none lg:w-auto lg:max-w-[372px] lg:flex-1">
+          <PlanCard plan={plan} />
+        </div>
+      ))}
+    </div>
   );
 }

@@ -12,6 +12,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, Menu, Phone, X } from "lucide-react";
+import { FormLink } from "./form-link";
 import { LocaleRow } from "./locale-switch";
 import { NAV, UTILITY_LINKS, isActive, isCurrent } from "./nav-data";
 import { PHONE_DISPLAY, PHONE_HREF } from "./ui";
@@ -21,8 +22,11 @@ const subscribeNothing = () => () => {};
 const row =
   "relative flex h-14 w-full items-center justify-between px-5 text-[17px] font-semibold leading-6 tracking-[-0.2px]";
 
-/** The nav below `lg`: a toggle for the header and the drawer it slides in from the right. */
-export function MobileMenu({ driveHref }: { driveHref: string }) {
+/**
+ * The nav below `lg`: a toggle for the header and the drawer it slides in from the right.
+ * `home` is the home page in the visitor's language, whose lead form "Drive With Us" falls back to.
+ */
+export function MobileMenu({ home }: { home: string }) {
   const pathname = usePathname();
   const id = useId();
   const toggle = useRef<HTMLButtonElement>(null);
@@ -35,8 +39,11 @@ export function MobileMenu({ driveHref }: { driveHref: string }) {
     () => false,
   );
   const [open, setOpen] = useState(false);
-  // Every group starts open, so the whole menu reads at a glance.
-  const [shut, setShut] = useState<string[]>([]);
+  // A group's label goes to its page; its chevron shows its pages. The group of the page
+  // being read starts open, so the visitor sees where they are.
+  const [shown, setShown] = useState<string[]>(() =>
+    NAV.filter((item) => "items" in item && isActive(item, pathname)).map((item) => item.label),
+  );
   const [openedAt, setOpenedAt] = useState(pathname);
 
   // Closed on navigation, derived during render for the same reason as the desktop menus.
@@ -78,7 +85,7 @@ export function MobileMenu({ driveHref }: { driveHref: string }) {
   // A link to the page already open, or to an anchor on it, changes no pathname.
   const close = () => setOpen(false);
   const flipGroup = (label: string) =>
-    setShut((list) =>
+    setShown((list) =>
       list.includes(label) ? list.filter((l) => l !== label) : [...list, label],
     );
 
@@ -169,24 +176,52 @@ export function MobileMenu({ driveHref }: { driveHref: string }) {
                         );
                       }
 
-                      const expanded = !shut.includes(item.label);
+                      const expanded = shown.includes(item.label);
                       const list = `${id}-${item.label.replace(/\s+/g, "-").toLowerCase()}`;
+                      const toggle = (
+                        <button
+                          type="button"
+                          aria-expanded={expanded}
+                          aria-controls={list}
+                          aria-label={item.href ? `${item.label} pages` : undefined}
+                          onClick={() => flipGroup(item.label)}
+                          className={
+                            item.href
+                              ? "flex size-14 shrink-0 items-center justify-center text-navy"
+                              : `${row} ${expanded || active ? "text-brand" : "text-navy"}`
+                          }
+                        >
+                          {item.href ? null : item.label}
+                          <ChevronDown
+                            size={16}
+                            aria-hidden
+                            className={`transition ${expanded ? "" : "-rotate-90"}`}
+                          />
+                        </button>
+                      );
                       return (
                         <li key={item.label}>
-                          <button
-                            type="button"
-                            aria-expanded={expanded}
-                            aria-controls={list}
-                            onClick={() => flipGroup(item.label)}
-                            className={`${row} ${expanded || active ? "text-brand" : "text-navy"}`}
-                          >
-                            {item.label}
-                            <ChevronDown
-                              size={16}
-                              aria-hidden
-                              className={`transition ${expanded ? "" : "-rotate-90"}`}
-                            />
-                          </button>
+                          {item.href ? (
+                            <div className="flex items-center">
+                              <Link
+                                href={item.href}
+                                onClick={close}
+                                aria-current={isCurrent(item.href, pathname) ? "page" : undefined}
+                                className={`${row} pr-0 ${active ? "text-brand" : "text-navy"}`}
+                              >
+                                {active && (
+                                  <span
+                                    aria-hidden
+                                    className="absolute inset-y-0 left-0 w-[3px] bg-brand"
+                                  />
+                                )}
+                                {item.label}
+                              </Link>
+                              {toggle}
+                            </div>
+                          ) : (
+                            toggle
+                          )}
                           <ul
                             id={list}
                             hidden={!expanded}
@@ -235,13 +270,13 @@ export function MobileMenu({ driveHref }: { driveHref: string }) {
                 <LocaleRow />
 
                 <div className="mt-auto space-y-2.5 px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3">
-                  <Link
-                    href={driveHref}
+                  <FormLink
+                    home={home}
                     onClick={close}
                     className="flex h-[50px] w-full items-center justify-center rounded-full bg-sun text-[17px] font-bold text-navy transition hover:brightness-105"
                   >
                     Drive With Us
-                  </Link>
+                  </FormLink>
                   <a
                     href={PHONE_HREF}
                     className="flex h-[50px] w-full items-center justify-center gap-2.5 rounded-full border-2 border-[#d5dbe3] text-[17px] font-bold text-navy transition hover:border-navy"

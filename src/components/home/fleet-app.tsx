@@ -34,7 +34,7 @@ export function FleetApp() {
       <div className="relative mx-auto h-[calc(var(--u)*349)] w-[calc(var(--u)*412)] [--u:calc(100cqw/412)] lg:h-[calc(var(--u)*1082)] lg:w-[calc(var(--u)*1440)] lg:[--u:calc(min(100cqw,1440px)/1440)]">
         <h2 className="absolute inset-x-0 top-[calc(var(--u)*16.7)] text-center text-[length:calc(var(--u)*24)] font-bold leading-[calc(var(--u)*29)] tracking-[calc(var(--u)*0.35)] lg:tracking-[calc(var(--u)*0.5)] text-navy lg:top-[calc(var(--u)*83.7)] lg:text-[length:calc(var(--u)*64)] lg:leading-[calc(var(--u)*77)]">
           Introducing <span className="text-brand">Everest Fleet</span> <span className="lg:hidden">App</span>
-          <span className="hidden lg:inline">app</span>
+          <span className="hidden lg:inline">App</span>
         </h2>
 
         {/* Past 1440 the pill keeps running to the left edge of the window. */}
@@ -57,14 +57,14 @@ export function FleetApp() {
                 <span className="text-sun">{key}</span>
               </span>
             ))}
-            <span className="block lg:hidden">All in One App</span>
+            <span className="block lg:hidden">All In One App</span>
             {desktopLines.map(([lead, key]) => (
               <span key={`desktop-${key}`} className="hidden lg:block">
                 {lead}
                 <span className="text-sun">{key}</span>.
               </span>
             ))}
-            <span className="hidden lg:block">All in One App.</span>
+            <span className="hidden lg:block">All In One App.</span>
           </h3>
           <a
             href={PLAY_STORE_HREF}

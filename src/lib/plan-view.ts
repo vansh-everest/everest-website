@@ -127,7 +127,7 @@ export function planFigures(plan: Plan): PlanFigure[] {
   const daily = price.unit.includes("day");
   const term = { label: fillOrDrop(plan.page.term.label, price), value: fillOrDrop(plan.page.term.value, price) };
   return [
-    { label: daily ? "Daily rent" : "Rent", value: headline(price), suffix },
+    { label: daily ? "Daily Rent" : "Rent", value: headline(price), suffix },
     price.upfront
       ? { label: "Upfront", value: rupees(price.upfront), suffix }
       : { label: "Deposit", value: rupees(price.deposit), suffix },
@@ -260,6 +260,8 @@ export type PlanWizardView = {
   cars: WizardCar[];
   /** Months offered on the upfront step. */
   tenures: string[];
+  /** Lines beside the car on the upfront step; `{months}` prints the chosen tenure. */
+  perks: string[];
   prices: Record<string, WizardPrice>;
   /** Jarvis's figures for one car in one city (city slug, then car id); they win over `prices`. */
   carPrices: Record<string, Record<string, WizardPrice>>;
@@ -321,6 +323,7 @@ export function planWizard(
     cities,
     cars,
     tenures: content.calculators.find((c) => c.planId === plan.id)?.tenures ?? [],
+    perks: content.calculators.find((c) => c.planId === plan.id)?.perks ?? [],
     prices,
     carPrices,
     term: term.label && term.value ? term : { label: "", value: "" },

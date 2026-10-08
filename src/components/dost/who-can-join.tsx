@@ -2,10 +2,10 @@ import { Briefcase, Building2, Truck, User, UserPlus, Users, type LucideIcon } f
 
 /** The phone export writes the card titles in sentence case, the desktop one in title case. */
 const WHO: { icon: LucideIcon; title: string; titlePhone?: string; body: string }[] = [
-  { icon: Users, title: "Driver Sourcing Agents", titlePhone: "Driver sourcing agents", body: "Earn on every driver you place" },
+  { icon: Users, title: "Driver Sourcing Agents", titlePhone: "Driver Sourcing Agents", body: "Earn on every driver you place" },
   { icon: Briefcase, title: "Agents", body: "Drivers already come to you" },
-  { icon: Truck, title: "Logistics Businesses", titlePhone: "Logistics businesses", body: "Put your network of drivers to work" },
-  { icon: UserPlus, title: "Anyone who knows Drivers", titlePhone: "Anyone who knows drivers", body: "Friends, family or your neighbourhood" },
+  { icon: Truck, title: "Logistics Businesses", titlePhone: "Logistics Businesses", body: "Put your network of drivers to work" },
+  { icon: UserPlus, title: "Anyone Who Knows Drivers", titlePhone: "Anyone Who Knows Drivers", body: "Friends, family or your neighbourhood" },
   { icon: User, title: "Individuals", body: "Aadhaar, PAN and address proof" },
   { icon: Building2, title: "Companies", body: "Pvt Ltd, LLP, partnership or sole owner" },
 ];

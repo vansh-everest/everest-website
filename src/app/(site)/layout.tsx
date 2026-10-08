@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     siteName: "Everest Fleet",
     locale: "en_IN",
     url: "/",
-    title: "Everest Fleet | Drive, Earn and Own",
+    title: "Everest Fleet | Drive, Earn And Own",
     description: COMPANY_BLURB,
   },
   twitter: { card: "summary_large_image" },
