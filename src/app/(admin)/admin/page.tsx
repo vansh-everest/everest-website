@@ -7,6 +7,7 @@ import { LoginForm } from "@/components/admin/login-form";
 import { authConfigured, readSession } from "@/lib/auth";
 import { getLiveData } from "@/lib/fleet-data";
 import { fleetConnectEnabled, hawkeyeUrl, jarvisAdminEnabled, jarvisSignIn, signInDiagnosis } from "@/lib/jarvis";
+import { MAIN_SITE_URL } from "@/lib/hosts";
 import { PREVIEW_PAGES } from "@/lib/preview";
 import { getEditorState, listVersions, storeMode } from "@/lib/store";
 import { jarvisView } from "./jarvis-view";
@@ -87,10 +88,10 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
           <h1 className="text-[15px] font-bold text-navy">Site content</h1>
           <span className="hidden rounded-md bg-mist px-2 py-0.5 text-xs font-semibold capitalize text-ink-soft sm:inline">{session.role}</span>
           <div className="ml-auto flex items-center gap-1 sm:gap-2">
-            <Link href="/" target="_blank" className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-navy hover:bg-mist">
+            <a href={`${MAIN_SITE_URL}/`} target="_blank" rel="noopener" className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-navy hover:bg-mist">
               <ExternalLink size={14} />
               <span className="hidden sm:inline">View live site</span>
-            </Link>
+            </a>
             {/* Signed in through Hawkeye, people sign out there, so this slot holds the leads link. */}
             {fleetConnectEnabled() ? (
               <Link href="/admin/live-data" className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-navy hover:bg-mist">
