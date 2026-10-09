@@ -4,11 +4,13 @@ import { Plus } from "lucide-react";
 import type { City, Hub, Post, SiteContent } from "@/lib/content";
 import { LOCALES, LOCALE_META, type Locale } from "@/lib/i18n";
 import { Area, Badge, Checks, Collapsible, ImageField, ListControls, Panel, Row, Section, Select, Text, Toggle, button } from "./fields";
-import type { Setter } from "./shared";
+import { JarvisHubs, ReadOnly } from "./jarvis-fields";
+import type { JarvisView, Setter } from "./shared";
 
 type Props = { content: SiteContent; setContent: Setter; locked: boolean };
 
-export function CitiesTab({ content, setContent, locked }: Props) {
+/** On Jarvis, ready cars are its count and hubs its list wherever it has one, both read only. */
+export function CitiesTab({ content, setContent, locked, jarvis = null }: Props & { jarvis?: JarvisView | null }) {
   const plans = content.plans.map((p) => ({ id: p.id, label: p.name.en || p.id }));
   const patch = (i: number, p: Partial<City>) =>
     setContent((c) => ({ ...c, cities: c.cities.map((x, j) => (j === i ? { ...x, ...p } : x)) }));
@@ -42,13 +44,17 @@ export function CitiesTab({ content, setContent, locked }: Props) {
           <Section title="Details">
             <Row cols={2}>
               <Text label="State" value={city.state} disabled={locked} onChange={(v) => patch(i, { state: v })} />
-              <Text
-                label="Cars ready"
-                numeric
-                value={String(city.readyCars)}
-                disabled={locked}
-                onChange={(v) => patch(i, { readyCars: Number(v) || 0 })}
-              />
+              {jarvis ? (
+                <ReadOnly label="Cars ready" value={(jarvis.cities[city.slug]?.readyCars ?? 0).toLocaleString("en-IN")} />
+              ) : (
+                <Text
+                  label="Cars ready"
+                  numeric
+                  value={String(city.readyCars)}
+                  disabled={locked}
+                  onChange={(v) => patch(i, { readyCars: Number(v) || 0 })}
+                />
+              )}
             </Row>
           </Section>
           <Section title="Plans">
@@ -58,7 +64,11 @@ export function CitiesTab({ content, setContent, locked }: Props) {
             <ImageField slot={city.heroImage} disabled={locked} onChange={(heroImage) => patch(i, { heroImage })} />
           </Section>
           <Section title="Hubs">
-            <HubList hubs={city.hubs} disabled={locked} onChange={(hubs) => patch(i, { hubs })} />
+            {jarvis?.cities[city.slug]?.hubs.length ? (
+              <JarvisHubs hubs={jarvis.cities[city.slug].hubs} />
+            ) : (
+              <HubList hubs={city.hubs} disabled={locked} onChange={(hubs) => patch(i, { hubs })} />
+            )}
           </Section>
         </Collapsible>
       ))}

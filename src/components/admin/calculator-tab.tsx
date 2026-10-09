@@ -1,14 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import Link from "next/link";
+import { Gauge, Plus } from "lucide-react";
 import { placeholder, rupees, type Calculator, type CalculatorCar, type DepositOption, type SiteContent } from "@/lib/content";
 import { Badge, Cell, Collapsible, ImageField, LinesArea, ListControls, NumbersInput, Panel, Row, RowHeads, Section, Text, button, move } from "./fields";
 import { PLAN_PAGES } from "@/lib/plan-pages";
-import type { Setter } from "./shared";
+import { FromJarvis, JarvisYears } from "./jarvis-fields";
+import type { JarvisView, Setter } from "./shared";
 
-/** One calculator per plan page. The tabs pick the plan; a plan without one shows none. */
-export function CalculatorTab({ content, setContent, locked }: { content: SiteContent; setContent: Setter; locked: boolean }) {
+/**
+ * One calculator per plan page. The tabs pick the plan; a plan without one shows none. On Jarvis
+ * the picker's figures are Jarvis's, shown read only; the words, tenures and photos stay editable.
+ */
+export function CalculatorTab({
+  content,
+  setContent,
+  locked,
+  jarvis = null,
+}: {
+  content: SiteContent;
+  setContent: Setter;
+  locked: boolean;
+  jarvis?: JarvisView | null;
+}) {
   // Only a plan with its own page can show a calculator.
   const plans = content.plans.filter((p) => PLAN_PAGES.some((page) => page.planId === p.id));
   const [picked, setPicked] = useState(() => content.calculators[0]?.planId ?? "");
@@ -36,6 +51,24 @@ export function CalculatorTab({ content, setContent, locked }: { content: SiteCo
     content.calculators.flatMap((c) => c.cars).find((car) => car.carId === id && car.image.url)?.image ??
     placeholder(`${carName(id)}, studio photo`);
   const addable = calc ? (plan?.carIds ?? []).filter((id) => !calc.cars.some((c) => c.carId === id)) : [];
+  const moneyLabel = calc?.depositLabel || (planId === "own-now" ? "Upfront payment" : "Deposit");
+
+  const figures = jarvis ? (
+    <Panel
+      title="Prices"
+      aside={
+        <>
+          <FromJarvis />
+          <Link href="/admin/live-data" className={button.small}>
+            <Gauge size={14} />
+            Live data
+          </Link>
+        </>
+      }
+    >
+      <JarvisYears key={planId} cities={jarvis.calculators[planId] ?? []} moneyLabel={moneyLabel} />
+    </Panel>
+  ) : null;
 
   return (
     <div className="grid gap-3">
@@ -68,6 +101,9 @@ export function CalculatorTab({ content, setContent, locked }: { content: SiteCo
             Add a calculator
           </button>
         </div>
+      ) : null}
+      {!calc ? (
+        figures
       ) : (
         <>
           <Panel
@@ -105,8 +141,9 @@ export function CalculatorTab({ content, setContent, locked }: { content: SiteCo
               onChange={(perks) => patch({ perks })}
             />
           </Panel>
+          {figures}
 
-          <p className="mt-3 text-[13px] text-ink-soft">Cars appear in the picker in this order</p>
+          <p className="mt-3 text-[13px] text-ink-soft">{jarvis ? "Studio photos for the picker" : "Cars appear in the picker in this order"}</p>
           {calc.cars.map((car, i) => {
             const start = car.options[car.defaultOption];
             return (
@@ -115,14 +152,16 @@ export function CalculatorTab({ content, setContent, locked }: { content: SiteCo
                 defaultOpen
                 title={carName(car.carId)}
                 meta={
-                  <>
-                    {start?.deposit && start.daily ? (
-                      <Badge tone="blue">
-                        {rupees(start.deposit)} · {rupees(start.daily)}/day
-                      </Badge>
-                    ) : null}
-                    <Badge>{car.options.length === 1 ? "1 stop" : `${car.options.length} stops`}</Badge>
-                  </>
+                  jarvis ? null : (
+                    <>
+                      {start?.deposit && start.daily ? (
+                        <Badge tone="blue">
+                          {rupees(start.deposit)} · {rupees(start.daily)}/day
+                        </Badge>
+                      ) : null}
+                      <Badge>{car.options.length === 1 ? "1 stop" : `${car.options.length} stops`}</Badge>
+                    </>
+                  )
                 }
                 actions={
                   <ListControls
@@ -132,21 +171,24 @@ export function CalculatorTab({ content, setContent, locked }: { content: SiteCo
                     onMove={(to) => patch({ cars: move(calc.cars, i, to) })}
                     onRemove={() => patch({ cars: calc.cars.filter((_, j) => j !== i) })}
                     removeLabel={`Remove ${carName(car.carId)}`}
+                    hideMove={Boolean(jarvis)}
                   />
                 }
               >
                 <Section title="Photo">
                   <ImageField slot={car.image} disabled={locked} onChange={(image) => patchCar(i, { image })} />
                 </Section>
-                <Section title="Slider stops" hint="The slider shows once there are two or more">
-                  <DepositOptions
-                    car={car}
-                    name={`default-${planId}-${car.carId}`}
-                    depositLabel={calc.depositLabel || "Deposit"}
-                    locked={locked}
-                    onChange={(p) => patchCar(i, p)}
-                  />
-                </Section>
+                {jarvis ? null : (
+                  <Section title="Slider stops" hint="The slider shows once there are two or more">
+                    <DepositOptions
+                      car={car}
+                      name={`default-${planId}-${car.carId}`}
+                      depositLabel={calc.depositLabel || "Deposit"}
+                      locked={locked}
+                      onChange={(p) => patchCar(i, p)}
+                    />
+                  </Section>
+                )}
               </Collapsible>
             );
           })}
@@ -163,7 +205,7 @@ export function CalculatorTab({ content, setContent, locked }: { content: SiteCo
                     patch({
                       cars: [
                         ...calc.cars,
-                        { carId: id, image: studioPhoto(id), options: [{ deposit: "", daily: "" }], defaultOption: 0 },
+                        { carId: id, image: studioPhoto(id), options: jarvis ? [] : [{ deposit: "", daily: "" }], defaultOption: 0 },
                       ],
                     })
                   }

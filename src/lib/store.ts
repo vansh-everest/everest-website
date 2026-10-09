@@ -4,7 +4,7 @@ import path from "node:path";
 import { unstable_cache } from "next/cache";
 import { draftMode } from "next/headers";
 import { readSession } from "@/lib/auth";
-import { CONTENT_VERSION, DEFAULT_CONTENT, type SiteContent } from "@/lib/content";
+import { CONTENT_VERSION, DEFAULT_CONTENT, emptyPrice, type Price, type SiteContent } from "@/lib/content";
 import { normalizeContent } from "@/lib/content-schema";
 import { getLiveData, withLiveData } from "@/lib/fleet-data";
 import { withTitleCase } from "@/lib/text-case";
@@ -247,6 +247,56 @@ function jarvisRevision(answer: Answer<{ revision: number }>, failure: string): 
 
 const revisionOf = (base: string) => Number(base) || 0;
 
+/** The copy a change replaces: the draft, or else the live copy, or else the defaults. */
+async function jarvisStored(): Promise<SiteContent> {
+  const state = await jarvisState();
+  const raw = state.draft ?? state.published;
+  return raw ? normalizeContent(raw) : DEFAULT_CONTENT;
+}
+
+const LIVE_PRICE_FIELDS = ["amount", "unit", "deposit", "upfront"] as const;
+
+function keepPrice(next: Price, stored: Price | undefined): Price {
+  const kept = stored ?? emptyPrice();
+  const out = { ...next };
+  for (const field of LIVE_PRICE_FIELDS) out[field] = kept[field];
+  return out;
+}
+
+/**
+ * On Jarvis, prices, city prices, ready cars and calculator points come from Jarvis and the admin
+ * shows them read only. Whatever a request sends for them is dropped for the stored copy's values
+ * (blank for a new plan, car or calculator car), so no request can change a figure. Every other
+ * field, tenure months included, is taken as sent.
+ */
+function keepLiveFields(next: SiteContent, stored: SiteContent): SiteContent {
+  const plans = new Map(stored.plans.map((p) => [p.id, p]));
+  const cars = new Map(stored.cars.map((c) => [c.id, c]));
+  const cities = new Map(stored.cities.map((c) => [c.slug, c]));
+  const calculators = new Map(stored.calculators.map((c) => [c.planId, c]));
+  return {
+    ...next,
+    plans: next.plans.map((plan) => ({
+      ...plan,
+      price: keepPrice(plan.price, plans.get(plan.id)?.price),
+      cityPrices: plans.get(plan.id)?.cityPrices ?? {},
+    })),
+    cars: next.cars.map((car) => ({
+      ...car,
+      price: keepPrice(car.price, cars.get(car.id)?.price),
+      cityPrices: cars.get(car.id)?.cityPrices ?? {},
+    })),
+    cities: next.cities.map((city) => ({ ...city, readyCars: cities.get(city.slug)?.readyCars ?? 0 })),
+    calculators: next.calculators.map((calc) => ({
+      ...calc,
+      cars: calc.cars.map((car) => {
+        const kept = calculators.get(calc.planId)?.cars.find((c) => c.carId === car.carId);
+        return { ...car, options: kept?.options ?? [], defaultOption: kept?.defaultOption ?? 0 };
+      }),
+    })),
+  };
+}
+
 /* ------------------------------------------------------------------------ the editor */
 
 /**
@@ -288,7 +338,7 @@ export async function saveDraft(next: SiteContent, editor: string, base: string)
   const mode = requireWritable();
   if (mode === "jarvis") {
     const at = new Date().toISOString();
-    const content: SiteContent = { ...next, updatedAt: at, updatedBy: editor };
+    const content: SiteContent = { ...keepLiveFields(next, await jarvisStored()), updatedAt: at, updatedBy: editor };
     const answer = await jarvisAdmin<{ revision: number }>("PUT", "/everest_website/admin/content/draft", { content, base: revisionOf(base) });
     return { at, base: jarvisRevision(answer, "The draft was not saved.") };
   }
@@ -329,7 +379,13 @@ export async function publishContent(next: SiteContent, editor: string, base: st
   const mode = requireWritable();
   if (mode === "jarvis") {
     const at = new Date().toISOString();
-    const content: SiteContent = { ...next, updatedAt: at, updatedBy: editor, publishedAt: at, publishedBy: editor };
+    const content: SiteContent = {
+      ...keepLiveFields(next, await jarvisStored()),
+      updatedAt: at,
+      updatedBy: editor,
+      publishedAt: at,
+      publishedBy: editor,
+    };
     const answer = await jarvisAdmin<{ revision: number }>("POST", "/everest_website/admin/content/publish", { content, base: revisionOf(base) });
     return { at, base: jarvisRevision(answer, "That change was not published.") };
   }

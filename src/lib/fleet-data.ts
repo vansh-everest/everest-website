@@ -10,10 +10,11 @@ import { fleetConnectEnabled, fleetGet } from "@/lib/jarvis";
  * city, as the driver app quotes them.
  *
  * The admin's content stays the source for words, photos and which cars and cities the site
- * shows. Jarvis supplies the numbers: ready cars per city, plan prices per city, and hubs for a
- * city whose hub list the admin left empty. A city Jarvis has no prices for, and every page not
- * tied to a city, shows the admin's numbers, never another city's. With fleet_connect unset, or
- * Jarvis unreachable, the site shows the admin's numbers.
+ * shows. Jarvis supplies the numbers: ready cars per city, plan and car prices per city, the plan
+ * calculators' figures, and a city's hubs wherever it lists any (the admin's hubs stand in for a
+ * city it has none for). A city Jarvis has no prices for shows none, never another city's. With
+ * fleet_connect set but Jarvis unreachable, prices are blank and ready cars zero; only with
+ * fleet_connect unset (a laptop) does the site show the admin's numbers.
  */
 
 export const FLEET_DATA_TAG = "fleet-data";
@@ -426,18 +427,23 @@ function merge(prices: CityPrices, slug: string, live: LivePlanPrice): CityPrice
 }
 
 /**
- * The content with Jarvis's figures laid over it. Pure: the same content and data always give the
- * same page, so the overlay never needs caching of its own.
+ * The content with Jarvis's figures laid over it. Pure: the same content, data and `jarvis` always
+ * give the same page, so the overlay never needs caching of its own.
+ *
+ * `jarvis` is whether the site runs on Jarvis (fleet_connect set). There the admin cannot type a
+ * price, ready-car count or calculator figure, so the stored ones are never shown: with no figures
+ * from Jarvis (a failed read), prices are blank and ready cars zero. Without fleet_connect, a
+ * laptop, the admin's numbers stand.
  */
-export function withLiveData(content: SiteContent, live: LiveData | null): SiteContent {
-  if (!live) return content;
+export function withLiveData(content: SiteContent, live: LiveData | null, jarvis: boolean = fleetConnectEnabled()): SiteContent {
+  if (!live && !jarvis) return content;
 
   const bySlug = new Map<string, LiveCity[]>();
-  for (const city of live.cities) {
+  for (const city of live?.cities ?? []) {
     const slug = siteCityFor(city, content);
     if (slug) bySlug.set(slug, [...(bySlug.get(slug) ?? []), city]);
   }
-  if (!bySlug.size) return content;
+  if (!bySlug.size && !jarvis) return content;
 
   /** Per site plan, per site city: the lowest of each figure across the city's cars ("from"). */
   const planCity = new Map<string, Map<string, LivePlanPrice>>();
@@ -476,12 +482,19 @@ export function withLiveData(content: SiteContent, live: LiveData | null): SiteC
     cities: content.cities.map((city) => {
       const found = bySlug.get(city.slug);
       if (!found) return { ...city, readyCars: 0 };
+      // Jarvis's hubs whenever it lists any; the admin's list only for a city it has none for.
+      const hubs = found.flatMap((c) => c.hubs);
       return {
         ...city,
         readyCars: found.reduce((sum, c) => sum + c.readyCars, 0),
-        hubs: city.hubs.length ? city.hubs : found.flatMap((c) => c.hubs),
+        hubs: hubs.length ? hubs : city.hubs,
       };
     }),
+    // The plan pickers take their money points from Jarvis's model years (planCalculator); the
+    // admin's sample points would otherwise stand in wherever Jarvis has none.
+    calculators: jarvis
+      ? content.calculators.map((calc) => ({ ...calc, cars: calc.cars.map((car) => ({ ...car, options: [], defaultOption: 0 })) }))
+      : content.calculators,
     plans: content.plans.map((plan) => {
       const live = planCity.get(plan.id) ?? new Map<string, LivePlanPrice>();
       let cityPrices: CityPrices = {};

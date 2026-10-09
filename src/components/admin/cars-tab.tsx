@@ -2,12 +2,24 @@
 
 import { emptyPrice, headline, placeholder, type Car, type SiteContent } from "@/lib/content";
 import { AddByName, Badge, Checks, Collapsible, ImageField, ListControls, Row, Section, Select, Text, Toggle, move } from "./fields";
+import { JarvisCityPrices, JarvisPriceGrid, jarvisHeadline, liveFields } from "./jarvis-fields";
 import { CityPriceTable, PriceGrid } from "./price-fields";
-import { newId, type Setter } from "./shared";
+import { newId, type JarvisView, type Setter } from "./shared";
 
 const CAR_FIELDS = ["amount", "unit", "deposit", "tenureMonths"] as const;
 
-export function CarsTab({ content, setContent, locked }: { content: SiteContent; setContent: Setter; locked: boolean }) {
+export function CarsTab({
+  content,
+  setContent,
+  locked,
+  jarvis = null,
+}: {
+  content: SiteContent;
+  setContent: Setter;
+  locked: boolean;
+  /** On Jarvis, prices are its figures, read only. */
+  jarvis?: JarvisView | null;
+}) {
   const cities = content.cities.map((c) => ({ slug: c.slug, name: c.name.en }));
   const plans = content.plans.map((p) => ({ id: p.id, label: p.name.en || p.id }));
 
@@ -63,7 +75,7 @@ export function CarsTab({ content, setContent, locked }: { content: SiteContent;
     <div className="grid gap-3">
       <p className="text-[13px] text-ink-soft">The home page car slider shows the cars with a card, in this order</p>
       {content.cars.map((car, i) => {
-        const price = headline(car.price);
+        const price = jarvis ? jarvisHeadline(jarvis.cars[car.id]?.price) : headline(car.price);
         return (
           <Collapsible
             key={car.id}
@@ -137,15 +149,30 @@ export function CarsTab({ content, setContent, locked }: { content: SiteContent;
             </Section>
 
             <Section title="Price" hint="Shown on the home page car cards">
-              <PriceGrid value={car.price} fields={[...CAR_FIELDS]} disabled={locked} onChange={(price) => patch(i, { price })} />
-              <CityPriceTable
-                cities={cities}
-                base={car.price}
-                fields={[...CAR_FIELDS]}
-                value={car.cityPrices}
-                disabled={locked}
-                onChange={(cityPrices) => patch(i, { cityPrices })}
-              />
+              {jarvis ? (
+                <>
+                  <JarvisPriceGrid
+                    figures={jarvis.cars[car.id]?.price}
+                    value={car.price}
+                    fields={CAR_FIELDS}
+                    disabled={locked}
+                    onChange={(price) => patch(i, { price })}
+                  />
+                  <JarvisCityPrices cities={cities} priced={jarvis.cars[car.id]} fields={liveFields(CAR_FIELDS)} />
+                </>
+              ) : (
+                <>
+                  <PriceGrid value={car.price} fields={[...CAR_FIELDS]} disabled={locked} onChange={(price) => patch(i, { price })} />
+                  <CityPriceTable
+                    cities={cities}
+                    base={car.price}
+                    fields={[...CAR_FIELDS]}
+                    value={car.cityPrices}
+                    disabled={locked}
+                    onChange={(cityPrices) => patch(i, { cityPrices })}
+                  />
+                </>
+              )}
             </Section>
 
             <Section title="Plans">

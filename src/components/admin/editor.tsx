@@ -9,6 +9,7 @@ import { CarsTab } from "./cars-tab";
 import { button } from "./fields";
 import { HistoryTab } from "./history-tab";
 import { PlansTab } from "./plans-tab";
+import type { JarvisView } from "./shared";
 import { StoriesTab } from "./stories-tab";
 import { BlogTab, CitiesTab, ImagesTab } from "./site-tabs";
 
@@ -39,6 +40,7 @@ export function Editor({
   role,
   storeMode,
   notice,
+  jarvis = null,
 }: {
   initial: SiteContent;
   /** The marker the first change must send back: the draft's timestamp, or Jarvis's revision. */
@@ -50,6 +52,8 @@ export function Editor({
   role: "viewer" | "admin";
   storeMode: "file" | "blob" | "jarvis" | "readonly";
   notice?: string;
+  /** On Jarvis: its figures, shown read only in place of the editable ones. */
+  jarvis?: JarvisView | null;
 }) {
   const [content, setContent] = useState<SiteContent>(initial);
   const [tab, setTab] = useState<Tab>("Plans");
@@ -247,10 +251,10 @@ export function Editor({
             </p>
           ) : null}
 
-          {tab === "Plans" ? <PlansTab content={content} setContent={setContent} locked={locked} /> : null}
-          {tab === "Cars" ? <CarsTab content={content} setContent={setContent} locked={locked} /> : null}
-          {tab === "Calculator" ? <CalculatorTab content={content} setContent={setContent} locked={locked} /> : null}
-          {tab === "Cities" ? <CitiesTab content={content} setContent={setContent} locked={locked} /> : null}
+          {tab === "Plans" ? <PlansTab content={content} setContent={setContent} locked={locked} jarvis={jarvis} /> : null}
+          {tab === "Cars" ? <CarsTab content={content} setContent={setContent} locked={locked} jarvis={jarvis} /> : null}
+          {tab === "Calculator" ? <CalculatorTab content={content} setContent={setContent} locked={locked} jarvis={jarvis} /> : null}
+          {tab === "Cities" ? <CitiesTab content={content} setContent={setContent} locked={locked} jarvis={jarvis} /> : null}
           {tab === "Blog" ? <BlogTab content={content} setContent={setContent} locked={locked} /> : null}
           {tab === "Stories" ? <StoriesTab content={content} setContent={setContent} locked={locked} /> : null}
           {tab === "Images" ? <ImagesTab content={content} setContent={setContent} locked={locked} /> : null}

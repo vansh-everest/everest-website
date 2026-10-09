@@ -78,7 +78,7 @@ export function CityPriceTable({
   }
 
   return (
-    <details className="group rounded-xl border border-line bg-paper" open={overridden > 0}>
+    <details className="group min-w-0 rounded-xl border border-line bg-paper" open={overridden > 0}>
       <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-semibold text-navy [&::-webkit-details-marker]:hidden">
         <ChevronRight size={16} className="text-ink-soft transition group-open:rotate-90" />
         City prices

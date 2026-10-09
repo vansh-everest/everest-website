@@ -5,9 +5,11 @@ import { signOutAction } from "@/app/(admin)/admin/actions";
 import { Editor } from "@/components/admin/editor";
 import { LoginForm } from "@/components/admin/login-form";
 import { authConfigured, readSession } from "@/lib/auth";
+import { getLiveData } from "@/lib/fleet-data";
 import { fleetConnectEnabled, hawkeyeUrl, jarvisAdminEnabled, jarvisSignIn, signInDiagnosis } from "@/lib/jarvis";
 import { PREVIEW_PAGES } from "@/lib/preview";
 import { getEditorState, listVersions, storeMode } from "@/lib/store";
+import { jarvisView } from "./jarvis-view";
 
 export const dynamic = "force-dynamic";
 
@@ -68,7 +70,13 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   }
 
   const mode = storeMode();
-  const [{ content, hasDraft, live, base }, versions] = await Promise.all([getEditorState(), listVersions()]);
+  // On Jarvis, its figures are shown read only in place of the editable ones.
+  const [{ content, hasDraft, live, base }, versions, figures] = await Promise.all([
+    getEditorState(),
+    listVersions(),
+    mode === "jarvis" ? getLiveData() : null,
+  ]);
+  const jarvis = mode === "jarvis" ? jarvisView(content, figures) : null;
 
   return (
     <>
@@ -117,6 +125,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         role={session.role}
         storeMode={mode}
         notice={notice}
+        jarvis={jarvis}
       />
     </>
   );
