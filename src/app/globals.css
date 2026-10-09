@@ -952,3 +952,14 @@ body {
 html.lenis.lenis-stopped:not(.lenis-autoToggle) {
   overflow: visible;
 }
+
+/* Plan cards (batch 10) */
+/* The dots under the plan carousel on phones (PlanCarousel): the current card's dot stretches into
+   a bar. */
+@media (prefers-reduced-motion: no-preference) {
+  .plan-dot-mark {
+    transition:
+      width 0.3s ease,
+      background-color 0.3s ease;
+  }
+}

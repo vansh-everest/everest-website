@@ -107,7 +107,7 @@ export type Plan = {
   /** The badge on car cards, e.g. "DTO". */
   shortName: string;
   summary: Record<Locale, string>;
-  /** The tab above the card, e.g. "Ownership model". */
+  /** The tab above the card, e.g. "Ownership Plan". */
   tag: string;
   /** The rent label on this plan's car cards, e.g. "Rent starting from". */
   priceLabel: string;
@@ -229,7 +229,7 @@ export type SiteContent = {
 };
 
 /** Bump when SiteContent changes shape, so no deployment reads a cache written by an older one. */
-export const CONTENT_VERSION = "10";
+export const CONTENT_VERSION = "11";
 
 export const placeholder = (label: string, alt = ""): ImageSlot => ({ label, url: "", alt });
 
@@ -303,15 +303,15 @@ const PLAN_SEED: Plan[] = [
       bn: "শুরুতে অল্প টাকা, তারপর রোজের পেমেন্ট, আর মেয়াদ শেষে গাড়ি আপনার।",
       ta: "முதலில் குறைந்த தொகை, பிறகு தினசரி கட்டணம், காலம் முடிவில் கார் உங்களுடையது.",
     },
-    tag: "Ownership model",
+    tag: "Ownership Plan",
     priceLabel: "Rent starting from",
     theme: "dark",
     price: { amount: "650", unit: "/day", deposit: "15000", upfront: "", tenureMonths: "" },
     depositNote: "Onwards",
     tenureNote: "",
     cityPrices: {},
-    rows: [{ label: "Ownership", value: "Car transferred to your name at tenure end" }],
-    benefits: ["No CIBIL", "Daily Instalments", "No Insurance", "No Regulatory Charges", "100% Uber incentive", "No paperwork", "No loan required"],
+    rows: [{ label: "Ownership", value: "Own your car in 12 months" }],
+    benefits: ["No CIBIL", "Daily Instalments", "No Insurance", "No Regulatory Charges"],
     carIds: ["wagonr", "s-presso", "tigor", "rumion", "swift-dzire"],
     page: {
       headline: "The Easiest Way to",
@@ -364,7 +364,7 @@ const PLAN_SEED: Plan[] = [
       bn: "ডিপোজিট আর মাসিক কিস্তি, মেয়াদ শেষে মালিকানা আপনার।",
       ta: "டெபாசிட் மற்றும் மாதத் தவணைகள், காலம் முடிவில் உரிமை உங்களுடையது.",
     },
-    tag: "Ownership model",
+    tag: "Ownership Plan",
     priceLabel: "Rent starting from",
     theme: "light",
     price: { amount: "499", unit: "+/mo", deposit: "5000", upfront: "", tenureMonths: "" },
@@ -419,7 +419,7 @@ const PLAN_SEED: Plan[] = [
       bn: "ফেরতযোগ্য ডিপোজিট আর রোজের ভাড়া, কেনার কোনো বাধ্যবাধকতা নেই।",
       ta: "திரும்பக் கிடைக்கும் டெபாசிட் மற்றும் தினசரி வாடகை, வாங்க வேண்டிய கட்டாயம் இல்லை.",
     },
-    tag: "Renting model",
+    tag: "Renting Plan",
     priceLabel: "Rent starting from",
     theme: "light",
     price: { amount: "399", unit: "/day", deposit: "5000", upfront: "", tenureMonths: "" },
@@ -427,7 +427,7 @@ const PLAN_SEED: Plan[] = [
     tenureNote: "Flexible",
     cityPrices: {},
     rows: [{ label: "Zero asset", value: "No ownership or loan liability" }],
-    benefits: ["24/7 Support", "100% Uber incentive", "Free repair and maintenance"],
+    benefits: ["100% Uber incentive", "No Regulatory Charges", "Free Repair & Maintenance", "24×7 Support"],
     carIds: ["wagonr", "s-presso", "tigor", "rumion", "swift-dzire"],
     page: {
       headline: "Earn Without",
