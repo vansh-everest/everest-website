@@ -43,7 +43,7 @@ export function FounderStory({ className = "", short = false, flush = false }: {
           <span className="mt-0.5 block text-[13px] leading-[18px] text-brand sm:text-[13px]">{FOUNDER.title}, Everest Fleet</span>
         </figcaption>
       </figure>
-      <div className="lg:max-w-[620px] lg:pt-5">
+      <div className="lg:max-w-[620px]">
         <p className="text-lg font-bold leading-7 tracking-[-0.3px] text-navy sm:text-[22px] sm:leading-[30px] lg:text-[26px] lg:leading-[34px]">
           Our Journey Has Always Been About More Than Cars.
           <br /> It Has Always Been About People.
@@ -73,7 +73,7 @@ export function FounderStory({ className = "", short = false, flush = false }: {
           )}
           <p className="font-semibold text-navy">Thank you for trusting Everest and being a part of our journey.</p>
         </div>
-        <p className="mt-6 hidden pl-4 lg:block">
+        <p className="mt-6 hidden lg:block">
           <span className="block text-[15px] font-bold leading-6 text-navy">{FOUNDER.name}</span>
           <span className="mt-0.5 block text-[13px] leading-5 text-gray-400">{FOUNDER.title}, Everest Fleet</span>
         </p>
