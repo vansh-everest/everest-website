@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import Image from "next/image";
-import { BACKERS, FOUNDERS } from "./data";
+import { FounderStory } from "@/components/about/founder";
+import { BACKERS } from "./data";
 import { Heading, Kicker, Label } from "./ui";
 
 export function Leadership() {
@@ -10,20 +11,10 @@ export function Leadership() {
         <Kicker>Leadership</Kicker>
         <Heading className="mt-2 lg:mt-2.5">The People Behind Everest</Heading>
 
-        <Label className="mt-[30px] lg:mt-11">Founding team</Label>
-        <ul className="mt-6 grid grid-cols-2 gap-3 lg:mt-4 lg:grid-cols-4 lg:gap-6">
-          {FOUNDERS.map((f) => (
-            <li key={f.name} className="rounded-2xl bg-[#f2f5fd] px-4 pb-3.5 pt-[18px] lg:rounded-[20px] lg:px-6 lg:pb-[26px] lg:pt-6">
-              <span className="grid size-11 place-items-center rounded-full bg-white text-lg font-bold text-brand lg:size-16 lg:text-[22px]">
-                {f.initials}
-              </span>
-              <p className="mt-2.5 text-[15px] font-bold leading-5 text-navy lg:mt-[11px] lg:text-lg lg:leading-6">{f.name}</p>
-              <p className="mt-2 text-[13px] leading-[18px] text-ink-soft lg:mt-[3px] lg:text-[15px] lg:leading-5">{f.role}</p>
-            </li>
-          ))}
-        </ul>
+        <Label className="mt-[30px] lg:mt-11">Founder</Label>
+        <FounderStory className="mt-6 lg:mt-8" />
 
-        <Label className="mt-8 lg:mt-[41px]">Backed by</Label>
+        <Label className="mt-12 lg:mt-16">Backed by</Label>
         <ul className="mt-[26px] grid grid-cols-2 gap-3 lg:mt-4 lg:flex lg:gap-4">
           {BACKERS.map((b) => (
             <li

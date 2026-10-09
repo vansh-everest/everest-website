@@ -42,7 +42,6 @@ const NAV_DEF: (LinkDef | GroupDef)[] = [
 const UTILITY_DEF: LinkDef[] = [
   { key: "forInvestors", href: "/investors" },
   { key: "blog", href: "/blog" },
-  { key: "esg", href: "/investors#esg" },
 ];
 
 /** A link in `locale`: its label in that language, and the page in that language when it has one. */

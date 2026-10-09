@@ -111,13 +111,6 @@ export const DOCUMENTS: InvestorDocument[] = [
   { icon: "lock", title: "Investor Presentation", url: "", pages: null },
 ];
 
-export const FOUNDERS = [
-  { initials: "SL", name: "Siddharth Ladsariya", role: "Founder & CEO" },
-  { initials: "AC", name: "Anand Chheda", role: "Co-founder" },
-  { initials: "PD", name: "Prihaans Dedhiya", role: "Co-founder" },
-  { initials: "HL", name: "Himani Ladsariya", role: "Co-founder" },
-];
-
 /** Logo crops from the design, at their drawn size in CSS pixels. */
 export const BACKERS = [
   { id: "uber", name: "Uber", w: 114, h: 42 },
