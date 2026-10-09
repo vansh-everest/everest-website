@@ -7,7 +7,7 @@ import type { PlanWizardView } from "@/lib/plan-view";
 import { WIZARD_COPY } from "./wizard-copy";
 import { enterStep, keepInView, leaveStep, nudgeSlider, playIntro, resizeCard, useTapInvite } from "./wizard-motion";
 import { ResultStep } from "./wizard-result";
-import { CarStep, CityStep, UpfrontStep } from "./wizard-steps";
+import { CarStep, CityStep, MoneyStep } from "./wizard-steps";
 import { figuresFor, StepFooter } from "./wizard-ui";
 
 /**
@@ -94,8 +94,9 @@ function Progress({ steps, step }: { steps: readonly string[]; step: number }) {
 }
 
 /**
- * The plan picker: city, then car and model year, then (on ownership plans with an upfront) the
- * tenure and upfront, then the plan those choices come to.
+ * The plan picker: city, then car and model year, then (where the plan has a money step) what is
+ * paid first: Own Now's tenure and upfront, Drive to Earn's model year and deposit. Then the plan
+ * those choices come to.
  *
  * It guides without words: the title and steps rise in when it scrolls into view, the choices
  * land one by one and then shimmer to show they can be tapped, the way forward wakes up once a
@@ -103,6 +104,7 @@ function Progress({ steps, step }: { steps: readonly string[]; step: number }) {
  */
 export function PlanWizard({ view }: { view: PlanWizardView }) {
   const copy = WIZARD_COPY[view.kind];
+  const money = copy.money;
   const last = copy.steps.length - 1;
   const uid = useId();
   const headingId = `${uid}-step`;
@@ -160,7 +162,7 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
   }, []);
 
   // A new step slides in, the card eases to its size, the steps above it stay in view, and the
-  // heading takes focus. On the upfront step the slider shows once that it can be dragged.
+  // heading takes focus. On a money step with a slider, it shows once that it can be dragged.
   useLayoutEffect(() => {
     if (!moved.current) return;
     const box = card.current;
@@ -228,13 +230,18 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
   }
 
   const cityName = view.cities.find((c) => c.slug === city)?.name ?? "";
-  // Only the ownership picker asks for a tenure; the others use the plan's own term.
-  const figures = figuresFor(view, car, city, copy.upfront ? tenure : "", index);
+  // Only a money step with a tenure asks for one; the others use the plan's own term.
+  const figures = figuresFor(view, car, city, money?.tenure ? tenure : "", index);
   const carLabel = year ? `${car.name} ${year}` : car.name;
   const name = copy.steps[step];
 
   // A step with only one way to answer is awake from the start.
-  const single = [view.cities.length < 2, cars.length < 2 && car.years.length < 2, view.tenures.length < 2 && car.options.length < 2];
+  const yearsOnCar = !money?.years;
+  const single = [
+    view.cities.length < 2,
+    cars.length < 2 && (!yearsOnCar || car.years.length < 2),
+    (!money?.tenure || view.tenures.length < 2) && (yearsOnCar || car.years.length < 2) && car.options.length < 2,
+  ];
   const awake = chosen.includes(step) || Boolean(single[step]);
   // The first step is cued as soon as the intro has landed; a later one once its choices have.
   useTapInvite(stage, live && landed && !awake && step < last, step, step === 0 ? 250 : 900);
@@ -265,7 +272,7 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
       <div
         ref={card}
         className={`wz-card mt-[19px] lg:mx-auto lg:mt-[33px] lg:rounded-3xl lg:border lg:border-[#dfe4e8] lg:bg-white lg:px-10 lg:pt-10 ${
-          copy.upfront && step === 2 ? "lg:max-w-[1040px]" : "lg:max-w-[880px]"
+          money && step === 2 ? "lg:max-w-[1040px]" : "lg:max-w-[880px]"
         } ${step === last ? "pb-7 lg:pb-10" : step === 0 ? "lg:pb-16" : "lg:pb-10"}`}
       >
         <div ref={stage} className="wz-stage" data-wz-picked={chosen.includes(step) || undefined}>
@@ -297,12 +304,14 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
                 choose(1);
                 pickYear(y);
               }}
+              showYears={yearsOnCar}
               headingId={headingId}
             />
           ) : null}
 
-          {copy.upfront && step === 2 ? (
-            <UpfrontStep
+          {money && step === 2 ? (
+            <MoneyStep
+              copy={money}
               car={car}
               carLabel={carLabel}
               cityName={cityName}
@@ -312,6 +321,11 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
               onTenure={(m) => {
                 choose(2);
                 setTenure(m);
+              }}
+              year={year}
+              onYear={(y) => {
+                choose(2);
+                pickYear(y);
               }}
               index={index}
               onIndex={(i) => {
@@ -344,13 +358,13 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
             className="mt-12 lg:mt-7"
             summary={cityName}
             onBack={() => go(0)}
-            next={copy.upfront ? "Next: Choose Upfront" : "See My Plan"}
+            next={money ? money.next : "See My Plan"}
             awake={awake}
             onNext={() => go(2)}
           />
         ) : null}
 
-        {copy.upfront && step === 2 ? (
+        {money && step === 2 ? (
           <StepFooter
             className="mt-12 lg:mt-7"
             summary={`${cityName} · ${carLabel}`}
