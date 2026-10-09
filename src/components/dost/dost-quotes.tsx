@@ -4,23 +4,17 @@ import { useState } from "react";
 import { ArrowLeft, ArrowRight, User } from "lucide-react";
 
 /**
- * Quotes from Dost partners. The design ships one, marked as a sample; `sample` keeps that
- * badge on it until a real quote replaces it. The arrows and dots appear once there are two.
+ * Quotes from real Dost partners, in their own words and with their consent. The section stays hidden
+ * until there is one; the arrows and dots appear once there are two.
  */
-const QUOTES: { quote: string; name: string; role: string; sample?: boolean }[] = [
-  {
-    quote: "I already knew drivers who needed a car. Now I refer them in two minutes and see exactly where each one is.",
-    name: "Dost partner",
-    role: "Driver sourcing agent · Mumbai",
-    sample: true,
-  },
-];
+const QUOTES: { quote: string; name: string; role: string }[] = [];
 
 const arrow =
   "absolute top-1/2 hidden size-12 -translate-y-1/2 place-items-center rounded-full border border-white/25 bg-white/5 text-white transition hover:bg-white/15 lg:grid";
 
 export function DostQuotes() {
   const [index, setIndex] = useState(0);
+  if (!QUOTES.length) return null;
   const many = QUOTES.length > 1;
   const current = QUOTES[index];
   const go = (step: number) => setIndex((i) => (i + step + QUOTES.length) % QUOTES.length);
@@ -59,13 +53,6 @@ export function DostQuotes() {
                 <span className="block text-xs leading-4 text-ink-soft lg:mt-0.5 lg:text-sm lg:leading-5">{current.role}</span>
               </span>
             </span>
-            {current.sample ? (
-              <span className="basis-full lg:basis-auto">
-                <span className="inline-flex h-6 items-center rounded-full bg-[#fdf6cf] px-2.5 text-[13px] font-medium text-[#7a6400]">
-                  Sample quote
-                </span>
-              </span>
-            ) : null}
           </figcaption>
         </figure>
         {many ? (
