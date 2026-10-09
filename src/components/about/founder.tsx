@@ -14,11 +14,15 @@ export function Founder() {
   );
 }
 
-/** The founder's photo and letter, also shown on the investors page in place of a team list. */
-export function FounderStory({ className = "" }: { className?: string }) {
+/**
+ * The founder's photo and letter, also shown on the investors page in place of a team list. `short` keeps
+ * the opening, the belief and the thanks; `flush` lines the photo up with the page column instead of
+ * centring the block.
+ */
+export function FounderStory({ className = "", short = false, flush = false }: { className?: string; short?: boolean; flush?: boolean }) {
   return (
-    <div className={`mx-auto grid max-w-[1040px] gap-6 sm:gap-10 lg:grid-cols-[340px_1fr] lg:gap-14 ${className}`}>
-      <figure className="relative mx-auto w-full max-w-[240px] self-start sm:max-w-[340px]">
+    <div className={`grid gap-6 sm:gap-10 lg:grid-cols-[340px_1fr] lg:gap-14 ${flush ? "" : "mx-auto max-w-[1040px]"} ${className}`}>
+      <figure className={`relative w-full max-w-[240px] self-start sm:max-w-[340px] ${flush ? "mx-auto lg:mx-0" : "mx-auto"}`}>
         <span
           aria-hidden
           className="absolute -right-3 -top-3 hidden size-[90px] bg-[#d0dbe5] [clip-path:polygon(0_0,100%_0,100%_100%)] sm:block"
@@ -41,8 +45,8 @@ export function FounderStory({ className = "" }: { className?: string }) {
       </figure>
       <div className="lg:max-w-[620px] lg:pt-5">
         <p className="text-lg font-bold leading-7 tracking-[-0.3px] text-navy sm:text-[22px] sm:leading-[30px] lg:text-[26px] lg:leading-[34px]">
-          Our journey has always been about more than cars.
-          <br /> It has always been about people.
+          Our Journey Has Always Been About More Than Cars.
+          <br /> It Has Always Been About People.
         </p>
         <div className="mt-4 space-y-3 text-sm leading-[22px] text-ink-soft sm:mt-5 sm:text-[15px] sm:leading-[25px]">
           <p>
@@ -56,13 +60,17 @@ export function FounderStory({ className = "" }: { className?: string }) {
               every driver deserves respect, opportunity and a chance to move forward.
             </strong>
           </p>
-          <p>
-            I have seen many drivers begin their journey with us with a simple goal &mdash; to earn more for their
-            families. Some have gone on to build their savings, some have moved towards owning their own cars, and many
-            have simply created a more secure life for the people who depend on them.
-          </p>
-          <p>These are the stories that make Everest what it is today.</p>
-          <p>We still have a long way to go. And I hope we continue to grow together, one journey at a time.</p>
+          {short ? null : (
+            <>
+              <p>
+                I have seen many drivers begin their journey with us with a simple goal &mdash; to earn more for their
+                families. Some have gone on to build their savings, some have moved towards owning their own cars, and
+                many have simply created a more secure life for the people who depend on them.
+              </p>
+              <p>These are the stories that make Everest what it is today.</p>
+              <p>We still have a long way to go. And I hope we continue to grow together, one journey at a time.</p>
+            </>
+          )}
           <p className="font-semibold text-navy">Thank you for trusting Everest and being a part of our journey.</p>
         </div>
         <p className="mt-6 hidden pl-4 lg:block">
