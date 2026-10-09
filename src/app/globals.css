@@ -963,3 +963,169 @@ html.lenis.lenis-stopped:not(.lenis-autoToggle) {
       background-color 0.3s ease;
   }
 }
+
+/* Dost journey (batch 10) */
+/* The Everest Dost "How it works" steps (HowItWorks, src/components/dost/how-it-works.tsx) play once
+   as a journey, keyed on data-play like the investors milestones: "armed" holds every part at its
+   first frame (each animation sits paused inside its delay), "on" runs them. --t is the moment a
+   step arrives. On a wide screen the dotted line draws from 01 to 05 with a marker at its head, and
+   each step arrives as the line reaches it: its number fills (blue while it is the latest stop, 05
+   in yellow with a soft pulse), its phone rises from a faint outline, then its title and line. On
+   a phone each card arrives as it comes into view. Without data-play, or with reduced motion, the
+   steps sit as drawn. */
+
+@keyframes dj-badge {
+  0% {
+    background-color: #fff;
+    color: color-mix(in oklab, var(--color-navy) 35%, transparent);
+    box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--color-brand) 30%, transparent);
+    transform: scale(0.86);
+  }
+  20% {
+    background-color: var(--color-brand);
+    color: #fff;
+    box-shadow: inset 0 0 0 1.5px var(--color-brand);
+    transform: scale(1.14);
+  }
+  36% {
+    transform: scale(1);
+  }
+  56% {
+    background-color: var(--color-brand);
+    color: #fff;
+    box-shadow: inset 0 0 0 1.5px var(--color-brand);
+  }
+}
+
+@keyframes dj-badge-end {
+  0% {
+    background-color: #fff;
+    color: color-mix(in oklab, var(--color-navy) 35%, transparent);
+    box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--color-brand) 30%, transparent);
+    transform: scale(0.86);
+  }
+  30% {
+    transform: scale(1.14);
+  }
+  55% {
+    transform: scale(1);
+  }
+}
+
+@keyframes dj-pulse {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-sun) 70%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 14px color-mix(in oklab, var(--color-sun) 0%, transparent);
+  }
+}
+
+/* A phone still ahead on the journey waits as a faint outline, lower down. */
+@keyframes dj-rise {
+  from {
+    opacity: 0.14;
+    transform: translate3d(0, 28px, 0);
+  }
+}
+
+@keyframes dj-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes dj-text {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+}
+
+@keyframes dj-draw {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+@keyframes dj-drive {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@keyframes dj-ride {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  12%,
+  85% {
+    opacity: 1;
+  }
+}
+
+/* The marker shows only while it rides; 05's ring only while it pulses. */
+.dj-car-dot {
+  opacity: 0;
+}
+.dj-badge-end::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Step i arrives as the line from step i-1 reaches it; each stretch of line takes one step. */
+  .dj-play {
+    --dj-step: 0.45s;
+  }
+  .dj-step {
+    --t: calc(0.1s + var(--i) * var(--dj-step));
+  }
+  .dj-play[data-play] .dj-badge {
+    animation: dj-badge 0.8s ease-out var(--t, 0s) both;
+  }
+  .dj-play[data-play] .dj-badge-end {
+    animation-name: dj-badge-end;
+    animation-duration: 0.6s;
+  }
+  .dj-play[data-play] .dj-badge-end::after {
+    animation: dj-pulse 1.1s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--t, 0s) + 0.25s) 2 both;
+  }
+  .dj-play[data-play] .dj-phone {
+    animation: dj-rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--t, 0s) + 0.06s) both;
+  }
+  .dj-play[data-play] .dj-floor {
+    animation: dj-fade 0.85s ease calc(var(--t, 0s) + 0.06s) both;
+  }
+  .dj-play[data-play] .dj-title {
+    animation: dj-text 0.6s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--t, 0s) + 0.2s) both;
+  }
+  .dj-play[data-play] .dj-body {
+    animation: dj-text 0.6s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--t, 0s) + 0.28s) both;
+  }
+  /* The line and its marker ease out of one stop and into the next. */
+  .dj-play[data-play] :is(.dj-line, .dj-car) {
+    animation: dj-draw calc(var(--dj-step) - 0.06s) cubic-bezier(0.45, 0, 0.55, 1) calc(var(--t, 0s) + 0.06s) both;
+  }
+  .dj-play[data-play] .dj-car {
+    animation-name: dj-drive;
+  }
+  .dj-play[data-play] .dj-car-dot {
+    animation: dj-ride calc(var(--dj-step) - 0.06s) linear calc(var(--t, 0s) + 0.06s) both;
+  }
+  .dj-play[data-play="armed"] :is(.dj-badge, .dj-phone, .dj-floor, .dj-title, .dj-body, .dj-line, .dj-car, .dj-car-dot),
+  .dj-play[data-play="armed"] .dj-badge-end::after {
+    animation-play-state: paused;
+  }
+}
+
+@media print {
+  .dj-play[data-play] :is(.dj-badge, .dj-phone, .dj-floor, .dj-title, .dj-body, .dj-line, .dj-car, .dj-car-dot),
+  .dj-play[data-play] .dj-badge-end::after {
+    animation: none !important;
+  }
+}
