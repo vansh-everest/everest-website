@@ -236,6 +236,12 @@ export function planOverviews(content: SiteContent): PlanOverviewView[] {
   return content.plans.filter((p) => p.visible && p.showCard).map(planOverview);
 }
 
+/**
+ * One point on a picker's money step: what is paid first (`deposit`, blank when Jarvis has no
+ * figure), and the daily rent, up to `dailyMax` where Jarvis gives the rent as a range.
+ */
+export type WizardOption = DepositOption & { dailyMax?: string };
+
 /** One car in a plan page's picker, with the figures the plan's calculator sets for it, if any. */
 export type WizardCar = {
   id: string;
@@ -244,10 +250,10 @@ export type WizardCar = {
   /** Model years in the order the admin lists them; the first is picked to start with. */
   years: string[];
   /** Upfront-to-daily points from the calculator. None means the plan's own figures apply. */
-  options: DepositOption[];
+  options: WizardOption[];
   defaultOption: number;
-  /** Points per model year, when they differ by year (Jarvis's Own Now); "" for a car without years. */
-  yearOptions?: Record<string, DepositOption[]>;
+  /** Points per model year, when they differ by year (Jarvis's figures); "" for a car without years. */
+  yearOptions?: Record<string, WizardOption[]>;
 };
 
 /** The plan's own figures in one city, for a car the calculator does not price. `money` is the upfront, or else the deposit. */
@@ -331,12 +337,19 @@ export function planWizard(
   };
 }
 
-/** Every step from the lowest upfront to the highest, each with its daily rent; one point without steps. */
-function stepPoints(year: PlanYear): DepositOption[] {
-  if (year.money === null) return [];
+/**
+ * Every step from the lowest upfront (or deposit) to the highest, each with its daily rent: the
+ * rent at the lowest, less `rentStep` for every `moneyStep` paid on top, as the plan calculator
+ * works it out. One point without steps, with the rent's range where Jarvis gives one, and a
+ * blank first payment where Jarvis has none, so the car still shows its own rent.
+ */
+function stepPoints(year: PlanYear): WizardOption[] {
+  const range = year.rentMax > year.rent ? { dailyMax: String(year.rentMax) } : {};
+  if (year.money === null) return [{ deposit: "", daily: String(year.rent), ...range }];
   const high = year.maxMoney ?? year.money;
-  if (!year.moneyStep) return [{ deposit: String(year.money), daily: String(year.rent) }];
-  const out: DepositOption[] = [];
+  if (!year.moneyStep || !year.rentStep) return [{ deposit: String(year.money), daily: String(year.rent), ...range }];
+  const out: WizardOption[] = [];
+  // fleet-data.ts caps `maxMoney` so the rent stays a real price; the floor at zero is only a guard.
   for (let i = 0, paid = year.money; paid <= high && i < 400; i++, paid += year.moneyStep) {
     out.push({ deposit: String(paid), daily: String(Math.max(0, year.rent - i * year.rentStep)) });
   }
@@ -347,8 +360,9 @@ function stepPoints(year: PlanYear): DepositOption[] {
 const yearChip = (name: string) => /(\d{4})\s*$/.exec(name)?.[1] ?? name;
 
 /**
- * The plan picker with Jarvis's cities, cars, model years and upfront steps in place of the
- * admin's sample points. Words, tenures and the plan's term stay the admin's.
+ * The plan picker with Jarvis's cities, cars, model years and money points (Own Now's upfront
+ * steps, Drive to Earn's deposit and rent) in place of the admin's sample points. Words, tenures
+ * and the plan's term stay the admin's.
  */
 export function withJarvisCars(base: PlanWizardView, calculator: PlanCalculatorView): PlanWizardView {
   const byCity = Object.fromEntries(

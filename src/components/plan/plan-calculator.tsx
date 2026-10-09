@@ -51,7 +51,8 @@ function Picker({ label, value, onChange, options }: { label: string; value: str
 
 /**
  * A plan's calculator: city, car, model year and tenure, then what is paid first and the daily rent.
- * The slider appears where Jarvis gives steps (Own Now); elsewhere the car's own range and deposit.
+ * The slider appears wherever Jarvis gives a range and step sizes for what is paid first (see
+ * planYear in fleet-data.ts); elsewhere the car's own rent range and deposit.
  */
 export function PlanCalculator({ view }: { view: PlanCalculatorView }) {
   const cityId = useId();

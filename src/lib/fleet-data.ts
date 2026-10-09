@@ -51,6 +51,7 @@ type JarvisPlanOption = {
   car_year_screen?: boolean;
   rent_stepdown?: number | string | null;
   downpayment_stepup?: number | string | null;
+  /** Sent by Jarvis, not read: planYear() makes a slider wherever the figures allow one. */
   is_calculator_enabled?: boolean | null;
 };
 type JarvisPlanCategory = { uri: string; options?: JarvisPlanOption[] };
@@ -67,6 +68,7 @@ type JarvisYearRow = {
   max_upfront?: number | string | null;
   rent_stepdown?: number | string | null;
   downpayment_stepup?: number | string | null;
+  /** Sent by Jarvis, not read: planYear() makes a slider wherever the figures allow one. */
   is_calculator_enabled?: boolean | null;
 };
 /** Jarvis's flat answer: one key per model, next to `model_years` and `creatives`. */
@@ -211,7 +213,25 @@ function range(value: unknown): [number | null, number | null] {
   return [price(low), price(high ?? low)];
 }
 
-/** One model year from Jarvis's figures. The calculator off, or no steps, keeps the money fixed at its lowest. */
+/**
+ * The most that can be paid first on a slider from `paid` to `maxPaid`: on the step grid, and never
+ * so far that the daily rent (less `down` per step) would fall below a real price.
+ */
+function slideTop(rent: number, paid: number, maxPaid: number, step: number, down: number): number {
+  const steps = Math.floor((maxPaid - paid) / step);
+  const floor = Math.floor((rent - MIN_PRICE) / down);
+  return paid + Math.max(0, Math.min(steps, floor)) * step;
+}
+
+/**
+ * One model year from Jarvis's figures. The money slides from its lowest to its highest wherever
+ * Jarvis gives both and the step sizes (`step` paid on top takes `rentStep` off the daily rent);
+ * otherwise it stays fixed at its lowest.
+ *
+ * Jarvis's is_calculator_enabled flag is ignored on purpose: production has it off (or unset) for
+ * every Own Now car while the ranges and step sizes are filled in, and the business wants the
+ * slider wherever those figures make one.
+ */
 function planYear(
   name: string,
   rent: number | null,
@@ -219,19 +239,19 @@ function planYear(
   paid: number | null,
   maxPaid: number | null,
   step: unknown,
-  rentStep: unknown,
-  enabled: boolean | null | undefined
+  rentStep: unknown
 ): PlanYear | null {
   if (rent === null) return null;
   const moneyStep = money(step) ?? 0;
   const down = money(rentStep) ?? 0;
-  const slides = paid !== null && enabled !== false && moneyStep > 0 && down > 0;
+  const top = paid !== null && maxPaid !== null && moneyStep > 0 && down > 0 ? slideTop(rent, paid, maxPaid, moneyStep, down) : null;
+  const slides = paid !== null && top !== null && top > paid;
   return {
     name,
     rent,
     rentMax: Math.max(rent, rentMax ?? rent),
     money: paid,
-    maxMoney: slides ? Math.max(paid, maxPaid ?? paid) : paid,
+    maxMoney: slides ? top : paid,
     moneyStep: slides ? moneyStep : 0,
     rentStep: slides ? down : 0,
   };
@@ -245,8 +265,8 @@ function yearsFromAnswer(answer: JarvisCarYears | null): PlanYear[] {
     const [low, high] = range(row.rent);
     const year =
       "min_upfront" in row
-        ? planYear(label, price(row.min_rent) ?? low, null, price(row.min_upfront), price(row.max_upfront), row.downpayment_stepup, row.rent_stepdown, row.is_calculator_enabled)
-        : planYear(label, low, high, price(row.min_sd_amount), null, null, null, false);
+        ? planYear(label, price(row.min_rent) ?? low, null, price(row.min_upfront), price(row.max_upfront), row.downpayment_stepup, row.rent_stepdown)
+        : planYear(label, low, high, price(row.min_sd_amount), null, null, null);
     return year ? [year] : [];
   });
 }
@@ -258,8 +278,8 @@ function yearsFromOffer(offer: JarvisPlanOption): PlanYear[] {
   const [upfront, maxUpfront] = range(offer.upfront_fee);
   const year =
     offer.plan_uri === "own-now"
-      ? planYear("", low, null, upfront, maxUpfront, offer.downpayment_stepup, offer.rent_stepdown, offer.is_calculator_enabled)
-      : planYear("", low, high, price(offer.min_sd_amount), null, null, null, false);
+      ? planYear("", low, null, upfront, maxUpfront, offer.downpayment_stepup, offer.rent_stepdown)
+      : planYear("", low, high, price(offer.min_sd_amount), null, null, null);
   return year ? [year] : [];
 }
 
@@ -323,7 +343,7 @@ async function readLive(): Promise<LiveData | null> {
  * render tries again. The page keeps its fifteen-minute refresh either way, since Next records the
  * revalidate before running the read.
  */
-const cachedLive = unstable_cache(readLive, ["fleet-data", "v4"], { revalidate: REFRESH_SECONDS, tags: [FLEET_DATA_TAG] });
+const cachedLive = unstable_cache(readLive, ["fleet-data", "v5"], { revalidate: REFRESH_SECONDS, tags: [FLEET_DATA_TAG] });
 
 /** Jarvis's figures and, when the last read failed with nothing to fall back on, why. */
 export async function getLiveStatus(): Promise<{ live: LiveData | null; error: string | null }> {

@@ -3,8 +3,8 @@ import { Check, CircleCheck, MapPin } from "lucide-react";
 import { CountUp } from "@/components/fx/count-up";
 import { rupees } from "@/lib/content";
 import type { CityOption, WizardCar } from "@/lib/plan-view";
-import type { Said } from "./wizard-copy";
-import { rentLabel, Say, shortRupees, StepHeading, type Figures } from "./wizard-ui";
+import type { MoneyStepCopy, Said } from "./wizard-copy";
+import { dailyText, rentLabel, Say, shortRupees, StepHeading, type Figures } from "./wizard-ui";
 
 const box = "rounded-xl border border-[#dfe4e8] bg-white";
 
@@ -61,6 +61,9 @@ export function CityStep({
   );
 }
 
+/** Model years oldest first, whichever order the admin or Jarvis gives them in. */
+const sortedYears = (car: WizardCar) => [...car.years].sort();
+
 export function CarStep({
   question,
   yearLabel,
@@ -69,6 +72,7 @@ export function CarStep({
   onChange,
   year,
   onYear,
+  showYears = true,
   headingId,
 }: {
   question: Said;
@@ -78,11 +82,12 @@ export function CarStep({
   onChange: (id: string) => void;
   year: string;
   onYear: (year: string) => void;
+  /** Off where the model year is chosen on the next step instead. */
+  showYears?: boolean;
   headingId: string;
 }) {
   const car = cars.find((c) => c.id === value) ?? cars[0];
-  // Listed oldest first, whichever order the admin typed them in.
-  const years = [...car.years].sort();
+  const years = showYears ? sortedYears(car) : [];
   return (
     <>
       <StepHeading id={headingId}>
@@ -140,7 +145,7 @@ export function CarStep({
                   role="radio"
                   aria-checked={on}
                   onClick={() => onYear(y)}
-                  className={`${tap} h-[46px] flex-1 rounded-full px-[22px] text-base font-semibold transition lg:h-[42px] lg:flex-none lg:px-[25px] ${
+                  className={`${tap} h-[46px] min-w-0 flex-1 rounded-full px-2 text-base font-semibold transition lg:h-[42px] lg:flex-none lg:px-[25px] ${
                     on ? "bg-navy text-white" : "text-navy hover:bg-white/60"
                   }`}
                 >
@@ -171,18 +176,21 @@ export function RentStrip({
   children?: React.ReactNode;
 }) {
   if (!figures.amount) return null;
+  const daily = dailyText(figures);
+  // A range is twice as long, so it sets a size smaller to keep to one line on a phone.
+  const size = daily.includes("–") ? "text-[28px] leading-9 lg:text-[38px] lg:leading-[48px]" : "text-[34px] leading-10 lg:text-[42px] lg:leading-[48px]";
   return (
     <div className="rounded-2xl bg-navy px-4 pb-4 pt-3.5 text-white lg:px-6 lg:pt-4">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <p>
           <span className="block text-xs leading-4 text-white/85 lg:text-[13px] lg:leading-5">{rentLabel(figures.unit)}</span>
           <span className="mt-1 flex items-baseline gap-1.5 lg:mt-0.5 lg:gap-2">
             <CountUp
-              value={rupees(figures.amount)}
+              value={daily}
               fromZero={fromZero}
               delay={delay}
               duration={fromZero ? 700 : 380}
-              className="text-[34px] font-bold leading-10 tracking-[-0.5px] tabular-nums lg:text-[42px] lg:leading-[48px]"
+              className={`whitespace-nowrap font-bold tracking-[-0.5px] tabular-nums ${size}`}
             />
             <span className="text-[15px] lg:text-[17px]">{figures.unit.replace(/^\+/, "")}</span>
           </span>
@@ -198,7 +206,27 @@ export function RentStrip({
   );
 }
 
-export function UpfrontStep({
+/** A white box with a small blue label over a row of round choices (tenure, model year). */
+function ChoiceBox({ id, label, children, className = "" }: { id: string; label: string; children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`px-4 pb-4 pt-[15px] lg:rounded-2xl lg:px-6 lg:pb-5 lg:pt-[19px] ${box} ${className}`}>
+      <p id={id} className="text-xs font-semibold uppercase leading-4 tracking-[1px] text-brand">
+        {label}
+      </p>
+      <div role="radiogroup" aria-labelledby={id} className="-mx-1 mt-3 flex gap-2 overflow-x-auto px-1 pb-1 lg:mt-[13px] lg:gap-2.5">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The step between the car and the plan: the car on the left, then the choices that set what is
+ * paid first (Own Now's tenure and upfront, Drive to Earn's model year) and the daily rent they
+ * come to. The slider shows wherever the car has more than one point to slide between.
+ */
+export function MoneyStep({
+  copy,
   car,
   carLabel,
   cityName,
@@ -206,11 +234,14 @@ export function UpfrontStep({
   tenures,
   tenure,
   onTenure,
+  year,
+  onYear,
   index,
   onIndex,
   figures,
   headingId,
 }: {
+  copy: MoneyStepCopy;
   car: WizardCar;
   carLabel: string;
   cityName: string;
@@ -218,6 +249,8 @@ export function UpfrontStep({
   tenures: string[];
   tenure: string;
   onTenure: (months: string) => void;
+  year: string;
+  onYear: (year: string) => void;
   index: number;
   onIndex: (i: number) => void;
   figures: Figures;
@@ -225,11 +258,16 @@ export function UpfrontStep({
 }) {
   const options = car.options;
   const point = options.length ? Math.min(index, options.length - 1) : 0;
+  const paid = options[point]?.deposit ?? "";
   const ends = options.length > 1 ? [options[0], options.length > 2 ? options[Math.floor((options.length - 1) / 2)] : null, options[options.length - 1]] : [];
   const lines = perks.map((p) => p.replace("{months}", tenure)).filter((p) => !p.includes("{"));
+  const months = copy.tenure ? tenures : [];
+  const years = copy.years && car.years.length > 1 ? sortedYears(car) : [];
+  const badge = copy.badge && figures.months ? copy.badge.replace("{months}", figures.months) : "";
+  const label = copy.label.split(" · ")[0];
   return (
     <>
-      <StepHeading id={headingId}>Choose Your Tenure &amp; Upfront</StepHeading>
+      <StepHeading id={headingId}>{copy.title}</StepHeading>
       <div className="lg:mt-[30px] lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:items-start lg:gap-8">
         <div className="mt-[18px] flex items-center gap-4 lg:mt-0 lg:block">
           <span className="relative block aspect-[456/280] w-[44%] shrink-0 overflow-hidden rounded-2xl bg-mist lg:w-full">
@@ -254,40 +292,59 @@ export function UpfrontStep({
           </span>
         </div>
         <div>
-          {tenures.length ? (
-            <div className={`mt-[18px] px-4 pb-4 pt-[15px] lg:mt-0 lg:rounded-2xl lg:px-6 lg:pb-5 lg:pt-[19px] ${box}`}>
-              <p id={`${headingId}-tenure`} className="text-xs font-semibold uppercase leading-4 tracking-[1px] text-brand">
-                Tenure
-              </p>
-              <div role="radiogroup" aria-labelledby={`${headingId}-tenure`} className="-mx-1 mt-3 flex gap-2 overflow-x-auto px-1 pb-1 lg:mt-[13px] lg:gap-2.5">
-                {tenures.map((m) => {
-                  const on = m === tenure;
-                  return (
-                    <button
-                      key={m}
-                      type="button"
-                      role="radio"
-                      aria-checked={on}
-                      onClick={() => onTenure(m)}
-                      className={`${tap} flex h-[54px] w-[60px] shrink-0 flex-col items-center justify-center rounded-xl border text-navy transition lg:h-11 lg:w-auto lg:flex-row lg:gap-1 lg:rounded-full lg:px-[22px] ${
-                        on ? "border-navy bg-navy text-white" : "border-[#dfe4e8] bg-white hover:border-brand"
-                      }`}
-                    >
-                      <span className="text-lg font-bold leading-5 lg:text-base lg:font-semibold">{m}</span>
-                      <span className={`text-[11px] leading-3 lg:text-base lg:font-semibold lg:leading-5 ${on ? "" : "text-ink-soft lg:text-navy"}`}>Months</span>
-                      <Sheen />
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+          {years.length ? (
+            <ChoiceBox id={`${headingId}-year`} label="Model Year" className="mt-[18px] lg:mt-0">
+              {years.map((y) => {
+                const on = y === year;
+                return (
+                  <button
+                    key={y}
+                    type="button"
+                    role="radio"
+                    aria-checked={on}
+                    onClick={() => onYear(y)}
+                    // Shares the row evenly, so five years fit a phone without scrolling.
+                    className={`${tap} h-11 min-w-0 flex-1 rounded-full border px-2 text-base font-semibold tabular-nums transition ${
+                      on ? "border-navy bg-navy text-white" : "border-[#dfe4e8] bg-white text-navy hover:border-brand"
+                    }`}
+                  >
+                    {y}
+                    <Sheen />
+                  </button>
+                );
+              })}
+            </ChoiceBox>
           ) : null}
 
-          {options.length ? (
+          {months.length ? (
+            <ChoiceBox id={`${headingId}-tenure`} label="Tenure" className={years.length ? "mt-3 lg:mt-4" : "mt-[18px] lg:mt-0"}>
+              {months.map((m) => {
+                const on = m === tenure;
+                return (
+                  <button
+                    key={m}
+                    type="button"
+                    role="radio"
+                    aria-checked={on}
+                    onClick={() => onTenure(m)}
+                    className={`${tap} flex h-[54px] w-[60px] shrink-0 flex-col items-center justify-center rounded-xl border text-navy transition lg:h-11 lg:w-auto lg:flex-row lg:gap-1 lg:rounded-full lg:px-[22px] ${
+                      on ? "border-navy bg-navy text-white" : "border-[#dfe4e8] bg-white hover:border-brand"
+                    }`}
+                  >
+                    <span className="text-lg font-bold leading-5 lg:text-base lg:font-semibold">{m}</span>
+                    <span className={`text-[11px] leading-3 lg:text-base lg:font-semibold lg:leading-5 ${on ? "" : "text-ink-soft lg:text-navy"}`}>Months</span>
+                    <Sheen />
+                  </button>
+                );
+              })}
+            </ChoiceBox>
+          ) : null}
+
+          {paid ? (
             <div className={`mt-3 px-4 pb-[15px] pt-[19px] lg:mt-4 lg:rounded-2xl lg:px-6 lg:pb-[17px] lg:pt-[23px] ${box}`}>
-              <p className="text-xs font-semibold uppercase leading-4 tracking-[1px] text-brand">Upfront · paid once</p>
+              <p className="text-xs font-semibold uppercase leading-4 tracking-[1px] text-brand">{copy.label}</p>
               <p className="mt-1.5 text-[30px] font-extrabold leading-9 tracking-[-0.5px] text-navy tabular-nums lg:mt-2 lg:text-[40px] lg:leading-[48px]">
-                <CountUp value={rupees(options[point].deposit)} duration={380} />
+                <CountUp value={rupees(paid)} duration={380} />
               </p>
               {ends.length ? (
                 <>
@@ -298,8 +355,8 @@ export function UpfrontStep({
                     step={1}
                     value={point}
                     onChange={(e) => onIndex(Number(e.target.value))}
-                    aria-label="Upfront"
-                    aria-valuetext={rupees(options[point].deposit)}
+                    aria-label={label}
+                    aria-valuetext={rupees(paid)}
                     style={{ "--fill": `${(point / (options.length - 1)) * 100}%` } as React.CSSProperties}
                     className="range-slider mt-4 w-full lg:mt-5"
                   />
@@ -319,7 +376,7 @@ export function UpfrontStep({
           ) : null}
 
           <div className="mt-3 lg:mt-4">
-            <RentStrip figures={figures} badge={figures.months ? `Yours In Month ${figures.months}` : undefined} />
+            <RentStrip figures={figures} badge={badge || undefined} />
           </div>
         </div>
       </div>

@@ -24,8 +24,17 @@ export function shortRupees(digits: string): string {
   return rupees(digits);
 }
 
-/** The figures the final step shows for the current choices. `upfront` says whether `money` is an upfront or a deposit. */
-export type Figures = { amount: string; unit: string; money: string; upfront: boolean; months: string };
+/**
+ * The figures the final step shows for the current choices. `upfront` says whether `money` is an
+ * upfront or a deposit; `amountMax` tops the rent where it is a range.
+ */
+export type Figures = { amount: string; amountMax?: string; unit: string; money: string; upfront: boolean; months: string };
+
+/** "₹835" or, for a rent range, "₹835–₹980". */
+export function dailyText(f: Figures): string {
+  const low = rupees(f.amount);
+  return low && f.amountMax && Number(f.amountMax) > Number(f.amount) ? `${low}–${rupees(f.amountMax)}` : low;
+}
 
 /**
  * A car the calculator prices takes the chosen slider point; any other car takes the plan's own
@@ -40,7 +49,7 @@ export function figuresFor(view: PlanWizardView, car: WizardCar, city: string, t
   const months = tenure || base.months;
   // The calculator's slider is the upfront on a plan with an upfront step, the deposit elsewhere.
   const upfront = view.kind === "now";
-  return option ? { amount: option.daily, unit: "/day", money: option.deposit, upfront, months } : { ...base, months };
+  return option ? { amount: option.daily, amountMax: option.dailyMax, unit: "/day", money: option.deposit, upfront, months } : { ...base, months };
 }
 
 export const rentLabel = (unit: string) => (unit.includes("day") ? "Daily Rent" : "Rent");
