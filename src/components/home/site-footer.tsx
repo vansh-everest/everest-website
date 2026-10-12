@@ -25,7 +25,7 @@ const columns: { title: "drivers" | "company" | "investors"; links: { key: LinkK
     links: [
       { key: "about", href: "/about-us" },
       { key: "careers", href: "/careers" },
-      { key: "esg", href: "/investors#esg" },
+      { key: "esg", href: "/investors#reports" },
       { key: "dost", href: "/everest-dost" },
     ],
   },

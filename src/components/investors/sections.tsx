@@ -123,6 +123,8 @@ const ICONS = { leaf: Leaf, users: Users, shield: ShieldCheck };
 
 export function Impact() {
   const cards = IMPACT.map((c) => ({ ...c, points: c.points.filter((p) => p.value !== null) })).filter((c) => c.points.length);
+  // The section waits for the report's figures: cards of labels alone measure nothing.
+  if (!cards.some((c) => c.points.some((p) => p.value))) return null;
   return (
     <section id="esg" className="scroll-mt-28 bg-[#f0f4f8] px-4 pb-12 pt-[50px] sm:px-6 lg:pb-[97px] lg:pt-[96px]">
       <div className={wrap}>
