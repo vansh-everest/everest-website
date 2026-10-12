@@ -171,46 +171,48 @@ const waiting = {
 /**
  * "Our Values Our Foundation": the seven values that spell IMPACTT, as letter cards, then each value
  * in full. Phones put each value on a white card; from lg the values sit in a four-column grid.
+ * Below lg the letter cards keep desktop's single row, sized in fractions of a card's width (cqw).
  */
 export function Values() {
   return (
     <section className="relative isolate overflow-clip bg-[#f2f5fd] px-4 pb-14 pt-10 sm:px-6 sm:py-16 lg:px-10 lg:pb-[125px] lg:pt-[108px]">
       <div className="mx-auto max-w-[1200px]">
-        <p className="mt-3.5 flex items-center gap-3 text-[13px] font-medium uppercase leading-4 tracking-[1px] text-brand sm:mt-0 lg:hidden">
+        <p className="mt-3.5 flex items-center justify-center gap-3 text-[13px] font-medium uppercase leading-4 tracking-[1px] text-brand sm:mt-0 lg:hidden">
           <span aria-hidden className="h-0.5 w-5 bg-sun" />
           Our values
+          <span aria-hidden className="h-0.5 w-5 bg-sun" />
         </p>
-        <h2 className="mt-3 text-[28px] font-bold leading-[34px] text-navy sm:text-[36px] sm:leading-[44px] lg:mt-0 lg:text-center lg:text-[64px] lg:leading-[76px]">
+        <h2 className="mt-3 text-center text-[28px] font-bold leading-[34px] text-navy sm:text-[36px] sm:leading-[44px] lg:mt-0 lg:text-center lg:text-[64px] lg:leading-[76px]">
           Our Values Our Foundation<span className="hidden lg:inline">.</span>
         </h2>
-        <p className="mt-3 text-base leading-[26px] text-ink-soft lg:hidden">
+        <p className="mt-3 text-center text-base leading-[26px] text-ink-soft lg:hidden">
           Seven values that spell IMPACTT. Guiding how we work, empowering who we are.
         </p>
 
-        <ImpactRow className="mt-[41px] grid grid-cols-4 gap-2 sm:max-w-[520px] lg:mt-[86px] lg:flex lg:max-w-none lg:gap-[13px]">
+        <ImpactRow className="mt-[41px] flex gap-1 sm:gap-2 lg:mt-[86px] lg:flex lg:max-w-none lg:gap-[13px]">
           {values.map((v) => {
             const t = tones[v.tone];
             const h = hovers[v.tone];
             const Icon = v.icon;
             return (
-              <li key={v.id} className="group/card min-w-0 lg:flex-1 lg:basis-0">
+              <li key={v.id} className="group/card @container min-w-0 flex-1 basis-0 lg:flex-1 lg:basis-0">
                 <a
                   href={`#${v.id}`}
-                  className={`flex h-[120px] flex-col items-center rounded-[14px] bg-white px-1 pt-2.5 text-center shadow-[0_6px_18px_rgba(6,47,80,0.04)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(6,47,80,0.1)] lg:h-[262px] lg:rounded-[20px] lg:px-1.5 lg:pt-[13px] xl:px-2 ${h.card}`}
+                  className={`flex h-[192cqw] flex-col items-center rounded-[16cqw] bg-white pt-[12cqw] text-center shadow-[0_6px_18px_rgba(6,47,80,0.04)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(6,47,80,0.1)] lg:h-[262px] lg:rounded-[20px] lg:px-1.5 lg:pt-[13px] xl:px-2 ${h.card}`}
                 >
                   <span
                     aria-hidden
-                    className={`text-[28px] font-bold leading-[34px] transition-colors duration-700 lg:text-[64px] lg:font-extrabold lg:leading-[96px] xl:text-[80px] ${t.letter} ${h.letter} ${waiting.letter}`}
+                    className={`text-[length:50cqw] font-extrabold leading-[62cqw] transition-colors duration-700 lg:text-[64px] lg:font-extrabold lg:leading-[96px] xl:text-[80px] ${t.letter} ${h.letter} ${waiting.letter}`}
                   >
                     {v.letter}
                   </span>
                   <span
                     aria-hidden
-                    className={`mt-0.5 grid size-9 place-items-center rounded-lg transition-colors duration-700 lg:mt-[9px] lg:h-14 lg:w-16 lg:rounded-[14px] ${t.tint} ${t.icon} ${h.tile} ${waiting.tile}`}
+                    className={`mt-[8cqw] grid h-[58cqw] w-[66cqw] place-items-center rounded-[12cqw] transition-colors duration-700 lg:mt-[9px] lg:h-14 lg:w-16 lg:rounded-[14px] ${t.tint} ${t.icon} ${h.tile} ${waiting.tile}`}
                   >
-                    <Icon className="size-[30px]" strokeWidth={1.5} />
+                    <Icon className="size-[33cqw] lg:size-[30px]" strokeWidth={1.5} />
                   </span>
-                  <span className="mt-2 text-[10px] font-bold leading-3 text-navy lg:mt-[17px] lg:text-sm lg:leading-[20px] xl:text-xl xl:leading-[28px]">
+                  <span className="mt-[12cqw] text-[length:14cqw] font-bold leading-[1.15] text-navy lg:mt-[17px] lg:text-sm lg:leading-[20px] xl:text-xl xl:leading-[28px]">
                     {v.name}
                   </span>
                 </a>
