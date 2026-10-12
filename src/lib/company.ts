@@ -18,8 +18,6 @@ export const COMPANY = {
 
   /** Vehicles owned, stated conservatively. */
   vehicles: "23,500+",
-  /** Drivers currently on the road, stated conservatively. */
-  drivers: "10,000+",
   /** Mumbai, Delhi NCR, Bengaluru, Hyderabad, Pune, Kolkata, Chennai. */
   cities: 7,
 
@@ -28,7 +26,7 @@ export const COMPANY = {
 
 /** One sentence, reused in metadata, the footer and anywhere else the company is described. */
 export const COMPANY_BLURB =
-  `India's largest fleet management company. ${COMPANY.vehicles} cars, ${COMPANY.drivers} drivers ` +
-  `and ${COMPANY.cities} cities, powering driver earnings on the Uber India network since ${COMPANY.founded}.`;
+  `India's largest fleet management company. ${COMPANY.vehicles} cars in ${COMPANY.cities} cities, ` +
+  `powering driver earnings on the Uber India network since ${COMPANY.founded}.`;
 
 export const SITE_URL = "https://everestfleet.com";

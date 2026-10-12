@@ -14,8 +14,7 @@ export type Figure = { value: string | null; label: string };
 /** Hero stats. Company figures come only from COMPANY. */
 export const HERO_STATS: Figure[] = [
   { value: COMPANY.vehicles, label: "Vehicles" },
-  // Design: "1,22,605 driver-partners onboarded". COMPANY has no cumulative figure yet.
-  { value: COMPANY.drivers, label: "Drivers On The Road" },
+  // Design: "1,22,605 driver-partners onboarded". No driver count until operations confirm one.
   { value: String(COMPANY.cities), label: "Cities" },
   // Design: "100% CNG + EV fleet". PENDING: fleet composition source.
   { value: null, label: "CNG + EV Fleet" },

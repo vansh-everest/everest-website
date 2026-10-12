@@ -69,7 +69,7 @@ export async function GET() {
     "",
     ...(guides.length ? ["## Driver guides", ...guides, ""] : []),
     "## Company",
-    `- [About Everest Fleet](${link("/about-us")}): founded ${COMPANY.founded}, ${COMPANY.vehicles} cars, ${COMPANY.drivers} drivers, ${COMPANY.cities} cities (as of ${COMPANY.asOf})`,
+    `- [About Everest Fleet](${link("/about-us")}): founded ${COMPANY.founded}, ${COMPANY.vehicles} cars, ${COMPANY.cities} cities (as of ${COMPANY.asOf})`,
     `- [Services](${link("/our-services")})`,
     `- [FAQ](${link("/faq")})`,
     "",

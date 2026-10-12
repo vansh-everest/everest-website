@@ -37,7 +37,7 @@ export function AboutHero() {
         </h1>
         {/* Phones set the line in a frosted pill over the photo. */}
         <p className="mt-3 max-w-[640px] rounded-[15px] border border-white/40 bg-white/15 px-2.5 py-1 text-xs leading-[15px] text-white backdrop-blur-sm sm:mt-4 sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:text-[17px] sm:leading-[26px] sm:text-white/90 sm:backdrop-blur-none lg:mt-[22px] lg:text-xl lg:leading-[30px]">
-          India&rsquo;s Largest Fleet. {COMPANY.vehicles} cars, {COMPANY.drivers} drivers, {COMPANY.cities} cities.
+          India&rsquo;s Largest Fleet. {COMPANY.vehicles} cars, {COMPANY.cities} cities.
         </p>
       </div>
     </section>

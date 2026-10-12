@@ -62,7 +62,7 @@ export function MoveIndia() {
             </h2>
             <p className="mt-[13px] text-[15px] leading-6 text-white lg:mt-[22px] lg:text-lg lg:leading-[29px]">
               Everest Fleet gives drivers a car, steady work on Uber and a path to own it. Our 100% CNG and electric fleet runs
-              across {COMPANY.cities} cities, with {COMPANY.drivers} drivers on the road today.
+              across {COMPANY.cities} cities.
             </p>
           </div>
         </div>
