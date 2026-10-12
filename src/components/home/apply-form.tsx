@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
 import { ChevronDown, Phone } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_HREF } from "./ui";
 import type { FormCopy } from "@/content/home-copy";
@@ -37,7 +37,8 @@ function useWide() {
 /**
  * Name, mobile and city, sent to the same lead endpoint as the driver pages with the page it
  * came from. The button wakes up once all three are filled. A sent form keeps its values and
- * shows a toast over the top of the card, which StartDriving positions.
+ * shows a toast over the top of the card, which StartDriving positions. The toast stays: the
+ * driver still has it on screen when they look back, and the form cannot go twice.
  */
 export function ApplyForm({
   cities,
@@ -54,17 +55,6 @@ export function ApplyForm({
   const [ready, setReady] = useState(false);
   const wide = useWide();
   const form = useRef<HTMLFormElement>(null);
-
-  // The sent form keeps its values under the toast, then clears so it cannot go twice.
-  useEffect(() => {
-    if (state !== "done") return;
-    const timer = setTimeout(() => {
-      form.current?.reset();
-      setReady(false);
-      setState("idle");
-    }, 6000);
-    return () => clearTimeout(timer);
-  }, [state]);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

@@ -42,17 +42,7 @@ export function EnquiryForm({ source }: { source: string }) {
     return () => window.removeEventListener(PICK_SERVICE_EVENT, pick);
   }, []);
 
-  useEffect(() => {
-    if (state !== "done") return;
-    // The sent form keeps its values under the message, then clears so it cannot go twice.
-    const timer = setTimeout(() => {
-      form.current?.reset();
-      setService("");
-      setReady(false);
-      setState("idle");
-    }, 6000);
-    return () => clearTimeout(timer);
-  }, [state]);
+  // A sent form keeps its values and the message stays on screen, so it cannot go twice.
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
