@@ -66,7 +66,8 @@ export type HomeCopy = {
     tapForSound: string;
   };
   cities: { title: string; region: string; names: Record<StripCity, string> };
-  plans: { title: string; region: string; join: string };
+  /** `compare` heads the phone table under the cards; `plan` labels its plan-type row. */
+  plans: { title: string; region: string; join: string; compare: string; plan: string };
   ownNow: { introducing: string; logoAlt: string; photoAlt: string; line: string; perks: [string, string, string]; cta: string };
   /** `previous` and `next` name the slider's arrows. */
   cars: { title: string; subtitle: string; region: string; cta: string; previous: string; next: string };
@@ -142,7 +143,7 @@ const en: HomeCopy = {
       kolkata: "Kolkata",
     },
   },
-  plans: { title: "We Have Plans For Everyone", region: "Plans", join: "Join Now" },
+  plans: { title: "We Have Plans For Everyone", region: "Plans", join: "Join Now", compare: "Compare Plans", plan: "Plan" },
   ownNow: {
     introducing: "Introducing",
     logoAlt: "Own-Now by Everest",
@@ -266,7 +267,7 @@ const hi: HomeCopy = {
       kolkata: "कोलकाता",
     },
   },
-  plans: { title: "हर ड्राइवर के लिए प्लान", region: "प्लान", join: "अभी जुड़िए" },
+  plans: { title: "हर ड्राइवर के लिए प्लान", region: "प्लान", join: "अभी जुड़िए", compare: "प्लान की तुलना", plan: "प्लान" },
   ownNow: {
     introducing: "पेश है",
     logoAlt: "Own-Now by Everest",
@@ -390,7 +391,7 @@ const kn: HomeCopy = {
       kolkata: "ಕೋಲ್ಕತ್ತಾ",
     },
   },
-  plans: { title: "ಪ್ರತಿ ಡ್ರೈವರ್‌ಗೂ ಒಂದು ಪ್ಲಾನ್", region: "ಪ್ಲಾನ್‌ಗಳು", join: "ಈಗಲೇ ಸೇರಿ" },
+  plans: { title: "ಪ್ರತಿ ಡ್ರೈವರ್‌ಗೂ ಒಂದು ಪ್ಲಾನ್", region: "ಪ್ಲಾನ್‌ಗಳು", join: "ಈಗಲೇ ಸೇರಿ", compare: "ಪ್ಲಾನ್ ಹೋಲಿಕೆ", plan: "ಪ್ಲಾನ್" },
   ownNow: {
     introducing: "ಬಂದಿದೆ",
     logoAlt: "Own-Now by Everest",

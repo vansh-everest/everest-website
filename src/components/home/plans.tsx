@@ -2,6 +2,7 @@ import { homeCopy, seedText } from "@/content/home-copy";
 import type { SiteContent } from "@/lib/content";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 import { planCard, type PlanCardView } from "@/lib/plan-view";
+import { PlanCompare } from "./plan-compare";
 import { PlanGrid } from "./plan-grid";
 
 /** A card's admin text in `locale`, where it still reads as seeded. Names and figures stay as they are. */
@@ -29,6 +30,7 @@ export function Plans({ content, locale = DEFAULT_LOCALE }: { content: SiteConte
         </h2>
       </div>
       <PlanGrid cards={cards} label={copy.region} join={copy.join} />
+      <PlanCompare cards={cards} title={copy.compare} planLabel={copy.plan} />
     </section>
   );
 }
