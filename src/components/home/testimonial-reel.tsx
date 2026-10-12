@@ -13,6 +13,8 @@ export type Story = {
   name: string;
   detail: string;
   quote: string;
+  /** Running time as "m:ss", or null when YouTube did not say. */
+  length: string | null;
 };
 
 /* ----------------------------------------------------------------------------- cards */
@@ -35,13 +37,11 @@ function PlayMark({ small }: { small?: boolean }) {
   );
 }
 
-function Frame({ story, children }: { story: Story; children: React.ReactNode }) {
+/** A peek is a neighbour beside the middle card: always 9:16 on phones, its own shape on desktop. */
+function Frame({ story, peek, children }: { story: Story; peek?: boolean; children: React.ReactNode }) {
+  const shape = tall(story) ? "aspect-[9/16]" : peek ? "aspect-[9/16] lg:aspect-video" : "aspect-video";
   return (
-    <div
-      className={`relative w-full overflow-hidden rounded-[18px] bg-navy shadow-[0_12px_32px_rgba(6,47,80,0.18)] lg:rounded-[22px] ${
-        tall(story) ? "aspect-[9/16]" : "aspect-video"
-      }`}
-    >
+    <div className={`relative w-full overflow-hidden rounded-[18px] bg-navy shadow-[0_12px_32px_rgba(6,47,80,0.18)] lg:rounded-[22px] ${shape}`}>
       {children}
     </div>
   );
@@ -67,7 +67,11 @@ function Still({ story, small }: { story: Story; small?: boolean }) {
       </span>
       {story.name || story.detail ? (
         <span className="absolute inset-x-0 bottom-0 px-4 pb-4 text-left lg:px-5 lg:pb-5">
-          {story.name ? <span className="block text-sm font-semibold leading-5 text-white lg:text-base">{story.name}</span> : null}
+          {story.name ? (
+            <span className={`block text-white lg:text-base lg:font-semibold lg:leading-5 ${small ? "text-xs font-semibold leading-4" : "text-[15px] font-bold leading-5"}`}>
+              {story.name}
+            </span>
+          ) : null}
           {story.detail ? <span className="block text-xs leading-4 text-white/85">{story.detail}</span> : null}
         </span>
       ) : null}
@@ -77,7 +81,16 @@ function Still({ story, small }: { story: Story; small?: boolean }) {
 
 const sideArrow =
   "absolute top-1/2 z-10 hidden size-[52px] -translate-y-1/2 place-items-center rounded-full bg-white text-navy shadow-[0_6px_18px_rgba(6,47,80,0.18)] hover:bg-mist motion-safe:transition lg:grid";
-const smallArrow = "grid size-9 place-items-center rounded-full bg-white text-navy shadow-[0_4px_12px_rgba(6,47,80,0.16)] lg:hidden";
+
+/** The running time in the middle card's corner on phones, until the video takes over. */
+function Length({ length }: { length: string }) {
+  return (
+    <span className="pointer-events-none absolute right-3.5 top-4 z-10 flex items-center gap-1.5 rounded-full bg-navy/80 px-2.5 py-1 text-sm font-semibold leading-5 text-white backdrop-blur-sm lg:hidden">
+      <span aria-hidden className="size-2 rounded-full bg-[#22c55e]" />
+      {length}
+    </span>
+  );
+}
 
 /**
  * Driver stories, each in a card of its video's shape. The middle one plays: on its own, muted,
@@ -227,6 +240,10 @@ export function TestimonialReel({ stories, copy }: { stories: Story[]; copy: Sto
   const prev = stories.length > 2 ? stories[(index - 1 + stories.length) % stories.length] : null;
   const next = many ? stories[(index + 1) % stories.length] : null;
   const label = current.name ? fill(copy.play, { name: current.name }) : copy.playAnon;
+  // On phones the neighbours peek in at both edges beside a 9:16 middle card; a 16:9 one takes the width alone.
+  const peek = `group w-[155px] shrink-0 motion-safe:transition lg:block lg:w-[200px] lg:opacity-60 lg:hover:opacity-90 ${
+    tall(current) ? "block" : "hidden"
+  }`;
 
   return (
     <div
@@ -243,7 +260,7 @@ export function TestimonialReel({ stories, copy }: { stories: Story[]; copy: Sto
     >
       <div
         // The tallest card's height, so changing story never moves the page.
-        className="relative flex min-h-[427px] items-center justify-center gap-6 sm:min-h-[534px] lg:min-h-[614px] lg:gap-10 lg:px-[60px]"
+        className="relative -mx-4 flex min-h-[412px] items-center justify-center gap-3 overflow-x-clip sm:min-h-[534px] sm:gap-6 lg:mx-0 lg:min-h-[614px] lg:gap-10 lg:overflow-x-visible lg:px-[60px]"
         onTouchStart={(e) => (touch.current = e.touches[0].clientX)}
         onTouchEnd={(e) => {
           if (touch.current === null || !many) return;
@@ -253,14 +270,17 @@ export function TestimonialReel({ stories, copy }: { stories: Story[]; copy: Sto
         }}
       >
         {prev ? (
-          <button type="button" aria-label={copy.previous} onClick={() => go(index - 1)} className="group hidden w-[200px] shrink-0 opacity-60 hover:opacity-90 motion-safe:transition lg:block">
-            <Frame story={prev}>
+          <button type="button" aria-label={copy.previous} onClick={() => go(index - 1)} className={peek}>
+            <Frame story={prev} peek>
               <Still story={prev} small />
             </Frame>
           </button>
+        ) : next ? (
+          // Two stories: an empty slot on the left keeps the middle card centred on phones.
+          <span aria-hidden className={`${peek} lg:hidden`} />
         ) : null}
 
-        <div className={`shrink-0 ${tall(current) ? "w-[240px] sm:w-[300px] lg:w-[345px]" : "w-full sm:w-[560px]"}`}>
+        <div className={`shrink-0 ${tall(current) ? "w-[232px] sm:w-[300px] lg:w-[345px]" : "w-full px-4 sm:w-[560px] sm:px-0"}`}>
           <Frame story={current}>
             <div
               ref={host}
@@ -276,6 +296,7 @@ export function TestimonialReel({ stories, copy }: { stories: Story[]; copy: Sto
                 <Still story={current} />
               </button>
             )}
+            {!ready && current.length ? <Length length={current.length} /> : null}
             {ready && muted ? (
               <button
                 type="button"
@@ -290,8 +311,8 @@ export function TestimonialReel({ stories, copy }: { stories: Story[]; copy: Sto
         </div>
 
         {next ? (
-          <button type="button" aria-label={copy.next} onClick={() => go(index + 1)} className="group hidden w-[200px] shrink-0 opacity-60 hover:opacity-90 motion-safe:transition lg:block">
-            <Frame story={next}>
+          <button type="button" aria-label={copy.next} onClick={() => go(index + 1)} className={peek}>
+            <Frame story={next} peek>
               <Still story={next} small />
             </Frame>
           </button>
@@ -310,16 +331,13 @@ export function TestimonialReel({ stories, copy }: { stories: Story[]; copy: Sto
       </div>
 
       {current.quote ? (
-        <p className="mx-auto mt-5 max-w-[640px] px-4 text-center text-base font-semibold leading-6 text-navy lg:mt-8 lg:text-[28px] lg:leading-[39px]">
+        <p className="mx-auto mt-5 max-w-[640px] px-4 text-center text-[19px] font-semibold leading-[26px] text-navy lg:mt-8 lg:text-[28px] lg:leading-[39px]">
           {current.quote}
         </p>
       ) : null}
 
       {many ? (
         <div className="mt-4 flex items-center justify-center gap-3 lg:mt-6">
-          <button type="button" aria-label={copy.previous} onClick={() => go(index - 1)} className={smallArrow}>
-            <ChevronLeft size={18} />
-          </button>
           <div className="flex gap-1.5">
             {stories.map((s, i) => (
               <button
@@ -328,13 +346,10 @@ export function TestimonialReel({ stories, copy }: { stories: Story[]; copy: Sto
                 aria-label={fill(copy.story, { n: i + 1 })}
                 aria-current={i === index ? "true" : undefined}
                 onClick={() => go(i)}
-                className={`h-2 rounded-full motion-safe:transition-all ${i === index ? "w-7 bg-navy" : "w-2 bg-navy/20"}`}
+                className={`h-2 rounded-full motion-safe:transition-all ${i === index ? "w-5 bg-navy lg:w-7" : "w-2 bg-navy/20"}`}
               />
             ))}
           </div>
-          <button type="button" aria-label={copy.next} onClick={() => go(index + 1)} className={smallArrow}>
-            <ChevronRight size={18} />
-          </button>
         </div>
       ) : null}
     </div>

@@ -1,7 +1,7 @@
 import { homeCopy, seedText } from "@/content/home-copy";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 import { getContent } from "@/lib/store";
-import { isShort, youtubeId } from "@/lib/youtube";
+import { isShort, youtubeId, youtubeLength } from "@/lib/youtube";
 import { TestimonialReel, type Story } from "./testimonial-reel";
 
 /** "Real Drivers Real Stories": the driver videos listed in the admin, each in a card of its own shape. None, no section. */
@@ -17,13 +17,14 @@ export async function Testimonials({
   const copy = homeCopy(locale).stories;
   const t = (text: string) => seedText(text, locale);
   const { testimonials } = await getContent();
-  const stories = testimonials.flatMap((s): Story[] => {
+  const listed = testimonials.flatMap((s): Story[] => {
     const id = youtubeId(s.video);
     if (!id) return [];
     // A Shorts link is vertical whatever the admin picked.
-    return [{ id, shape: isShort(s.video) ? "short" : s.shape, name: t(s.name), detail: t(s.detail), quote: t(s.quote) }];
+    return [{ id, shape: isShort(s.video) ? "short" : s.shape, name: t(s.name), detail: t(s.detail), quote: t(s.quote), length: null }];
   });
-  if (!stories.length) return null;
+  if (!listed.length) return null;
+  const stories = await Promise.all(listed.map(async (s) => ({ ...s, length: await youtubeLength(s.id) })));
 
   const page = variant === "page";
   return (

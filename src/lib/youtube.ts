@@ -17,3 +17,23 @@ export function youtubeId(link: string): string | null {
 
 /** A Shorts link: the video itself is vertical, so it needs no cropping. */
 export const isShort = (link: string) => /youtube\.com\/shorts\//i.test(link);
+
+/**
+ * A video's running time as "m:ss", read from its public watch page and kept for a day.
+ * Null when YouTube does not answer in time or the page has no length: the card then shows none.
+ */
+export async function youtubeLength(id: string): Promise<string | null> {
+  try {
+    const res = await fetch(`https://www.youtube.com/watch?v=${id}`, {
+      headers: { "Accept-Language": "en", "User-Agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(4000),
+      next: { revalidate: 86400 },
+    });
+    if (!res.ok) return null;
+    const seconds = Number((await res.text()).match(/"lengthSeconds":"(\d+)"/)?.[1]);
+    if (!seconds) return null;
+    return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+  } catch {
+    return null;
+  }
+}
