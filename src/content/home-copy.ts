@@ -513,6 +513,8 @@ const SEED_TEXT: Record<string, Record<Exclude<MainLocale, "en">, string>> = {
   "24×7 Support": { hi: "24×7 मदद", kn: "24×7 ಸಹಾಯ" },
   "24×7 Breakdown Help": { hi: "24×7 ब्रेकडाउन मदद", kn: "24×7 ಬ್ರೇಕ್‌ಡೌನ್ ಸಹಾಯ" },
   "Insurance Included": { hi: "बीमा शामिल", kn: "ವಿಮೆ ಸೇರಿದೆ" },
+  "No Paperwork": { hi: "कागज़ी झंझट नहीं", kn: "ಕಾಗದಪತ್ರದ ತೊಂದರೆ ಇಲ್ಲ" },
+  "No Loan Required": { hi: "लोन की ज़रूरत नहीं", kn: "ಸಾಲ ಬೇಕಿಲ್ಲ" },
   // Cars: the tab above the card, and the photos.
   "India’s Most Driven & Trusted Choice": { hi: "भारत की सबसे ज़्यादा चलने वाली भरोसेमंद गाड़ी", kn: "ಭಾರತದಲ್ಲಿ ಹೆಚ್ಚು ಓಡುವ, ನಂಬಿಕೆಯ ಕಾರು" },
   "Our Most Popular Eco-Friendly Favorite": { hi: "हमारी सबसे पसंदीदा इको-फ़्रेंडली गाड़ी", kn: "ನಮ್ಮ ಅತ್ಯಂತ ಜನಪ್ರಿಯ ಪರಿಸರ ಸ್ನೇಹಿ ಕಾರು" },
