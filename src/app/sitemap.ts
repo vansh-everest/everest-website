@@ -3,6 +3,7 @@ import { SITE_URL } from "@/lib/company";
 import { cityPath } from "@/lib/city-route";
 import { planFor, postsFor } from "@/lib/content";
 import { DEFAULT_LOCALE, LOCALES, MAIN_LOCALES, alternatesFor, localePath, type Locale } from "@/lib/i18n";
+import { NEWS, newsPath } from "@/lib/news";
 import { PLAN_PAGES } from "@/lib/plan-pages";
 import { getContent } from "@/lib/store";
 
@@ -44,6 +45,12 @@ const fixed: Array<{ path: string; priority: number; changeFrequency: Freq }> = 
   { path: "/intercity", priority: 0.5, changeFrequency: "monthly" },
   { path: "/advertise-with-us", priority: 0.5, changeFrequency: "monthly" },
   { path: "/careers", priority: 0.4, changeFrequency: "monthly" },
+  { path: "/newsroom", priority: 0.4, changeFrequency: "monthly" },
+  // The old site's legal pages, at their old addresses.
+  { path: "/privacy-policy", priority: 0.2, changeFrequency: "yearly" },
+  { path: "/terms-of-service", priority: 0.2, changeFrequency: "yearly" },
+  { path: "/app-privacy-policy", priority: 0.2, changeFrequency: "yearly" },
+  { path: "/terms-and-conditions-for-referral-program", priority: 0.1, changeFrequency: "yearly" },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -101,6 +108,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: locale === DEFAULT_LOCALE ? 0.6 : 0.5,
       });
     }
+  }
+
+  // Press stories carried over from the old site, at their old root addresses.
+  for (const post of NEWS) {
+    entries.push({ url: url(newsPath(post.slug)), lastModified: new Date(post.modified), changeFrequency: "yearly", priority: 0.3 });
   }
 
   return entries;

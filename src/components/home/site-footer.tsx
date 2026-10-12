@@ -24,6 +24,7 @@ const columns: { title: "drivers" | "company" | "investors"; links: { key: LinkK
     title: "company",
     links: [
       { key: "about", href: "/about-us" },
+      { key: "newsroom", href: "/newsroom" },
       { key: "careers", href: "/careers" },
       { key: "esg", href: "/investors#reports" },
       { key: "dost", href: "/everest-dost" },
@@ -122,6 +123,14 @@ export function SiteFooter({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
         </div>
         <div className="mt-[30px] flex flex-col-reverse items-center gap-2 border-t border-white/[0.1] pt-[22px] text-center text-[13px] leading-5 lg:mt-[80px] lg:flex-row lg:justify-between lg:pt-[26px] lg:text-left">
           <p>{fill(footer.rights, { year: new Date().getFullYear() })}</p>
+          <p className="flex gap-4">
+            <Link href="/privacy-policy/" className="transition hover:text-sun">
+              {links.privacy}
+            </Link>
+            <Link href="/terms-of-service/" className="transition hover:text-sun">
+              {links.terms}
+            </Link>
+          </p>
           <Link href="/investors" className="flex items-center gap-1 transition hover:text-sun">
             {links.investorsPartners}
             <ArrowRight size={13} aria-hidden />

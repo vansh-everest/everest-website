@@ -1,4 +1,30 @@
 import type { NextConfig } from "next";
+import news from "./src/content/news-posts.json";
+
+/** The press stories carried over from WordPress keep their old root addresses (src/lib/news.ts). */
+const NEWS_SLUGS = (news as Array<{ slug: string }>).map((p) => p.slug);
+
+/** Old WordPress pages whose job a new page now does. Permanent, so search engines move their ranking across. */
+const MOVED: Array<[string, string]> = [
+  ["/about-everest-fleet", "/about-us/"],
+  ["/our-team", "/about-us/"],
+  ["/gallery", "/about-us/"],
+  ["/career", "/careers/"],
+  ["/job-opening/:path*", "/careers/"],
+  ...["performance-head", "junior-technician", "field-sales-executive", "driver-acquisition-head", "city-lead", "associate-technician", "operation-manager", "field-executive-mumbai", "tele-caller-mitr", "mitr", "no-openings"].map(
+    (job): [string, string] => [`/${job}`, "/careers/"]
+  ),
+  ["/everest-employee-mobility", "/employee-mobility/"],
+  ["/everest-fleet-logistics", "/fleet-logistics/"],
+  ["/drive-with-us/driver-job-in-chennai-2", "/drive-with-us/driver-job-in-chennai/"],
+  // The old form's thank-you pages: back to that city's page.
+  ...["mumbai", "delhi", "bengaluru", "hyderabad", "chennai", "pune", "kolkata"].map(
+    (city): [string, string] => [`/thank-you-${city}`, `/drive-with-us/driver-job-in-${city}/`]
+  ),
+  ["/thank-you", "/"],
+  // The ESG report the old newsroom linked to.
+  ["/wp-content/uploads/2026/05/ESG-Report.pdf", "/docs/everest-fleet-esg-report-2024-25.pdf"],
+];
 
 const nextConfig: NextConfig = {
   // A stray package-lock.json in the home directory makes Next guess the wrong workspace root.
@@ -36,7 +62,15 @@ const nextConfig: NextConfig = {
     return [
       { source: "/OwnNow", destination: "/own-now/", permanent: true },
       { source: "/OwnNow/:path*", destination: "/own-now/", permanent: true },
+      ...MOVED.map(([source, destination]) => ({ source, destination, permanent: true })),
+      // A story has one address, its old one; the route that renders it is not a second.
+      // Named one by one: /news/ also holds the stories' images.
+      ...NEWS_SLUGS.map((slug) => ({ source: `/news/${slug}`, destination: `/${slug}/`, permanent: true })),
     ];
+  },
+  // Each story is served at its old root address by the /news/[slug] route.
+  async rewrites() {
+    return NEWS_SLUGS.map((slug) => ({ source: `/${slug}`, destination: `/news/${slug}` }));
   },
 };
 

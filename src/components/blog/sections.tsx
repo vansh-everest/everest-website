@@ -5,7 +5,7 @@ import { ArrowRight, ChevronRight } from "lucide-react";
 import { PHONE_HREF } from "@/components/home/ui";
 import { Carousel } from "@/components/site/carousel";
 import { SiteImage } from "@/components/site/site-image";
-import { PRESS, pressDate } from "@/components/investors/press";
+import { NEWS, newsDate, newsPath } from "@/lib/news";
 import type { Post } from "@/lib/content";
 import { LOCALE_META, localePath, type Locale } from "@/lib/i18n";
 import type { BlogCopy } from "./copy";
@@ -277,30 +277,35 @@ export function Guides({
 
 /** Press mentions. A row links out only once its article address is known. */
 export function InTheNews({ copy }: { copy: BlogCopy }) {
-  if (!PRESS.length) return null;
+  // The latest stories carried over from the old site, each at its own address; the rest are on /newsroom/.
+  const latest = NEWS.slice(0, 6);
+  if (!latest.length) return null;
   return (
     <section className="bg-white px-4 pb-12 pt-[50px] sm:px-6 lg:pb-24 lg:pt-[96px]">
       <div className={wrap}>
         <Kicker className="text-center lg:text-left">{copy.newsKicker}</Kicker>
         <Title className="mt-2.5 lg:mt-[13px]">{copy.newsTitle}</Title>
         <ul className="mt-5 border-t border-line lg:mt-10">
-          {PRESS.map((p) => (
-            <li
-              key={p.title}
-              className="grid gap-1 border-b border-line py-4 lg:min-h-[88px] lg:grid-cols-[172px_1fr_auto] lg:items-center lg:gap-0 lg:py-5"
-            >
-              <time dateTime={p.date} className="text-[13px] leading-5 text-ink-soft lg:text-[15px]">
-                {pressDate(p.date)}
-              </time>
-              <p className="text-[17px] font-bold leading-[22px] text-navy lg:text-2xl lg:leading-8">{p.title}</p>
-              {p.url ? (
-                <a href={p.url} target="_blank" rel="noopener" className="inline-flex items-center gap-2 text-[15px] font-semibold text-brand lg:pl-6">
+          {latest.map((p) => (
+            <li key={p.slug} className="border-b border-line">
+              <Link
+                href={newsPath(p.slug)}
+                className="group grid gap-1 py-4 lg:min-h-[88px] lg:grid-cols-[172px_1fr_auto] lg:items-center lg:gap-0 lg:py-5"
+              >
+                <time dateTime={p.date} className="text-[13px] leading-5 text-ink-soft lg:text-[15px]">
+                  {newsDate(p.date)}
+                </time>
+                <span className="text-[17px] font-bold leading-[22px] text-navy group-hover:text-brand lg:text-2xl lg:leading-8">{p.title}</span>
+                <span className="inline-flex items-center gap-2 text-[15px] font-semibold text-brand lg:pl-6">
                   {copy.read} <ArrowRight aria-hidden className="size-4" />
-                </a>
-              ) : null}
+                </span>
+              </Link>
             </li>
           ))}
         </ul>
+        <Link href="/newsroom/" className="mt-6 inline-flex items-center gap-2 text-[15px] font-semibold text-brand">
+          Newsroom <ArrowRight aria-hidden className="size-4" />
+        </Link>
       </div>
     </section>
   );

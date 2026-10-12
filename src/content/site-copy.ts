@@ -31,7 +31,10 @@ export type LinkKey =
   | "leadership"
   | "reports"
   | "whatsapp"
-  | "investorsPartners";
+  | "investorsPartners"
+  | "newsroom"
+  | "privacy"
+  | "terms";
 
 export type SiteCopy = {
   links: Record<LinkKey, string>;
@@ -90,6 +93,9 @@ const en: SiteCopy = {
     reports: "Reports & Downloads",
     whatsapp: "WhatsApp Us",
     investorsPartners: "For Investors & Partners",
+    newsroom: "Newsroom",
+    privacy: "Privacy Policy",
+    terms: "Terms of Service",
   },
   header: {
     driveWithUs: "Drive With Us",
@@ -142,6 +148,9 @@ const hi: SiteCopy = {
     reports: "रिपोर्ट और डाउनलोड",
     whatsapp: "WhatsApp कीजिए",
     investorsPartners: "निवेशकों और पार्टनर्स के लिए",
+    newsroom: "न्यूज़रूम",
+    privacy: "प्राइवेसी पॉलिसी",
+    terms: "सेवा की शर्तें",
   },
   header: {
     driveWithUs: "हमारे साथ चलाइए",
@@ -194,6 +203,9 @@ const kn: SiteCopy = {
     reports: "ವರದಿಗಳು ಮತ್ತು ಡೌನ್‌ಲೋಡ್‌ಗಳು",
     whatsapp: "WhatsApp ಮಾಡಿ",
     investorsPartners: "ಹೂಡಿಕೆದಾರರು ಮತ್ತು ಪಾಲುದಾರರಿಗೆ",
+    newsroom: "ನ್ಯೂಸ್‌ರೂಮ್",
+    privacy: "ಗೌಪ್ಯತಾ ನೀತಿ",
+    terms: "ಸೇವಾ ನಿಯಮಗಳು",
   },
   header: {
     driveWithUs: "ನಮ್ಮೊಂದಿಗೆ ಓಡಿಸಿ",

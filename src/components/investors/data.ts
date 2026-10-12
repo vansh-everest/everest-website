@@ -88,8 +88,8 @@ export const IMPACT: ImpactCard[] = [
   },
 ];
 
-/** PENDING: the ESG report PDF. Every "Download ESG report" control appears once this is set. */
-export const ESG_REPORT_URL = "";
+/** The ESG report, FY 2024-25, as the old site's newsroom published it. Every "Download ESG report" control shows while this is set. */
+export const ESG_REPORT_URL = "/docs/everest-fleet-esg-report-2024-25.pdf";
 /** Its page count, shown as "PDF · 44 pages" once the URL is set. */
 export const ESG_REPORT_PAGES: number | null = 44;
 
