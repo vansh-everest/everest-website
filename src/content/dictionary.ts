@@ -48,7 +48,7 @@ const en: Dictionary = {
   hub: {
     eyebrow: "Drive With Us",
     title: "Driver Jobs With A Car Included",
-    intro: "Drive on Uber in a car from Everest Fleet.",
+    intro: "Drive in a car from Everest Fleet.",
     pickCity: "Choose Your City",
     metaTitle: "Driver Jobs in 7 Cities, Car Included",
     metaDescription:
@@ -56,11 +56,11 @@ const en: Dictionary = {
   },
   city: {
     title: "Driver Job In {city}, Car Included",
-    intro: "Drive on Uber in {city}, in a car from Everest Fleet.",
+    intro: "Drive in {city} in a car from Everest Fleet.",
     jobTitle: "Cab Driver (Uber)",
-    metaTitle: "Driver Job in {city}, Car on Rent for Uber",
+    metaTitle: "Driver Job in {city}, Car Included",
     metaDescription:
-      "Apply for a cab driver job in {city}. Car on rent for Uber, refundable deposit, weekly payouts, hub addresses and the documents you need.",
+      "Apply for a cab driver job in {city}. Car included, refundable deposit, weekly payouts, hub addresses and the documents you need.",
     plansHeading: "Plans In {city}",
     documentsHeading: "What To Bring",
     faqHeading: "Questions Drivers Ask",
@@ -113,19 +113,19 @@ const hi: Dictionary = {
   hub: {
     eyebrow: "हमारे साथ चलाइए",
     title: "ड्राइवर की नौकरी, गाड़ी हमारी",
-    intro: "Everest Fleet की गाड़ी से Uber चलाइए।",
+    intro: "Everest Fleet की गाड़ी चलाइए।",
     pickCity: "अपना शहर चुनिए",
     metaTitle: "Driver Job Chahiye: ड्राइवर की नौकरी, गाड़ी हमारी",
     metaDescription:
-      "Driver job chahiye to 7 शहरों में अप्लाई कीजिए: गाड़ी, बीमा और परमिट Everest Fleet का, आप Uber चलाइए। हफ़्ते की पेमेंट।",
+      "Driver job chahiye to 7 शहरों में अप्लाई कीजिए: गाड़ी, बीमा और परमिट Everest Fleet का। हफ़्ते की पेमेंट।",
   },
   city: {
     title: "{city} में ड्राइवर की नौकरी, गाड़ी हमारी",
-    intro: "{city} में Everest Fleet की गाड़ी से Uber चलाइए।",
+    intro: "{city} में Everest Fleet की गाड़ी चलाइए।",
     jobTitle: "कैब ड्राइवर (Uber)",
-    metaTitle: "{city} में ड्राइवर जॉब, Uber के लिए किराए पर गाड़ी",
+    metaTitle: "{city} में ड्राइवर जॉब, गाड़ी हमारी",
     metaDescription:
-      "{city} में driver job चाहिए तो अप्लाई कीजिए: Uber के लिए किराए पर गाड़ी, वापस मिलने वाला डिपॉज़िट, हर हफ़्ते पेमेंट, हब का पता और ज़रूरी कागज़।",
+      "{city} में driver job चाहिए तो अप्लाई कीजिए: गाड़ी हमारी, वापस मिलने वाला डिपॉज़िट, हर हफ़्ते पेमेंट, हब का पता और ज़रूरी कागज़।",
     plansHeading: "{city} के प्लान",
     documentsHeading: "साथ क्या लाना है",
     faqHeading: "ड्राइवर यह पूछते हैं",
@@ -178,19 +178,19 @@ const te: Dictionary = {
   hub: {
     eyebrow: "మాతో నడపండి",
     title: "కారుతో సహా డ్రైవర్ ఉద్యోగాలు",
-    intro: "Everest Fleet కారుతో Uber నడపండి.",
+    intro: "Everest Fleet కారు నడపండి.",
     pickCity: "మీ నగరాన్ని ఎంచుకోండి",
     metaTitle: "Driver Job: 7 నగరాల్లో డ్రైవర్ ఉద్యోగాలు, కారు మాది",
     metaDescription:
-      "ఏడు నగరాల్లో క్యాబ్ డ్రైవర్ ఉద్యోగం: కారు, బీమా మరియు పర్మిట్ Everest Fleet ఇస్తుంది, మీరు Uber నడపండి. వారానికి చెల్లింపు.",
+      "ఏడు నగరాల్లో క్యాబ్ డ్రైవర్ ఉద్యోగం: కారు, బీమా మరియు పర్మిట్ Everest Fleet ఇస్తుంది. వారానికి చెల్లింపు.",
   },
   city: {
     title: "{city} లో డ్రైవర్ ఉద్యోగం, కారు మాది",
-    intro: "{city} లో Everest Fleet కారుతో Uber నడపండి.",
+    intro: "{city} లో Everest Fleet కారు నడపండి.",
     jobTitle: "క్యాబ్ డ్రైవర్ (Uber)",
-    metaTitle: "{city} లో డ్రైవర్ జాబ్, Uber కోసం అద్దెకు కారు",
+    metaTitle: "{city} లో డ్రైవర్ జాబ్, కారు మాది",
     metaDescription:
-      "{city} లో క్యాబ్ డ్రైవర్ ఉద్యోగానికి దరఖాస్తు చేయండి: Uber కోసం అద్దెకు కారు, తిరిగి ఇచ్చే డిపాజిట్, వారానికి చెల్లింపు, హబ్ చిరునామాలు మరియు కావలసిన పత్రాలు.",
+      "{city} లో క్యాబ్ డ్రైవర్ ఉద్యోగానికి దరఖాస్తు చేయండి: కారు మాది, తిరిగి ఇచ్చే డిపాజిట్, వారానికి చెల్లింపు, హబ్ చిరునామాలు మరియు కావలసిన పత్రాలు.",
     plansHeading: "{city} లో ప్లాన్లు",
     documentsHeading: "ఏమి తీసుకురావాలి",
     faqHeading: "డ్రైవర్లు అడిగే ప్రశ్నలు",
@@ -243,19 +243,19 @@ const mr: Dictionary = {
   hub: {
     eyebrow: "आमच्यासोबत चालवा",
     title: "ड्रायव्हरची नोकरी, गाडी आमची",
-    intro: "Everest Fleet च्या गाडीने Uber चालवा.",
+    intro: "Everest Fleet ची गाडी चालवा.",
     pickCity: "तुमचे शहर निवडा",
     metaTitle: "Driver Job: 7 शहरांत ड्रायव्हरची नोकरी, गाडी आमची",
     metaDescription:
-      "मुंबई, पुणे आणि आणखी 5 शहरांत कॅब ड्रायव्हरच्या नोकरीसाठी अर्ज करा: गाडी, विमा आणि परमिट Everest Fleet चे, तुम्ही Uber चालवा, पेमेंट दर आठवड्याला.",
+      "मुंबई, पुणे आणि आणखी 5 शहरांत कॅब ड्रायव्हरच्या नोकरीसाठी अर्ज करा: गाडी, विमा आणि परमिट Everest Fleet चे, पेमेंट दर आठवड्याला.",
   },
   city: {
     title: "{city} मध्ये ड्रायव्हरची नोकरी, गाडी आमची",
-    intro: "{city} मध्ये Everest Fleet च्या गाडीने Uber चालवा.",
+    intro: "{city} मध्ये Everest Fleet ची गाडी चालवा.",
     jobTitle: "कॅब ड्रायव्हर (Uber)",
-    metaTitle: "{city} मध्ये ड्रायव्हर जॉब, Uber साठी भाड्याने गाडी",
+    metaTitle: "{city} मध्ये ड्रायव्हर जॉब, गाडी आमची",
     metaDescription:
-      "{city} मध्ये कॅब ड्रायव्हरच्या नोकरीसाठी अर्ज करा: Uber साठी भाड्याने गाडी, परत मिळणारे डिपॉझिट, दर आठवड्याला पेमेंट, हबचे पत्ते आणि लागणारी कागदपत्रे.",
+      "{city} मध्ये कॅब ड्रायव्हरच्या नोकरीसाठी अर्ज करा: गाडी आमची, परत मिळणारे डिपॉझिट, दर आठवड्याला पेमेंट, हबचे पत्ते आणि लागणारी कागदपत्रे.",
     plansHeading: "{city} मधील प्लॅन",
     documentsHeading: "सोबत काय आणायचे",
     faqHeading: "ड्रायव्हर हे विचारतात",
@@ -308,19 +308,19 @@ const kn: Dictionary = {
   hub: {
     eyebrow: "ನಮ್ಮೊಂದಿಗೆ ಓಡಿಸಿ",
     title: "ಕಾರಿನ ಜೊತೆಗೆ ಡ್ರೈವರ್ ಕೆಲಸ",
-    intro: "Everest Fleet ಕಾರಿನಲ್ಲಿ Uber ಓಡಿಸಿ.",
+    intro: "Everest Fleet ಕಾರು ಓಡಿಸಿ.",
     pickCity: "ನಿಮ್ಮ ನಗರವನ್ನು ಆರಿಸಿ",
     metaTitle: "Driver Job: 7 ನಗರಗಳಲ್ಲಿ ಡ್ರೈವರ್ ಕೆಲಸ, ಕಾರು ನಮ್ಮದು",
     metaDescription:
-      "ಬೆಂಗಳೂರು ಸೇರಿದಂತೆ 7 ನಗರಗಳಲ್ಲಿ ಕ್ಯಾಬ್ ಡ್ರೈವರ್ ಕೆಲಸಕ್ಕೆ ಅರ್ಜಿ ಹಾಕಿ: ಕಾರು, ವಿಮೆ ಮತ್ತು ಪರ್ಮಿಟ್ Everest Fleet ನದು, ನೀವು Uber ಓಡಿಸಿ, ಪಾವತಿ ಪ್ರತಿ ವಾರ.",
+      "ಬೆಂಗಳೂರು ಸೇರಿದಂತೆ 7 ನಗರಗಳಲ್ಲಿ ಕ್ಯಾಬ್ ಡ್ರೈವರ್ ಕೆಲಸಕ್ಕೆ ಅರ್ಜಿ ಹಾಕಿ: ಕಾರು, ವಿಮೆ ಮತ್ತು ಪರ್ಮಿಟ್ Everest Fleet ನದು, ಪಾವತಿ ಪ್ರತಿ ವಾರ.",
   },
   city: {
     title: "{city} ನಗರದಲ್ಲಿ ಡ್ರೈವರ್ ಕೆಲಸ, ಕಾರು ನಮ್ಮದು",
-    intro: "{city} ನಗರದಲ್ಲಿ Everest Fleet ಕಾರಿನಲ್ಲಿ Uber ಓಡಿಸಿ.",
+    intro: "{city} ನಗರದಲ್ಲಿ Everest Fleet ಕಾರು ಓಡಿಸಿ.",
     jobTitle: "ಕ್ಯಾಬ್ ಡ್ರೈವರ್ (Uber)",
-    metaTitle: "{city} ನಗರದಲ್ಲಿ ಡ್ರೈವರ್ ಜಾಬ್, Uber ಗಾಗಿ ಬಾಡಿಗೆ ಕಾರು",
+    metaTitle: "{city} ನಗರದಲ್ಲಿ ಡ್ರೈವರ್ ಜಾಬ್, ಕಾರು ನಮ್ಮದು",
     metaDescription:
-      "{city} ನಗರದಲ್ಲಿ ಕ್ಯಾಬ್ ಡ್ರೈವರ್ ಕೆಲಸಕ್ಕೆ ಅರ್ಜಿ ಹಾಕಿ: Uber ಗಾಗಿ ಬಾಡಿಗೆ ಕಾರು, ಹಿಂತಿರುಗಿಸುವ ಠೇವಣಿ, ಪ್ರತಿ ವಾರ ಪಾವತಿ, ಹಬ್ ವಿಳಾಸಗಳು ಮತ್ತು ಬೇಕಾದ ದಾಖಲೆಗಳು.",
+      "{city} ನಗರದಲ್ಲಿ ಕ್ಯಾಬ್ ಡ್ರೈವರ್ ಕೆಲಸಕ್ಕೆ ಅರ್ಜಿ ಹಾಕಿ: ಕಾರು ನಮ್ಮದು, ಹಿಂತಿರುಗಿಸುವ ಠೇವಣಿ, ಪ್ರತಿ ವಾರ ಪಾವತಿ, ಹಬ್ ವಿಳಾಸಗಳು ಮತ್ತು ಬೇಕಾದ ದಾಖಲೆಗಳು.",
     plansHeading: "{city} ನಗರದ ಪ್ಲಾನ್‌ಗಳು",
     documentsHeading: "ಏನು ತರಬೇಕು",
     faqHeading: "ಡ್ರೈವರ್‌ಗಳು ಕೇಳುವ ಪ್ರಶ್ನೆಗಳು",
@@ -373,19 +373,19 @@ const bn: Dictionary = {
   hub: {
     eyebrow: "আমাদের সঙ্গে চালান",
     title: "গাড়ি সহ ড্রাইভারের চাকরি",
-    intro: "Everest Fleet-এর গাড়িতে Uber চালান।",
+    intro: "Everest Fleet-এর গাড়ি চালান।",
     pickCity: "আপনার শহর বেছে নিন",
     metaTitle: "Driver Job: 7টি শহরে ড্রাইভারের চাকরি, গাড়ি আমাদের",
     metaDescription:
-      "কলকাতা সহ 7টি শহরে ক্যাব ড্রাইভারের চাকরির জন্য আবেদন করুন: গাড়ি, বিমা আর পারমিট Everest Fleet-এর, আপনি Uber চালান, পেমেন্ট প্রতি সপ্তাহে।",
+      "কলকাতা সহ 7টি শহরে ক্যাব ড্রাইভারের চাকরির জন্য আবেদন করুন: গাড়ি, বিমা আর পারমিট Everest Fleet-এর, পেমেন্ট প্রতি সপ্তাহে।",
   },
   city: {
     title: "{city} শহরে ড্রাইভারের চাকরি, গাড়ি আমাদের",
-    intro: "{city} শহরে Everest Fleet-এর গাড়িতে Uber চালান।",
+    intro: "{city} শহরে Everest Fleet-এর গাড়ি চালান।",
     jobTitle: "ক্যাব ড্রাইভার (Uber)",
-    metaTitle: "{city} শহরে ড্রাইভার জব, Uber-এর জন্য ভাড়ায় গাড়ি",
+    metaTitle: "{city} শহরে ড্রাইভার জব, গাড়ি আমাদের",
     metaDescription:
-      "{city} শহরে ক্যাব ড্রাইভারের চাকরির জন্য আবেদন করুন: Uber-এর জন্য ভাড়ায় গাড়ি, ফেরতযোগ্য ডিপোজিট, প্রতি সপ্তাহে পেমেন্ট, হাবের ঠিকানা আর দরকারি কাগজপত্র।",
+      "{city} শহরে ক্যাব ড্রাইভারের চাকরির জন্য আবেদন করুন: গাড়ি আমাদের, ফেরতযোগ্য ডিপোজিট, প্রতি সপ্তাহে পেমেন্ট, হাবের ঠিকানা আর দরকারি কাগজপত্র।",
     plansHeading: "{city} শহরের প্ল্যান",
     documentsHeading: "সঙ্গে কী আনবেন",
     faqHeading: "ড্রাইভাররা যা জানতে চান",
@@ -438,19 +438,19 @@ const ta: Dictionary = {
   hub: {
     eyebrow: "எங்களுடன் ஓட்டுங்கள்",
     title: "காருடன் டிரைவர் வேலை",
-    intro: "Everest Fleet காரில் Uber ஓட்டுங்கள்.",
+    intro: "Everest Fleet காரை ஓட்டுங்கள்.",
     pickCity: "உங்கள் நகரத்தைத் தேர்ந்தெடுங்கள்",
     metaTitle: "Driver Job: 7 நகரங்களில் டிரைவர் வேலை, கார் எங்களுடையது",
     metaDescription:
-      "சென்னை உட்பட 7 நகரங்களில் கேப் டிரைவர் வேலைக்கு விண்ணப்பியுங்கள்: கார், காப்பீடு மற்றும் பெர்மிட் Everest Fleet-உடையது, நீங்கள் Uber ஓட்டுங்கள், பணம் ஒவ்வொரு வாரமும்.",
+      "சென்னை உட்பட 7 நகரங்களில் கேப் டிரைவர் வேலைக்கு விண்ணப்பியுங்கள்: கார், காப்பீடு மற்றும் பெர்மிட் Everest Fleet-உடையது, பணம் ஒவ்வொரு வாரமும்.",
   },
   city: {
     title: "{city} நகரில் டிரைவர் வேலை, கார் எங்களுடையது",
-    intro: "{city} நகரில் Everest Fleet காரில் Uber ஓட்டுங்கள்.",
+    intro: "{city} நகரில் Everest Fleet காரை ஓட்டுங்கள்.",
     jobTitle: "கேப் டிரைவர் (Uber)",
-    metaTitle: "{city} நகரில் டிரைவர் வேலை, Uber-க்கு வாடகை கார்",
+    metaTitle: "{city} நகரில் டிரைவர் வேலை, கார் எங்களுடையது",
     metaDescription:
-      "{city} நகரில் கேப் டிரைவர் வேலைக்கு விண்ணப்பியுங்கள்: Uber-க்கு வாடகை கார், திரும்பக் கிடைக்கும் டெபாசிட், வாராந்திர பணம், ஹப் முகவரிகள் மற்றும் தேவையான ஆவணங்கள்.",
+      "{city} நகரில் கேப் டிரைவர் வேலைக்கு விண்ணப்பியுங்கள்: கார் எங்களுடையது, திரும்பக் கிடைக்கும் டெபாசிட், வாராந்திர பணம், ஹப் முகவரிகள் மற்றும் தேவையான ஆவணங்கள்.",
     plansHeading: "{city} நகரில் திட்டங்கள்",
     documentsHeading: "என்ன கொண்டு வர வேண்டும்",
     faqHeading: "டிரைவர்கள் கேட்கும் கேள்விகள்",
