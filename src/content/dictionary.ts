@@ -24,7 +24,6 @@ export type Dictionary = {
     jobTitle: string;
     metaTitle: string;
     metaDescription: string;
-    readyCars: string;
     plansHeading: string;
     documentsHeading: string;
     faqHeading: string;
@@ -62,7 +61,6 @@ const en: Dictionary = {
     metaTitle: "Driver Job in {city}, Car on Rent for Uber",
     metaDescription:
       "Apply for a cab driver job in {city}. Car on rent for Uber, refundable deposit, weekly payouts, hub addresses and the documents you need.",
-    readyCars: "Cars Ready In {city}",
     plansHeading: "Plans In {city}",
     documentsHeading: "What To Bring",
     faqHeading: "Questions Drivers Ask",
@@ -128,7 +126,6 @@ const hi: Dictionary = {
     metaTitle: "{city} में ड्राइवर जॉब, Uber के लिए किराए पर गाड़ी",
     metaDescription:
       "{city} में driver job चाहिए तो अप्लाई कीजिए: Uber के लिए किराए पर गाड़ी, वापस मिलने वाला डिपॉज़िट, हर हफ़्ते पेमेंट, हब का पता और ज़रूरी कागज़।",
-    readyCars: "{city} में तैयार गाड़ियाँ",
     plansHeading: "{city} के प्लान",
     documentsHeading: "साथ क्या लाना है",
     faqHeading: "ड्राइवर यह पूछते हैं",
@@ -194,7 +191,6 @@ const te: Dictionary = {
     metaTitle: "{city} లో డ్రైవర్ జాబ్, Uber కోసం అద్దెకు కారు",
     metaDescription:
       "{city} లో క్యాబ్ డ్రైవర్ ఉద్యోగానికి దరఖాస్తు చేయండి: Uber కోసం అద్దెకు కారు, తిరిగి ఇచ్చే డిపాజిట్, వారానికి చెల్లింపు, హబ్ చిరునామాలు మరియు కావలసిన పత్రాలు.",
-    readyCars: "{city} లో సిద్ధంగా ఉన్న కార్లు",
     plansHeading: "{city} లో ప్లాన్లు",
     documentsHeading: "ఏమి తీసుకురావాలి",
     faqHeading: "డ్రైవర్లు అడిగే ప్రశ్నలు",
@@ -260,7 +256,6 @@ const mr: Dictionary = {
     metaTitle: "{city} मध्ये ड्रायव्हर जॉब, Uber साठी भाड्याने गाडी",
     metaDescription:
       "{city} मध्ये कॅब ड्रायव्हरच्या नोकरीसाठी अर्ज करा: Uber साठी भाड्याने गाडी, परत मिळणारे डिपॉझिट, दर आठवड्याला पेमेंट, हबचे पत्ते आणि लागणारी कागदपत्रे.",
-    readyCars: "{city} मध्ये तयार गाड्या",
     plansHeading: "{city} मधील प्लॅन",
     documentsHeading: "सोबत काय आणायचे",
     faqHeading: "ड्रायव्हर हे विचारतात",
@@ -326,7 +321,6 @@ const kn: Dictionary = {
     metaTitle: "{city} ನಗರದಲ್ಲಿ ಡ್ರೈವರ್ ಜಾಬ್, Uber ಗಾಗಿ ಬಾಡಿಗೆ ಕಾರು",
     metaDescription:
       "{city} ನಗರದಲ್ಲಿ ಕ್ಯಾಬ್ ಡ್ರೈವರ್ ಕೆಲಸಕ್ಕೆ ಅರ್ಜಿ ಹಾಕಿ: Uber ಗಾಗಿ ಬಾಡಿಗೆ ಕಾರು, ಹಿಂತಿರುಗಿಸುವ ಠೇವಣಿ, ಪ್ರತಿ ವಾರ ಪಾವತಿ, ಹಬ್ ವಿಳಾಸಗಳು ಮತ್ತು ಬೇಕಾದ ದಾಖಲೆಗಳು.",
-    readyCars: "{city} ನಗರದಲ್ಲಿ ಸಿದ್ಧವಿರುವ ಕಾರುಗಳು",
     plansHeading: "{city} ನಗರದ ಪ್ಲಾನ್‌ಗಳು",
     documentsHeading: "ಏನು ತರಬೇಕು",
     faqHeading: "ಡ್ರೈವರ್‌ಗಳು ಕೇಳುವ ಪ್ರಶ್ನೆಗಳು",
@@ -392,7 +386,6 @@ const bn: Dictionary = {
     metaTitle: "{city} শহরে ড্রাইভার জব, Uber-এর জন্য ভাড়ায় গাড়ি",
     metaDescription:
       "{city} শহরে ক্যাব ড্রাইভারের চাকরির জন্য আবেদন করুন: Uber-এর জন্য ভাড়ায় গাড়ি, ফেরতযোগ্য ডিপোজিট, প্রতি সপ্তাহে পেমেন্ট, হাবের ঠিকানা আর দরকারি কাগজপত্র।",
-    readyCars: "{city} শহরে তৈরি গাড়ি",
     plansHeading: "{city} শহরের প্ল্যান",
     documentsHeading: "সঙ্গে কী আনবেন",
     faqHeading: "ড্রাইভাররা যা জানতে চান",
@@ -458,7 +451,6 @@ const ta: Dictionary = {
     metaTitle: "{city} நகரில் டிரைவர் வேலை, Uber-க்கு வாடகை கார்",
     metaDescription:
       "{city} நகரில் கேப் டிரைவர் வேலைக்கு விண்ணப்பியுங்கள்: Uber-க்கு வாடகை கார், திரும்பக் கிடைக்கும் டெபாசிட், வாராந்திர பணம், ஹப் முகவரிகள் மற்றும் தேவையான ஆவணங்கள்.",
-    readyCars: "{city} நகரில் தயாராக உள்ள கார்கள்",
     plansHeading: "{city} நகரில் திட்டங்கள்",
     documentsHeading: "என்ன கொண்டு வர வேண்டும்",
     faqHeading: "டிரைவர்கள் கேட்கும் கேள்விகள்",

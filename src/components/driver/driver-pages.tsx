@@ -281,7 +281,6 @@ export function CityPage({
         }
         title={cityTitle(dict.city.title, name)}
         intro={fill(dict.city.intro, vars)}
-        figure={city.readyCars > 0 ? { label: fill(dict.city.readyCars, vars), value: String(city.readyCars) } : undefined}
         actions={<HeroActions cta={dict.cta} />}
       />
 
