@@ -4,6 +4,8 @@ import { useState } from "react";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_HREF } from "@/components/home/ui";
 import { sendLead } from "./lead";
+import { Captcha } from "@/components/site/captcha";
+import { Consent } from "@/components/site/consent";
 
 const TRIPS = ["One Way", "Round Trip", "Multi Way"] as const;
 const TRAVELLERS = [1, 2, 3, 4, 5, 6, 7];
@@ -174,11 +176,13 @@ export function IntercityBooking({ cities }: { cities: { slug: string; name: str
             <ArrowRight aria-hidden size={18} className="lg:hidden" />
           </button>
         </div>
+        <Captcha className="mt-4" />
         {state === "failed" ? (
           <p role="alert" className="mt-3 text-center text-sm text-white lg:text-navy">
             Not sent: try again, or call {PHONE_DISPLAY}
           </p>
         ) : null}
+        <Consent tone="dark" className="mt-3 lg:text-ink-soft" />
       </form>
       <p className="mt-[11px] text-center text-[15px] leading-5 text-white lg:hidden">
         Prefer to talk? <a href={PHONE_HREF}>Call {PHONE_DISPLAY}</a>

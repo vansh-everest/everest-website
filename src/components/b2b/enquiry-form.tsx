@@ -4,6 +4,8 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
 import { sendLead } from "./lead";
+import { Captcha } from "@/components/site/captcha";
+import { Consent } from "@/components/site/consent";
 
 export type EnquiryField =
   | { name: string; label: string; type: "text" | "email"; placeholder: string; autoComplete?: string }
@@ -96,6 +98,7 @@ export function EnquiryForm({
 
       {after?.map(renderField)}
 
+      <Captcha className="mt-[9px] lg:mt-[15px]" />
       <button
         type="submit"
         disabled={!ready || state === "sending"}
@@ -108,6 +111,7 @@ export function EnquiryForm({
           Not sent: try again, or call {PHONE_DISPLAY}
         </p>
       ) : null}
+      <Consent />
       <p className="hidden text-center text-base leading-6 text-navy lg:-mt-[3px] lg:block">
         Or reach us directly ·{" "}
         <a href={PHONE_HREF} className="hover:text-brand">

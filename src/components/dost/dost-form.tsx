@@ -4,6 +4,8 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
 import { trackLead } from "@/lib/analytics";
+import { Captcha } from "@/components/site/captcha";
+import { Consent } from "@/components/site/consent";
 
 const OCCUPATIONS = ["Driver Sourcing Agent", "Agent", "Logistics Business", "Someone Who Knows Drivers"];
 
@@ -127,6 +129,7 @@ export function DostForm({ cities }: { cities: { slug: string; name: string }[] 
         </span>
       </label>
 
+      <Captcha className="mt-3 lg:mt-5" />
       <button
         type="submit"
         disabled={!ready || state === "sending"}
@@ -139,6 +142,7 @@ export function DostForm({ cities }: { cities: { slug: string; name: string }[] 
           Not sent. Try again, or call {PHONE_DISPLAY}.
         </p>
       ) : null}
+      <Consent className="mt-3" />
       <p className="mt-[15px] hidden text-center text-base leading-6 text-navy lg:block">
         Or reach us directly ·{" "}
         <a href={PHONE_HREF} className="hover:text-brand">

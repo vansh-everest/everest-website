@@ -5,6 +5,8 @@ import { ChevronDown } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
 import { PICK_SERVICE_EVENT, SERVICES } from "./services";
 import { trackLead } from "@/lib/analytics";
+import { Captcha } from "@/components/site/captcha";
+import { Consent } from "@/components/site/consent";
 
 const input =
   "mt-1.5 h-[52px] w-full rounded border border-line bg-white px-4 text-base text-navy placeholder:text-[#9ca3af] focus:border-brand focus:outline-none sm:h-12";
@@ -137,6 +139,7 @@ export function EnquiryForm({ source }: { source: string }) {
           />
         </span>
       </label>
+      <Captcha className="mt-1 sm:mt-3" />
       <button
         type="submit"
         disabled={!ready || state === "sending" || state === "done"}
@@ -149,6 +152,7 @@ export function EnquiryForm({ source }: { source: string }) {
           Not sent. Try again, or call {PHONE_DISPLAY}.
         </p>
       ) : null}
+      <Consent />
       <p className="hidden text-center text-base leading-6 text-navy sm:block">
         Or reach us directly ·{" "}
         <a href={PHONE_HREF} className="hover:text-brand">

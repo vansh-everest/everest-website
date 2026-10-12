@@ -6,6 +6,8 @@ import { PHONE_DISPLAY, PHONE_HREF } from "./ui";
 import type { FormCopy } from "@/content/home-copy";
 import { trackLead } from "@/lib/analytics";
 import { fill, type Locale } from "@/lib/i18n";
+import { Captcha } from "@/components/site/captcha";
+import { Consent } from "@/components/site/consent";
 
 const input =
   "mt-1.5 h-12 w-full rounded border border-line bg-white px-4 text-base text-navy placeholder:text-[#9ca3af] focus:border-brand focus:outline-none";
@@ -134,6 +136,7 @@ export function ApplyForm({
           />
         </span>
       </label>
+      <Captcha lang={locale} />
       <div className="mt-1 grid grid-cols-2 gap-6 sm:mt-3 sm:gap-[22px]">
         <button
           type="submit"
@@ -155,6 +158,7 @@ export function ApplyForm({
           {fill(copy.failed, { phone: PHONE_DISPLAY })}
         </p>
       ) : null}
+      <Consent locale={locale} />
     </form>
   );
 }

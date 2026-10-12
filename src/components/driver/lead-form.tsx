@@ -6,6 +6,8 @@ import type { Dictionary } from "@/content/dictionary";
 import type { Locale } from "@/lib/i18n";
 import { PHONE_HREF } from "@/components/home/ui";
 import { trackLead } from "@/lib/analytics";
+import { Captcha } from "@/components/site/captcha";
+import { Consent } from "@/components/site/consent";
 
 const input =
   "mt-1.5 block h-12 w-full rounded border border-line bg-white px-4 text-base text-navy outline-none focus:border-brand";
@@ -112,6 +114,7 @@ export function LeadForm({
           />
         </span>
       </label>
+      <Captcha lang={locale} />
       <div className="mt-1 grid grid-cols-2 gap-3 sm:mt-2 sm:gap-[22px]">
         <button
           type="submit"
@@ -134,6 +137,7 @@ export function LeadForm({
         </p>
       ) : null}
       <p className="text-center text-xs text-ink-soft sm:text-[13px]">{cta.formNote}</p>
+      <Consent locale={locale} />
     </form>
   );
 }

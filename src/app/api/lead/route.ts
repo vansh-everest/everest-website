@@ -22,8 +22,10 @@ export const dynamic = "force-dynamic";
  */
 
 const TEN_DIGITS = /^[6-9]\d{9}$/;
+/** The token Google's widget (components/site/captcha.tsx) adds to the form. */
+const CAPTCHA_FIELD = "g-recaptcha-response";
 /** Fields every form shares; anything else a form sends goes to Jarvis as a detail. */
-const STANDARD = new Set(["name", "mobile", "city", "locale", "source", "page", "referrer", "campaign"]);
+const STANDARD = new Set(["name", "mobile", "city", "locale", "source", "page", "referrer", "campaign", CAPTCHA_FIELD]);
 const MAX_DETAILS = 30;
 const WINDOW_MS = 60_000;
 
@@ -53,6 +55,10 @@ export async function POST(request: Request) {
 
   if (!name || !TEN_DIGITS.test(mobile)) {
     return NextResponse.json({ error: "invalid_input" }, { status: 400 });
+  }
+
+  if (!(await captchaPassed(String(form.get(CAPTCHA_FIELD) ?? "")))) {
+    return NextResponse.json({ error: "captcha" }, { status: 400 });
   }
 
   // A second key the caller cannot rotate freely, so a spoofed address chain still cannot
@@ -96,6 +102,29 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ ok: true });
+}
+
+/**
+ * With RECAPTCHA_SECRET_KEY set, a lead needs a token Google accepts. Without it there is no check.
+ * Google not answering lets the lead through, logged: a lost driver costs more than one stray bot.
+ */
+async function captchaPassed(token: string): Promise<boolean> {
+  const secret = process.env.RECAPTCHA_SECRET_KEY;
+  if (!secret) return true;
+  if (!token) return false;
+  try {
+    const res = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+      method: "POST",
+      body: new URLSearchParams({ secret, response: token }),
+      signal: AbortSignal.timeout(5000),
+    });
+    const answer = (await res.json()) as { success?: boolean; "error-codes"?: string[] };
+    if (!answer.success) console.warn("[lead] captcha refused", answer["error-codes"]);
+    return answer.success === true;
+  } catch (error) {
+    console.error("[lead] captcha check unreachable, lead accepted", error);
+    return true;
+  }
 }
 
 /** True once Jarvis has the lead. False when fleet_connect is not set up or did not take it. */
