@@ -11,7 +11,12 @@ export function HeadlineBand({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-[-27.17%] top-[-27.11%]">
         <Image src="/figma/wave.svg" alt="" fill loading="eager" className="object-fill" />
       </div>
-      <h1 className="relative text-[26px] font-extrabold uppercase leading-[1.21] tracking-[-0.013em] text-white sm:text-[48px] md:text-[60px] lg:text-[80px] xl:text-[96px]">
+      {/* Tamil's words run long: at the Latin size the line breaks three times on a laptop. */}
+      <h1
+        className={`relative text-[26px] font-extrabold uppercase leading-[1.21] tracking-[-0.013em] text-white sm:text-[48px] md:text-[60px] ${
+          locale === "ta" ? "lg:text-[56px] xl:text-[64px]" : "lg:text-[80px] xl:text-[96px]"
+        }`}
+      >
         {copy.lead} <span className="text-sun">{copy.highlight}</span>
       </h1>
       <div className="relative mt-6 flex flex-wrap items-center justify-center gap-[5px] lg:mt-[34px] lg:gap-5">

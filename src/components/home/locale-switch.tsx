@@ -82,7 +82,7 @@ export function LocaleSwitch() {
   const { current, href } = useLocaleTarget();
   const { title, titleLocal } = siteCopy(current).language;
   // Under the heading, the same words in a second language: Hindi under English, English under the others.
-  const second: Locale = current === "hi" || current === "kn" ? DEFAULT_LOCALE : "hi";
+  const second: Locale = current === "hi" || current === "kn" || current === "ta" ? DEFAULT_LOCALE : "hi";
   const [open, setOpen] = useState(false);
   const box = useRef<HTMLDivElement>(null);
 

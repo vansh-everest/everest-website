@@ -17,7 +17,7 @@ export type ExtraLocale = (typeof EXTRA_LOCALES)[number];
  * The three languages the whole home page and the header and footer are written in. They are
  * the only ones the language picker offers; the other locales keep their driver pages.
  */
-export const MAIN_LOCALES = ["en", "hi", "kn"] as const;
+export const MAIN_LOCALES = ["en", "hi", "kn", "ta"] as const;
 export type MainLocale = (typeof MAIN_LOCALES)[number];
 
 export function isMainLocale(value: string): value is MainLocale {

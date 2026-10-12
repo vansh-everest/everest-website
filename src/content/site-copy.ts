@@ -237,7 +237,63 @@ const kn: SiteCopy = {
   },
 };
 
-export const SITE_COPY: Record<MainLocale, SiteCopy> = { en, hi, kn };
+const ta: SiteCopy = {
+  links: {
+    home: "முகப்பு",
+    about: "எங்களைப் பற்றி",
+    plans: "எங்கள் திட்டங்கள்",
+    ownNow: "Own Now",
+    driveToEarn: "Drive To Earn",
+    driveToOwn: "Drive To Own",
+    services: "பிற சேவைகள்",
+    fleetLogistics: "ஃப்ளீட் லாஜிஸ்டிக்ஸ்",
+    employeeMobility: "ஊழியர் பயணம்",
+    intercity: "இன்டர்சிட்டி",
+    advertise: "எங்களுடன் விளம்பரம்",
+    dost: "Everest Dost",
+    forInvestors: "முதலீட்டாளர்களுக்கு",
+    blog: "வலைப்பதிவு",
+    esg: "ESG அறிக்கை",
+    faq: "டிரைவர் கேள்விகள்",
+    benefits: "நன்மைகள்",
+    careers: "வேலைவாய்ப்புகள்",
+    investorHub: "முதலீட்டாளர் மையம்",
+    metrics: "அளவீடுகள் மற்றும் தாக்கம்",
+    leadership: "தலைமை",
+    reports: "அறிக்கைகள் மற்றும் பதிவிறக்கங்கள்",
+    whatsapp: "WhatsApp செய்யுங்கள்",
+    investorsPartners: "முதலீட்டாளர்கள் மற்றும் பார்ட்னர்களுக்கு",
+    newsroom: "நியூஸ்ரூம்",
+    privacy: "தனியுரிமைக் கொள்கை",
+    terms: "சேவை விதிமுறைகள்",
+  },
+  header: {
+    driveWithUs: "எங்களுடன் ஓட்டுங்கள்",
+    main: "முதன்மை",
+    menu: "மெனு",
+    closeMenu: "மெனுவை மூடு",
+    groupPages: "{label} பக்கங்கள்",
+    call: "{phone} அழையுங்கள்",
+  },
+  language: { title: "மொழியைத் தேர்ந்தெடுங்கள்", titleLocal: "Select Language" },
+  footer: {
+    blurb:
+      "இந்தியாவின் மிகப்பெரிய ஃப்ளீட் மேனேஜ்மென்ட் நிறுவனம். {vehicles} வாகனங்கள். {cities} நகரங்கள். " +
+      "{founded} முதல் டிரைவர்களின் வருமானத்தை உயர்த்தி வருகிறோம்.",
+    drivers: "டிரைவர்கள்",
+    company: "நிறுவனம்",
+    investors: "முதலீட்டாளர்கள்",
+    contact: "தொடர்பு",
+    rights: "© {year} Everest Fleet Pvt Ltd. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.",
+    office: "பதிவு அலுவலகம்:",
+    instagram: "Instagram-இல் Everest Fleet",
+    linkedin: "LinkedIn-இல் Everest Fleet",
+    facebook: "Facebook-இல் Everest Fleet",
+    youtube: "YouTube-இல் Everest Fleet",
+  },
+};
+
+export const SITE_COPY: Record<MainLocale, SiteCopy> = { en, hi, kn, ta };
 
 /** The site's own words in `locale`; English for a locale they are not written in. */
 export function siteCopy(locale: Locale): SiteCopy {

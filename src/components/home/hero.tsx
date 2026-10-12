@@ -7,7 +7,12 @@ export function Hero({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
     // On desktop the photo takes what is left of the first screen once the header and the headline
     // band are counted, so the headline and Join As Driver sit above the fold on any laptop; never
     // taller than its designed 1440:654, never shorter than 320px.
-    <section className="relative aspect-[412/300] overflow-clip bg-navy sm:aspect-[1440/654] lg:aspect-auto lg:h-[clamp(320px,calc(100svh_-_390px),45.42vw)]">
+    <section
+      className={`relative aspect-[412/300] overflow-clip bg-navy sm:aspect-[1440/654] lg:aspect-auto ${
+        // Tamil's headline takes two lines, 40px more than one.
+        locale === "ta" ? "lg:h-[clamp(320px,calc(100svh_-_430px),45.42vw)]" : "lg:h-[clamp(320px,calc(100svh_-_390px),45.42vw)]"
+      }`}
+    >
       {/* One photo serves both frames. Phones crop it to the car; from sm up it runs the full
           width and sits 16% above the frame, where the Figma frame places it. */}
       <div className="fx-scroll-exit absolute inset-0 sm:inset-auto sm:left-0 sm:top-[-16.13%] sm:h-[116.13%] sm:w-full lg:top-0 lg:h-full">
