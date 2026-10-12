@@ -500,7 +500,7 @@ export function withLiveData(content: SiteContent, live: LiveData | null, jarvis
       let cityPrices: CityPrices = {};
       for (const city of content.cities) cityPrices[city.slug] = BLANK;
       for (const [slug, price] of live) cityPrices = merge(cityPrices, slug, price);
-      return { ...plan, cityPrices, price: whole(plan.price, lowestEach([...live.values()])) };
+      return { ...plan, cityPrices, price: whole(plan.price, typicalEach(bySlug.get(TYPICAL.city), content, plan.id) ?? lowestEach([...live.values()])) };
     }),
     cars: content.cars.map((car) => {
       const live = carCity.get(car.id) ?? new Map<string, LivePlanPrice>();
@@ -518,12 +518,39 @@ const lowest = (values: (number | null)[]): number | null => {
 };
 
 /**
- * The "from" figures a summary shows (a city's plan card, a plan's "onwards" figures): each the
- * lowest on offer. A page about one car never uses these; it shows that car's own figures.
+ * The "from" figures a city's plan card shows: each the lowest on offer in that city. A page about
+ * one car never uses these; it shows that car's own figures.
  */
 function lowestEach(quotes: LivePlanPrice[]): LivePlanPrice | null {
   const price = { rent: lowest(quotes.map((q) => q.rent)), deposit: lowest(quotes.map((q) => q.deposit)), upfront: lowest(quotes.map((q) => q.upfront)) };
   return price.rent === null && price.deposit === null && price.upfront === null ? null : price;
+}
+
+/** The car and city whose figures stand for a plan where no city is chosen. */
+const TYPICAL = { city: "mumbai", car: "wagonr" };
+
+const middle = (values: number[]): number | null => {
+  if (!values.length) return null;
+  const sorted = [...values].sort((x, y) => x - y);
+  const half = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[half] : (sorted[half - 1] + sorted[half]) / 2;
+};
+const ballpark = (value: number | null, to: number): number | null => (value === null ? null : Math.round(value / to) * to);
+
+/**
+ * A plan's own "onwards" figures (home page, Our Plans, the plan's hero), where no city is chosen:
+ * a normal price rather than the lowest anywhere. Mumbai's WagonR, the middle of its model years,
+ * rent to the nearest ₹50 and the money paid first to the nearest ₹500. Null where Mumbai has no
+ * WagonR on the plan, and the lowest on offer stands in.
+ */
+function typicalEach(cities: LiveCity[] | undefined, content: SiteContent, planId: string): LivePlanPrice | null {
+  const car = cities?.flatMap((c) => c.cars).find((c) => siteCarFor(c.name, content) === TYPICAL.car && c.years[planId]?.length);
+  const years = car?.years[planId] ?? [];
+  const rent = ballpark(middle(years.map((y) => y.rent)), 50);
+  if (rent === null) return null;
+  const paid = ballpark(middle(years.flatMap((y) => (y.money === null ? [] : [y.money]))), 500);
+  // Own Now's money up front is its upfront; every other plan's is a deposit.
+  return planId === "own-now" ? { rent, deposit: null, upfront: paid } : { rent, deposit: paid, upfront: null };
 }
 
 /** Jarvis's figures for each site car in each site city, as the plan wizard shows one car. */
