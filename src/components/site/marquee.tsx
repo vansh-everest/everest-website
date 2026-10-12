@@ -47,6 +47,8 @@ export function Marquee({
               <div
                 key={`${half}-${copy}`}
                 aria-hidden={real ? undefined : true}
+                // Repeats stay out of search snippets as well as screen readers.
+                data-nosnippet={real ? undefined : ""}
                 inert={!real && !live}
                 className={`flex ${real ? "" : "motion-reduce:hidden"}`}
               >

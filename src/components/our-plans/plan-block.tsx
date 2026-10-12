@@ -61,8 +61,7 @@ function Head({ plan }: { plan: PlanOverviewView }) {
                 key={i}
                 className="rounded-full bg-sun px-3 py-[5px] text-xs font-medium uppercase leading-[13px] tracking-[0.5px] text-navy lg:py-1 lg:text-[11px] lg:font-bold lg:leading-4"
               >
-                <span className="lg:hidden">{tag.short}</span>
-                <span className="hidden lg:inline">{tag.full}</span>
+                <PhoneOrWide phone={tag.short} wide={tag.full} />
               </li>
             ))}
           </ul>
@@ -78,8 +77,7 @@ function Head({ plan }: { plan: PlanOverviewView }) {
               <dt className="text-[11px] font-medium uppercase leading-[13px] tracking-[0.6px] text-ink-soft lg:text-xs lg:leading-4">{f.label}</dt>
               <dd className="mt-[3px] flex flex-wrap items-baseline gap-x-1.5 text-navy lg:mt-1 lg:gap-x-1.5">
                 <span className="whitespace-nowrap text-[17px] font-bold leading-6 lg:text-[28px] lg:leading-9">
-                  <span className="lg:hidden">{f.short}</span>
-                  <span className="hidden lg:inline">{f.value}</span>
+                  <PhoneOrWide phone={f.short} wide={f.value} />
                 </span>
                 {f.suffix && <span className="text-[13px] text-ink-soft lg:text-xs">{f.suffix}</span>}
               </dd>
@@ -88,6 +86,20 @@ function Head({ plan }: { plan: PlanOverviewView }) {
         </dl>
       )}
     </header>
+  );
+}
+
+/**
+ * A phone wording and a desktop wording. When they are the same text it is written once, so the page
+ * text never reads "₹550₹550" to a search engine or a copy-paste.
+ */
+function PhoneOrWide({ phone, wide }: { phone: string; wide: string }) {
+  if (phone === wide) return <>{wide}</>;
+  return (
+    <>
+      <span className="lg:hidden">{phone}</span>
+      <span className="hidden lg:inline">{wide}</span>
+    </>
   );
 }
 
