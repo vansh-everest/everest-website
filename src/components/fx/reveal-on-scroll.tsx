@@ -18,7 +18,7 @@ function paints(el: Element) {
 }
 
 /**
- * Blur-and-rise reveals for every page, without touching each component.
+ * Blur-and-rise reveals for every page on desktop, without touching each component.
  *
  * On each page it marks the outermost matching blocks that start below the fold; anything already
  * on screen is left alone, so nothing that was painted ever disappears. Blocks that enter together
@@ -30,6 +30,9 @@ export function RevealOnScroll() {
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Touch screens keep every block painted: a flick on a mid-range phone outruns any fade and
+    // lands on blank or washed-out blocks.
+    if (window.matchMedia("(pointer: coarse)").matches) return;
     const main = document.querySelector("main");
     if (!main) return;
 
