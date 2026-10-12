@@ -69,8 +69,7 @@ export function StepHeading({ id, children }: { id: string; children: ReactNode 
 /**
  * The way forward. On a phone it is a white band pinned to the bottom of the screen while the step
  * is in view, the choices so far above the buttons; on a desktop one row at the foot of the card.
- * Until a choice is made on the step the Next button sits back in a pale yellow; `awake` fills it
- * and it glows twice.
+ * The Next button is always filled; once a choice is made on the step (`awake`) it glows twice.
  */
 export function StepFooter({
   next,
@@ -111,8 +110,8 @@ export function StepFooter({
           type="button"
           onClick={onNext}
           className={`flex h-[49px] flex-1 items-center justify-center gap-2.5 rounded-full text-xl font-normal transition duration-300 hover:brightness-95 motion-safe:active:scale-[0.98] lg:order-3 lg:ml-auto lg:h-[54px] lg:flex-none lg:px-[26px] lg:text-[17px] lg:font-bold ${
-            awake ? "wz-wake bg-sun text-navy" : "bg-sun/35 text-navy/70"
-          }`}
+            awake ? "wz-wake" : ""
+          } bg-sun text-navy`}
         >
           {next}
           <ArrowRight size={18} strokeWidth={2.25} className="hidden lg:block" />
