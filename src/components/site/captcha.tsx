@@ -5,13 +5,14 @@ import { useEffect, useRef } from "react";
 /**
  * Google's "I'm not a robot" check (reCAPTCHA v2), inside a lead form, above its buttons.
  *
- * Off until NEXT_PUBLIC_RECAPTCHA_SITE_KEY is set (and RECAPTCHA_SECRET_KEY on the server, which
- * api/lead uses to verify): without it the form works as before. With it, a hidden required field
- * holds the token, so a form that wakes its button on checkValidity() waits for the tick, and the
- * widget's own g-recaptcha-response field travels with the form data. A token works once, so the
- * widget clears itself after every submit.
+ * The site key is public by design; the one below is registered for everestfleet.com (and its
+ * subdomains) and the Amplify address. NEXT_PUBLIC_RECAPTCHA_SITE_KEY overrides it, e.g. with
+ * Google's test key on localhost. api/lead checks each token once RECAPTCHA_SECRET_KEY is set. A
+ * hidden required field holds the token, so a form that wakes its button on checkValidity() waits
+ * for the tick, and the widget's own g-recaptcha-response field travels with the form data. A token
+ * works once, so the widget clears itself after every submit.
  */
-const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? "";
+const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LcuWOstAAAAAOJla0SkIxCV-K2rLmUzNlYah7X1";
 
 declare global {
   interface Window {
