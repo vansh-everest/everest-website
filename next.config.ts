@@ -19,14 +19,14 @@ const nextConfig: NextConfig = {
     ],
   },
   // Until everestfleet.com points here, the site answers only on its host's own addresses
-  // (*.vercel.app, *.amplifyapp.com). Those copies must stay out of search results, or they would
-  // compete with the real domain at launch. The header is tied to the host, so it disappears on
-  // its own once the domain moves.
+  // (*.vercel.app, *.amplifyapp.com) and on website-admin.everestfleet.com. Those copies must stay
+  // out of search results, or they would compete with the real domain at launch. The header is
+  // tied to the host, so the real domain never carries it.
   async headers() {
     return [
       {
         source: "/:path*",
-        has: [{ type: "host", value: ".*\\.(vercel\\.app|amplifyapp\\.com)" }],
+        has: [{ type: "host", value: "(.*\\.(vercel\\.app|amplifyapp\\.com)|website-admin\\.everestfleet\\.com)" }],
         headers: [{ key: "X-Robots-Tag", value: "noindex" }],
       },
     ];
