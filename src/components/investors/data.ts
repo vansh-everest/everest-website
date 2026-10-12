@@ -32,7 +32,7 @@ export const MARKET: Figure[] = [
 export const STEPS = [
   { title: "We Own The Fleet", body: "CNG and electric cars, financed with partners like Axis Bank" },
   { title: "Drivers Choose A Plan", body: "Own Now, Revenue Share, Drive To Earn or Drive To Own" },
-  { title: "The Cars Earn On Uber", body: "We are Uber India’s largest electric fleet partner" },
+  { title: "The Cars Earn On Uber", body: "We are Uber India’s largest fleet partner" },
   { title: "Four More Services", body: "Logistics, employee mobility, intercity and cab advertising" },
 ];
 
