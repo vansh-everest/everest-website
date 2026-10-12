@@ -64,6 +64,7 @@ const organisation = {
   contactPoint: {
     "@type": "ContactPoint",
     telephone: COMPANY.phone,
+    email: COMPANY.email,
     contactType: "sales",
     areaServed: "IN",
     availableLanguage: ["en", "hi"],

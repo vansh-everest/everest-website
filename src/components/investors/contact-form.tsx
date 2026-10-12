@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const INBOX = "hello@everestfleet.com";
+const INBOX = "contact@everestfleet.com";
 
 /**
  * Name, email and details. The lead record (src/lib/leads.ts) holds a mobile number and a city,

@@ -60,6 +60,7 @@ export async function GET() {
     "## How to apply",
     `- Online: the form on any driver job page, three fields (name, mobile number, city)`,
     `- Phone: ${COMPANY.phone}`,
+    `- Email: ${COMPANY.email}`,
     `- WhatsApp: ${WHATSAPP_HREF}`,
     `- Documents to bring: ${dict.documents.join(", ")}`,
     "",

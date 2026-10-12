@@ -21,7 +21,9 @@ export const COMPANY = {
   /** Mumbai, Delhi NCR, Bengaluru, Hyderabad, Pune, Kolkata, Chennai. */
   cities: 7,
 
-  phone: "+91 91262 14248",
+  phone: "+91 94932 74000",
+  /** One inbox for every outside enquiry: drivers, partners, investors, press. */
+  email: "contact@everestfleet.com",
   /** As the old site's Contact Us page published it. */
   registeredOffice: {
     street: "1, C-105, Mhatre Pen Industrial CHS, Wing B, Senapati Bapat Marg, Dadar West",

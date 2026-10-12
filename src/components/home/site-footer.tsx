@@ -117,8 +117,8 @@ export function SiteFooter({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
                 </a>
               </li>
               <li>
-                <a href="mailto:hello@everestfleet.com" className={`${item} [overflow-wrap:anywhere]`}>
-                  hello@everestfleet.com
+                <a href={`mailto:${COMPANY.email}`} className={`${item} [overflow-wrap:anywhere]`}>
+                  {COMPANY.email}
                 </a>
               </li>
             </ul>

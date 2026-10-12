@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import { CheckCircle, GooglePlayLogo } from "@phosphor-icons/react/ssr";
 
-export const PHONE_DISPLAY = "91262 14248";
-export const PHONE_HREF = "tel:+919126214248";
+export const PHONE_DISPLAY = "94932 74000";
+export const PHONE_HREF = "tel:+919493274000";
 export const PLAY_STORE_HREF = "https://play.google.com/store/apps/details?id=com.everest.fleet";
 export const WHATSAPP_HREF = "https://wa.me/919126214248";
 
