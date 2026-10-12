@@ -22,7 +22,17 @@ export const COMPANY = {
   cities: 7,
 
   phone: "+91 91262 14248",
+  /** As the old site's Contact Us page published it. */
+  registeredOffice: {
+    street: "1, C-105, Mhatre Pen Industrial CHS, Wing B, Senapati Bapat Marg, Dadar West",
+    city: "Mumbai",
+    region: "Maharashtra",
+    postalCode: "400028",
+  },
 } as const;
+
+/** The registered office on one line. */
+export const OFFICE_LINE = `${COMPANY.registeredOffice.street}, ${COMPANY.registeredOffice.city}, ${COMPANY.registeredOffice.region} ${COMPANY.registeredOffice.postalCode}`;
 
 /** One sentence, reused in metadata, the footer and anywhere else the company is described. */
 export const COMPANY_BLURB =

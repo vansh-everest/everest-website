@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { FacebookLogo, InstagramLogo, LinkedinLogo, YoutubeLogo } from "@phosphor-icons/react/ssr";
 import { BrandLogo } from "@/components/site/brand-logo";
 import { siteCopy, type LinkKey } from "@/content/site-copy";
-import { COMPANY } from "@/lib/company";
+import { COMPANY, OFFICE_LINE } from "@/lib/company";
 import { DEFAULT_LOCALE, fill, hrefIn, type Locale } from "@/lib/i18n";
 import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "./ui";
 
@@ -69,6 +69,9 @@ export function SiteFooter({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
             <BrandLogo href={hrefIn(locale, "/")} tone="light" className="-ml-[7px] w-fit" />
             <p className="-mt-[3px] text-[15px] leading-[23px] lg:-mt-px lg:max-w-[270px] lg:text-sm">
               {fill(footer.blurb, { vehicles: COMPANY.vehicles, cities: COMPANY.cities, founded: COMPANY.founded })}
+            </p>
+            <p className="mt-3 text-xs leading-[18px] text-white/70 lg:max-w-[270px]">
+              {footer.office} {OFFICE_LINE}
             </p>
             <div className="mt-4 flex gap-2.5 lg:mt-5">
               {socials.map(({ key, href, Icon }, i) => (

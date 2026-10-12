@@ -59,6 +59,8 @@ export type SiteCopy = {
     contact: string;
     /** `{year}` prints the current year. */
     rights: string;
+    /** The label before the registered office address. */
+    office: string;
     /** The social buttons' accessible names. */
     instagram: string;
     linkedin: string;
@@ -115,6 +117,7 @@ const en: SiteCopy = {
     investors: "Investors",
     contact: "Contact",
     rights: "© {year} Everest Fleet Pvt Ltd. All rights reserved.",
+    office: "Registered office:",
     instagram: "Everest Fleet on Instagram",
     linkedin: "Everest Fleet on LinkedIn",
     facebook: "Everest Fleet on Facebook",
@@ -170,6 +173,7 @@ const hi: SiteCopy = {
     investors: "निवेशक",
     contact: "संपर्क",
     rights: "© {year} Everest Fleet Pvt Ltd. सर्वाधिकार सुरक्षित।",
+    office: "पंजीकृत कार्यालय:",
     instagram: "Instagram पर Everest Fleet",
     linkedin: "LinkedIn पर Everest Fleet",
     facebook: "Facebook पर Everest Fleet",
@@ -225,6 +229,7 @@ const kn: SiteCopy = {
     investors: "ಹೂಡಿಕೆದಾರರು",
     contact: "ಸಂಪರ್ಕ",
     rights: "© {year} Everest Fleet Pvt Ltd. ಎಲ್ಲಾ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.",
+    office: "ನೋಂದಾಯಿತ ಕಚೇರಿ:",
     instagram: "Instagram ನಲ್ಲಿ Everest Fleet",
     linkedin: "LinkedIn ನಲ್ಲಿ Everest Fleet",
     facebook: "Facebook ನಲ್ಲಿ Everest Fleet",

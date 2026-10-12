@@ -53,6 +53,14 @@ const organisation = {
   foundingDate: String(COMPANY.founded),
   description: COMPANY_BLURB,
   areaServed: "India",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: COMPANY.registeredOffice.street,
+    addressLocality: COMPANY.registeredOffice.city,
+    addressRegion: COMPANY.registeredOffice.region,
+    postalCode: COMPANY.registeredOffice.postalCode,
+    addressCountry: "IN",
+  },
   contactPoint: {
     "@type": "ContactPoint",
     telephone: COMPANY.phone,
