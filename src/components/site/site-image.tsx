@@ -2,9 +2,9 @@ import Image from "next/image";
 import type { ImageSlot } from "@/lib/content";
 
 /**
- * An image that has not been supplied yet renders as a labelled placeholder rather than a
- * broken frame or a stock photograph. The label is the same wording the admin shows, so it
- * is obvious both on the page and in the editor which slot is still empty.
+ * An image that has not been supplied yet renders as a quiet tinted panel rather than a broken
+ * frame or a stock photograph. Its admin label stays in the admin: printed on the page it read as
+ * finished copy ("Guide cover, payouts").
  */
 export function SiteImage({
   slot,
@@ -18,17 +18,7 @@ export function SiteImage({
   priority?: boolean;
 }) {
   if (!slot.url) {
-    return (
-      <div
-        role="img"
-        aria-label={`Placeholder: ${slot.label}`}
-        className={`absolute inset-0 grid place-items-center bg-mist text-center ${className}`}
-      >
-        <span className="px-4 text-[11px] font-semibold uppercase tracking-[1px] text-ink-soft">
-          {slot.label}
-        </span>
-      </div>
-    );
+    return <div aria-hidden className={`absolute inset-0 bg-[linear-gradient(135deg,#eef4fa_0%,#dbe6f0_100%)] ${className}`} />;
   }
 
   return (
