@@ -6,20 +6,24 @@ export function AboutHero() {
     <section className="relative isolate overflow-clip bg-navy lg:h-[600px]">
       <div className="fx-scroll-exit absolute inset-0 -z-10">
         <Image
-          src="/figma/about/hero.webp"
-          alt="Everest Fleet cars on a Bengaluru road at sunset"
+          src="/figma/investors/hero-wide.webp"
+          alt="Rows of white Everest cars parked in front of a city skyline"
           fill
           preload
           loading="eager"
           sizes="100vw"
-          className="object-cover object-[52%_center] sm:object-[71%_center] lg:object-center"
+          className="object-cover object-center"
         />
       </div>
-      {/* The photo carries its own navy wash on the left. Narrow screens crop that side away, so they get one here:
-          a left-edge wash on phones, where the text is short enough to sit over the photo, and a top-down one from sm. */}
+      {/* Navy washes so the white copy reads over the photo: a left-edge wash on phones, where the text is short
+          enough to sit over the photo, a top-down one from sm, and from lg the Investors hero's left-to-right tint. */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,#062f50_0%,rgba(6,47,80,0.75)_4%,rgba(6,47,80,0.45)_13%,rgba(6,47,80,0.25)_25%,rgba(6,47,80,0.1)_42%,rgba(6,47,80,0)_52%)] sm:bg-[linear-gradient(180deg,rgba(6,47,80,0.94)_0%,rgba(6,47,80,0.8)_55%,rgba(6,47,80,0.1)_100%)] lg:hidden"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(6,47,80,0.92)_0%,rgba(6,47,80,0.78)_55%,rgba(6,47,80,0.5)_100%)] sm:bg-[linear-gradient(180deg,rgba(6,47,80,0.94)_0%,rgba(6,47,80,0.8)_55%,rgba(6,47,80,0.1)_100%)] lg:hidden"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 hidden bg-[linear-gradient(90deg,rgba(6,47,80,0.93)_0px,rgba(6,47,80,0.88)_480px,rgba(6,47,80,0.76)_650px,rgba(6,47,80,0.5)_765px,rgba(6,47,80,0.28)_890px,rgba(6,47,80,0.12)_1065px,rgba(6,47,80,0)_1270px)] lg:block"
       />
       <div className="px-4 pb-6 pt-[35px] sm:px-6 sm:pb-72 sm:pt-12 lg:pb-0 lg:pl-[37px] lg:pr-10 lg:pt-[82px]">
         {/* The PNG has transparent padding around the wordmark; the negative margins trim it to the visible mark. */}
