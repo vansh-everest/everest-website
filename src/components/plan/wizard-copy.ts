@@ -3,7 +3,7 @@ import type { WizardKind } from "@/lib/plan-pages";
 /** Words the desktop and phone exports set differently: [desktop, phone]. One string serves both. */
 export type Said = string | readonly [string, string];
 
-/** The step between the car and the plan on pickers that have one: Own Now's upfront, Drive to Earn's deposit. */
+/** The step between the car and the plan: Own Now's upfront, Drive to Own's and Drive to Earn's deposit. */
 export type MoneyStepCopy = {
   title: string;
   /** The small label over the figure paid first. */
@@ -63,13 +63,20 @@ export const WIZARD_COPY: Record<WizardKind, WizardCopy> = {
   },
   share: EARN,
   own: {
-    title: "Own Your Car In 2 Steps",
-    steps: ["City", "Car", "Your Plan"],
-    city: ["Where Do You Want To Drive?", "Where Do You Drive?"],
-    car: ["Which Car Do You Want To Drive?", "Which Car Do You Want?"],
-    year: ["Choose Model Year", "Model Year"],
+    title: "Own Your Car In 3 Steps",
+    steps: ["Location", "Car", "Deposit", "Your Plan"],
+    city: "Where Do You Drive?",
+    car: "Which Car Do You Want?",
+    year: "Model Year",
     mark: "key",
-    money: null,
+    money: {
+      title: "Your Deposit & Rent",
+      label: "Deposit",
+      next: "Next: See Deposit",
+      tenure: true,
+      years: true,
+      badge: "Yours In Month {months}",
+    },
     apply: ["Check If You Qualify", "Apply For This Plan"],
   },
   now: {

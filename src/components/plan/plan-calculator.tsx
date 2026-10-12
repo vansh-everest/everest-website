@@ -71,7 +71,7 @@ const tileValue = "text-lg font-bold leading-6 tabular-nums lg:text-[32px] lg:fo
  * The slider appears wherever Jarvis gives a range and step sizes for what is paid first (see
  * planYear in fleet-data.ts); elsewhere the car's own rent range and deposit.
  */
-export function PlanCalculator({ view, id = "plan" }: { view: PlanCalculatorView; /** The hero's "Get started" lands on #plan. */ id?: string }) {
+export function PlanCalculator({ view, id = "plan" }: { view: PlanCalculatorView; /** The section's anchor. */ id?: string }) {
   const cityId = useId();
   const [citySlug, setCitySlug] = useState(view.cities[0].slug);
   const city = view.cities.find((c) => c.slug === citySlug) ?? view.cities[0];

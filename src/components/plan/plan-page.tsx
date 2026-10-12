@@ -37,8 +37,8 @@ export async function PlanPage({ path }: { path: PlanPagePath }) {
   const { content, plan } = await offered(path);
   if (!plan) notFound();
   const view = planPage(plan);
-  // Priced by Jarvis wherever it has the plan's cars: Own Now and Drive to Earn as their 3-step
-  // picker, Drive to Own as the one-card calculator. Without Jarvis, and on Revenue Share, the admin's picker.
+  // Priced by Jarvis wherever it has the plan's cars, as the 3-step picker. Without Jarvis, and on
+  // Revenue Share, the admin's picker.
   const live = await getLiveData();
   const jarvis = plan.id === "revenue-share" ? null : planCalculator(content, live, plan.id);
   const picker = planWizard(content, plan, wizardFor(path), wizardCarPrices(content, live, plan.id));
@@ -48,7 +48,7 @@ export async function PlanPage({ path }: { path: PlanPagePath }) {
   return (
     <>
       {/* Revenue Share has no edge-to-edge hero artwork yet; its photo is cropped for the split layout. */}
-      <PlanHero view={view} startHref={calculator || wizard ? "#plan" : "#apply"} wide={path !== "/revenue-share"} />
+      <PlanHero view={view} startHref="#apply" wide={path !== "/revenue-share"} />
       {calculator ? <PlanCalculator view={calculator} /> : wizard ? <PlanWizard view={wizard} /> : null}
       <PlanBenefits view={view} />
       {wizard && jarvis && path === "/drive-to-earn" ? (
