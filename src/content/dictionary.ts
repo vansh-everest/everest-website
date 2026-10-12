@@ -28,6 +28,8 @@ export type Dictionary = {
     documentsHeading: string;
     faqHeading: string;
     hubsHeading: string;
+    /** After a hub's hours when they hold all week: "8am–8pm, every day". */
+    everyDay: string;
     /** The link from a hub to its place on a map. */
     map: string;
     otherCities: string;
@@ -66,6 +68,7 @@ const en: Dictionary = {
     faqHeading: "Questions Drivers Ask",
     hubsHeading: "Hubs In {city}",
     map: "Map",
+    everyDay: "every day",
     otherCities: "Other Cities",
   },
   cta: {
@@ -131,6 +134,7 @@ const hi: Dictionary = {
     faqHeading: "ड्राइवर यह पूछते हैं",
     hubsHeading: "{city} के हब",
     map: "मैप",
+    everyDay: "हर दिन",
     otherCities: "दूसरे शहर",
   },
   cta: {
@@ -196,6 +200,7 @@ const te: Dictionary = {
     faqHeading: "డ్రైవర్లు అడిగే ప్రశ్నలు",
     hubsHeading: "{city} లో హబ్‌లు",
     map: "మ్యాప్",
+    everyDay: "ప్రతిరోజూ",
     otherCities: "ఇతర నగరాలు",
   },
   cta: {
@@ -261,6 +266,7 @@ const mr: Dictionary = {
     faqHeading: "ड्रायव्हर हे विचारतात",
     hubsHeading: "{city} मधील हब",
     map: "नकाशा",
+    everyDay: "दररोज",
     otherCities: "इतर शहरे",
   },
   cta: {
@@ -326,6 +332,7 @@ const kn: Dictionary = {
     faqHeading: "ಡ್ರೈವರ್‌ಗಳು ಕೇಳುವ ಪ್ರಶ್ನೆಗಳು",
     hubsHeading: "{city} ನಗರದ ಹಬ್‌ಗಳು",
     map: "ನಕ್ಷೆ",
+    everyDay: "ಪ್ರತಿದಿನ",
     otherCities: "ಇತರ ನಗರಗಳು",
   },
   cta: {
@@ -391,6 +398,7 @@ const bn: Dictionary = {
     faqHeading: "ড্রাইভাররা যা জানতে চান",
     hubsHeading: "{city} শহরের হাব",
     map: "ম্যাপ",
+    everyDay: "প্রতিদিন",
     otherCities: "অন্যান্য শহর",
   },
   cta: {
@@ -456,6 +464,7 @@ const ta: Dictionary = {
     faqHeading: "டிரைவர்கள் கேட்கும் கேள்விகள்",
     hubsHeading: "{city} நகரில் ஹப்கள்",
     map: "வரைபடம்",
+    everyDay: "தினமும்",
     otherCities: "மற்ற நகரங்கள்",
   },
   cta: {

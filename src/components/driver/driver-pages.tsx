@@ -191,7 +191,12 @@ function DocumentsAndHubs({ city, locale, dict }: { city: City; locale: Locale; 
               {hubs.map((hub) => (
                 <li key={`${hub.name}|${hub.address}`} className="rounded-xl border border-[#dfecf6] bg-white px-4 py-3">
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-base font-bold leading-6 text-navy">{hub.name}</h3>
+                    <h3 className="flex flex-wrap items-center gap-x-2 gap-y-1 text-base font-bold leading-6 text-navy">
+                      {hub.name}
+                      {hub.fuel ? (
+                        <span className="rounded-full bg-[#e7f0f8] px-2 py-0.5 text-xs font-semibold leading-4 text-brand">{hub.fuel}</span>
+                      ) : null}
+                    </h3>
                     {hub.mapUrl ? (
                       <a
                         href={hub.mapUrl}
@@ -209,7 +214,7 @@ function DocumentsAndHubs({ city, locale, dict }: { city: City; locale: Locale; 
                   {hub.hours ? (
                     <p className="mt-1 flex items-center gap-1.5 text-sm leading-5 text-ink-soft">
                       <Clock aria-hidden size={14} strokeWidth={2} className="shrink-0" />
-                      {hub.hours}
+                      {hub.daily ? `${hub.hours}, ${dict.city.everyDay}` : hub.hours}
                     </p>
                   ) : null}
                 </li>

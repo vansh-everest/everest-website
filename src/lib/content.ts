@@ -19,6 +19,10 @@ export type Hub = {
   name: string;
   address: string;
   hours: string;
+  /** The hours hold on every day of the week. */
+  daily?: boolean;
+  /** "CNG", "EV" or "CNG + EV": the cars the hub hands out. */
+  fuel?: string;
   mapUrl?: string;
 };
 

@@ -9,6 +9,7 @@ import { normalizeContent } from "@/lib/content-schema";
 import { getLiveData, withLiveData } from "@/lib/fleet-data";
 import { withTitleCase } from "@/lib/text-case";
 import { fleetConnectEnabled, fleetGet, jarvisAdmin, jarvisAdminEnabled, jarvisMessage, type Answer } from "@/lib/jarvis";
+import { withHubList } from "@/content/hubs";
 
 /**
  * Where edited content lives, in three parts:
@@ -217,7 +218,7 @@ async function previewing(): Promise<boolean> {
  */
 export async function getContent(): Promise<SiteContent> {
   const content = (await previewing()) ? ((await readDraft()) ?? (await readPublished())) : await cachedPublished();
-  return withTitleCase(withLiveData(content, await getLiveData()));
+  return withTitleCase(withHubList(withLiveData(content, await getLiveData())));
 }
 
 /* ---------------------------------------------------------------------------- Jarvis */
