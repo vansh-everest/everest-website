@@ -239,7 +239,7 @@ const same = (text: string): Record<Locale, string> =>
   Object.fromEntries(LOCALES.map((l) => [l, text])) as Record<Locale, string>;
 
 const INSURANCE: Feature = { icon: "shield", title: "Insurance & permits", body: "Included from day one" };
-const SUPPORT: Feature = { icon: "headset", title: "24×7 support", body: "Breakdown help, day or night" };
+const SUPPORT: Feature = { icon: "headset", title: "24×7 breakdown help", body: "On the road, day or night" };
 const NO_LOAN: Feature = { icon: "bank", title: "No bank loan", body: "You don’t need a loan to own it" };
 const INCENTIVE: Feature = { icon: "coins", title: "100% Uber incentive", body: "All of it stays with you" };
 const REFUND: Feature = { icon: "refund", title: "Refundable deposit", body: "It comes back to you in full" };
@@ -311,7 +311,7 @@ const PLAN_SEED: Plan[] = [
     tenureNote: "",
     cityPrices: {},
     rows: [{ label: "Ownership", value: "Own your car in 12 months" }],
-    benefits: ["No CIBIL", "Daily Instalments", "No Insurance", "No Regulatory Charges"],
+    benefits: ["No CIBIL", "Daily Instalments", "Insurance Included", "No Regulatory Charges"],
     carIds: ["wagonr", "s-presso", "tigor", "rumion", "swift-dzire"],
     page: {
       headline: "The Easiest Way to",
@@ -344,7 +344,7 @@ const PLAN_SEED: Plan[] = [
         "During tenure pay rent which is {price} onwards",
         "Own your car in less than 12 months",
         "No Regulatory Charges",
-        "24×7 Support, zero maintenance",
+        "24×7 Breakdown Help, zero maintenance",
       ],
       highlights: ["No CIBIL", "₹0 insurance", "₹0 regulatory fees", "100% incentive"],
     },
@@ -372,7 +372,7 @@ const PLAN_SEED: Plan[] = [
     tenureNote: "",
     cityPrices: {},
     rows: [{ label: "Flexible", value: "No fixed rent - earnings-linked model" }],
-    benefits: ["No Insurance", "No Regulatory Charges", "Free Repair & Maintenance", "24×7 Support"],
+    benefits: ["Insurance Included", "No Regulatory Charges", "Free Repair & Maintenance", "24×7 Breakdown Help"],
     carIds: ["wagonr", "s-presso", "tigor", "rumion", "swift-dzire"],
     page: {
       headline: "Own a Car Without",
@@ -400,7 +400,7 @@ const PLAN_SEED: Plan[] = [
       note: "",
       steps: [],
       image: { label: "Drive to Own, Our Plans photo", url: "/figma/our-plans/drive-to-own.webp", alt: "An Everest manager shaking hands with a driver beside his car" },
-      points: ["No large upfront, refundable deposit", "No Regulatory Charges", "Own your car in less than 24 months", "24×7 Support, zero maintenance"],
+      points: ["No large upfront, refundable deposit", "No Regulatory Charges", "Own your car in less than 24 months", "24×7 Breakdown Help, zero maintenance"],
       highlights: ["Earnings-Linked", "No insurance costs", "No regulatory fees", "Free Maintenance"],
     },
   },
@@ -427,7 +427,7 @@ const PLAN_SEED: Plan[] = [
     tenureNote: "Flexible",
     cityPrices: {},
     rows: [{ label: "Zero asset", value: "No ownership or loan liability" }],
-    benefits: ["100% Uber incentive", "No Regulatory Charges", "Free Repair & Maintenance", "24×7 Support"],
+    benefits: ["100% Uber incentive", "No Regulatory Charges", "Free Repair & Maintenance", "24×7 Breakdown Help"],
     carIds: ["wagonr", "s-presso", "tigor", "rumion", "swift-dzire"],
     page: {
       headline: "Earn Without",
@@ -455,8 +455,8 @@ const PLAN_SEED: Plan[] = [
       note: "Leasing Plan",
       steps: [],
       image: { label: "Drive to Earn, Our Plans photo", url: "/figma/our-plans/drive-to-earn.webp", alt: "A driver checking his phone beside an Everest car" },
-      points: ["Simple renting, no commitment", "Low refundable deposit", "We set up your Uber account", "Earn Uber incentives on every ride", "24×7 Support, zero maintenance"],
-      highlights: ["Earnings-Linked", "100% Uber incentive", "24×7 Driver Support", "Free Maintenance"],
+      points: ["Simple renting, no commitment", "Low refundable deposit", "We set up your Uber account", "Earn Uber incentives on every ride", "24×7 Breakdown Help, zero maintenance"],
+      highlights: ["Earnings-Linked", "100% Uber incentive", "24×7 Breakdown Help", "Free Maintenance"],
     },
   },
   {
