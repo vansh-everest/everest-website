@@ -46,7 +46,8 @@ export function Carousel({
       start: el.scrollLeft <= 2,
       end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 2,
       index: Math.round(el.scrollLeft / (step + GAP)),
-      inView: Math.max(1, Math.round((el.clientWidth + GAP) / (step + GAP))),
+      // Whole cards only: a card half in view still needs a stop, and a dot, of its own.
+      inView: Math.max(1, Math.floor((el.clientWidth + GAP) / (step + GAP) + 0.05)),
     });
   }
 
@@ -84,7 +85,8 @@ export function Carousel({
         <div
           ref={track}
           onScroll={measure}
-          className="-mx-6 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-px-6 px-6 pb-4 [scrollbar-width:none] md:mx-0 md:scroll-px-0 md:px-0 [&::-webkit-scrollbar]:hidden"
+          // The row stays inside the page margins: the next card peeks in and is cut at the margin.
+          className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {items.map((child, i) => (
             <div key={i} className={`shrink-0 snap-start ${item}`}>

@@ -62,7 +62,7 @@ export function BusinessModel() {
               >
                 <span
                   className={`mt-0.5 grid size-9 shrink-0 place-items-center rounded-full text-[15px] font-bold lg:mt-0 lg:size-[46px] lg:text-[17px] ${
-                    last ? "bg-sun text-navy" : "bg-[#e8f2fa] text-brand"
+                    last ? "bg-sun text-navy" : "bg-[#e8f2fa] text-navy lg:text-brand"
                   }`}
                 >
                   {String(i + 1).padStart(2, "0")}

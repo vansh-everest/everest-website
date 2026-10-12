@@ -20,7 +20,7 @@ export function Enquiry({
   return (
     <section
       id="enquire"
-      className="scroll-mt-20 bg-[linear-gradient(160deg,#062f50_0%,#0a4378_100%)] px-4 pb-6 pt-[30px] lg:px-6 lg:pb-12 lg:pt-[49px]"
+      className="scroll-mt-20 bg-blue-gradient lg:bg-[linear-gradient(160deg,#062f50_0%,#0a4378_100%)] px-4 pb-6 pt-[30px] lg:px-6 lg:pb-12 lg:pt-[49px]"
     >
       <div className="text-center">
         <Eyebrow tone="white" bars className="justify-center">

@@ -27,6 +27,8 @@ export function Eyebrow({
 
 const TITLE_SIZE = {
   xl: "text-[22px] lg:text-[52px] lg:leading-[60px] lg:tracking-normal",
+  /** xl on desktop, a step larger on phones (the How It Works heading). */
+  xlWide: "text-[24px] lg:text-[52px] lg:leading-[60px] lg:tracking-normal",
   lg: "text-[24px] lg:text-[48px] lg:leading-[56px] lg:tracking-normal",
   md: "text-[24px] lg:text-[40px] lg:leading-[48px] lg:tracking-[-0.25px]",
 };

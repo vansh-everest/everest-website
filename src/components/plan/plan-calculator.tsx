@@ -21,15 +21,27 @@ const yearLabel = (name: string) => (name ? (/(\d{4})\s*$/.exec(name)?.[1] ?? na
 
 const money = (n: number) => rupees(String(n));
 
-function Picker({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: { value: string; label: string }[] }) {
+function Picker({
+  label,
+  value,
+  onChange,
+  options,
+  className = "",
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+  className?: string;
+}) {
   const id = useId();
   return (
-    <div className="min-w-0 flex-1">
+    <div className={`min-w-0 flex-1 ${className}`}>
       <label htmlFor={id} className="block text-xs font-semibold uppercase leading-4 tracking-[1px] text-navy">
         {label}
       </label>
       {/* The tap cue (wizard-motion.ts) lifts the box and sweeps its light across it. */}
-      <div className="wz-tap relative mt-2.5 overflow-hidden rounded-xl">
+      <div className="wz-tap relative mt-2 overflow-hidden rounded-xl lg:mt-2.5">
         <select
           id={id}
           value={value}
@@ -49,12 +61,17 @@ function Picker({ label, value, onChange, options }: { label: string; value: str
   );
 }
 
+/** The two figure tiles: side by side and compact on phones, as on desktop from lg. */
+const tile = "rounded-xl border border-line bg-[#f7f9fb] px-3 py-2.5 lg:rounded-2xl lg:bg-transparent lg:px-5 lg:py-4";
+const tileLabel = "text-xs leading-4 text-ink-soft lg:text-sm lg:leading-5";
+const tileValue = "text-lg font-bold leading-6 tabular-nums lg:text-[32px] lg:font-extrabold lg:leading-10";
+
 /**
  * A plan's calculator: city, car, model year and tenure, then what is paid first and the daily rent.
  * The slider appears wherever Jarvis gives a range and step sizes for what is paid first (see
  * planYear in fleet-data.ts); elsewhere the car's own rent range and deposit.
  */
-export function PlanCalculator({ view }: { view: PlanCalculatorView }) {
+export function PlanCalculator({ view, id = "plan" }: { view: PlanCalculatorView; /** The hero's "Get started" lands on #plan. */ id?: string }) {
   const cityId = useId();
   const [citySlug, setCitySlug] = useState(view.cities[0].slug);
   const city = view.cities.find((c) => c.slug === citySlug) ?? view.cities[0];
@@ -115,15 +132,18 @@ export function PlanCalculator({ view }: { view: PlanCalculatorView }) {
   }, [slides]);
 
   return (
-    <section id="plan" data-no-reveal className="scroll-mt-24 bg-[#eef2f6] px-4 py-14 lg:py-[72px]">
+    <section id={id} data-no-reveal className="scroll-mt-24 bg-[#eef2f6] px-4 py-14 lg:py-[72px]">
       <div className="mx-auto max-w-[1182px]">
-        <p className="text-center text-sm font-semibold uppercase leading-5 tracking-[1.5px] text-brand">Plan calculator</p>
-        <h2 className="mt-3 text-center text-[32px] font-extrabold leading-10 tracking-[-0.5px] text-navy lg:text-[56px] lg:leading-[64px]">
+        <p className="text-center text-xs font-bold uppercase leading-5 tracking-[1.5px] text-brand lg:text-sm lg:font-semibold">
+          <span aria-hidden className="mr-2 inline-block h-0.5 w-5 rounded-full bg-brand align-middle lg:hidden" />
+          Plan calculator
+        </p>
+        <h2 className="mt-2 text-center text-2xl font-bold leading-8 tracking-[-0.3px] text-navy lg:mt-3 lg:text-[56px] lg:font-extrabold lg:leading-[64px] lg:tracking-[-0.5px]">
           Choose Your Car &amp; Model
         </h2>
-        <p className="mt-3 text-center text-base leading-6 text-ink-soft lg:text-lg">Drive India&apos;s most trusted and well-maintained fleet</p>
+        <p className="mt-1.5 text-center text-sm leading-5 text-ink-soft lg:mt-3 lg:text-lg lg:leading-6">Drive India&apos;s most trusted and well-maintained fleet</p>
 
-        <div className="mt-8 flex flex-col items-center">
+        <div className="mt-5 flex flex-col items-center lg:mt-8">
           <label htmlFor={cityId} className="sr-only">
             City
           </label>
@@ -143,7 +163,7 @@ export function PlanCalculator({ view }: { view: PlanCalculatorView }) {
             </select>
             <ChevronDown aria-hidden size={16} className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-white" />
           </div>
-          <p className="mt-3.5 text-sm leading-5 text-ink-soft">Vehicle availability varies by city</p>
+          <p className="mt-3.5 hidden text-sm leading-5 text-ink-soft lg:block">Vehicle availability varies by city</p>
         </div>
 
         <div
@@ -151,24 +171,24 @@ export function PlanCalculator({ view }: { view: PlanCalculatorView }) {
           onClickCapture={() => setTouched(true)}
           onChangeCapture={() => setTouched(true)}
           onKeyDownCapture={() => setTouched(true)}
-          className="mt-11 grid overflow-hidden rounded-[24px] bg-white shadow-[0_10px_40px_rgb(6_47_80/0.08)] lg:grid-cols-[519px_1fr]"
+          className="mt-6 grid overflow-hidden rounded-2xl border-t-[3px] border-sun bg-white shadow-[0_10px_40px_rgb(6_47_80/0.08)] lg:mt-11 lg:grid-cols-[519px_1fr] lg:rounded-[24px] lg:border-t-0"
         >
-          <div className="border-line p-5 lg:border-r lg:p-8">
-            <div className="aspect-[456/280] overflow-hidden rounded-2xl bg-mist">
+          <div className="border-line lg:border-r lg:p-8">
+            <div className="aspect-[456/280] overflow-hidden bg-mist lg:rounded-2xl">
               {car.photo ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img key={car.photo.url} src={car.photo.url} alt={car.photo.alt || car.name} className="wz-swap size-full object-cover" />
               ) : null}
             </div>
-            <h3 key={car.key} className="wz-swap mt-6 text-[32px] font-extrabold leading-10 tracking-[-0.5px] text-navy lg:mt-8 lg:text-[44px] lg:leading-[52px]">
+            <h3 key={car.key} className="wz-swap mx-5 mt-5 text-[22px] font-bold leading-7 tracking-[-0.3px] text-navy lg:mx-0 lg:mt-8 lg:text-[44px] lg:font-extrabold lg:leading-[52px] lg:tracking-[-0.5px]">
               {car.name}
             </h3>
-            <p className="mt-2 flex items-center gap-2 text-lg leading-6 text-navy">
+            <p className="mt-2 hidden items-center gap-2 text-lg leading-6 text-navy lg:flex">
               <MapPin aria-hidden size={18} className="text-brand" />
               {city.name}
             </p>
             {perks.length ? (
-              <ul className="mt-5 space-y-3">
+              <ul className="mt-5 hidden space-y-3 lg:block">
                 {perks.map((p) => (
                   <li key={p} className="flex items-center gap-3 text-base leading-6 text-navy">
                     <CircleCheck aria-hidden size={22} className="shrink-0 fill-leaf text-white" />
@@ -179,8 +199,8 @@ export function PlanCalculator({ view }: { view: PlanCalculatorView }) {
             ) : null}
           </div>
 
-          <div className="p-5 lg:p-8">
-            <div ref={pickers} className="flex flex-col gap-4 rounded-2xl border border-line p-5 sm:flex-row lg:p-6">
+          <div className="px-5 pb-5 pt-4 lg:p-8">
+            <div ref={pickers} className="grid grid-cols-2 gap-x-3 gap-y-4 lg:flex lg:flex-row lg:gap-4 lg:rounded-2xl lg:border lg:border-line lg:p-6">
               <Picker label="Select car" value={car.key} onChange={pickCar} options={city.cars.map((c) => ({ value: c.key, label: c.name }))} />
               <Picker
                 label="Model year"
@@ -189,12 +209,18 @@ export function PlanCalculator({ view }: { view: PlanCalculatorView }) {
                 options={car.years.map((y, i) => ({ value: String(i), label: yearLabel(y.name) }))}
               />
               {view.tenures.length ? (
-                <Picker label="Tenure" value={tenure} onChange={setTenure} options={view.tenures.map((m) => ({ value: m, label: `${m} Months` }))} />
+                <Picker
+                  label="Tenure"
+                  value={tenure}
+                  onChange={setTenure}
+                  options={view.tenures.map((m) => ({ value: m, label: `${m} Months` }))}
+                  className="col-span-2"
+                />
               ) : null}
             </div>
 
             {year.money !== null ? (
-              <div className="mt-9 flex items-baseline justify-between gap-4">
+              <div className={`mt-9 items-baseline justify-between gap-4 ${slides ? "flex" : "hidden lg:flex"}`}>
                 <p className="text-lg leading-6 text-navy">{view.label}</p>
                 <p className="text-[28px] font-extrabold leading-8 text-navy tabular-nums">
                   <CountUp value={money(paid)} duration={380} />
@@ -224,40 +250,52 @@ export function PlanCalculator({ view }: { view: PlanCalculatorView }) {
               </>
             ) : null}
 
-            <div className={`mt-8 grid gap-3 ${year.money !== null ? "sm:grid-cols-2" : ""}`}>
-              <div className="rounded-2xl border border-line px-5 py-4">
-                <p className="text-sm leading-5 text-ink-soft">You Pay Each Day</p>
-                <p className="mt-1.5 text-navy">
-                  <CountUp value={daily} duration={380} className="text-[32px] font-extrabold leading-10 tabular-nums" />
-                  {tenure ? <span className="ml-2 text-xl leading-7">for {tenure} months</span> : null}
+            <div className={`mt-4 grid gap-3 lg:mt-8 ${year.money !== null ? "grid-cols-2" : ""}`}>
+              <div className={tile}>
+                <p className={tileLabel}>You Pay Each Day</p>
+                <p className="mt-1 text-navy lg:mt-1.5">
+                  <CountUp value={daily} duration={380} className={tileValue} />
+                  {tenure ? <span className="block text-xs leading-4 lg:ml-2 lg:inline lg:text-xl lg:leading-7">for {tenure} months</span> : null}
                 </p>
               </div>
               {year.money !== null ? (
-                <div className="rounded-2xl border border-line px-5 py-4">
-                  <p className="text-sm leading-5 text-ink-soft">{view.label}</p>
-                  <p className="mt-1.5 text-[32px] font-extrabold leading-10 text-navy tabular-nums">
-                    <CountUp value={money(paid)} duration={380} />
+                <div className={tile}>
+                  <p className={tileLabel}>{view.label}</p>
+                  <p className="mt-1 text-navy lg:mt-1.5">
+                    <CountUp value={money(paid)} duration={380} className={tileValue} />
                   </p>
                 </div>
               ) : null}
             </div>
 
-            <div className="mt-8 flex gap-3">
+            {perks.length ? (
+              <ul className="mt-4 space-y-2 lg:hidden">
+                {perks.map((p) => (
+                  <li key={p} className="flex items-center gap-2.5 text-sm leading-5 text-navy">
+                    <CircleCheck aria-hidden size={20} className="shrink-0 fill-leaf text-white" />
+                    {p}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+
+            {/* Phones: Apply on top, both full width. */}
+            <div className="mt-5 flex flex-col-reverse gap-3 lg:mt-8 lg:flex-row">
               <a
                 href={PHONE_HREF}
-                className="flex h-14 shrink-0 items-center justify-center gap-2 rounded-full border-2 border-line px-4 text-base font-medium text-navy transition hover:bg-navy/5 lg:px-6 lg:text-lg"
+                className="flex h-12 shrink-0 items-center justify-center gap-2 rounded-full border-2 border-line px-4 text-base font-medium text-navy transition hover:bg-navy/5 lg:h-14 lg:px-6 lg:text-lg"
               >
                 <Phone aria-hidden size={20} strokeWidth={1.75} />
                 Call Now
               </a>
               <Link
                 href="#apply"
-                className="flex h-14 flex-1 items-center justify-center whitespace-nowrap rounded-full bg-brand px-4 text-base font-bold text-white transition hover:brightness-110 lg:px-6 lg:text-lg"
+                className="flex h-12 flex-none items-center justify-center whitespace-nowrap rounded-full bg-brand px-4 text-base font-bold text-white transition hover:brightness-110 lg:h-14 lg:flex-1 lg:px-6 lg:text-lg"
               >
                 Apply For This Car
               </Link>
             </div>
-            <p className="mt-5 text-center text-base leading-6 text-navy">
+            <p className="mt-4 text-center text-[13px] leading-5 text-navy lg:mt-5 lg:text-base lg:leading-6">
               Or reach us directly ·{" "}
               <a href={PHONE_HREF} className="hover:underline">
                 {PHONE_DISPLAY}

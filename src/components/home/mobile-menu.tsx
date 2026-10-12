@@ -128,7 +128,7 @@ export function MobileMenu({ home }: { home: string }) {
                 tabIndex={-1}
                 aria-label={copy.closeMenu}
                 onClick={close}
-                className={`absolute inset-0 bg-navy/90 transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"}`}
+                className={`absolute inset-0 bg-navy transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"}`}
               />
               <div
                 data-lenis-prevent
@@ -204,7 +204,7 @@ export function MobileMenu({ home }: { home: string }) {
                           onClick={() => flipGroup(item.label)}
                           className={
                             item.href
-                              ? "flex size-14 shrink-0 items-center justify-center text-navy"
+                              ? `flex size-14 shrink-0 items-center justify-center ${expanded ? "text-brand" : "text-navy"}`
                               : `${row} ${expanded || active ? "text-brand" : "text-navy"}`
                           }
                         >
@@ -224,7 +224,7 @@ export function MobileMenu({ home }: { home: string }) {
                                 href={item.href}
                                 onClick={close}
                                 aria-current={isCurrent(item.href, pathname) ? "page" : undefined}
-                                className={`${row} pr-0 ${active ? "text-brand" : "text-navy"}`}
+                                className={`${row} pr-0 ${active || expanded ? "text-brand" : "text-navy"}`}
                               >
                                 {active && (
                                   <span

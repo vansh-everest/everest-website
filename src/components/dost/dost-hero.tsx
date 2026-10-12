@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Phone } from "lucide-react";
+import { ArrowRight, Phone } from "lucide-react";
 import { PHONE_HREF } from "@/components/home/ui";
 
 const ALT = "An Everest Dost shaking hands with an Everest Fleet team member in front of the fleet";
@@ -34,9 +34,7 @@ export function DostHero() {
               className="flex h-14 items-center justify-center gap-2 rounded-full bg-sun text-[17px] text-navy transition-[filter] hover:brightness-95 lg:h-[calc(var(--u)*56)] lg:px-[calc(var(--u)*16.5)] lg:text-[length:calc(var(--u)*21)]"
             >
               Apply To Become A Dost
-              <span aria-hidden className="text-xl lg:hidden">
-                &rarr;
-              </span>
+              <ArrowRight aria-hidden className="size-5 stroke-[2.5] lg:hidden" />
             </a>
             <a
               href={PHONE_HREF}

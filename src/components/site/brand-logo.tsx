@@ -62,6 +62,7 @@ export function BrandLogo({
   className = "",
   preload = false,
   twinkle = false,
+  compact = false,
 }: {
   /** The home page it links to: the one in the page's language. */
   href?: string;
@@ -71,8 +72,11 @@ export function BrandLogo({
   preload?: boolean;
   /** Burst when the visitor scrolls back up fast: for the header's logo. */
   twinkle?: boolean;
+  /** A size smaller below lg: the header's logo on phones. */
+  compact?: boolean;
 }) {
   const mark = useRef<SVGSVGElement>(null);
+  const size = compact ? "h-12 w-[84px] lg:h-14 lg:w-[98px]" : "h-14 w-[98px]";
 
   useEffect(() => {
     if (!twinkle) return;
@@ -90,14 +94,14 @@ export function BrandLogo({
       }}
       className={`brand-logo block ${className}`}
     >
-      <span className="relative block h-14 w-[98px]">
+      <span className={`relative block ${size}`}>
         <Image
           src={tone === "light" ? "/figma/logo-word-white.png" : "/figma/logo-word.png"}
           alt="Everest Fleet"
           width={98}
           height={56}
           preload={preload}
-          className="h-14 w-[98px]"
+          className={size}
         />
         <svg
           ref={mark}

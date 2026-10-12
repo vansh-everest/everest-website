@@ -11,7 +11,7 @@ export function Steps({ title, steps }: { title: string; steps: Step[] }) {
     <section className="bg-white px-4 pb-[38px] pt-[55px] lg:px-10 lg:pb-[89px] lg:pt-[89px]">
       <div className="text-center">
         <Eyebrow className="justify-center">How it works</Eyebrow>
-        <SectionTitle className="mx-auto mt-2 max-w-[380px] lg:mt-[11px] lg:max-w-none">{title}</SectionTitle>
+        <SectionTitle size="xlWide" className="mx-auto mt-2 max-w-[380px] lg:mt-[11px] lg:max-w-none">{title}</SectionTitle>
       </div>
       <ol className="mx-auto mt-[30px] grid max-w-[560px] gap-[21px] lg:mt-[49px] lg:max-w-[1104px] lg:grid-cols-4 lg:items-start lg:gap-x-[58px]">
         {steps.map((step, i) => {
@@ -25,7 +25,7 @@ export function Steps({ title, steps }: { title: string; steps: Step[] }) {
             >
               <span
                 className={`mt-0.5 grid size-9 shrink-0 place-items-center rounded-full text-[15px] font-bold lg:mt-0 lg:size-[46px] lg:text-[17px] ${
-                  last ? "bg-sun text-navy" : "bg-[#e8f2fa] text-brand"
+                  last ? "bg-sun text-navy" : "bg-[#e8f2fa] text-navy lg:text-brand"
                 }`}
               >
                 {String(i + 1).padStart(2, "0")}

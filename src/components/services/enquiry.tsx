@@ -5,7 +5,7 @@ export function Enquiry({ source }: { source: string }) {
   return (
     <section
       id="enquiry"
-      className="scroll-mt-20 bg-[linear-gradient(160deg,#062f50_0%,#0a4378_100%)] px-4 pb-6 pt-[23px] sm:px-6 sm:pb-12 lg:pt-12"
+      className="scroll-mt-20 bg-blue-gradient sm:bg-[linear-gradient(160deg,#062f50_0%,#0a4378_100%)] px-4 pb-6 pt-[23px] sm:px-6 sm:pb-12 lg:pt-12"
     >
       <div className="text-center">
         <p className="flex items-center justify-center gap-2.5 text-[13px] font-medium uppercase leading-4 tracking-[1.5px] text-white sm:gap-[22px] sm:text-xs sm:font-bold sm:tracking-[2px]">

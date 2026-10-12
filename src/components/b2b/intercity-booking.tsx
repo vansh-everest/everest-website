@@ -8,8 +8,11 @@ import { sendLead } from "./lead";
 const TRIPS = ["One Way", "Round Trip", "Multi Way"] as const;
 const TRAVELLERS = [1, 2, 3, 4, 5, 6, 7];
 
-const field =
-  "mt-[7px] h-[52px] w-full appearance-none rounded-[3px] border border-[#dfe3e8] bg-white px-4 text-base text-navy placeholder:text-[#8d99a5] focus:border-brand focus:outline-none lg:mt-1.5 lg:h-12";
+/** A field without its top gap: a dropdown's wrapper carries the gap, so its arrow centres on the field. */
+const box =
+  "h-[52px] w-full appearance-none rounded-[3px] border border-[#dfe3e8] bg-white px-4 text-base text-navy placeholder:text-[#8d99a5] focus:border-brand focus:outline-none lg:h-12";
+const gap = "mt-[7px] lg:mt-1.5";
+const field = `${gap} ${box}`;
 const label = "block text-[13px] font-medium leading-4 text-white lg:text-navy";
 const star = <span className="ml-1 text-[#e5484d]">*</span>;
 
@@ -84,8 +87,8 @@ export function IntercityBooking({ cities }: { cities: { slug: string; name: str
         <div className="mt-[11px] grid gap-[11px] lg:mt-5 lg:grid-cols-3 xl:grid-cols-[repeat(5,minmax(0,1fr))_172px] lg:items-end lg:gap-3">
           <label className={label}>
             Pick-Up City{star}
-            <span className="relative block">
-              <select name="pickup" required defaultValue="" className={`${field} pr-11 invalid:text-[#8d99a5]`}>
+            <span className={`relative block ${gap}`}>
+              <select name="pickup" required defaultValue="" className={`${box} pr-11 invalid:text-[#8d99a5]`}>
                 <option value="" disabled>
                   Select city
                 </option>
@@ -100,8 +103,8 @@ export function IntercityBooking({ cities }: { cities: { slug: string; name: str
           </label>
           <label className={label}>
             Drop City{star}
-            <span className="relative block">
-              <select name="drop" required defaultValue="" className={`${field} pr-11 invalid:text-[#8d99a5]`}>
+            <span className={`relative block ${gap}`}>
+              <select name="drop" required defaultValue="" className={`${box} pr-11 invalid:text-[#8d99a5]`}>
                 <option value="" disabled>
                   Select city
                 </option>
@@ -116,7 +119,7 @@ export function IntercityBooking({ cities }: { cities: { slug: string; name: str
           </label>
           <label className={label}>
             Date &amp; Time{star}
-            <span className="relative block">
+            <span className={`relative block ${gap}`}>
               <input
                 name="when"
                 required
@@ -127,15 +130,15 @@ export function IntercityBooking({ cities }: { cities: { slug: string; name: str
                   if (!e.currentTarget.value) setDateType("text");
                 }}
                 placeholder="Choose date"
-                className={`${field} pr-11`}
+                className={`${box} pr-11`}
               />
               {dateType === "text" ? <Caret /> : null}
             </span>
           </label>
           <label className={label}>
             Travellers{star}
-            <span className="relative block">
-              <select name="travellers" required defaultValue="" className={`${field} pr-11 invalid:text-[#8d99a5]`}>
+            <span className={`relative block ${gap}`}>
+              <select name="travellers" required defaultValue="" className={`${box} pr-11 invalid:text-[#8d99a5]`}>
                 <option value="" disabled>
                   Select
                 </option>

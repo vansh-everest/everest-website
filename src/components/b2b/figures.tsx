@@ -16,7 +16,7 @@ export function FigureBand({
 }) {
   return (
     <section className={`bg-navy px-4 text-center ${compact ? "pb-[9px] pt-2" : "pb-[22px] pt-[34px]"} lg:px-10 lg:pb-[52px] lg:pt-[53px]`}>
-      <Eyebrow tone="sun" className={`justify-center lg:mx-auto lg:max-w-[1104px] ${eyebrowLeft ? "lg:justify-start" : ""}`}>
+      <Eyebrow tone="sun" className={`justify-center lg:mx-auto lg:max-w-[1104px] ${eyebrowLeft ? "lg:justify-start" : ""} ${compact ? "max-lg:text-white" : ""}`}>
         {eyebrow}
       </Eyebrow>
       <SectionTitle tone="white" size="lg" className="mx-auto mt-2 max-w-[380px] lg:mt-[9px] lg:max-w-none">

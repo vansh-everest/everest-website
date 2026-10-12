@@ -39,9 +39,10 @@ function tiles(view: PlanWizardView, f: Figures): Tile[] {
 /** When the n-th block of the result rises in (enterStep), so its figure can count up as it lands. */
 const landsAt = (n: number) => SEQ_START_MS + n * SEQ_GAP_MS + 80;
 
-function TileBox({ tile, seq }: { tile: Tile; seq: number }) {
+/** A lone tile (a plan with no tenure in the admin) takes the whole row, not half of it. */
+function TileBox({ tile, seq, wide }: { tile: Tile; seq: number; wide?: boolean }) {
   return (
-    <div data-wz-seq={seq} className={`rounded-xl px-3.5 pb-3 pt-3.5 lg:rounded-2xl lg:px-5 lg:pb-[15px] lg:pt-4 ${tile.accent ? "bg-[#e7f1fa]" : "bg-[#f3f6f9]"}`}>
+    <div data-wz-seq={seq} className={`${wide ? "col-span-2 lg:col-span-1" : ""} rounded-xl px-3.5 pb-3 pt-3.5 lg:rounded-2xl lg:px-5 lg:pb-[15px] lg:pt-4 ${tile.accent ? "bg-[#e7f1fa]" : "bg-[#f3f6f9]"}`}>
       <p className="text-[13px] leading-4 text-ink-soft lg:leading-5">{tile.label}</p>
       <p className={`mt-1 flex items-baseline gap-1.5 ${tile.accent ? "text-brand" : "text-navy"}`}>
         <CountUp
@@ -136,7 +137,7 @@ export function ResultStep({
         {shown.length ? (
           <div className="mt-4 grid grid-cols-2 gap-2.5 lg:mt-[18px] lg:gap-3">
             {shown.map((tile, i) => (
-              <TileBox key={tile.label} tile={tile} seq={i} />
+              <TileBox key={tile.label} tile={tile} seq={i} wide={shown.length === 1} />
             ))}
           </div>
         ) : null}

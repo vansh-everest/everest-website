@@ -31,7 +31,8 @@ export async function planMetadata(path: PlanPagePath): Promise<Metadata> {
   };
 }
 
-/** Hero, the plan picker, the benefit cards (phones only), driver stories, then the form. */
+/** Hero, the plan picker, the benefit cards (phones only), driver stories, then the form. On a phone,
+ * Drive to Earn also keeps its one-card calculator under the benefits, as in its phone design. */
 export async function PlanPage({ path }: { path: PlanPagePath }) {
   const { content, plan } = await offered(path);
   if (!plan) notFound();
@@ -50,6 +51,11 @@ export async function PlanPage({ path }: { path: PlanPagePath }) {
       <PlanHero view={view} startHref={calculator || wizard ? "#plan" : "#apply"} wide={path !== "/revenue-share"} />
       {calculator ? <PlanCalculator view={calculator} /> : wizard ? <PlanWizard view={wizard} /> : null}
       <PlanBenefits view={view} />
+      {wizard && jarvis && path === "/drive-to-earn" ? (
+        <div className="lg:hidden">
+          <PlanCalculator view={jarvis} id="plan-calculator" />
+        </div>
+      ) : null}
       <Testimonials variant="page" title={view.storiesTitle} />
       <StartDriving source={`plan/${plan.id}`} eyebrow />
     </>

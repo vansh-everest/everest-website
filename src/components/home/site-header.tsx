@@ -13,7 +13,7 @@ export function SiteHeader({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
   return (
     <HeaderShell>
       {/* The artwork carries transparent padding; the offsets put the wordmark on the grid. */}
-      <BrandLogo href={home} preload twinkle className="-ml-2 -mr-1.5 mt-[5px] shrink-0" />
+      <BrandLogo href={home} preload twinkle compact className="-ml-[7px] -mr-[5px] mt-1 shrink-0 lg:-ml-2 lg:-mr-1.5 lg:mt-[5px]" />
       <NavLinks />
       <div className="flex items-center gap-2">
         <FormLink

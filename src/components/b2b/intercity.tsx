@@ -41,11 +41,11 @@ export async function IntercityHero() {
 /** The closing "Book a ride" band: back up to the booking strip, or call. */
 export function BookRide() {
   return (
-    <section className="bg-[linear-gradient(160deg,#062f50_0%,#0a4378_100%)] px-4 pb-[45px] pt-11 text-center lg:px-6 lg:pb-[72px] lg:pt-[76px]">
+    <section className="bg-blue-gradient lg:bg-[linear-gradient(160deg,#062f50_0%,#0a4378_100%)] px-4 pb-[45px] pt-11 text-center lg:px-6 lg:pb-[72px] lg:pt-[76px]">
       <Eyebrow tone="white" bars className="justify-center">
         Book a ride
       </Eyebrow>
-      <h2 className="mx-auto mt-[11px] max-w-[300px] text-[28px] font-bold leading-[34px] tracking-[-0.4px] text-white lg:mt-[7px] lg:max-w-none lg:text-[42px] lg:leading-[50px] lg:tracking-normal">
+      <h2 className="mx-auto mt-[11px] max-w-[340px] text-[28px] font-bold leading-[34px] tracking-[-0.4px] text-white lg:mt-[7px] lg:max-w-none lg:text-[42px] lg:leading-[50px] lg:tracking-normal">
         Discover New Paths For Your Intercity Rides
       </h2>
       <HeroActions

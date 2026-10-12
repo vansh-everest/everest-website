@@ -24,7 +24,7 @@ export function Features({
       <div className="mx-auto grid max-w-[1104px] lg:grid-cols-[340px_1fr] lg:gap-x-10 xl:grid-cols-[432px_1fr] xl:gap-x-[52px]">
         <div className="text-center lg:text-left">
           <Eyebrow className="justify-center lg:justify-start">{eyebrow}</Eyebrow>
-          <h2 className="mt-2 text-[22px] font-bold leading-[30px] text-navy lg:mt-[18px] lg:text-[40px] lg:leading-[46px] lg:tracking-[-0.5px] xl:text-[48px] xl:leading-[54px]">
+          <h2 className="mt-2 text-[24px] font-bold leading-[30px] text-navy lg:mt-[18px] lg:text-[40px] lg:leading-[46px] lg:tracking-[-0.5px] xl:text-[48px] xl:leading-[54px]">
             {title.map((line, i) => (
               <span key={line} className="lg:block">
                 {i > 0 ? " " : ""}

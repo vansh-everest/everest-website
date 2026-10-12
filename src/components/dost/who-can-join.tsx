@@ -30,8 +30,8 @@ export function WhoCanJoin() {
             key={title}
             className="min-h-40 rounded-xl lg:min-h-0 border border-[#dfe6f2] bg-white px-4 pb-4 pt-[15px] shadow-[0_1px_2px_rgba(6,47,80,0.04)] lg:flex lg:h-[96px] lg:items-center lg:gap-4 lg:rounded-2xl lg:px-5 lg:py-0"
           >
-            <span className="grid size-7 shrink-0 place-items-center rounded-md bg-[#eaf3fb] text-brand lg:size-14 lg:rounded-full">
-              <Icon className="size-[17px] lg:size-7" strokeWidth={1.5} />
+            <span className="grid size-8 shrink-0 place-items-center rounded-md bg-[#eaf3fb] text-brand lg:size-14 lg:rounded-full">
+              <Icon className="size-5 stroke-2 lg:size-7 lg:stroke-[1.5]" />
             </span>
             <span className="mt-[18px] block lg:mt-0">
               <span className="block text-[14.5px] font-bold leading-[18px] text-navy lg:text-xl lg:leading-7">

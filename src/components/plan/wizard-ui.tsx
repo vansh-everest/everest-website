@@ -110,7 +110,7 @@ export function StepFooter({
         <button
           type="button"
           onClick={onNext}
-          className={`flex h-[49px] flex-1 items-center justify-center gap-2.5 rounded-full text-base font-bold transition duration-300 hover:brightness-95 motion-safe:active:scale-[0.98] lg:order-3 lg:ml-auto lg:h-[54px] lg:flex-none lg:px-[26px] lg:text-[17px] ${
+          className={`flex h-[49px] flex-1 items-center justify-center gap-2.5 rounded-full text-xl font-normal transition duration-300 hover:brightness-95 motion-safe:active:scale-[0.98] lg:order-3 lg:ml-auto lg:h-[54px] lg:flex-none lg:px-[26px] lg:text-[17px] lg:font-bold ${
             awake ? "wz-wake bg-sun text-navy" : "bg-sun/35 text-navy/70"
           }`}
         >

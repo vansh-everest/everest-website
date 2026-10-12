@@ -88,7 +88,7 @@ export function BlogHero({ copy }: { copy: BlogCopy }) {
   } = getImageProps({ ...common, src: "/figma/blog/hero.webp", width: 1472, height: 832, loading: "eager", fetchPriority: "high" });
   return (
     <section className="bg-navy px-4 pb-10 pt-[32px] sm:px-6 lg:relative lg:h-[600px] lg:p-0">
-      <h1 className="text-[36px] font-bold leading-[42px] tracking-[-0.5px] text-white lg:absolute lg:bottom-[50px] lg:left-14 lg:z-10 lg:text-[64px] lg:capitalize lg:leading-[74px] lg:tracking-[-0.5px]">
+      <h1 className="text-[32px] font-bold leading-[38px] tracking-[-0.5px] text-white lg:absolute lg:bottom-[50px] lg:left-14 lg:z-10 lg:text-[64px] lg:capitalize lg:leading-[74px] lg:tracking-[-0.5px]">
         {copy.heroTitle}
       </h1>
       <picture className="relative mt-[12px] block aspect-[380/220] overflow-hidden rounded-2xl sm:aspect-[16/7] lg:absolute lg:inset-0 lg:mt-0 lg:aspect-auto lg:rounded-none">
