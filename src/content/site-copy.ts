@@ -103,7 +103,7 @@ const en: SiteCopy = {
   footer: {
     blurb:
       "India's Largest Fleet Management Company. {vehicles} vehicles. {cities} cities. " +
-      "Powering driver earnings and investor returns since {founded}.",
+      "Powering driver earnings since {founded}.",
     drivers: "Drivers",
     company: "Company",
     investors: "Investors",
@@ -155,7 +155,7 @@ const hi: SiteCopy = {
   footer: {
     blurb:
       "भारत की सबसे बड़ी फ्लीट मैनेजमेंट कंपनी। {vehicles} गाड़ियाँ। {cities} शहर। " +
-      "{founded} से ड्राइवरों की कमाई और निवेशकों का मुनाफ़ा बढ़ा रहे हैं।",
+      "{founded} से ड्राइवरों की कमाई बढ़ा रहे हैं।",
     drivers: "ड्राइवर",
     company: "कंपनी",
     investors: "निवेशक",
@@ -207,7 +207,7 @@ const kn: SiteCopy = {
   footer: {
     blurb:
       "ಭಾರತದ ಅತಿ ದೊಡ್ಡ ಫ್ಲೀಟ್ ಮ್ಯಾನೇಜ್‌ಮೆಂಟ್ ಕಂಪನಿ. {vehicles} ವಾಹನಗಳು. {cities} ನಗರಗಳು. " +
-      "{founded} ರಿಂದ ಡ್ರೈವರ್‌ಗಳ ಗಳಿಕೆ ಮತ್ತು ಹೂಡಿಕೆದಾರರ ಲಾಭ ಹೆಚ್ಚಿಸುತ್ತಿದ್ದೇವೆ.",
+      "{founded} ರಿಂದ ಡ್ರೈವರ್‌ಗಳ ಗಳಿಕೆ ಹೆಚ್ಚಿಸುತ್ತಿದ್ದೇವೆ.",
     drivers: "ಡ್ರೈವರ್‌ಗಳು",
     company: "ಕಂಪನಿ",
     investors: "ಹೂಡಿಕೆದಾರರು",
