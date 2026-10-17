@@ -74,7 +74,6 @@ function planLine(plan: Plan, dict: Dictionary, locale: Locale): string {
 function figuresFor(plan: Plan, city: string, labels: Dictionary["figures"]): [string, string][] {
   const price = priceIn(plan.price, plan.cityPrices, city);
   const rows: [string, string][] = [
-    [labels.from, price.amount ? `${rupees(price.amount)}${price.unit}` : ""],
     [labels.deposit, rupees(price.deposit)],
     [labels.upfront, rupees(price.upfront)],
     [labels.term, price.tenureMonths ? fill(labels.months, { n: String(price.tenureMonths) }) : ""],

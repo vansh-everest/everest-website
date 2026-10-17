@@ -7,31 +7,21 @@ import { rupees } from "@/lib/content";
 import type { PlanWizardView, WizardCar } from "@/lib/plan-view";
 import type { Said } from "./wizard-copy";
 import { SEQ_GAP_MS, SEQ_START_MS } from "./wizard-motion";
-import { RentStrip } from "./wizard-steps";
-import { rentLabel, Say, StepHeading, type Figures } from "./wizard-ui";
+import { Say, StepHeading, type Figures } from "./wizard-ui";
 
 type Tile = { label: string; value: string; unit?: string; note: Said; accent?: boolean };
 
 /** The two figure boxes each plan leads with, as its design orders them. A blank figure is left out. */
 function tiles(view: PlanWizardView, f: Figures): Tile[] {
   const money = rupees(f.money);
-  const deposit: Tile = { label: "Deposit", value: money, note: "Refundable" };
+  const unit = f.onwards ? "onwards" : undefined;
+  const deposit: Tile = { label: "Deposit", value: money, unit, note: "Refundable" };
+  const tenure: Tile = { label: "Tenure", value: f.months, unit: "months", note: "Fixed", accent: true };
   const list: Tile[] =
     view.kind === "now"
-      ? [
-          {
-            label: rentLabel(f.unit),
-            value: rupees(f.amount),
-            unit: f.unit.replace(/^\+/, ""),
-            note: f.months ? [`Fixed for ${f.months} months`, `For ${f.months} months`] : "",
-            accent: true,
-          },
-          f.upfront
-            ? { label: "Upfront", value: money, note: ["Paid once, at the start", "Paid once"] }
-            : { label: "Deposit", value: money, note: "" },
-        ]
+      ? [tenure, f.upfront ? { label: "Upfront", value: money, unit, note: ["Paid once, at the start", "Paid once"] } : { ...deposit, note: "" }]
       : view.kind === "own"
-        ? [{ label: "Tenure", value: f.months, unit: "months", note: "Fixed", accent: true }, deposit]
+        ? [tenure, deposit]
         : [{ ...deposit, accent: true }, { label: view.term.label, value: view.term.value, note: view.tag }];
   return list.filter((t) => t.label && t.value);
 }
@@ -44,7 +34,7 @@ function TileBox({ tile, seq, wide }: { tile: Tile; seq: number; wide?: boolean 
   return (
     <div data-wz-seq={seq} className={`${wide ? "col-span-2 lg:col-span-1" : ""} rounded-xl px-3.5 pb-3 pt-3.5 lg:rounded-2xl lg:px-5 lg:pb-[15px] lg:pt-4 ${tile.accent ? "bg-[#e7f1fa]" : "bg-[#f3f6f9]"}`}>
       <p className="text-[13px] leading-4 text-ink-soft lg:leading-5">{tile.label}</p>
-      <p className={`mt-1 flex items-baseline gap-1.5 ${tile.accent ? "text-brand" : "text-navy"}`}>
+      <p className={`mt-1 flex flex-wrap items-baseline gap-x-1.5 ${tile.accent ? "text-brand" : "text-navy"}`}>
         <CountUp
           value={tile.value}
           fromZero
@@ -102,8 +92,7 @@ export function ResultStep({
   const now = view.kind === "now";
   const title = year ? `${car.name} ${year}` : car.name;
   const shown = tiles(view, figures);
-  const badge =
-    view.kind === "earn" ? "100% Uber Incentive" : view.kind === "own" && figures.months ? `Yours In Month ${figures.months}` : undefined;
+  const owned = (now || view.kind === "own") && figures.months;
 
   return (
     <div className="rounded-2xl border border-[#dfe4e8] bg-white px-5 pb-[18px] pt-[19px] lg:grid lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-10 lg:border-0 lg:p-0">
@@ -142,23 +131,22 @@ export function ResultStep({
           </div>
         ) : null}
 
-        {now ? (
-          figures.months ? (
-            <p
-              data-wz-seq={shown.length}
-              className="mt-4 inline-flex h-[35px] items-center gap-2.5 rounded-full bg-brand px-4 text-[15px] font-bold text-white lg:mt-[18px] lg:h-[38px] lg:bg-sun lg:text-base lg:text-navy"
-            >
-              <Key size={17} strokeWidth={2} className="rotate-180" />
-              The Car Is Yours In Month {figures.months}
-            </p>
-          ) : null
-        ) : (
-          <div data-wz-seq={shown.length} className="mt-2.5 lg:mt-3">
-            <RentStrip figures={figures} badge={badge} fromZero delay={landsAt(shown.length)}>
-              {view.kind === "earn" ? "Keep everything you earn above the rent" : null}
-            </RentStrip>
-          </div>
-        )}
+        {owned ? (
+          <p
+            data-wz-seq={shown.length}
+            className="mt-4 inline-flex h-[35px] items-center gap-2.5 rounded-full bg-brand px-4 text-[15px] font-bold text-white lg:mt-[18px] lg:h-[38px] lg:bg-sun lg:text-base lg:text-navy"
+          >
+            <Key size={17} strokeWidth={2} className="rotate-180" />
+            The Car Is Yours In Month {figures.months}
+          </p>
+        ) : view.kind === "earn" ? (
+          <p
+            data-wz-seq={shown.length}
+            className="mt-4 inline-flex h-[35px] items-center rounded-full bg-sun px-4 text-[15px] font-bold text-navy lg:mt-[18px] lg:h-[38px] lg:text-base"
+          >
+            100% Uber Incentive
+          </p>
+        ) : null}
 
         <div data-wz-seq={shown.length + 1} className="mt-4 flex gap-2.5 lg:mt-[18px] lg:gap-3">
           <Link

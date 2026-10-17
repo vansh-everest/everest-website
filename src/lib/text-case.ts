@@ -27,7 +27,6 @@ function plan(p: Plan): Plan {
     ...p,
     name: Object.fromEntries(Object.entries(p.name).map(([k, v]) => [k, tc(v)])) as Plan["name"],
     tag: tc(p.tag),
-    priceLabel: tc(p.priceLabel),
     depositNote: tc(p.depositNote),
     tenureNote: tc(p.tenureNote),
     rows: p.rows.map((r) => ({ label: tc(r.label), value: tc(r.value) })),

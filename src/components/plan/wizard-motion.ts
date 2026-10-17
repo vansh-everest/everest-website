@@ -144,25 +144,6 @@ export function keepInView(anchor: HTMLElement) {
 }
 
 /**
- * The slider's thumb slips sideways and back once, with a soft ring, to show it can be dragged.
- * A press on the slider stops it at once.
- */
-export function nudgeSlider(input: HTMLInputElement, delay = 0) {
-  if (reducedMotion()) return;
-  const value = Number(input.value);
-  const atEnd = value <= Number(input.min) || value >= Number(input.max);
-  const sign = value >= Number(input.max) ? -1 : 1;
-  const steps = atEnd ? [0, 24, 4, 12, 0] : [0, 22, -16, 6, 0];
-  const nudge = input.animate(
-    steps.map((x, i) => ({ "--wz-nudge": `${x * sign}px`, "--wz-ring": i === 0 || i === steps.length - 1 ? "0px" : "9px" })),
-    { duration: 1600, delay, easing: "ease-in-out" }
-  );
-  const stop = () => nudge.cancel();
-  input.addEventListener("pointerdown", stop, { once: true });
-  input.addEventListener("keydown", stop, { once: true });
-}
-
-/**
  * Cues the choices under `root` once `wait` ms after `active` turns on and the choices are in view,
  * then again, more softly, after every six seconds with nothing tapped (`repeats` times at most).
  * Turning `active` off, or changing `key`, stops it.

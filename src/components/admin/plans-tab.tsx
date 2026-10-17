@@ -88,7 +88,6 @@ export function PlansTab({
         shortName: "",
         summary: Object.fromEntries(LOCALES.map((l) => [l, ""])) as Record<Locale, string>,
         tag: "",
-        priceLabel: "Rent starting from",
         theme: "light",
         price: emptyPrice(),
         depositNote: "",
@@ -210,9 +209,8 @@ export function PlansTab({
             </Section>
 
             <Section title="Home page card">
-              <Row cols={3}>
+              <Row cols={2}>
                 <Text label="Tab above the card" value={plan.tag} disabled={locked} onChange={(tag) => patch(i, { tag })} />
-                <Text label="Rent label on car cards" value={plan.priceLabel} disabled={locked} onChange={(priceLabel) => patch(i, { priceLabel })} />
                 <Select
                   label="Card colour"
                   value={plan.theme}
@@ -306,7 +304,7 @@ function PageEditor({ page, onChange, disabled }: { page: PlanPage; onChange: (p
 
   return (
     <>
-      <p className="text-xs text-ink-soft">{"{price}, {deposit}, {upfront} and {months} print this plan's national figures"}</p>
+      <p className="text-xs text-ink-soft">{"{deposit}, {upfront} and {months} print this plan's national figures"}</p>
       <Row cols={2}>
         <Text label="Heading, first line" value={page.headline} disabled={disabled} onChange={(headline) => set({ headline })} />
         <Text label="Heading, yellow line" value={page.highlight} disabled={disabled} onChange={(highlight) => set({ highlight })} />
@@ -316,7 +314,7 @@ function PageEditor({ page, onChange, disabled }: { page: PlanPage; onChange: (p
       <Row cols={2}>
         <Text
           label="Third figure, label"
-          hint="after rent and deposit"
+          hint="after the deposit"
           placeholder="Tenure"
           value={page.term.label}
           disabled={disabled}

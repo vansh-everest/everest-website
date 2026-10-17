@@ -42,7 +42,7 @@ export type Dictionary = {
   faq: { q: string; a: string }[];
   blog: { title: string; intro: string; readMore: string; empty: string; back: string; metaDescription: string };
   /** Labels for a plan's figures on a city page; {n} is the number of months. */
-  figures: { from: string; deposit: string; upfront: string; term: string; months: string };
+  figures: { deposit: string; upfront: string; term: string; months: string };
   common: { languages: string };
 };
 
@@ -90,9 +90,9 @@ const en: Dictionary = {
   },
   documents: ["Aadhaar Card", "PAN Card", "Driving Licence", "Proof Of Address"],
   plans: {
-    "own-now": "Pay upfront, then a low daily rent. The car is yours at the end of the term.",
-    "drive-to-own": "Pay a refundable deposit, then a daily rent. The car is yours at the end of the term.",
-    leasing: "Pay a refundable deposit, then a daily rent. The car stays on rent.",
+    "own-now": "Pay upfront, then low daily instalments. The car is yours at the end of the term.",
+    "drive-to-own": "Pay a refundable deposit. The car is yours at the end of the term.",
+    leasing: "Pay a refundable deposit. No commitment to buy.",
   },
   faq: [
     { q: "Do I Need My Own Car?", a: "No. We give you the car. You bring your licence and your documents." },
@@ -102,13 +102,13 @@ const en: Dictionary = {
   ],
   blog: {
     title: "Driver Guides",
-    intro: "Straight answers about renting a car, driving on Uber and what you actually take home.",
+    intro: "Straight answers about plans, driving on Uber and what you actually take home.",
     readMore: "Read",
     empty: "No posts yet.",
     back: "All Guides",
-    metaDescription: "Guides for drivers on renting a car, earnings, documents and plans across Indian cities.",
+    metaDescription: "Guides for drivers on earnings, documents and plans across Indian cities.",
   },
-  figures: { from: "From", deposit: "Deposit", upfront: "Upfront", term: "Term", months: "{n} Months" },
+  figures: { deposit: "Deposit", upfront: "Upfront", term: "Term", months: "{n} Months" },
   common: { languages: "Languages" },
 };
 
@@ -156,9 +156,9 @@ const hi: Dictionary = {
   },
   documents: ["आधार कार्ड", "पैन कार्ड", "ड्राइविंग लाइसेंस", "पते का प्रमाण"],
   plans: {
-    "own-now": "पहले शुरुआती रकम, फिर कम रोज़ का किराया। अवधि पूरी होने पर गाड़ी आपकी।",
-    "drive-to-own": "वापस मिलने वाला डिपॉज़िट, फिर रोज़ का किराया। अवधि पूरी होने पर गाड़ी आपकी।",
-    leasing: "वापस मिलने वाला डिपॉज़िट, फिर रोज़ का किराया। गाड़ी किराए पर ही रहती है।",
+    "own-now": "पहले शुरुआती रकम, फिर कम रोज़ की किस्त। अवधि पूरी होने पर गाड़ी आपकी।",
+    "drive-to-own": "वापस मिलने वाला डिपॉज़िट। अवधि पूरी होने पर गाड़ी आपकी।",
+    leasing: "वापस मिलने वाला डिपॉज़िट। खरीदने की कोई बाध्यता नहीं।",
   },
   faq: [
     { q: "क्या अपनी गाड़ी चाहिए?", a: "नहीं। गाड़ी हम देते हैं। आप अपना लाइसेंस और कागज़ लाइए।" },
@@ -168,13 +168,13 @@ const hi: Dictionary = {
   ],
   blog: {
     title: "ड्राइवर गाइड",
-    intro: "गाड़ी किराए पर लेने, Uber चलाने और असल में कितना बचता है, इसके सीधे जवाब।",
+    intro: "प्लान, Uber चलाने और असल में कितना बचता है, इसके सीधे जवाब।",
     readMore: "पढ़िए",
     empty: "अभी कोई लेख नहीं।",
     back: "सभी गाइड",
-    metaDescription: "गाड़ी किराए पर लेने, कमाई, कागज़ात और प्लान के बारे में ड्राइवरों के लिए गाइड।",
+    metaDescription: "कमाई, कागज़ात और प्लान के बारे में ड्राइवरों के लिए गाइड।",
   },
-  figures: { from: "किराया", deposit: "डिपॉज़िट", upfront: "शुरुआती रकम", term: "अवधि", months: "{n} महीने" },
+  figures: { deposit: "डिपॉज़िट", upfront: "शुरुआती रकम", term: "अवधि", months: "{n} महीने" },
   common: { languages: "भाषाएँ" },
 };
 
@@ -222,9 +222,9 @@ const te: Dictionary = {
   },
   documents: ["ఆధార్ కార్డ్", "పాన్ కార్డ్", "డ్రైవింగ్ లైసెన్స్", "చిరునామా రుజువు"],
   plans: {
-    "own-now": "మొదట ముందస్తు మొత్తం, తర్వాత తక్కువ రోజువారీ అద్దె. గడువు చివర కారు మీదే.",
-    "drive-to-own": "తిరిగి ఇచ్చే డిపాజిట్, తర్వాత రోజువారీ అద్దె. గడువు చివర కారు మీదే.",
-    leasing: "తిరిగి ఇచ్చే డిపాజిట్, తర్వాత రోజువారీ అద్దె. కారు అద్దెలోనే ఉంటుంది.",
+    "own-now": "మొదట ముందస్తు మొత్తం, తర్వాత తక్కువ రోజువారీ వాయిదాలు. గడువు చివర కారు మీదే.",
+    "drive-to-own": "తిరిగి ఇచ్చే డిపాజిట్. గడువు చివర కారు మీదే.",
+    leasing: "తిరిగి ఇచ్చే డిపాజిట్. కొనుగోలు తప్పనిసరి కాదు.",
   },
   faq: [
     { q: "సొంత కారు కావాలా?", a: "అవసరం లేదు. కారు మేము ఇస్తాము. మీరు లైసెన్స్ మరియు పత్రాలు తీసుకురండి." },
@@ -234,13 +234,13 @@ const te: Dictionary = {
   ],
   blog: {
     title: "డ్రైవర్ గైడ్‌లు",
-    intro: "కారు అద్దెకు తీసుకోవడం, Uber నడపడం మరియు నిజంగా ఎంత మిగులుతుంది అనే వాటికి సూటి సమాధానాలు.",
+    intro: "ప్లాన్లు, Uber నడపడం మరియు నిజంగా ఎంత మిగులుతుంది అనే వాటికి సూటి సమాధానాలు.",
     readMore: "చదవండి",
     empty: "ఇంకా వ్యాసాలు లేవు.",
     back: "అన్ని గైడ్‌లు",
-    metaDescription: "కారు అద్దె, సంపాదన, పత్రాలు మరియు ప్లాన్ల గురించి డ్రైవర్ల కోసం గైడ్‌లు.",
+    metaDescription: "సంపాదన, పత్రాలు మరియు ప్లాన్ల గురించి డ్రైవర్ల కోసం గైడ్‌లు.",
   },
-  figures: { from: "అద్దె", deposit: "డిపాజిట్", upfront: "ముందస్తు మొత్తం", term: "వ్యవధి", months: "{n} నెలలు" },
+  figures: { deposit: "డిపాజిట్", upfront: "ముందస్తు మొత్తం", term: "వ్యవధి", months: "{n} నెలలు" },
   common: { languages: "భాషలు" },
 };
 
@@ -288,9 +288,9 @@ const mr: Dictionary = {
   },
   documents: ["आधार कार्ड", "पॅन कार्ड", "ड्रायव्हिंग लायसन्स", "पत्त्याचा पुरावा"],
   plans: {
-    "own-now": "आधी सुरुवातीची रक्कम, मग कमी रोजचे भाडे. मुदतीअखेर गाडी तुमची.",
-    "drive-to-own": "परत मिळणारे डिपॉझिट, मग रोजचे भाडे. मुदतीअखेर गाडी तुमची.",
-    leasing: "परत मिळणारे डिपॉझिट, मग रोजचे भाडे. गाडी भाड्यानेच राहते.",
+    "own-now": "आधी सुरुवातीची रक्कम, मग कमी रोजचे हप्ते. मुदतीअखेर गाडी तुमची.",
+    "drive-to-own": "परत मिळणारे डिपॉझिट. मुदतीअखेर गाडी तुमची.",
+    leasing: "परत मिळणारे डिपॉझिट. गाडी विकत घेण्याचे बंधन नाही.",
   },
   faq: [
     { q: "स्वतःची गाडी लागते का?", a: "नाही. गाडी आम्ही देतो. तुम्ही तुमचे लायसन्स आणि कागदपत्रे आणा." },
@@ -300,13 +300,13 @@ const mr: Dictionary = {
   ],
   blog: {
     title: "ड्रायव्हर गाइड",
-    intro: "गाडी भाड्याने घेणे, Uber चालवणे आणि खरंच किती हातात उरते, याची सरळ उत्तरे.",
+    intro: "प्लॅन, Uber चालवणे आणि खरंच किती हातात उरते, याची सरळ उत्तरे.",
     readMore: "वाचा",
     empty: "अजून एकही लेख नाही.",
     back: "सर्व गाइड",
-    metaDescription: "गाडी भाड्याने घेणे, कमाई, कागदपत्रे आणि प्लॅनबद्दल ड्रायव्हरसाठी गाइड.",
+    metaDescription: "कमाई, कागदपत्रे आणि प्लॅनबद्दल ड्रायव्हरसाठी गाइड.",
   },
-  figures: { from: "भाडे", deposit: "डिपॉझिट", upfront: "सुरुवातीची रक्कम", term: "कालावधी", months: "{n} महिने" },
+  figures: { deposit: "डिपॉझिट", upfront: "सुरुवातीची रक्कम", term: "कालावधी", months: "{n} महिने" },
   common: { languages: "भाषा" },
 };
 
@@ -354,9 +354,9 @@ const kn: Dictionary = {
   },
   documents: ["ಆಧಾರ್ ಕಾರ್ಡ್", "ಪ್ಯಾನ್ ಕಾರ್ಡ್", "ಡ್ರೈವಿಂಗ್ ಲೈಸೆನ್ಸ್", "ವಿಳಾಸದ ಪುರಾವೆ"],
   plans: {
-    "own-now": "ಮೊದಲು ಆರಂಭಿಕ ಮೊತ್ತ, ನಂತರ ಕಡಿಮೆ ದಿನದ ಬಾಡಿಗೆ. ಅವಧಿಯ ಕೊನೆಗೆ ಕಾರು ನಿಮ್ಮದು.",
-    "drive-to-own": "ಹಿಂತಿರುಗಿಸುವ ಠೇವಣಿ, ನಂತರ ದಿನದ ಬಾಡಿಗೆ. ಅವಧಿಯ ಕೊನೆಗೆ ಕಾರು ನಿಮ್ಮದು.",
-    leasing: "ಹಿಂತಿರುಗಿಸುವ ಠೇವಣಿ, ನಂತರ ದಿನದ ಬಾಡಿಗೆ. ಕಾರು ಬಾಡಿಗೆಯಲ್ಲೇ ಇರುತ್ತದೆ.",
+    "own-now": "ಮೊದಲು ಆರಂಭಿಕ ಮೊತ್ತ, ನಂತರ ಕಡಿಮೆ ದಿನದ ಕಂತುಗಳು. ಅವಧಿಯ ಕೊನೆಗೆ ಕಾರು ನಿಮ್ಮದು.",
+    "drive-to-own": "ಹಿಂತಿರುಗಿಸುವ ಠೇವಣಿ. ಅವಧಿಯ ಕೊನೆಗೆ ಕಾರು ನಿಮ್ಮದು.",
+    leasing: "ಹಿಂತಿರುಗಿಸುವ ಠೇವಣಿ. ಖರೀದಿಸುವ ಕಡ್ಡಾಯವಿಲ್ಲ.",
   },
   faq: [
     { q: "ಸ್ವಂತ ಕಾರು ಬೇಕೇ?", a: "ಬೇಡ. ಕಾರು ನಾವು ಕೊಡುತ್ತೇವೆ. ನೀವು ಲೈಸೆನ್ಸ್ ಮತ್ತು ದಾಖಲೆಗಳನ್ನು ತನ್ನಿ." },
@@ -366,13 +366,13 @@ const kn: Dictionary = {
   ],
   blog: {
     title: "ಡ್ರೈವರ್ ಗೈಡ್‌ಗಳು",
-    intro: "ಕಾರು ಬಾಡಿಗೆಗೆ ಪಡೆಯುವುದು, Uber ಓಡಿಸುವುದು ಮತ್ತು ನಿಜವಾಗಿ ಎಷ್ಟು ಉಳಿಯುತ್ತದೆ ಎಂಬುದಕ್ಕೆ ನೇರ ಉತ್ತರಗಳು.",
+    intro: "ಪ್ಲಾನ್‌ಗಳು, Uber ಓಡಿಸುವುದು ಮತ್ತು ನಿಜವಾಗಿ ಎಷ್ಟು ಉಳಿಯುತ್ತದೆ ಎಂಬುದಕ್ಕೆ ನೇರ ಉತ್ತರಗಳು.",
     readMore: "ಓದಿ",
     empty: "ಇನ್ನೂ ಯಾವುದೇ ಲೇಖನಗಳಿಲ್ಲ.",
     back: "ಎಲ್ಲಾ ಗೈಡ್‌ಗಳು",
-    metaDescription: "ಕಾರು ಬಾಡಿಗೆ, ಗಳಿಕೆ, ದಾಖಲೆಗಳು ಮತ್ತು ಪ್ಲಾನ್‌ಗಳ ಬಗ್ಗೆ ಡ್ರೈವರ್‌ಗಳಿಗಾಗಿ ಗೈಡ್‌ಗಳು.",
+    metaDescription: "ಗಳಿಕೆ, ದಾಖಲೆಗಳು ಮತ್ತು ಪ್ಲಾನ್‌ಗಳ ಬಗ್ಗೆ ಡ್ರೈವರ್‌ಗಳಿಗಾಗಿ ಗೈಡ್‌ಗಳು.",
   },
-  figures: { from: "ಬಾಡಿಗೆ", deposit: "ಠೇವಣಿ", upfront: "ಆರಂಭಿಕ ಮೊತ್ತ", term: "ಅವಧಿ", months: "{n} ತಿಂಗಳು" },
+  figures: { deposit: "ಠೇವಣಿ", upfront: "ಆರಂಭಿಕ ಮೊತ್ತ", term: "ಅವಧಿ", months: "{n} ತಿಂಗಳು" },
   common: { languages: "ಭಾಷೆಗಳು" },
 };
 
@@ -420,9 +420,9 @@ const bn: Dictionary = {
   },
   documents: ["আধার কার্ড", "প্যান কার্ড", "ড্রাইভিং লাইসেন্স", "ঠিকানার প্রমাণ"],
   plans: {
-    "own-now": "প্রথমে শুরুর টাকা, তারপর কম রোজের ভাড়া। মেয়াদ শেষে গাড়ি আপনার।",
-    "drive-to-own": "ফেরতযোগ্য ডিপোজিট, তারপর রোজের ভাড়া। মেয়াদ শেষে গাড়ি আপনার।",
-    leasing: "ফেরতযোগ্য ডিপোজিট, তারপর রোজের ভাড়া। গাড়ি ভাড়াতেই থাকে।",
+    "own-now": "প্রথমে শুরুর টাকা, তারপর কম রোজের কিস্তি। মেয়াদ শেষে গাড়ি আপনার।",
+    "drive-to-own": "ফেরতযোগ্য ডিপোজিট। মেয়াদ শেষে গাড়ি আপনার।",
+    leasing: "ফেরতযোগ্য ডিপোজিট। কেনার কোনো বাধ্যবাধকতা নেই।",
   },
   faq: [
     { q: "নিজের গাড়ি লাগবে?", a: "না। গাড়ি আমরা দিই। আপনি লাইসেন্স আর কাগজপত্র আনুন।" },
@@ -432,13 +432,13 @@ const bn: Dictionary = {
   ],
   blog: {
     title: "ড্রাইভার গাইড",
-    intro: "গাড়ি ভাড়া নেওয়া, Uber চালানো আর আসলে কত হাতে থাকে, তার সোজা উত্তর।",
+    intro: "প্ল্যান, Uber চালানো আর আসলে কত হাতে থাকে, তার সোজা উত্তর।",
     readMore: "পড়ুন",
     empty: "এখনও কোনো লেখা নেই।",
     back: "সব গাইড",
-    metaDescription: "গাড়ি ভাড়া, আয়, কাগজপত্র আর প্ল্যান নিয়ে ড্রাইভারদের জন্য গাইড।",
+    metaDescription: "আয়, কাগজপত্র আর প্ল্যান নিয়ে ড্রাইভারদের জন্য গাইড।",
   },
-  figures: { from: "ভাড়া", deposit: "ডিপোজিট", upfront: "শুরুর টাকা", term: "মেয়াদ", months: "{n} মাস" },
+  figures: { deposit: "ডিপোজিট", upfront: "শুরুর টাকা", term: "মেয়াদ", months: "{n} মাস" },
   common: { languages: "ভাষা" },
 };
 
@@ -486,9 +486,9 @@ const ta: Dictionary = {
   },
   documents: ["ஆதார் அட்டை", "பான் அட்டை", "ஓட்டுநர் உரிமம்", "முகவரிச் சான்று"],
   plans: {
-    "own-now": "முதலில் முன்பணம், பிறகு குறைந்த தினசரி வாடகை. காலம் முடிவில் கார் உங்களுடையது.",
-    "drive-to-own": "திரும்பக் கிடைக்கும் டெபாசிட், பிறகு தினசரி வாடகை. காலம் முடிவில் கார் உங்களுடையது.",
-    leasing: "திரும்பக் கிடைக்கும் டெபாசிட், பிறகு தினசரி வாடகை. கார் வாடகையிலேயே இருக்கும்.",
+    "own-now": "முதலில் முன்பணம், பிறகு குறைந்த தினசரி தவணைகள். காலம் முடிவில் கார் உங்களுடையது.",
+    "drive-to-own": "திரும்பக் கிடைக்கும் டெபாசிட். காலம் முடிவில் கார் உங்களுடையது.",
+    leasing: "திரும்பக் கிடைக்கும் டெபாசிட். வாங்க வேண்டிய கட்டாயம் இல்லை.",
   },
   faq: [
     { q: "சொந்த கார் வேண்டுமா?", a: "வேண்டாம். கார் நாங்கள் தருகிறோம். நீங்கள் உரிமம் மற்றும் ஆவணங்களைக் கொண்டு வாருங்கள்." },
@@ -498,13 +498,13 @@ const ta: Dictionary = {
   ],
   blog: {
     title: "டிரைவர் வழிகாட்டிகள்",
-    intro: "கார் வாடகைக்கு எடுப்பது, Uber ஓட்டுவது, உண்மையில் எவ்வளவு மிஞ்சும் என்பதற்கு நேரடி பதில்கள்.",
+    intro: "திட்டங்கள், Uber ஓட்டுவது, உண்மையில் எவ்வளவு மிஞ்சும் என்பதற்கு நேரடி பதில்கள்.",
     readMore: "படியுங்கள்",
     empty: "இன்னும் கட்டுரைகள் இல்லை.",
     back: "அனைத்து வழிகாட்டிகளும்",
-    metaDescription: "கார் வாடகை, வருமானம், ஆவணங்கள் மற்றும் திட்டங்கள் பற்றி டிரைவர்களுக்கான வழிகாட்டிகள்.",
+    metaDescription: "வருமானம், ஆவணங்கள் மற்றும் திட்டங்கள் பற்றி டிரைவர்களுக்கான வழிகாட்டிகள்.",
   },
-  figures: { from: "வாடகை", deposit: "டெபாசிட்", upfront: "முன்பணம்", term: "காலம்", months: "{n} மாதங்கள்" },
+  figures: { deposit: "டெபாசிட்", upfront: "முன்பணம்", term: "காலம்", months: "{n} மாதங்கள்" },
   common: { languages: "மொழிகள்" },
 };
 

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Testimonials } from "@/components/home/testimonials";
 import { StartDriving } from "@/components/site/start-driving";
-import { headline, planFor } from "@/lib/content";
-import { getLiveData, planCalculator, wizardCarPrices } from "@/lib/fleet-data";
+import { planFor } from "@/lib/content";
+import { getLiveData, planCalculator, publicCalculator, wizardCarPrices } from "@/lib/fleet-data";
 import { planIdFor, wizardFor, type PlanPagePath } from "@/lib/plan-pages";
 import { planPage, planWizard, withJarvisCars } from "@/lib/plan-view";
 import { getContent } from "@/lib/store";
@@ -23,10 +23,9 @@ export async function offered(path: PlanPagePath) {
 export async function planMetadata(path: PlanPagePath): Promise<Metadata> {
   const { plan } = await offered(path);
   if (!plan) return {};
-  const from = headline(plan.price);
   return {
     title: plan.name.en,
-    description: plan.summary.en || `${plan.name.en} plan from Everest Fleet${from ? `, starting at ${from}` : ""}`,
+    description: plan.summary.en || `${plan.name.en} plan from Everest Fleet`,
     alternates: { canonical: `${path}/` },
   };
 }
@@ -49,11 +48,11 @@ export async function PlanPage({ path }: { path: PlanPagePath }) {
     <>
       {/* Revenue Share has no edge-to-edge hero artwork yet; its photo is cropped for the split layout. */}
       <PlanHero view={view} startHref="#apply" wide={path !== "/revenue-share"} />
-      {calculator ? <PlanCalculator view={calculator} /> : wizard ? <PlanWizard view={wizard} /> : null}
+      {calculator ? <PlanCalculator view={publicCalculator(calculator)} /> : wizard ? <PlanWizard view={wizard} /> : null}
       <PlanBenefits view={view} />
       {wizard && jarvis && path === "/drive-to-earn" ? (
         <div className="lg:hidden">
-          <PlanCalculator view={jarvis} id="plan-calculator" />
+          <PlanCalculator view={publicCalculator(jarvis)} id="plan-calculator" />
         </div>
       ) : null}
       <Testimonials variant="page" title={view.storiesTitle} />

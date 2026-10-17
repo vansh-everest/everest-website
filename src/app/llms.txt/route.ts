@@ -2,7 +2,7 @@ import { WHATSAPP_HREF } from "@/components/home/ui";
 import { getDictionary } from "@/content/dictionary";
 import { COMPANY, COMPANY_BLURB, SITE_URL } from "@/lib/company";
 import { cityPath } from "@/lib/city-route";
-import { headline, planFor, postsFor, rupees } from "@/lib/content";
+import { planFor, postsFor, rupees } from "@/lib/content";
 import { EXTRA_LOCALES, localePath, type ExtraLocale } from "@/lib/i18n";
 import { PLAN_PAGES } from "@/lib/plan-pages";
 import { getContent } from "@/lib/store";
@@ -34,7 +34,6 @@ export async function GET() {
     const plan = planFor(content, planId);
     if (!plan?.visible) return [];
     const figures = [
-      headline(plan.price) && `rent from ${headline(plan.price)}`,
       plan.price.upfront && `upfront ${rupees(plan.price.upfront)}`,
       !plan.price.upfront && plan.price.deposit && `deposit ${rupees(plan.price.deposit)}`,
     ].filter(Boolean);
@@ -50,7 +49,7 @@ export async function GET() {
     "",
     `> ${COMPANY_BLURB}`,
     "",
-    `Everest Fleet offers driver jobs in ${cities.join(", ")}. It gives the driver a car, the insurance and the permit to drive on Uber, and pays out every week. Drivers can rent the car or own it at the end of a plan.`,
+    `Everest Fleet offers driver jobs in ${cities.join(", ")}. It gives the driver a car, the insurance and the permit to drive on Uber, and pays out every week. Drivers can lease the car or own it at the end of a plan.`,
     "",
     "## Driver jobs",
     `- [Driver jobs in all cities](${link("/drive-with-us")}): plans, hubs and how to apply`,

@@ -6,7 +6,7 @@ import type { PlanCardView } from "@/lib/plan-view";
  */
 export function PlanCompare({ cards, title, planLabel }: { cards: PlanCardView[]; title: string; planLabel: string }) {
   if (cards.length < 2) return null;
-  // One row per figure position: the rent, then whatever each plan asks first (upfront or deposit).
+  // One row per figure position: whatever each plan asks first (upfront or deposit).
   const rows = Array.from({ length: Math.max(...cards.map((c) => c.figures.length)) }, (_, i) => {
     const labels = [...new Set(cards.map((c) => c.figures[i]?.label).filter(Boolean))];
     return { label: labels.join(" / "), mixed: labels.length > 1, i };

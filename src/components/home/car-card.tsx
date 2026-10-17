@@ -2,9 +2,9 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import type { CarCardView } from "@/lib/plan-view";
 
-function Tile({ label, children }: { label: string; children: ReactNode }) {
+function Tile({ label, wide, children }: { label: string; wide?: boolean; children: ReactNode }) {
   return (
-    <div className="min-h-16 rounded-lg bg-mist p-[14px]">
+    <div className={`min-h-16 rounded-lg bg-mist p-[14px] ${wide ? "col-span-2" : ""}`}>
       <p className="text-[10px] font-semibold uppercase leading-[13px] tracking-[0.5px] text-ink-soft">{label}</p>
       <div className="mt-1 text-base font-bold leading-[19px] text-navy">{children}</div>
     </div>
@@ -15,12 +15,11 @@ const photoPill =
   "absolute top-4 flex h-[22px] items-center gap-[5px] rounded-full bg-white px-[11px] text-[10px] font-semibold text-navy";
 
 /**
- * One car on a plan page, priced for the chosen city. All four boxes always show, as in the
- * design, with a dash for a figure not set.
+ * One car on a plan page, priced for the chosen city. All three boxes always show, with a dash
+ * for a figure not set; the last spans the row.
  */
 export function CarCard({ car, city }: { car: CarCardView; city: string; variant: "plan" }) {
   const tiles: { label: string; value: ReactNode }[] = [
-    { label: car.rentLabel, value: car.rent },
     { label: "Deposit", value: car.deposit },
     { label: "Tenure", value: car.tenure },
     { label: "Models Available", value: car.modelYears },
@@ -74,8 +73,8 @@ export function CarCard({ car, city }: { car: CarCardView; city: string; variant
             ) : null}
           </div>
           <div className="mt-5 grid grid-cols-2 gap-3">
-            {tiles.map((tile) => (
-              <Tile key={tile.label} label={tile.label}>
+            {tiles.map((tile, i) => (
+              <Tile key={tile.label} label={tile.label} wide={i === tiles.length - 1}>
                 {tile.value}
               </Tile>
             ))}

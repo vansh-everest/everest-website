@@ -49,38 +49,6 @@ body {
   color: var(--color-navy);
 }
 
-/* The Own Now slider: navy fill up to the handle, grey after it. --fill is set inline. */
-@layer components {
-  .range-slider {
-    appearance: none;
-    height: 8px;
-    border-radius: 9999px;
-    background: linear-gradient(to right, var(--color-navy) var(--fill, 50%), var(--color-fog) var(--fill, 50%));
-    cursor: pointer;
-  }
-  .range-slider::-webkit-slider-thumb {
-    appearance: none;
-    width: 24px;
-    height: 24px;
-    border-radius: 9999px;
-    background: #fff;
-    border: 2px solid var(--color-navy);
-    box-shadow: 0 2px 6px rgb(6 47 80 / 0.25);
-  }
-  .range-slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    border-radius: 9999px;
-    background: #fff;
-    border: 2px solid var(--color-navy);
-    box-shadow: 0 2px 6px rgb(6 47 80 / 0.25);
-  }
-  .range-slider:focus-visible {
-    outline: 2px solid var(--color-brand);
-    outline-offset: 6px;
-  }
-}
-
 /* ===================================================================== Motion layer
    Argo's effects in Everest colours, kept light. Everything sits behind prefers-reduced-motion,
    and touch screens draw a lighter blur ("Mobile motion and logo (batch 10)"): blur is the
@@ -759,40 +727,9 @@ body {
 
 /* ===================================================================== Plan wizard (batch 9)
    The plan picker (plan-wizard.tsx) and plan calculator guide a first-time visitor without words.
-   wizard-motion.ts plays the one-off moves (intro, tap cues, step slides, the slider nudge); this
+   wizard-motion.ts plays the one-off moves (intro, tap cues, step slides); this
    block holds the looks those moves use and the few that CSS alone can drive. Reduced motion
    keeps every one of them still. */
-
-/* The slider's nudge and ring, animated on the input and inherited by its thumb. */
-@property --wz-nudge {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 0px;
-}
-@property --wz-ring {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 0px;
-}
-.range-slider {
-  background: linear-gradient(
-    to right,
-    var(--color-navy) calc(var(--fill, 50%) + var(--wz-nudge)),
-    var(--color-fog) calc(var(--fill, 50%) + var(--wz-nudge))
-  );
-}
-.range-slider::-webkit-slider-thumb {
-  transform: translateX(var(--wz-nudge));
-  box-shadow:
-    0 2px 6px rgb(6 47 80 / 0.25),
-    0 0 0 var(--wz-ring) rgb(241 214 20 / 0.5);
-}
-.range-slider::-moz-range-thumb {
-  transform: translateX(var(--wz-nudge));
-  box-shadow:
-    0 2px 6px rgb(6 47 80 / 0.25),
-    0 0 0 var(--wz-ring) rgb(241 214 20 / 0.5);
-}
 
 /* The light that sweeps across a choice when it is cued; parked off the edge the rest of the time. */
 .wz-sheen {

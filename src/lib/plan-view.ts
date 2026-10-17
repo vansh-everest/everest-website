@@ -2,7 +2,6 @@ import type { PlanCalculatorView, PlanYear } from "@/lib/fleet-data";
 import {
   fillFigures,
   fillOrDrop,
-  headline,
   priceIn,
   rupees,
   type Car,
@@ -25,7 +24,7 @@ export type PlanCardView = {
   name: string;
   tag: string;
   theme: Plan["theme"];
-  /** The two boxes at the top of the card: the rent, then the upfront or deposit. */
+  /** The box at the top of the card: the upfront or the deposit. */
   figures: { label: string; value: string }[];
   /** The small word after each figure, "Onwards" unless the plan sets its own. */
   suffix: string;
@@ -45,10 +44,6 @@ export type CarCardView = {
   highlight: string;
   highlightTone: Car["highlightTone"];
   image: ImageSlot;
-  /** The label over `rent`, e.g. "Rent starting from". */
-  rentLabel: string;
-  /** "₹650/day" */
-  rent: string;
   deposit: string;
   tenure: string;
   modelYears: string;
@@ -61,7 +56,6 @@ const months = (n: string) => (n ? `${n} month${n === "1" ? "" : "s"}` : "");
 export function planCard(content: SiteContent, plan: Plan, city?: string): PlanCardView {
   const price = priceIn(plan.price, plan.cityPrices, city);
   const figures = [
-    { label: `Rent${price.unit.replace(/^\+/, "")}`, value: rupees(price.amount) },
     price.upfront ? { label: "Upfront", value: rupees(price.upfront) } : { label: "Deposit", value: rupees(price.deposit) },
   ].filter((f) => f.value);
   const page = PLAN_PAGES.find((p) => p.planId === plan.id);
@@ -78,8 +72,8 @@ export function planCard(content: SiteContent, plan: Plan, city?: string): PlanC
 }
 
 /**
- * On a plan's own page a car shows that plan's figures, since the plan sets the rent. Anywhere
- * else it shows its own.
+ * On a plan's own page a car shows that plan's figures, since the plan sets them. Anywhere else
+ * it shows its own.
  */
 export function carCard(content: SiteContent, car: Car, city?: string, plan?: Plan): CarCardView {
   const price = plan ? priceIn(plan.price, plan.cityPrices, city) : priceIn(car.price, car.cityPrices, city);
@@ -93,8 +87,6 @@ export function carCard(content: SiteContent, car: Car, city?: string, plan?: Pl
     highlight: car.highlight,
     highlightTone: car.highlightTone,
     image: car.image,
-    rentLabel: plan?.priceLabel || "Rent starting from",
-    rent: headline(price),
     deposit: rupees(price.deposit),
     tenure: months(price.tenureMonths) || (plan?.tenureNote ?? ""),
     modelYears: car.modelYears,
@@ -114,20 +106,18 @@ export function planCities(content: SiteContent, planId: string): CityOption[] {
   return (listed.length ? listed : content.cities).map((c) => ({ slug: c.slug, name: c.name.en }));
 }
 
-/** One box in a plan's row of figures: "Daily rent", "₹725/day", "onwards". */
+/** One box in a plan's row of figures: "Deposit", "₹10,000", "onwards". */
 export type PlanFigure = { label: string; value: string; suffix: string };
 
 /**
- * The rent, then the upfront or the deposit, then the plan's own third figure. A figure the plan
- * leaves blank is left out rather than shown as zero.
+ * The upfront or the deposit, then the plan's own third figure. A figure the plan leaves blank is
+ * left out rather than shown as zero.
  */
 export function planFigures(plan: Plan): PlanFigure[] {
   const price = plan.price;
   const suffix = (plan.depositNote || "Onwards").toLowerCase();
-  const daily = price.unit.includes("day");
   const term = { label: fillOrDrop(plan.page.term.label, price), value: fillOrDrop(plan.page.term.value, price) };
   return [
-    { label: daily ? "Daily Rent" : "Rent", value: headline(price), suffix },
     price.upfront
       ? { label: "Upfront", value: rupees(price.upfront), suffix }
       : { label: "Deposit", value: rupees(price.deposit), suffix },
@@ -201,18 +191,14 @@ function compact(value: string): string {
   return value.replace(/^(\d+)\s*months?$/i, "$1 Mo.");
 }
 
-/** "Low deposit · high daily rental plan" becomes "Low deposit" on a phone. */
+/** "Low deposit · refundable" becomes "Low deposit" on a phone. */
 const shortTag = (tag: string) => tag.split(" · ")[0];
 
 export function planOverview(plan: Plan): PlanOverviewView {
   const fill = (text: string) => fillOrDrop(text, plan.price);
   const o = plan.overview;
   const page = PLAN_PAGES.find((p) => p.planId === plan.id);
-  // The label already says "Daily rent", so a daily figure drops its "/day" here.
-  const figures = planFigures(plan).map((f, i) => {
-    const value = i === 0 && plan.price.unit.includes("day") ? rupees(plan.price.amount) : f.value;
-    return { ...f, value, short: compact(value) };
-  });
+  const figures = planFigures(plan).map((f) => ({ ...f, short: compact(f.value) }));
   return {
     id: plan.id,
     name: fill(o.title) || plan.name.en,
@@ -237,10 +223,10 @@ export function planOverviews(content: SiteContent): PlanOverviewView[] {
 }
 
 /**
- * One point on a picker's money step: what is paid first (`deposit`, blank when Jarvis has no
- * figure), and the daily rent, up to `dailyMax` where Jarvis gives the rent as a range.
+ * What a picker's car asks first: the lowest upfront or deposit (`deposit`, blank when Jarvis has
+ * no figure), and whether more can be paid on top of it (`onwards`).
  */
-export type WizardOption = DepositOption & { dailyMax?: string };
+export type WizardOption = { deposit: string; onwards?: boolean };
 
 /** One car in a plan page's picker, with the figures the plan's calculator sets for it, if any. */
 export type WizardCar = {
@@ -249,15 +235,14 @@ export type WizardCar = {
   image: ImageSlot;
   /** Model years in the order the admin lists them; the first is picked to start with. */
   years: string[];
-  /** Upfront-to-daily points from the calculator. None means the plan's own figures apply. */
-  options: WizardOption[];
-  defaultOption: number;
-  /** Points per model year, when they differ by year (Jarvis's figures); "" for a car without years. */
-  yearOptions?: Record<string, WizardOption[]>;
+  /** The calculator's figure for the car, if it sets one. Without it the plan's own figures apply. */
+  option?: WizardOption;
+  /** The figure per model year, when it differs by year (Jarvis's figures); "" for a car without years. */
+  yearOptions?: Record<string, WizardOption>;
 };
 
 /** The plan's own figures in one city, for a car the calculator does not price. `money` is the upfront, or else the deposit. */
-export type WizardPrice = { amount: string; unit: string; money: string; upfront: boolean; months: string };
+export type WizardPrice = { money: string; upfront: boolean; months: string };
 
 export type PlanWizardView = {
   kind: WizardKind;
@@ -275,13 +260,13 @@ export type PlanWizardView = {
   byCity?: Record<string, WizardCar[]>;
   /** The plan's third figure, e.g. Liability: Zero. */
   term: Row;
-  /** The plan's first tag, e.g. "Rental plan". */
+  /** The plan's first tag, e.g. "Leasing plan". */
   tag: string;
 };
 
 /**
  * The cars a plan offers that have a photo, in the plan's order, then any car only the calculator
- * lists. A car the calculator prices keeps its studio photo and slider points.
+ * lists. A car the calculator prices keeps its studio photo and its lowest point.
  */
 function wizardCars(content: SiteContent, plan: Plan): WizardCar[] {
   const entries = content.calculators.find((c) => c.planId === plan.id)?.cars ?? [];
@@ -297,8 +282,7 @@ function wizardCars(content: SiteContent, plan: Plan): WizardCar[] {
         name: car.name,
         image,
         years: car.modelYears.split(",").map((y) => y.trim()).filter(Boolean),
-        options: entry?.options.filter((o) => o.daily || o.deposit) ?? [],
-        defaultOption: entry?.defaultOption ?? 0,
+        option: lowest(entry?.options ?? []),
       },
     ];
   });
@@ -317,11 +301,11 @@ export function planWizard(
   const prices = Object.fromEntries(
     cities.map((c) => {
       const p = priceIn(plan.price, plan.cityPrices, c.slug);
-      return [c.slug, { amount: p.amount, unit: p.unit, money: p.upfront || p.deposit, upfront: !!p.upfront, months: p.tenureMonths }];
+      return [c.slug, { money: p.upfront || p.deposit, upfront: !!p.upfront, months: p.tenureMonths }];
     })
   );
   // With no figure anywhere the last step would have nothing to show.
-  if (!cars.some((c) => c.options.length) && !Object.values(prices).some((p) => p.amount)) return null;
+  if (!cars.some((c) => c.option) && !Object.values(prices).some((p) => p.money)) return null;
   const term = { label: fillOrDrop(plan.page.term.label, plan.price), value: fillOrDrop(plan.page.term.value, plan.price) };
   return {
     kind,
@@ -337,32 +321,28 @@ export function planWizard(
   };
 }
 
+/** The lowest of the admin's sample points for a car, if any of them sets a figure. */
+function lowest(options: DepositOption[]): WizardOption | undefined {
+  const paid = options.map((o) => Number(o.deposit)).filter((n) => n > 0);
+  return paid.length ? { deposit: String(Math.min(...paid)), onwards: new Set(paid).size > 1 } : undefined;
+}
+
 /**
- * Every step from the lowest upfront (or deposit) to the highest, each with its daily rent: the
- * rent at the lowest, less `rentStep` for every `moneyStep` paid on top, as the plan calculator
- * works it out. One point without steps, with the rent's range where Jarvis gives one, and a
- * blank first payment where Jarvis has none, so the car still shows its own rent.
+ * A model year's lowest upfront (or deposit), and whether Jarvis lets more be paid on top. A blank
+ * figure where Jarvis has none, so the car does not borrow the plan's own.
  */
-function stepPoints(year: PlanYear): WizardOption[] {
-  const range = year.rentMax > year.rent ? { dailyMax: String(year.rentMax) } : {};
-  if (year.money === null) return [{ deposit: "", daily: String(year.rent), ...range }];
-  const high = year.maxMoney ?? year.money;
-  if (!year.moneyStep || !year.rentStep) return [{ deposit: String(year.money), daily: String(year.rent), ...range }];
-  const out: WizardOption[] = [];
-  // fleet-data.ts caps `maxMoney` so the rent stays a real price; the floor at zero is only a guard.
-  for (let i = 0, paid = year.money; paid <= high && i < 400; i++, paid += year.moneyStep) {
-    out.push({ deposit: String(paid), daily: String(Math.max(0, year.rent - i * year.rentStep)) });
-  }
-  return out;
+function yearPoint(year: PlanYear): WizardOption {
+  if (year.money === null) return { deposit: "" };
+  return { deposit: String(year.money), onwards: (year.maxMoney ?? year.money) > year.money };
 }
 
 /** "Wagon R - 2025" is offered as 2025; a model name without a year stays whole. */
 const yearChip = (name: string) => /(\d{4})\s*$/.exec(name)?.[1] ?? name;
 
 /**
- * The plan picker with Jarvis's cities, cars, model years and money points (Own Now's upfront
- * steps, Drive to Earn's deposit and rent) in place of the admin's sample points. Words, tenures
- * and the plan's term stay the admin's.
+ * The plan picker with Jarvis's cities, cars, model years and figures (Own Now's upfront, the
+ * deposit elsewhere) in place of the admin's sample points. Words, tenures and the plan's term
+ * stay the admin's.
  */
 export function withJarvisCars(base: PlanWizardView, calculator: PlanCalculatorView): PlanWizardView {
   const byCity = Object.fromEntries(
@@ -374,9 +354,8 @@ export function withJarvisCars(base: PlanWizardView, calculator: PlanCalculatorV
           name: car.name,
           image: car.photo ?? { label: car.name, url: "", alt: car.name },
           years: car.years.filter((y) => y.name).map((y) => yearChip(y.name)),
-          options: stepPoints(car.years[0]),
-          defaultOption: 0,
-          yearOptions: Object.fromEntries(car.years.map((y) => [y.name ? yearChip(y.name) : "", stepPoints(y)])),
+          option: yearPoint(car.years[0]),
+          yearOptions: Object.fromEntries(car.years.map((y) => [y.name ? yearChip(y.name) : "", yearPoint(y)])),
         })
       ),
     ])

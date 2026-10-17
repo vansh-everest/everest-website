@@ -21,7 +21,7 @@ function PlayMark({ className = "" }: { className?: string }) {
  *
  * The top blends out of the car section above (.fleet-blend). The phones are four layers cut from
  * one export, all on the same 960x1560 canvas so they stack exactly at any size: as the section
- * scrolls in they rise together, then the back phone slides out, its success badge pops, the rent
+ * scrolls in they rise together, then the back phone slides out, its success badge pops, the payment
  * bar fills and light crosses both screens.
  */
 const phoneSizes = "(min-width: 1024px) min(480px, 34vw), 41vw";
@@ -49,7 +49,7 @@ export function FleetApp({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
               <Image src="/figma/home/fleet-phone-badge.webp" alt="" fill sizes={phoneSizes} className="fleet-badge" />
             </div>
             <Image
-              src="/figma/home/fleet-phone-front.webp"
+              src="/figma/home/fleet-phone-week.webp"
               alt={copy.alt}
               fill
               sizes={phoneSizes}

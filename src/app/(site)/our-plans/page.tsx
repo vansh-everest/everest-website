@@ -9,7 +9,7 @@ import { getContent } from "@/lib/store";
 export const metadata: Metadata = {
   // The site layout's title template appends " | Everest Fleet".
   title: "Our Plans",
-  description: "Everest Fleet driver plans, from car ownership to renting, with the daily rent and deposit for each.",
+  description: "Everest Fleet driver plans, from car ownership to leasing, with the upfront or deposit for each.",
   alternates: { canonical: "/our-plans/" },
 };
 

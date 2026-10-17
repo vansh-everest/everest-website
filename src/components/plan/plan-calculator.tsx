@@ -1,20 +1,13 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronDown, CircleCheck, MapPin, Phone } from "lucide-react";
-import { CountUp, reducedMotion } from "@/components/fx/count-up";
+import { CountUp } from "@/components/fx/count-up";
 import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
 import { rupees } from "@/lib/content";
-import type { PlanCalculatorView, PlanYear } from "@/lib/fleet-data";
-import { nudgeSlider, useTapInvite } from "./wizard-motion";
-
-/** Jarvis's rule: the rent at the lowest upfront, less one step for every step paid on top. */
-function dailyRent(year: PlanYear, paid: number): number {
-  if (!year.moneyStep || !year.rentStep || year.money === null) return year.rent;
-  const steps = Math.round((paid - year.money) / year.moneyStep);
-  return Math.max(0, year.rent - steps * year.rentStep);
-}
+import type { PublicCalculatorView } from "@/lib/fleet-data";
+import { useTapInvite } from "./wizard-motion";
 
 /** "Wagon R - 2025" reads as 2025 in the Model year picker; a car Jarvis prices without years reads "Any Year". */
 const yearLabel = (name: string) => (name ? (/(\d{4})\s*$/.exec(name)?.[1] ?? name) : "Any Year");
@@ -61,17 +54,16 @@ function Picker({
   );
 }
 
-/** The two figure tiles: side by side and compact on phones, as on desktop from lg. */
+/** The figure tile: compact on phones, larger from lg. */
 const tile = "rounded-xl border border-line bg-[#f7f9fb] px-3 py-2.5 lg:rounded-2xl lg:bg-transparent lg:px-5 lg:py-4";
 const tileLabel = "text-xs leading-4 text-ink-soft lg:text-sm lg:leading-5";
 const tileValue = "text-lg font-bold leading-6 tabular-nums lg:text-[32px] lg:font-extrabold lg:leading-10";
 
 /**
- * A plan's calculator: city, car, model year and tenure, then what is paid first and the daily rent.
- * The slider appears wherever Jarvis gives a range and step sizes for what is paid first (see
- * planYear in fleet-data.ts); elsewhere the car's own rent range and deposit.
+ * A plan's calculator: city, car, model year and tenure, then the lowest that is paid first for
+ * them ("onwards" where Jarvis lets more be paid on top).
  */
-export function PlanCalculator({ view, id = "plan" }: { view: PlanCalculatorView; /** The section's anchor. */ id?: string }) {
+export function PlanCalculator({ view, id = "plan" }: { view: PublicCalculatorView; /** The section's anchor. */ id?: string }) {
   const cityId = useId();
   const [citySlug, setCitySlug] = useState(view.cities[0].slug);
   const city = view.cities.find((c) => c.slug === citySlug) ?? view.cities[0];
@@ -80,56 +72,27 @@ export function PlanCalculator({ view, id = "plan" }: { view: PlanCalculatorView
   const [yearIndex, setYearIndex] = useState(0);
   const year = car.years[yearIndex] ?? car.years[0];
   const [tenure, setTenure] = useState(view.tenures[0] ?? "");
-  const [upfront, setUpfront] = useState(year.money ?? 0);
-  const low = year.money ?? 0;
-  const high = year.maxMoney ?? low;
-  const paid = Math.min(Math.max(upfront, low), high);
-  const slides = year.money !== null && high > low && year.moneyStep > 0;
-  const daily = slides ? money(dailyRent(year, paid)) : year.rentMax > year.rent ? `${money(year.rent)}–${money(year.rentMax)}` : money(year.rent);
-  const fill = slides ? ((paid - low) / (high - low)) * 100 : 0;
+  const onwards = year.money !== null && (year.maxMoney ?? year.money) > year.money;
 
   const pickCity = (slug: string) => {
     const next = view.cities.find((c) => c.slug === slug) ?? view.cities[0];
     setCitySlug(next.slug);
     setCarKey(next.cars[0].key);
     setYearIndex(0);
-    setUpfront(next.cars[0].years[0].money ?? 0);
   };
   const pickCar = (key: string) => {
     const next = city.cars.find((c) => c.key === key) ?? city.cars[0];
     setCarKey(next.key);
     setYearIndex(0);
-    setUpfront(next.years[0].money ?? 0);
-  };
-  const pickYear = (i: number) => {
-    setYearIndex(i);
-    setUpfront((car.years[i] ?? car.years[0]).money ?? 0);
   };
 
   const perks = view.perks.map((p) => p.replace("{months}", tenure)).filter((p) => !p.includes("{"));
 
   // Until the visitor touches the calculator, its pickers are cued once in view (and once more
-  // after a quiet spell), and the slider shows once that it can be dragged.
+  // after a quiet spell).
   const [touched, setTouched] = useState(false);
   const pickers = useRef<HTMLDivElement>(null);
-  const slider = useRef<HTMLInputElement>(null);
-  const nudged = useRef(false);
   useTapInvite(pickers, !touched, 0, 500, 1);
-  useEffect(() => {
-    const el = slider.current;
-    if (!el || nudged.current || reducedMotion()) return;
-    const watch = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        watch.disconnect();
-        nudged.current = true;
-        nudgeSlider(el, 700);
-      },
-      { rootMargin: "0px 0px -10% 0px" }
-    );
-    watch.observe(el);
-    return () => watch.disconnect();
-  }, [slides]);
 
   return (
     <section id={id} data-no-reveal className="scroll-mt-24 bg-[#eef2f6] px-4 py-14 lg:py-[72px]">
@@ -205,7 +168,7 @@ export function PlanCalculator({ view, id = "plan" }: { view: PlanCalculatorView
               <Picker
                 label="Model year"
                 value={String(yearIndex)}
-                onChange={(v) => pickYear(Number(v))}
+                onChange={(v) => setYearIndex(Number(v))}
                 options={car.years.map((y, i) => ({ value: String(i), label: yearLabel(y.name) }))}
               />
               {view.tenures.length ? (
@@ -220,53 +183,14 @@ export function PlanCalculator({ view, id = "plan" }: { view: PlanCalculatorView
             </div>
 
             {year.money !== null ? (
-              <div className={`mt-9 items-baseline justify-between gap-4 ${slides ? "flex" : "hidden lg:flex"}`}>
-                <p className="text-lg leading-6 text-navy">{view.label}</p>
-                <p className="text-[28px] font-extrabold leading-8 text-navy tabular-nums">
-                  <CountUp value={money(paid)} duration={380} />
-                </p>
-              </div>
-            ) : null}
-            {slides ? (
-              <>
-                <input
-                  ref={slider}
-                  type="range"
-                  min={low}
-                  max={high}
-                  step={year.moneyStep}
-                  value={paid}
-                  onChange={(e) => setUpfront(Number(e.target.value))}
-                  aria-label={view.label}
-                  aria-valuetext={money(paid)}
-                  style={{ "--fill": `${fill}%` } as React.CSSProperties}
-                  className="range-slider mt-6 w-full"
-                />
-                <div className="mt-3 flex justify-between gap-3 text-xs leading-4 text-ink-soft lg:text-[13px]">
-                  <span>{money(low)}</span>
-                  <span className="hidden sm:inline">Higher {view.label.toLowerCase()} → lower daily</span>
-                  <span>{money(high)}</span>
-                </div>
-              </>
-            ) : null}
-
-            <div className={`mt-4 grid gap-3 lg:mt-8 ${year.money !== null ? "grid-cols-2" : ""}`}>
-              <div className={tile}>
-                <p className={tileLabel}>You Pay Each Day</p>
+              <div className={`mt-4 lg:mt-8 ${tile}`}>
+                <p className={tileLabel}>{view.label}</p>
                 <p className="mt-1 text-navy lg:mt-1.5">
-                  <CountUp value={daily} duration={380} className={tileValue} />
-                  {tenure ? <span className="block text-xs leading-4 lg:ml-2 lg:inline lg:text-xl lg:leading-7">for {tenure} months</span> : null}
+                  <CountUp value={money(year.money)} duration={380} className={tileValue} />
+                  {onwards ? <span className="ml-1.5 text-xs leading-4 lg:ml-2 lg:text-xl lg:leading-7">onwards</span> : null}
                 </p>
               </div>
-              {year.money !== null ? (
-                <div className={tile}>
-                  <p className={tileLabel}>{view.label}</p>
-                  <p className="mt-1 text-navy lg:mt-1.5">
-                    <CountUp value={money(paid)} duration={380} className={tileValue} />
-                  </p>
-                </div>
-              ) : null}
-            </div>
+            ) : null}
 
             {perks.length ? (
               <ul className="mt-4 space-y-2 lg:hidden">

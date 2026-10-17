@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { rupees } from "@/lib/content";
 import type { PlanWizardView, WizardCar } from "@/lib/plan-view";
 import type { Said } from "./wizard-copy";
 
@@ -15,44 +14,26 @@ export function Say({ text }: { text: Said }) {
   );
 }
 
-/** "150000" becomes "₹1.5L", "50000" becomes "₹50K": the phone slider's end labels. */
-export function shortRupees(digits: string): string {
-  const n = Number(digits);
-  if (!n) return "";
-  if (n >= 100000) return `₹${Number((n / 100000).toFixed(2))}L`;
-  if (n >= 1000) return `₹${Number((n / 1000).toFixed(1))}K`;
-  return rupees(digits);
-}
-
 /**
  * The figures the final step shows for the current choices. `upfront` says whether `money` is an
- * upfront or a deposit; `amountMax` tops the rent where it is a range.
+ * upfront or a deposit; `onwards` that more can be paid on top of it.
  */
-export type Figures = { amount: string; amountMax?: string; unit: string; money: string; upfront: boolean; months: string };
-
-/** "₹835" or, for a rent range, "₹835–₹980". */
-export function dailyText(f: Figures): string {
-  const low = rupees(f.amount);
-  return low && f.amountMax && Number(f.amountMax) > Number(f.amount) ? `${low}–${rupees(f.amountMax)}` : low;
-}
+export type Figures = { money: string; onwards?: boolean; upfront: boolean; months: string };
 
 /**
- * A car the calculator prices takes the chosen slider point; any other car takes the plan's own
- * figures in the chosen city.
+ * A car the calculator prices takes its own figure; any other car takes the plan's own figures in
+ * the chosen city.
  */
-export function figuresFor(view: PlanWizardView, car: WizardCar, city: string, tenure: string, index: number): Figures {
-  const base = view.prices[city] ?? { amount: "", unit: "/day", money: "", upfront: false, months: "" };
+export function figuresFor(view: PlanWizardView, car: WizardCar, city: string, tenure: string): Figures {
+  const base = view.prices[city] ?? { money: "", upfront: false, months: "" };
   // Jarvis's figures for this very car beat both the admin's sample point and the city's.
   const own = view.carPrices[city]?.[car.id];
   if (own) return { ...own, months: tenure || own.months || base.months };
-  const option = car.options.length ? car.options[Math.min(index, car.options.length - 1)] : undefined;
   const months = tenure || base.months;
-  // The calculator's slider is the upfront on a plan with an upfront step, the deposit elsewhere.
+  // The calculator's figure is the upfront on a plan with an upfront step, the deposit elsewhere.
   const upfront = view.kind === "now";
-  return option ? { amount: option.daily, amountMax: option.dailyMax, unit: "/day", money: option.deposit, upfront, months } : { ...base, months };
+  return car.option ? { money: car.option.deposit, onwards: car.option.onwards, upfront, months } : { ...base, months };
 }
-
-export const rentLabel = (unit: string) => (unit.includes("day") ? "Daily Rent" : "Rent");
 
 export function StepHeading({ id, children }: { id: string; children: ReactNode }) {
   return (

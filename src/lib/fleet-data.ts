@@ -562,12 +562,11 @@ export function wizardCarPrices(content: SiteContent, live: LiveData | null, pla
     for (const car of city.cars) {
       const carId = siteCarFor(car.name, content);
       const quote = carId ? car.plans[planId] : undefined;
-      if (!carId || !quote || quote.rent === null || out[slug]?.[carId]) continue;
+      if (!carId || !quote || out[slug]?.[carId]) continue;
       const money = quote.upfront ?? quote.deposit;
+      if (money === null) continue;
       (out[slug] ??= {})[carId] = {
-        amount: String(quote.rent),
-        unit: "/day",
-        money: money === null ? "" : String(money),
+        money: String(money),
         upfront: quote.upfront !== null,
         months: "",
       };
@@ -581,6 +580,23 @@ export function wizardCarPrices(content: SiteContent, live: LiveData | null, pla
 export type CalculatorCarView = { key: string; name: string; photo: ImageSlot | null; years: PlanYear[] };
 export type CalculatorCityView = { slug: string; name: string; cars: CalculatorCarView[] };
 export type PlanCalculatorView = { label: string; tenures: string[]; perks: string[]; cities: CalculatorCityView[] };
+
+/** A model year as a visitor's page gets it: what is paid first, and never the daily figure. */
+export type PublicYear = Pick<PlanYear, "name" | "money" | "maxMoney">;
+export type PublicCalculatorView = Omit<PlanCalculatorView, "cities"> & {
+  cities: { slug: string; name: string; cars: (Omit<CalculatorCarView, "years"> & { years: PublicYear[] })[] }[];
+};
+
+/** The calculator with the daily figures taken out, so they never reach the browser. */
+export function publicCalculator(view: PlanCalculatorView): PublicCalculatorView {
+  return {
+    ...view,
+    cities: view.cities.map((city) => ({
+      ...city,
+      cars: city.cars.map((car) => ({ ...car, years: car.years.map(({ name, money, maxMoney }) => ({ name, money, maxMoney })) })),
+    })),
+  };
+}
 
 /**
  * A plan page's calculator: for each city that offers the plan, the cars Jarvis prices there and

@@ -22,8 +22,10 @@ const MOVED: Array<[string, string]> = [
     (city): [string, string] => [`/thank-you-${city}`, `/drive-with-us/driver-job-in-${city}/`]
   ),
   ["/thank-you", "/"],
-  // The ESG report the old newsroom linked to.
-  ["/wp-content/uploads/2026/05/ESG-Report.pdf", "/docs/everest-fleet-esg-report-2024-25.pdf"],
+  // A driver guide under its earlier address.
+  ["/blog/rent-or-own-a-car", "/blog/lease-or-own-a-car/"],
+  // A PDF the old newsroom linked to.
+  ["/wp-content/uploads/2026/05/ESG-Report.pdf", "/investors/"],
 ];
 
 const nextConfig: NextConfig = {

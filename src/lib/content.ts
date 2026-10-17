@@ -57,8 +57,8 @@ export type FeatureIcon = (typeof FEATURE_ICONS)[number];
 export type Feature = { icon: FeatureIcon; title: string; body: string };
 
 /**
- * The plan's own page. `{price}`, `{deposit}`, `{upfront}` and `{months}` in any text print the
- * national figures.
+ * The plan's own page. `{deposit}`, `{upfront}` and `{months}` in any text print the national
+ * figures.
  */
 export type PlanPage = {
   /** First line of the hero heading, in white. */
@@ -68,7 +68,7 @@ export type PlanPage = {
   heroImage: ImageSlot;
   /** The photo card in the phone hero. Blank uses the hero photo. */
   heroImagePhone: ImageSlot;
-  /** The third hero figure, after the rent and the deposit, e.g. Tenure: 12 Months. */
+  /** The third hero figure, after the upfront or the deposit, e.g. Tenure: 12 Months. */
   term: Row;
   /** The chips under the hero figures, e.g. "Ownership plan". Also on the Our Plans page. */
   tags: string[];
@@ -113,8 +113,6 @@ export type Plan = {
   summary: Record<Locale, string>;
   /** The tab above the card, e.g. "Ownership Plan". */
   tag: string;
-  /** The rent label on this plan's car cards, e.g. "Rent starting from". */
-  priceLabel: string;
   theme: "dark" | "light";
   price: Price;
   /** Printed after the figures on the home page card, e.g. "Onwards". */
@@ -233,7 +231,7 @@ export type SiteContent = {
 };
 
 /** Bump when SiteContent changes shape, so no deployment reads a cache written by an older one. */
-export const CONTENT_VERSION = "11";
+export const CONTENT_VERSION = "12";
 
 export const placeholder = (label: string, alt = ""): ImageSlot => ({ label, url: "", alt });
 
@@ -308,7 +306,6 @@ const PLAN_SEED: Plan[] = [
       ta: "முதலில் குறைந்த தொகை, பிறகு தினசரி கட்டணம், காலம் முடிவில் கார் உங்களுடையது.",
     },
     tag: "Ownership Plan",
-    priceLabel: "Rent starting from",
     theme: "dark",
     price: { amount: "650", unit: "/day", deposit: "15000", upfront: "", tenureMonths: "" },
     depositNote: "Onwards",
@@ -323,7 +320,7 @@ const PLAN_SEED: Plan[] = [
       heroImage: { label: "Own Now, hero photo", url: "/figma/own-hero.webp", alt: "Everest driver holding up the keys to his car" },
       heroImagePhone: { label: "Own Now, phone hero photo", url: "/figma/plans/hero-phone-own-now.webp", alt: "An Everest driver holding up the keys to his car" },
       term: { label: "Tenure", value: "12 Months" },
-      tags: ["Ownership plan", "High upfront · low daily rental plan", "Non-refundable"],
+      tags: ["Ownership plan", "High upfront", "Non-refundable"],
       whyTag: "Benefits of this plan",
       whyTitle: "Everything a driver needs, in one plan",
       whySubtitle: "",
@@ -345,7 +342,6 @@ const PLAN_SEED: Plan[] = [
       image: { label: "Own Now, Our Plans photo", url: "/figma/our-plans/own-now.webp", alt: "An Everest driver with the keys to his new car at the showroom" },
       points: [
         "Select tenure & pay small upfront around {upfront} onwards",
-        "During tenure pay rent which is {price} onwards",
         "Own your car in less than 12 months",
         "No Regulatory Charges",
         "24×7 Breakdown Help, zero maintenance",
@@ -369,22 +365,21 @@ const PLAN_SEED: Plan[] = [
       ta: "டெபாசிட் மற்றும் மாதத் தவணைகள், காலம் முடிவில் உரிமை உங்களுடையது.",
     },
     tag: "Ownership Plan",
-    priceLabel: "Rent starting from",
     theme: "light",
     price: { amount: "499", unit: "+/mo", deposit: "5000", upfront: "", tenureMonths: "" },
     depositNote: "",
     tenureNote: "",
     cityPrices: {},
-    rows: [{ label: "Flexible", value: "No fixed rent - earnings-linked model" }],
+    rows: [{ label: "Flexible", value: "Earnings-linked model" }],
     benefits: ["Insurance Included", "No Regulatory Charges", "Free Repair & Maintenance", "24×7 Breakdown Help"],
     carIds: ["wagonr", "s-presso", "tigor", "rumion", "swift-dzire"],
     page: {
-      headline: "Own a Car Without",
-      highlight: "a Fixed Rent",
+      headline: "Own a Car With",
+      highlight: "a Low Deposit",
       heroImage: { label: "Drive to Own, hero photo", url: "/figma/hero-drive-to-own.webp", alt: "A hand holding out car keys in front of a row of Everest cars" },
       heroImagePhone: { label: "Drive to Own, phone hero photo", url: "/figma/plans/hero-phone-drive-to-own.webp", alt: "A hand holding out car keys beside a white car" },
       term: { label: "Ownership", value: "24 Months" },
-      tags: ["Ownership plan", "Low deposit · high daily rental plan", "Refundable"],
+      tags: ["Ownership plan", "Low deposit", "Refundable"],
       whyTag: "Benefits of this plan",
       whyTitle: "Why Drivers Choose Drive To Own",
       whySubtitle: "",
@@ -415,16 +410,15 @@ const PLAN_SEED: Plan[] = [
     name: same("Drive To Earn"),
     shortName: "DTE",
     summary: {
-      en: "A refundable deposit and a daily rent, with no commitment to buy.",
-      hi: "वापस मिलने वाला डिपॉज़िट और रोज़ का किराया, खरीदने की कोई बाध्यता नहीं।",
-      te: "తిరిగి ఇచ్చే డిపాజిట్ మరియు రోజువారీ అద్దె, కొనుగోలు తప్పనిసరి కాదు.",
-      mr: "परत मिळणारे डिपॉझिट आणि रोजचे भाडे, गाडी विकत घेण्याचे बंधन नाही.",
-      kn: "ಹಿಂತಿರುಗಿಸುವ ಠೇವಣಿ ಮತ್ತು ದಿನದ ಬಾಡಿಗೆ, ಖರೀದಿಸುವ ಕಡ್ಡಾಯವಿಲ್ಲ.",
-      bn: "ফেরতযোগ্য ডিপোজিট আর রোজের ভাড়া, কেনার কোনো বাধ্যবাধকতা নেই।",
-      ta: "திரும்பக் கிடைக்கும் டெபாசிட் மற்றும் தினசரி வாடகை, வாங்க வேண்டிய கட்டாயம் இல்லை.",
+      en: "A refundable deposit, with no commitment to buy.",
+      hi: "वापस मिलने वाला डिपॉज़िट, खरीदने की कोई बाध्यता नहीं।",
+      te: "తిరిగి ఇచ్చే డిపాజిట్, కొనుగోలు తప్పనిసరి కాదు.",
+      mr: "परत मिळणारे डिपॉझिट, गाडी विकत घेण्याचे बंधन नाही.",
+      kn: "ಹಿಂತಿರುಗಿಸುವ ಠೇವಣಿ, ಖರೀದಿಸುವ ಕಡ್ಡಾಯವಿಲ್ಲ.",
+      bn: "ফেরতযোগ্য ডিপোজিট, কেনার কোনো বাধ্যবাধকতা নেই।",
+      ta: "திரும்பக் கிடைக்கும் டெபாசிட், வாங்க வேண்டிய கட்டாயம் இல்லை.",
     },
-    tag: "Renting Plan",
-    priceLabel: "Rent starting from",
+    tag: "Leasing Plan",
     theme: "light",
     price: { amount: "399", unit: "/day", deposit: "5000", upfront: "", tenureMonths: "" },
     depositNote: "",
@@ -439,7 +433,7 @@ const PLAN_SEED: Plan[] = [
       heroImage: { label: "Drive to Earn, hero photo", url: "/figma/hero-drive-to-earn.webp", alt: "A driver sitting in the open door of his Everest car" },
       heroImagePhone: { label: "Drive to Earn, phone hero photo", url: "/figma/plans/hero-phone-drive-to-earn.webp", alt: "A driver sitting in the open door of his Everest car" },
       term: { label: "Liability", value: "Zero" },
-      tags: ["Rental plan", "Low deposit · high daily rental plan", "Refundable"],
+      tags: ["Leasing plan", "Low deposit", "Refundable"],
       whyTag: "Benefits of this plan",
       whyTitle: "Why Drivers Choose Drive To Earn",
       whySubtitle: "",
@@ -459,7 +453,7 @@ const PLAN_SEED: Plan[] = [
       note: "Leasing Plan",
       steps: [],
       image: { label: "Drive to Earn, Our Plans photo", url: "/figma/our-plans/drive-to-earn.webp", alt: "A driver checking his phone beside an Everest car" },
-      points: ["Simple renting, no commitment", "Low refundable deposit", "We set up your Uber account", "Earn Uber incentives on every ride", "24×7 Breakdown Help, zero maintenance"],
+      points: ["Simple leasing, no commitment", "Low refundable deposit", "We set up your Uber account", "Earn Uber incentives on every ride", "24×7 Breakdown Help, zero maintenance"],
       highlights: ["Earnings-Linked", "100% Uber incentive", "24×7 Breakdown Help", "Free Maintenance"],
     },
   },
@@ -472,7 +466,6 @@ const PLAN_SEED: Plan[] = [
     shortName: "RS",
     summary: same(""),
     tag: "Earning model",
-    priceLabel: "Rent starting from",
     theme: "light",
     price: emptyPrice(),
     depositNote: "",
@@ -489,12 +482,12 @@ const PLAN_SEED: Plan[] = [
       term: { label: "", value: "" },
       tags: [],
       whyTag: "Benefits of this plan",
-      whyTitle: "No rent to find on a slow day",
+      whyTitle: "Pay less on a slow day",
       whySubtitle: "Your cost moves with you.",
       benefitsImage: placeholder("Revenue Share, benefits photo"),
       // The design also carries "Share split" and "Deposit" cards, to add once those figures are set.
       features: [
-        { icon: "card", title: "No fixed rent", body: "Your cost moves with your earnings" },
+        { icon: "card", title: "No fixed cost", body: "Your cost moves with your earnings" },
         { icon: "coins", title: "Pay as you earn", body: "Earn less, pay less, automatically" },
         INSURANCE,
         SUPPORT,
@@ -606,23 +599,23 @@ const SEED_POSTS: Post[] = [
     body: [
       "Four documents are checked before you take a car: an Aadhaar card, a PAN card, a driving licence and proof of address. Bring the originals to the hub.",
       "The driving licence has to be valid on the day you collect the car. The hub will tell you whether your city also requires a commercial endorsement, because that varies by state.",
-      "Proof of address can be a rent agreement, a utility bill or a passport. It has to carry the address you actually live at, not a permanent address in another state.",
+      "Proof of address can be a utility bill or a passport. It has to carry the address you actually live at, not a permanent address in another state.",
       "Nothing is charged for the application itself. The refundable deposit is paid at the hub once a car is assigned to you.",
     ],
   },
   {
-    slug: "rent-or-own-a-car",
+    slug: "lease-or-own-a-car",
     locale: "en",
-    title: "Renting, or owning at the end of the term",
+    title: "Leasing, or owning at the end of the term",
     excerpt: "Three plans, and the question each one answers.",
     date: "2026-09-16",
     published: true,
     coverImage: placeholder("Guide cover, plans", ""),
     body: [
-      "Leasing is a refundable deposit and a daily rent, with no commitment to buy. It suits a driver testing whether full time driving works for them.",
+      "Leasing is a refundable deposit, with no commitment to buy. It suits a driver testing whether full time driving works for them.",
       "Drive to Own is a deposit and monthly instalments, and ownership transfers at the end of the term.",
       "Own Now is a lower amount upfront and a daily payment, and the car transfers to you at the end.",
-      "Insurance and maintenance are covered on all three. Fuel or charging is paid by the driver. The exact deposit and daily figure depends on the city and is confirmed at the hub.",
+      "Insurance and maintenance are covered on all three. Fuel or charging is paid by the driver. The exact deposit depends on the city and is confirmed at the hub.",
     ],
   },
   {
@@ -635,7 +628,7 @@ const SEED_POSTS: Post[] = [
     coverImage: placeholder("Guide cover, payouts", ""),
     body: [
       "Earnings reach your bank account every week, directly. There is no cash handling and no waiting on a monthly cycle.",
-      "What you keep is what Uber pays you less the rent for the week. Fuel or charging is yours. Servicing, repairs and insurance are ours.",
+      "What you keep is what Uber pays you less your plan payment for the week. Fuel or charging is yours. Servicing, repairs and insurance are ours.",
       "A refundable deposit is held for the length of the term and returned when the car comes back, subject to the condition it is returned in.",
     ],
   },
@@ -650,7 +643,7 @@ const SEED_POSTS: Post[] = [
     body: [
       "गाड़ी लेने से पहले चार कागज़ देखे जाते हैं: आधार कार्ड, पैन कार्ड, ड्राइविंग लाइसेंस और पते का प्रमाण। हब पर असली कागज़ साथ लाइए।",
       "जिस दिन आप गाड़ी लेंगे उस दिन ड्राइविंग लाइसेंस वैध होना चाहिए। आपके शहर में कमर्शियल एंडोर्समेंट चाहिए या नहीं, यह हब बताएगा, क्योंकि हर राज्य में नियम अलग है।",
-      "पते के प्रमाण में रेंट एग्रीमेंट, बिजली का बिल या पासपोर्ट चलेगा। उस पर वही पता होना चाहिए जहाँ आप अभी रहते हैं।",
+      "पते के प्रमाण में बिजली का बिल या पासपोर्ट चलेगा। उस पर वही पता होना चाहिए जहाँ आप अभी रहते हैं।",
       "अप्लाई करने की कोई फ़ीस नहीं है। वापस मिलने वाला डिपॉज़िट गाड़ी मिलने पर हब पर लिया जाता है।",
     ],
   },
@@ -665,7 +658,7 @@ const SEED_POSTS: Post[] = [
     body: [
       "కారు ఇచ్చే ముందు నాలుగు పత్రాలు చూస్తారు: ఆధార్ కార్డు, పాన్ కార్డు, డ్రైవింగ్ లైసెన్స్ మరియు చిరునామా రుజువు. హబ్‌కు అసలు పత్రాలు తీసుకురండి.",
       "కారు తీసుకునే రోజున డ్రైవింగ్ లైసెన్స్ చెల్లుబాటులో ఉండాలి. మీ నగరంలో కమర్షియల్ ఎండార్స్‌మెంట్ అవసరమా అనేది హబ్ చెబుతుంది, ఎందుకంటే అది రాష్ట్రాన్ని బట్టి మారుతుంది.",
-      "చిరునామా రుజువుగా అద్దె ఒప్పందం, కరెంటు బిల్లు లేదా పాస్‌పోర్ట్ పనికొస్తుంది. దానిపై మీరు ప్రస్తుతం నివసించే చిరునామా ఉండాలి.",
+      "చిరునామా రుజువుగా కరెంటు బిల్లు లేదా పాస్‌పోర్ట్ పనికొస్తుంది. దానిపై మీరు ప్రస్తుతం నివసించే చిరునామా ఉండాలి.",
       "దరఖాస్తుకు ఎలాంటి రుసుము లేదు. తిరిగి ఇచ్చే డిపాజిట్ కారు కేటాయించిన తర్వాత హబ్‌లో తీసుకుంటారు.",
     ],
   },
@@ -680,7 +673,7 @@ const SEED_POSTS: Post[] = [
     body: [
       "गाडी देण्याआधी चार कागदपत्रे तपासली जातात: आधार कार्ड, पॅन कार्ड, ड्रायव्हिंग लायसन्स आणि पत्त्याचा पुरावा. हबवर मूळ कागदपत्रे सोबत आणा.",
       "ज्या दिवशी तुम्ही गाडी घ्याल त्या दिवशी ड्रायव्हिंग लायसन्स वैध असले पाहिजे. तुमच्या शहरात कमर्शियल एंडोर्समेंट लागते का, हे हब सांगेल, कारण हा नियम राज्यानुसार बदलतो.",
-      "पत्त्याच्या पुराव्यासाठी भाडेकरार, वीज बिल किंवा पासपोर्ट चालेल. त्यावर तुम्ही सध्या जिथे राहता तोच पत्ता असला पाहिजे.",
+      "पत्त्याच्या पुराव्यासाठी वीज बिल किंवा पासपोर्ट चालेल. त्यावर तुम्ही सध्या जिथे राहता तोच पत्ता असला पाहिजे.",
       "अर्ज करण्यासाठी कोणतेही शुल्क नाही. परत मिळणारे डिपॉझिट गाडी मिळाल्यावर हबवर घेतले जाते.",
     ],
   },
@@ -695,7 +688,7 @@ const SEED_POSTS: Post[] = [
     body: [
       "ಕಾರು ಕೊಡುವ ಮೊದಲು ನಾಲ್ಕು ದಾಖಲೆಗಳನ್ನು ಪರಿಶೀಲಿಸಲಾಗುತ್ತದೆ: ಆಧಾರ್ ಕಾರ್ಡ್, ಪ್ಯಾನ್ ಕಾರ್ಡ್, ಡ್ರೈವಿಂಗ್ ಲೈಸೆನ್ಸ್ ಮತ್ತು ವಿಳಾಸದ ಪುರಾವೆ. ಹಬ್‌ಗೆ ಮೂಲ ದಾಖಲೆಗಳನ್ನು ತನ್ನಿ.",
       "ಕಾರು ಪಡೆಯುವ ದಿನ ನಿಮ್ಮ ಡ್ರೈವಿಂಗ್ ಲೈಸೆನ್ಸ್ ಮಾನ್ಯವಾಗಿರಬೇಕು. ನಿಮ್ಮ ನಗರದಲ್ಲಿ ಕಮರ್ಷಿಯಲ್ ಎಂಡೋರ್ಸ್‌ಮೆಂಟ್ ಬೇಕೇ ಎಂದು ಹಬ್ ತಿಳಿಸುತ್ತದೆ, ಏಕೆಂದರೆ ಅದು ರಾಜ್ಯದಿಂದ ರಾಜ್ಯಕ್ಕೆ ಬದಲಾಗುತ್ತದೆ.",
-      "ವಿಳಾಸದ ಪುರಾವೆಯಾಗಿ ಬಾಡಿಗೆ ಒಪ್ಪಂದ, ವಿದ್ಯುತ್ ಬಿಲ್ ಅಥವಾ ಪಾಸ್‌ಪೋರ್ಟ್ ನಡೆಯುತ್ತದೆ. ಅದರಲ್ಲಿ ನೀವು ಈಗ ವಾಸಿಸುತ್ತಿರುವ ವಿಳಾಸವೇ ಇರಬೇಕು.",
+      "ವಿಳಾಸದ ಪುರಾವೆಯಾಗಿ ವಿದ್ಯುತ್ ಬಿಲ್ ಅಥವಾ ಪಾಸ್‌ಪೋರ್ಟ್ ನಡೆಯುತ್ತದೆ. ಅದರಲ್ಲಿ ನೀವು ಈಗ ವಾಸಿಸುತ್ತಿರುವ ವಿಳಾಸವೇ ಇರಬೇಕು.",
       "ಅರ್ಜಿಗೆ ಯಾವುದೇ ಶುಲ್ಕವಿಲ್ಲ. ಹಿಂತಿರುಗಿಸುವ ಠೇವಣಿಯನ್ನು ಕಾರು ಸಿಕ್ಕ ನಂತರ ಹಬ್‌ನಲ್ಲಿ ಪಡೆಯಲಾಗುತ್ತದೆ.",
     ],
   },
@@ -710,7 +703,7 @@ const SEED_POSTS: Post[] = [
     body: [
       "গাড়ি দেওয়ার আগে চারটি কাগজ দেখা হয়: আধার কার্ড, প্যান কার্ড, ড্রাইভিং লাইসেন্স আর ঠিকানার প্রমাণ। হাবে আসল কাগজগুলো সঙ্গে আনুন।",
       "যেদিন গাড়ি নেবেন সেদিন ড্রাইভিং লাইসেন্স বৈধ থাকতে হবে। আপনার শহরে কমার্শিয়াল এনডোর্সমেন্ট লাগবে কিনা, তা হাব জানাবে, কারণ এই নিয়ম রাজ্যভেদে আলাদা।",
-      "ঠিকানার প্রমাণ হিসেবে ভাড়ার চুক্তি, বিদ্যুতের বিল বা পাসপোর্ট চলবে। তাতে আপনি এখন যেখানে থাকেন সেই ঠিকানাই থাকতে হবে।",
+      "ঠিকানার প্রমাণ হিসেবে বিদ্যুতের বিল বা পাসপোর্ট চলবে। তাতে আপনি এখন যেখানে থাকেন সেই ঠিকানাই থাকতে হবে।",
       "আবেদনের জন্য কোনো ফি নেই। ফেরতযোগ্য ডিপোজিট গাড়ি পাওয়ার পর হাবে নেওয়া হয়।",
     ],
   },
@@ -725,7 +718,7 @@ const SEED_POSTS: Post[] = [
     body: [
       "கார் தருவதற்கு முன் நான்கு ஆவணங்கள் சரிபார்க்கப்படும்: ஆதார் அட்டை, பான் அட்டை, ஓட்டுநர் உரிமம் மற்றும் முகவரிச் சான்று. ஹப்புக்கு அசல் ஆவணங்களைக் கொண்டு வாருங்கள்.",
       "கார் எடுக்கும் நாளில் ஓட்டுநர் உரிமம் செல்லுபடியாக இருக்க வேண்டும். உங்கள் நகரத்தில் கமர்ஷியல் எண்டார்ஸ்மென்ட் தேவையா என்பதை ஹப் சொல்லும், ஏனெனில் அது மாநிலத்துக்கு மாநிலம் மாறுபடும்.",
-      "முகவரிச் சான்றாக வாடகை ஒப்பந்தம், மின் கட்டண ரசீது அல்லது பாஸ்போர்ட் ஏற்கப்படும். அதில் நீங்கள் இப்போது வசிக்கும் முகவரியே இருக்க வேண்டும்.",
+      "முகவரிச் சான்றாக மின் கட்டண ரசீது அல்லது பாஸ்போர்ட் ஏற்கப்படும். அதில் நீங்கள் இப்போது வசிக்கும் முகவரியே இருக்க வேண்டும்.",
       "விண்ணப்பிக்க கட்டணம் எதுவும் இல்லை. திரும்பக் கிடைக்கும் டெபாசிட் கார் ஒதுக்கப்பட்ட பிறகு ஹப்பில் வசூலிக்கப்படும்.",
     ],
   },
@@ -807,11 +800,12 @@ export function headline(price: Price): string {
 
 /**
  * Admin text can name a figure instead of repeating it, so a price change reaches every
- * sentence that quotes it. A token with no figure behind it prints nothing.
+ * sentence that quotes it. A token with no figure behind it prints nothing. `{price}`, the daily
+ * figure, is never printed on the site: a text that quotes it is dropped whole.
  */
 export function fillFigures(text: string, price: Price, months = price.tenureMonths): string {
+  if (text.includes("{price}")) return "";
   return text
-    .replaceAll("{price}", headline(price))
     .replaceAll("{deposit}", rupees(price.deposit))
     .replaceAll("{upfront}", rupees(price.upfront))
     .replaceAll("{months}", months)
@@ -827,7 +821,7 @@ const TOKENS = /\{(price|deposit|upfront|months)\}/g;
  */
 export function fillOrDrop(text: string, price: Price, months = price.tenureMonths): string {
   const blank = [...text.matchAll(TOKENS)].some(([, token]) => {
-    if (token === "price") return !price.amount;
+    if (token === "price") return true;
     if (token === "months") return !months;
     return !price[token as "deposit" | "upfront"];
   });

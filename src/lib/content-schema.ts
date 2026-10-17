@@ -142,7 +142,6 @@ function blankPlan(id: string): Plan {
     shortName: "",
     summary: blankText(),
     tag: "",
-    priceLabel: "Rent starting from",
     theme: "light",
     price: emptyPrice(),
     depositNote: "",
@@ -250,7 +249,6 @@ function plans(v: unknown, cityList: string[]): Plan[] {
       shortName: "shortName" in o ? text(o.shortName, 16) : base.shortName,
       summary: localized(o.summary, base.summary, 400),
       tag: "tag" in o ? text(o.tag, 40) : base.tag,
-      priceLabel: "priceLabel" in o ? text(o.priceLabel, 40) : base.priceLabel,
       theme: o.theme === "dark" || o.theme === "light" ? o.theme : base.theme,
       price: legacyPrice(o, price(o.price, base.price)),
       depositNote: "depositNote" in o ? text(o.depositNote, 24) : base.depositNote,
@@ -439,8 +437,56 @@ function testimonials(v: unknown): Testimonial[] {
     .filter((t) => t.video);
 }
 
+/**
+ * Seed wording that named the rent, reworded. Content saved before the change still holds the old
+ * seed text, so a whole line that matches takes its new wording ("" drops it from its list) and
+ * a phrase inside a longer text (a summary, a guide paragraph) is replaced where it appears.
+ */
+const REWORDED: Record<string, string> = {
+  "High upfront · low daily rental plan": "High upfront",
+  "Low deposit · high daily rental plan": "Low deposit",
+  "No fixed rent - earnings-linked model": "Earnings-linked model",
+  "Own a Car Without": "Own a Car With",
+  "a Fixed Rent": "a Low Deposit",
+  "Renting Plan": "Leasing Plan",
+  "Rental plan": "Leasing plan",
+  "Simple renting, no commitment": "Simple leasing, no commitment",
+  "No fixed rent": "No fixed cost",
+  "No rent to find on a slow day": "Pay less on a slow day",
+  "rent-or-own-a-car": "lease-or-own-a-car",
+  "Renting, or owning at the end of the term": "Leasing, or owning at the end of the term",
+  "During tenure pay rent which is {price} onwards": "",
+};
+
+const REPHRASED: [string, string][] = [
+  ["A refundable deposit and a daily rent, with no commitment to buy.", "A refundable deposit, with no commitment to buy."],
+  ["वापस मिलने वाला डिपॉज़िट और रोज़ का किराया, ", "वापस मिलने वाला डिपॉज़िट, "],
+  ["తిరిగి ఇచ్చే డిపాజిట్ మరియు రోజువారీ అద్దె, ", "తిరిగి ఇచ్చే డిపాజిట్, "],
+  ["परत मिळणारे डिपॉझिट आणि रोजचे भाडे, ", "परत मिळणारे डिपॉझिट, "],
+  ["ಹಿಂತಿರುಗಿಸುವ ಠೇವಣಿ ಮತ್ತು ದಿನದ ಬಾಡಿಗೆ, ", "ಹಿಂತಿರುಗಿಸುವ ಠೇವಣಿ, "],
+  ["ফেরতযোগ্য ডিপোজিট আর রোজের ভাড়া, ", "ফেরতযোগ্য ডিপোজিট, "],
+  ["திரும்பக் கிடைக்கும் டெபாசிட் மற்றும் தினசரி வாடகை, ", "திரும்பக் கிடைக்கும் டெபாசிட், "],
+  ["Proof of address can be a rent agreement, a utility bill or a passport.", "Proof of address can be a utility bill or a passport."],
+  ["पते के प्रमाण में रेंट एग्रीमेंट, बिजली", "पते के प्रमाण में बिजली"],
+  ["చిరునామా రుజువుగా అద్దె ఒప్పందం, కరెంటు", "చిరునామా రుజువుగా కరెంటు"],
+  ["पत्त्याच्या पुराव्यासाठी भाडेकरार, वीज", "पत्त्याच्या पुराव्यासाठी वीज"],
+  ["ವಿಳಾಸದ ಪುರಾವೆಯಾಗಿ ಬಾಡಿಗೆ ಒಪ್ಪಂದ, ವಿದ್ಯುತ್", "ವಿಳಾಸದ ಪುರಾವೆಯಾಗಿ ವಿದ್ಯುತ್"],
+  ["ঠিকানার প্রমাণ হিসেবে ভাড়ার চুক্তি, বিদ্যুতের", "ঠিকানার প্রমাণ হিসেবে বিদ্যুতের"],
+  ["முகவரிச் சான்றாக வாடகை ஒப்பந்தம், மின்", "முகவரிச் சான்றாக மின்"],
+  ["Leasing is a refundable deposit and a daily rent, with no commitment to buy.", "Leasing is a refundable deposit, with no commitment to buy."],
+  ["The exact deposit and daily figure depends on the city", "The exact deposit depends on the city"],
+  ["less the rent for the week.", "less your plan payment for the week."],
+];
+
+function reworded(v: unknown): unknown {
+  if (typeof v === "string") return REPHRASED.reduce((s, [old, next]) => s.replaceAll(old, next), Object.hasOwn(REWORDED, v) ? REWORDED[v] : v);
+  if (Array.isArray(v)) return v.filter((item) => !(typeof item === "string" && Object.hasOwn(REWORDED, item) && REWORDED[item] === "")).map(reworded);
+  if (v && typeof v === "object") return Object.fromEntries(Object.entries(v).map(([k, item]) => [k, reworded(item)]));
+  return v;
+}
+
 export function normalizeContent(raw: unknown): SiteContent {
-  const o = obj(raw);
+  const o = obj(reworded(raw));
   const cityList = DEFAULT_CONTENT.cities.map((c) => c.slug);
   const carList = cars(o.cars, cityList);
   const carIds = carList.map((c) => c.id);

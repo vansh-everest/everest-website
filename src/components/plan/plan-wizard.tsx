@@ -5,7 +5,7 @@ import { Check, IndianRupee, Key } from "lucide-react";
 import { reducedMotion } from "@/components/fx/count-up";
 import type { PlanWizardView } from "@/lib/plan-view";
 import { WIZARD_COPY } from "./wizard-copy";
-import { enterStep, keepInView, leaveStep, nudgeSlider, playIntro, resizeCard, useTapInvite } from "./wizard-motion";
+import { enterStep, keepInView, leaveStep, playIntro, resizeCard, useTapInvite } from "./wizard-motion";
 import { ResultStep } from "./wizard-result";
 import { CarStep, CityStep, MoneyStep } from "./wizard-steps";
 import { figuresFor, StepFooter } from "./wizard-ui";
@@ -115,10 +115,9 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
   const [carId, setCarId] = useState(cars[0].id);
   const picked = cars.find((c) => c.id === carId) ?? cars[0];
   const [year, setYear] = useState(picked.years[0] ?? "");
-  // A car priced per model year slides along that year's points.
-  const car = { ...picked, options: picked.yearOptions?.[year] ?? picked.options };
+  // A car priced per model year takes that year's figure.
+  const car = { ...picked, option: picked.yearOptions?.[year] ?? picked.option };
   const [tenure, setTenure] = useState(view.tenures[0] ?? "");
-  const [index, setIndex] = useState(picked.defaultOption);
 
   // Steps the visitor has made a choice on (or moved on from): their way forward is awake.
   const [chosen, setChosen] = useState<readonly number[]>([]);
@@ -134,7 +133,6 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
   const leaving = useRef(false);
   const target = useRef(0);
   const before = useRef<{ dir: number; width: number; height: number } | null>(null);
-  const hinted = useRef(false);
 
   // Before the picker scrolls into view its title, steps and card wait unseen; then they play in.
   useEffect(() => {
@@ -170,16 +168,11 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
     const from = before.current;
     before.current = null;
     if (!box || !body) return;
-    const arrive = enterStep(body, from?.dir ?? 1);
+    enterStep(body, from?.dir ?? 1);
     if (from && window.matchMedia("(min-width: 1024px)").matches) resizeCard(box, from);
     const anchor = [...(section.current?.querySelectorAll<HTMLElement>("[data-wz-anchor]") ?? [])].find((el) => el.offsetHeight > 0);
     keepInView(anchor ?? box);
     document.getElementById(headingId)?.focus({ preventScroll: true });
-    const slider = body.querySelector<HTMLInputElement>('input[type="range"]');
-    if (slider && !hinted.current) {
-      hinted.current = true;
-      nudgeSlider(slider, arrive + 250);
-    }
   }, [step, headingId]);
 
   function go(to: number) {
@@ -214,7 +207,6 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
     const next = from.find((c) => c.id === id) ?? from[0];
     setCarId(next.id);
     setYear(next.years[0] ?? "");
-    setIndex(next.defaultOption);
   }
 
   function pickCity(slug: string) {
@@ -224,14 +216,10 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
     if (!offered.some((c) => c.id === carId)) pickCar(offered[0].id, offered);
   }
 
-  function pickYear(next: string) {
-    setYear(next);
-    setIndex(0);
-  }
 
   const cityName = view.cities.find((c) => c.slug === city)?.name ?? "";
   // Only a money step with a tenure asks for one; the others use the plan's own term.
-  const figures = figuresFor(view, car, city, money?.tenure ? tenure : "", index);
+  const figures = figuresFor(view, car, city, money?.tenure ? tenure : "");
   const carLabel = year ? `${car.name} ${year}` : car.name;
   const name = copy.steps[step];
 
@@ -240,7 +228,7 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
   const single = [
     view.cities.length < 2,
     cars.length < 2 && (!yearsOnCar || car.years.length < 2),
-    (!money?.tenure || view.tenures.length < 2) && (yearsOnCar || car.years.length < 2) && car.options.length < 2,
+    (!money?.tenure || view.tenures.length < 2) && (yearsOnCar || car.years.length < 2),
   ];
   const awake = chosen.includes(step) || Boolean(single[step]);
   // The first step is cued as soon as the intro has landed; a later one once its choices have.
@@ -302,7 +290,7 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
               year={year}
               onYear={(y) => {
                 choose(1);
-                pickYear(y);
+                setYear(y);
               }}
               showYears={yearsOnCar}
               headingId={headingId}
@@ -325,12 +313,7 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
               year={year}
               onYear={(y) => {
                 choose(2);
-                pickYear(y);
-              }}
-              index={index}
-              onIndex={(i) => {
-                choose(2);
-                setIndex(i);
+                setYear(y);
               }}
               figures={figures}
               headingId={headingId}

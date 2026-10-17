@@ -4,7 +4,7 @@ import { CountUp } from "@/components/fx/count-up";
 import { rupees } from "@/lib/content";
 import type { CityOption, WizardCar } from "@/lib/plan-view";
 import type { MoneyStepCopy, Said } from "./wizard-copy";
-import { dailyText, rentLabel, Say, shortRupees, StepHeading, type Figures } from "./wizard-ui";
+import { Say, StepHeading, type Figures } from "./wizard-ui";
 
 const box = "rounded-xl border border-[#dfe4e8] bg-white";
 
@@ -161,51 +161,6 @@ export function CarStep({
   );
 }
 
-/** The navy strip with the daily figure, and a yellow note on the right. The figure counts to each new value (from zero with `fromZero`). */
-export function RentStrip({
-  figures,
-  badge,
-  fromZero = false,
-  delay = 0,
-  children,
-}: {
-  figures: Figures;
-  badge?: string;
-  fromZero?: boolean;
-  delay?: number;
-  children?: React.ReactNode;
-}) {
-  if (!figures.amount) return null;
-  const daily = dailyText(figures);
-  // A range is twice as long, so it sets a size smaller to keep to one line on a phone.
-  const size = daily.includes("–") ? "text-[28px] leading-9 lg:text-[38px] lg:leading-[48px]" : "text-[34px] leading-10 lg:text-[42px] lg:leading-[48px]";
-  return (
-    <div className="rounded-2xl bg-navy px-4 pb-4 pt-3.5 text-white lg:px-6 lg:pt-4">
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-        <p>
-          <span className="block text-xs leading-4 text-white/85 lg:text-[13px] lg:leading-5">{rentLabel(figures.unit)}</span>
-          <span className="mt-1 flex items-baseline gap-1.5 lg:mt-0.5 lg:gap-2">
-            <CountUp
-              value={daily}
-              fromZero={fromZero}
-              delay={delay}
-              duration={fromZero ? 700 : 380}
-              className={`whitespace-nowrap font-bold tracking-[-0.5px] tabular-nums ${size}`}
-            />
-            <span className="text-[15px] lg:text-[17px]">{figures.unit.replace(/^\+/, "")}</span>
-          </span>
-        </p>
-        {badge ? (
-          <span className="shrink-0 rounded-full bg-sun px-3 py-[7px] text-xs font-bold leading-4 text-navy lg:px-4 lg:py-[9px] lg:text-sm lg:leading-4">
-            {badge}
-          </span>
-        ) : null}
-      </div>
-      {children ? <p className="mt-3 border-t border-white/15 pt-3 text-sm leading-5 text-white/90 lg:mt-[11px] lg:pt-[11px]">{children}</p> : null}
-    </div>
-  );
-}
-
 /** A white box with a small blue label over a row of round choices (tenure, model year). */
 function ChoiceBox({ id, label, children, className = "" }: { id: string; label: string; children: React.ReactNode; className?: string }) {
   return (
@@ -221,9 +176,8 @@ function ChoiceBox({ id, label, children, className = "" }: { id: string; label:
 }
 
 /**
- * The step between the car and the plan: the car on the left, then the choices that set what is
- * paid first (Own Now's tenure and upfront, Drive to Earn's model year) and the daily rent they
- * come to. The slider shows wherever the car has more than one point to slide between.
+ * The step between the car and the plan: the car on the left, then the choices (Own Now's tenure,
+ * Drive to Earn's model year) and what is paid first for them.
  */
 export function MoneyStep({
   copy,
@@ -236,8 +190,6 @@ export function MoneyStep({
   onTenure,
   year,
   onYear,
-  index,
-  onIndex,
   figures,
   headingId,
 }: {
@@ -251,20 +203,12 @@ export function MoneyStep({
   onTenure: (months: string) => void;
   year: string;
   onYear: (year: string) => void;
-  index: number;
-  onIndex: (i: number) => void;
   figures: Figures;
   headingId: string;
 }) {
-  const options = car.options;
-  const point = options.length ? Math.min(index, options.length - 1) : 0;
-  const paid = options[point]?.deposit ?? "";
-  const ends = options.length > 1 ? [options[0], options.length > 2 ? options[Math.floor((options.length - 1) / 2)] : null, options[options.length - 1]] : [];
   const lines = perks.map((p) => p.replace("{months}", tenure)).filter((p) => !p.includes("{"));
   const months = copy.tenure ? tenures : [];
   const years = copy.years && car.years.length > 1 ? sortedYears(car) : [];
-  const badge = copy.badge && figures.months ? copy.badge.replace("{months}", figures.months) : "";
-  const label = copy.label.split(" · ")[0];
   return (
     <>
       <StepHeading id={headingId}>{copy.title}</StepHeading>
@@ -340,44 +284,19 @@ export function MoneyStep({
             </ChoiceBox>
           ) : null}
 
-          {paid ? (
-            <div className={`mt-3 px-4 pb-[15px] pt-[19px] lg:mt-4 lg:rounded-2xl lg:px-6 lg:pb-[17px] lg:pt-[23px] ${box}`}>
+          {figures.money ? (
+            <div className={`${years.length || months.length ? "mt-3 lg:mt-4" : "mt-[18px] lg:mt-0"} px-4 pb-[15px] pt-[19px] lg:rounded-2xl lg:px-6 lg:pb-[17px] lg:pt-[23px] ${box}`}>
               <p className="text-xs font-semibold uppercase leading-4 tracking-[1px] text-brand">{copy.label}</p>
-              <p className="mt-1.5 text-[30px] font-extrabold leading-9 tracking-[-0.5px] text-navy tabular-nums lg:mt-2 lg:text-[40px] lg:leading-[48px]">
-                <CountUp value={rupees(paid)} duration={380} />
+              <p className="mt-1.5 flex items-baseline gap-2 text-navy lg:mt-2">
+                <CountUp
+                  value={rupees(figures.money)}
+                  duration={380}
+                  className="text-[30px] font-extrabold leading-9 tracking-[-0.5px] tabular-nums lg:text-[40px] lg:leading-[48px]"
+                />
+                {figures.onwards ? <span className="text-[15px] font-semibold lg:text-[17px]">onwards</span> : null}
               </p>
-              {ends.length ? (
-                <>
-                  <input
-                    type="range"
-                    min={0}
-                    max={options.length - 1}
-                    step={1}
-                    value={point}
-                    onChange={(e) => onIndex(Number(e.target.value))}
-                    aria-label={label}
-                    aria-valuetext={rupees(paid)}
-                    style={{ "--fill": `${(point / (options.length - 1)) * 100}%` } as React.CSSProperties}
-                    className="range-slider mt-4 w-full lg:mt-5"
-                  />
-                  <div className="mt-3.5 flex justify-between text-xs leading-4 text-ink-soft lg:text-sm">
-                    {ends.map((o, i) =>
-                      o ? (
-                        <span key={i}>
-                          <span className="hidden lg:inline">{rupees(o.deposit)}</span>
-                          <span className="lg:hidden">{shortRupees(o.deposit)}</span>
-                        </span>
-                      ) : null
-                    )}
-                  </div>
-                </>
-              ) : null}
             </div>
           ) : null}
-
-          <div className="mt-3 lg:mt-4">
-            <RentStrip figures={figures} badge={badge || undefined} />
-          </div>
         </div>
       </div>
     </>

@@ -14,8 +14,6 @@ export type MoneyStepCopy = {
   tenure: boolean;
   /** The model year is chosen here, beside the figures it changes, rather than with the car. */
   years: boolean;
-  /** The yellow note on the rent strip; `{months}` prints the chosen tenure. */
-  badge: string;
 };
 
 export type WizardCopy = {
@@ -52,12 +50,11 @@ export const WIZARD_COPY: Record<WizardKind, WizardCopy> = {
     year: "Model Year",
     mark: "rupee",
     money: {
-      title: "Your Deposit & Rent",
+      title: "Your Deposit",
       label: "Deposit · refundable",
       next: "Next: See Deposit",
       tenure: false,
       years: true,
-      badge: "",
     },
     apply: EARN.apply,
   },
@@ -70,12 +67,11 @@ export const WIZARD_COPY: Record<WizardKind, WizardCopy> = {
     year: "Model Year",
     mark: "key",
     money: {
-      title: "Your Deposit & Rent",
+      title: "Your Deposit",
       label: "Deposit",
       next: "Next: See Deposit",
       tenure: true,
       years: true,
-      badge: "Yours In Month {months}",
     },
     apply: ["Check If You Qualify", "Apply For This Plan"],
   },
@@ -92,7 +88,6 @@ export const WIZARD_COPY: Record<WizardKind, WizardCopy> = {
       next: "Next: Choose Upfront",
       tenure: true,
       years: false,
-      badge: "Yours In Month {months}",
     },
     apply: "Apply For This Plan",
   },

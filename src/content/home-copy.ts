@@ -178,7 +178,7 @@ const en: HomeCopy = {
     stop: ".",
     getItOn: "Get it on",
     googlePlay: "Google Play",
-    alt: "Everest Fleet app showing this week's rent paid and a completed payment",
+    alt: "Everest Fleet app showing this week's payments and a completed payment",
   },
   dost: {
     before: "Introducing ",
@@ -302,7 +302,7 @@ const hi: HomeCopy = {
     stop: "।",
     getItOn: "डाउनलोड करें",
     googlePlay: "Google Play",
-    alt: "Everest Fleet ऐप, जिसमें इस हफ़्ते का किराया और पूरा हुआ भुगतान दिख रहा है",
+    alt: "Everest Fleet ऐप, जिसमें इस हफ़्ते के भुगतान और पूरा हुआ भुगतान दिख रहा है",
   },
   dost: {
     before: "पेश है ",
@@ -426,7 +426,7 @@ const kn: HomeCopy = {
     stop: ".",
     getItOn: "ಡೌನ್‌ಲೋಡ್",
     googlePlay: "Google Play",
-    alt: "ಈ ವಾರದ ಬಾಡಿಗೆ ಮತ್ತು ಮುಗಿದ ಪಾವತಿ ತೋರಿಸುತ್ತಿರುವ Everest Fleet ಆ್ಯಪ್",
+    alt: "ಈ ವಾರದ ಪಾವತಿಗಳು ಮತ್ತು ಮುಗಿದ ಪಾವತಿ ತೋರಿಸುತ್ತಿರುವ Everest Fleet ಆ್ಯಪ್",
   },
   dost: {
     before: "",
@@ -614,19 +614,15 @@ export function homeCopy(locale: Locale): HomeCopy {
 const SEED_TEXT: Record<string, Record<Exclude<MainLocale, "en">, string>> = {
   // Plan cards: the tab above the card.
   "Ownership Plan": { hi: "मालिकाना प्लान", kn: "ಮಾಲೀಕತ್ವದ ಪ್ಲಾನ್", ta: "சொந்தமாக்கும் திட்டம்" },
-  "Renting Plan": { hi: "किराये का प्लान", kn: "ಬಾಡಿಗೆ ಪ್ಲಾನ್", ta: "வாடகைத் திட்டம்" },
+  "Leasing Plan": { hi: "लीज़ प्लान", kn: "ಲೀಸ್ ಪ್ಲಾನ್", ta: "லீஸ் திட்டம்" },
   "Earning model": { hi: "कमाई का मॉडल", kn: "ಗಳಿಕೆಯ ಮಾದರಿ", ta: "வருமான மாடல்" },
   // Plan cards: the figure boxes.
-  "Rent/day": { hi: "किराया/दिन", kn: "ಬಾಡಿಗೆ/ದಿನ", ta: "வாடகை/நாள்" },
-  "Rent/week": { hi: "किराया/हफ़्ता", kn: "ಬಾಡಿಗೆ/ವಾರ", ta: "வாடகை/வாரம்" },
-  "Rent/mo": { hi: "किराया/महीना", kn: "ಬಾಡಿಗೆ/ತಿಂಗಳು", ta: "வாடகை/மாதம்" },
-  Rent: { hi: "किराया", kn: "ಬಾಡಿಗೆ", ta: "வாடகை" },
   Upfront: { hi: "शुरुआती रकम", kn: "ಮುಂಗಡ", ta: "முன்பணம்" },
   Deposit: { hi: "डिपॉज़िट", kn: "ಠೇವಣಿ", ta: "டெபாசிட்" },
   Onwards: { hi: "से शुरू", kn: "ರಿಂದ", ta: "முதல்" },
   // Plan cards: the bullet points.
   "Own your car in 12 months": { hi: "12 महीने में गाड़ी आपकी", kn: "12 ತಿಂಗಳಲ್ಲಿ ಕಾರು ನಿಮ್ಮದು", ta: "12 மாதங்களில் கார் உங்களுடையது" },
-  "No fixed rent - earnings-linked model": { hi: "तय किराया नहीं, कमाई से जुड़ा मॉडल", kn: "ನಿಗದಿತ ಬಾಡಿಗೆ ಇಲ್ಲ, ಗಳಿಕೆಗೆ ತಕ್ಕ ಮಾದರಿ", ta: "நிலையான வாடகை இல்லை, வருமானத்துடன் இணைந்த மாடல்" },
+  "Earnings-linked model": { hi: "कमाई से जुड़ा मॉडल", kn: "ಗಳಿಕೆಗೆ ತಕ್ಕ ಮಾದರಿ", ta: "வருமானத்துடன் இணைந்த மாடல்" },
   "No ownership or loan liability": { hi: "न गाड़ी की ज़िम्मेदारी, न लोन", kn: "ಕಾರಿನ ಹೊಣೆ ಇಲ್ಲ, ಸಾಲವೂ ಇಲ್ಲ", ta: "உரிமைப் பொறுப்பும் இல்லை, கடனும் இல்லை" },
   "No CIBIL": { hi: "CIBIL की ज़रूरत नहीं", kn: "CIBIL ಬೇಕಿಲ್ಲ", ta: "CIBIL தேவையில்லை" },
   "Daily Instalments": { hi: "रोज़ की किस्त", kn: "ದಿನದ ಕಂತು", ta: "தினசரி தவணைகள்" },
