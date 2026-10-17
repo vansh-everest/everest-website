@@ -1,5 +1,5 @@
 import { getImageProps } from "next/image";
-import { ESG_REPORT_URL, HERO_STATS } from "./data";
+import { HERO_STATS } from "./data";
 
 /**
  * Phones: the photo, then the copy on navy. From lg: the copy sits over a wider crop of the
@@ -59,14 +59,6 @@ export function InvestorHero() {
             >
               Contact Investor Relations
             </a>
-            {ESG_REPORT_URL ? (
-              <a
-                href={ESG_REPORT_URL}
-                className="flex h-14 items-center justify-center rounded-full border-2 border-white px-8 text-[17px] font-medium tracking-[0.2px] text-white transition hover:bg-white/10 lg:text-lg"
-              >
-                Download ESG report
-              </a>
-            ) : null}
           </div>
         </div>
       </div>

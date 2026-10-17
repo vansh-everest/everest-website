@@ -1,5 +1,5 @@
 import { ArrowUpRight, Download, FileText, Lock } from "lucide-react";
-import { DOCUMENTS, type InvestorDocument } from "./data";
+import { DOCUMENTS, PRESS_LINKS, type InvestorDocument } from "./data";
 import Link from "next/link";
 import { NEWS, newsDate, newsPath } from "@/lib/news";
 import { Heading, Kicker } from "./ui";
@@ -11,7 +11,10 @@ const REQUEST_HREF = "#contact";
 
 /** "In the news" and the documents row, on one navy band. */
 export function NewsAndReports() {
-  const latest = NEWS.slice(0, 3);
+  const latest = [
+    ...PRESS_LINKS.map((p) => ({ key: p.url, title: p.title, date: p.date, href: p.url, external: true })),
+    ...NEWS.map((p) => ({ key: p.slug, title: p.title, date: p.date, href: newsPath(p.slug), external: false })),
+  ].slice(0, 3);
   return (
     <section className="bg-navy px-4 pb-12 pt-[46px] sm:px-6 lg:px-10 lg:pb-[89px] lg:pt-[96px]">
       <div className="mx-auto w-full max-w-[1280px]">
@@ -23,11 +26,12 @@ export function NewsAndReports() {
             </Heading>
             <ul className="mt-6 grid gap-3 lg:mt-[47px] lg:flex lg:justify-center lg:gap-5">
               {latest.map((p) => (
-                <li key={p.slug} className="flex flex-col rounded-2xl bg-white px-4 pb-4 pt-[18px] lg:w-[305px] lg:px-6 lg:pb-[30px] lg:pt-6">
+                <li key={p.key} className="flex flex-col rounded-2xl bg-white px-4 pb-4 pt-[18px] lg:w-[305px] lg:px-6 lg:pb-[30px] lg:pt-6">
                   <p className="text-[13px] font-medium leading-[18px] text-brand lg:text-sm">{newsDate(p.date)}</p>
                   <h3 className="mt-1.5 text-[17px] font-bold leading-6 text-navy lg:mt-[17px] lg:text-[19px] lg:leading-6">{p.title}</h3>
                   <Link
-                    href={newsPath(p.slug)}
+                    href={p.href}
+                    {...(p.external ? { target: "_blank", rel: "noopener" } : {})}
                     className="mt-1.5 inline-flex items-center gap-1.5 text-sm font-semibold text-navy hover:text-brand lg:mt-auto lg:pt-6 lg:text-[15px]"
                   >
                     Read The Story <ArrowUpRight aria-hidden className="size-4" />
@@ -40,7 +44,7 @@ export function NewsAndReports() {
 
         <div id="reports" className={`scroll-mt-28 ${latest.length ? "mt-[30px] lg:mt-[65px]" : ""}`}>
           <p className="text-[13px] font-bold uppercase leading-4 tracking-[1.5px] text-sun lg:text-sm">Reports &amp; documents</p>
-          <ul className="mt-4 grid gap-3 lg:mt-5 lg:grid-cols-3 lg:gap-5">
+          <ul className="mt-4 grid gap-3 lg:mt-5 lg:auto-cols-fr lg:grid-flow-col lg:gap-5">
             {DOCUMENTS.map((d) => (
               <DocCard key={d.title} doc={d} />
             ))}

@@ -53,12 +53,12 @@ const ASOF_YEAR = COMPANY.asOf.split(" ").pop() ?? "";
  */
 export const MILESTONES = [
   { year: "2016", text: "Founded In Mumbai, 10 Cars" },
-  { year: "2018", text: "1,000+ Vehicles, Into Delhi NCR" },
-  { year: "2022", text: "10,000 Vehicles, Series B" },
+  { year: "2018", text: "100+ Vehicles, Into Bengaluru" },
+  { year: "2023", text: "10,000 Vehicles, Series B" },
   { year: ASOF_YEAR, text: `${COMPANY.vehicles} Vehicles, ${COMPANY.cities} Cities`, current: true },
 ];
 
-export type ImpactCard = { icon: "leaf" | "users" | "shield"; title: string; points: Figure[] };
+export type ImpactCard = { icon: "leaf" | "users"; title: string; points: Figure[] };
 
 /** Impact cards. A point renders as "value label"; a null value hides the point. */
 export const IMPACT: ImpactCard[] = [
@@ -78,20 +78,7 @@ export const IMPACT: ImpactCard[] = [
       { value: null, label: "Everest Intrapreneurs" }, // design: 250+
     ],
   },
-  {
-    icon: "shield",
-    title: "Governed Properly",
-    points: [
-      { value: "", label: "Three-Tier ESG Governance" },
-      { value: "", label: "GRI-Aligned ESG Reporting" },
-    ],
-  },
 ];
-
-/** The ESG report, FY 2024-25, as the old site's newsroom published it. Every "Download ESG report" control shows while this is set. */
-export const ESG_REPORT_URL = "/docs/everest-fleet-esg-report-2024-25.pdf";
-/** Its page count, shown as "PDF · 44 pages" once the URL is set. */
-export const ESG_REPORT_PAGES: number | null = 44;
 
 /** PENDING: the company profile PDF. */
 export const COMPANY_PROFILE_URL = "";
@@ -105,18 +92,48 @@ export type InvestorDocument = { icon: "file" | "lock"; title: string; url: stri
  * shared on request through the investor relations form.
  */
 export const DOCUMENTS: InvestorDocument[] = [
-  { icon: "file", title: "ESG Report, FY 2024-25", url: ESG_REPORT_URL, pages: ESG_REPORT_PAGES },
   { icon: "file", title: "Company Profile", url: COMPANY_PROFILE_URL, pages: COMPANY_PROFILE_PAGES },
   { icon: "lock", title: "Investor Presentation", url: "", pages: null },
 ];
 
-/** Logo crops from the design, at their drawn size in CSS pixels. */
-export const BACKERS = [
+export type Logo = { id: string; name: string; w: number; h: number };
+
+/** Equity backers, largest holding first. Logos at their drawn size in CSS pixels (files are /figma/investors/backer-<id>.webp). */
+export const BACKERS: Logo[] = [
   { id: "uber", name: "Uber", w: 114, h: 42 },
-  { id: "bii", name: "British International Investment", w: 111, h: 34 },
-  { id: "artha", name: "Artha Group", w: 78, h: 66 },
-  { id: "param", name: "Param", w: 96, h: 62 },
-  { id: "patni", name: "Patni Financial Advisors", w: 113, h: 65 },
+  { id: "param", name: "Param Capital", w: 96, h: 62 },
+  { id: "artha", name: "Artha Venture Fund", w: 78, h: 66 },
+  { id: "paragon", name: "Paragon Partners", w: 118, h: 35 },
+  { id: "patni", name: "Patni Family Office", w: 113, h: 65 },
   { id: "rockstud", name: "Rockstud Capital", w: 107, h: 53 },
-  { id: "spark", name: "Spark Fund", w: 101, h: 26 },
+  { id: "spark", name: "Spark Alternative Investment Trust", w: 101, h: 26 },
+];
+
+/** Debt partners, in the stakeholder's order. Sized to a similar area so wide and tall marks read evenly (files are /figma/investors/lender-<id>.webp). */
+export const LENDERS: Logo[] = [
+  { id: "axis", name: "Axis Bank", w: 115, h: 26 },
+  { id: "guarantco", name: "GuarantCo", w: 89, h: 34 },
+  { id: "bii", name: "British International Investment", w: 103, h: 29 },
+  { id: "hdfc", name: "HDFC Bank", w: 118, h: 18 },
+  { id: "bob", name: "Bank of Baroda", w: 114, h: 26 },
+  { id: "sbi", name: "State Bank of India", w: 94, h: 32 },
+  { id: "union", name: "Union Bank of India", w: 118, h: 25 },
+  { id: "psb", name: "Punjab & Sind Bank", w: 112, h: 30 },
+  { id: "bom", name: "Bank of Maharashtra", w: 112, h: 34 },
+  { id: "idfc", name: "IDFC First Bank", w: 106, h: 33 },
+  { id: "indusind", name: "IndusInd Bank", w: 118, h: 21 },
+  { id: "hsbc", name: "HSBC", w: 70, h: 43 },
+  { id: "yes", name: "Yes Bank", w: 102, h: 34 },
+  { id: "toyota", name: "Toyota Financial Services", w: 96, h: 31 },
+];
+
+export type PressLink = { title: string; date: string; url: string };
+
+/** Coverage hosted elsewhere, shown ahead of the newsroom's own stories in "Recent News". Headline and date as the publisher's page states them. */
+export const PRESS_LINKS: PressLink[] = [
+  {
+    title: "Exclusive: Uber India to invest another $20 Mn in Everest Fleet",
+    date: "2025-11-07T12:52:16+05:30",
+    url: "https://entrackr.com/exclusive/exclusive-uber-india-to-invest-another-20-mn-in-everest-fleet-10635661",
+  },
 ];

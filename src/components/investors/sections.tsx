@@ -1,6 +1,6 @@
-import { Leaf, ShieldCheck, Users } from "lucide-react";
+import { Leaf, Users } from "lucide-react";
 import { COMPANY } from "@/lib/company";
-import { ESG_REPORT_URL, HIGHLIGHTS, IMPACT, MARKET, MILESTONES, STEPS, type ImpactCard } from "./data";
+import { HIGHLIGHTS, IMPACT, MARKET, MILESTONES, STEPS, type ImpactCard } from "./data";
 import { MilestoneLine } from "./milestone-line";
 import { Heading, Kicker, Label } from "./ui";
 
@@ -119,33 +119,22 @@ export function Growth() {
   );
 }
 
-const ICONS = { leaf: Leaf, users: Users, shield: ShieldCheck };
+const ICONS = { leaf: Leaf, users: Users };
 
 export function Impact() {
   const cards = IMPACT.map((c) => ({ ...c, points: c.points.filter((p) => p.value !== null) })).filter((c) => c.points.length);
-  // The section waits for the report's figures: cards of labels alone measure nothing.
+  // The section waits for sourced figures: cards of labels alone measure nothing.
   if (!cards.some((c) => c.points.some((p) => p.value))) return null;
   return (
-    <section id="esg" className="scroll-mt-28 bg-[#f0f4f8] px-4 pb-12 pt-[50px] sm:px-6 lg:pb-[97px] lg:pt-[96px]">
+    <section id="impact" className="scroll-mt-28 bg-[#f0f4f8] px-4 pb-12 pt-[50px] sm:px-6 lg:pb-[97px] lg:pt-[96px]">
       <div className={wrap}>
         <Kicker>Impact</Kicker>
         <Heading className="mt-3 lg:mt-3">Impact You Can Measure</Heading>
-        <p className="mt-2 text-center text-[15px] leading-[22px] text-ink-soft lg:mt-2 lg:text-lg lg:leading-7">
-          From our ESG report, FY 2024-25.
-        </p>
         <ul className="mt-6 grid gap-4 lg:mt-[46px] lg:flex lg:justify-center lg:gap-[25px]">
           {cards.map((c) => (
             <ImpactTile key={c.title} card={c} />
           ))}
         </ul>
-        {ESG_REPORT_URL ? (
-          <a
-            href={ESG_REPORT_URL}
-            className="mx-auto mt-6 flex h-14 w-full items-center justify-center rounded-full bg-sun px-8 text-[17px] font-medium tracking-[0.2px] text-navy transition hover:brightness-95 lg:mt-[49px] lg:w-[272px] lg:text-xl"
-          >
-            Download the ESG report
-          </a>
-        ) : null}
       </div>
     </section>
   );

@@ -22,7 +22,6 @@ export type LinkKey =
   | "dost"
   | "forInvestors"
   | "blog"
-  | "esg"
   | "faq"
   | "benefits"
   | "careers"
@@ -85,7 +84,6 @@ const en: SiteCopy = {
     dost: "Everest Dost",
     forInvestors: "For Investors",
     blog: "Blogs",
-    esg: "ESG Report",
     faq: "Driver FAQs",
     benefits: "Benefits",
     careers: "Careers",
@@ -141,7 +139,6 @@ const hi: SiteCopy = {
     dost: "Everest Dost",
     forInvestors: "निवेशकों के लिए",
     blog: "ब्लॉग",
-    esg: "ESG रिपोर्ट",
     faq: "ड्राइवरों के सवाल",
     benefits: "फ़ायदे",
     careers: "करियर",
@@ -197,7 +194,6 @@ const kn: SiteCopy = {
     dost: "Everest Dost",
     forInvestors: "ಹೂಡಿಕೆದಾರರಿಗೆ",
     blog: "ಬ್ಲಾಗ್",
-    esg: "ESG ವರದಿ",
     faq: "ಡ್ರೈವರ್ ಪ್ರಶ್ನೆಗಳು",
     benefits: "ಪ್ರಯೋಜನಗಳು",
     careers: "ಉದ್ಯೋಗಾವಕಾಶಗಳು",
@@ -253,7 +249,6 @@ const ta: SiteCopy = {
     dost: "Everest Dost",
     forInvestors: "முதலீட்டாளர்களுக்கு",
     blog: "வலைப்பதிவு",
-    esg: "ESG அறிக்கை",
     faq: "டிரைவர் கேள்விகள்",
     benefits: "நன்மைகள்",
     careers: "வேலைவாய்ப்புகள்",
