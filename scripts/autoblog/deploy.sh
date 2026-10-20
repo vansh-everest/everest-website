@@ -19,4 +19,4 @@ LINE='20 4,5,7 * * * /home/ubuntu/everest-autoblog/run.sh'
 echo "installed:"; ls -la ~/everest-autoblog; crontab -l | grep -B1 everest-autoblog/run.sh
 echo "keys set: \$(grep -c -E '^(OPENAI_API_KEY|GITHUB_TOKEN)=.+' .env || true) of 2"
 INSTALL
-./ssmrun.sh "$TMP/install.sh" 15
+bash ./ssmrun.sh "$TMP/install.sh" 15
