@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogPost, postJsonLd } from "@/components/driver/blog-pages";
 import { DEFAULT_LOCALE, alternatesFor, canonical } from "@/lib/i18n";
-import { postsFor } from "@/lib/content";
+import { blogPostsFor } from "@/lib/blog-posts";
 import { getContent } from "@/lib/store";
 import { jsonLd } from "@/lib/json-ld";
 
@@ -10,17 +10,17 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
   const content = await getContent();
-  return postsFor(content, DEFAULT_LOCALE).map((p) => ({ slug: p.slug }));
+  return blogPostsFor(content, DEFAULT_LOCALE).map((p) => ({ slug: p.slug }));
 }
 
 async function findPost(slug: string) {
   const content = await getContent();
-  return postsFor(content, DEFAULT_LOCALE).find((p) => p.slug === slug);
+  return blogPostsFor(content, DEFAULT_LOCALE).find((p) => p.slug === slug);
 }
 
 async function relatedTo(slug: string) {
   const content = await getContent();
-  return postsFor(content, DEFAULT_LOCALE).filter((p) => p.slug !== slug).slice(0, 4);
+  return blogPostsFor(content, DEFAULT_LOCALE).filter((p) => p.slug !== slug).slice(0, 4);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

@@ -31,6 +31,7 @@ export type BlogCopy = {
   ctaDrive: string;
   ctaTalk: string;
   moreTitle: string;
+  sources: string;
 };
 
 const en: BlogCopy = {
@@ -58,6 +59,7 @@ const en: BlogCopy = {
   ctaDrive: "Drive With Us",
   ctaTalk: "Talk To Our Team",
   moreTitle: "More Guides",
+  sources: "Sources",
 };
 
 const hi: BlogCopy = {
@@ -85,6 +87,7 @@ const hi: BlogCopy = {
   ctaDrive: "हमारे साथ चलाइए",
   ctaTalk: "हमारी टीम से बात कीजिए",
   moreTitle: "और गाइड",
+  sources: "स्रोत",
 };
 
 const te: BlogCopy = {
@@ -112,6 +115,7 @@ const te: BlogCopy = {
   ctaDrive: "మాతో నడపండి",
   ctaTalk: "మా టీమ్‌తో మాట్లాడండి",
   moreTitle: "మరిన్ని గైడ్‌లు",
+  sources: "మూలాలు",
 };
 
 const mr: BlogCopy = {
@@ -139,6 +143,7 @@ const mr: BlogCopy = {
   ctaDrive: "आमच्यासोबत चालवा",
   ctaTalk: "आमच्या टीमशी बोला",
   moreTitle: "आणखी गाइड",
+  sources: "स्रोत",
 };
 
 const kn: BlogCopy = {
@@ -166,6 +171,7 @@ const kn: BlogCopy = {
   ctaDrive: "ನಮ್ಮೊಂದಿಗೆ ಓಡಿಸಿ",
   ctaTalk: "ನಮ್ಮ ತಂಡದೊಂದಿಗೆ ಮಾತನಾಡಿ",
   moreTitle: "ಇನ್ನಷ್ಟು ಗೈಡ್‌ಗಳು",
+  sources: "ಮೂಲಗಳು",
 };
 
 const bn: BlogCopy = {
@@ -193,6 +199,7 @@ const bn: BlogCopy = {
   ctaDrive: "আমাদের সঙ্গে চালান",
   ctaTalk: "আমাদের টিমের সঙ্গে কথা বলুন",
   moreTitle: "আরও গাইড",
+  sources: "সূত্র",
 };
 
 const ta: BlogCopy = {
@@ -220,6 +227,7 @@ const ta: BlogCopy = {
   ctaDrive: "எங்களுடன் ஓட்டுங்கள்",
   ctaTalk: "எங்கள் குழுவுடன் பேசுங்கள்",
   moreTitle: "மேலும் வழிகாட்டிகள்",
+  sources: "ஆதாரங்கள்",
 };
 
 const COPY: Record<Locale, BlogCopy> = { en, hi, mr, kn, te, bn, ta };

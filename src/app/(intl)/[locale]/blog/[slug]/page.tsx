@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogPost, postJsonLd } from "@/components/driver/blog-pages";
-import { postsFor } from "@/lib/content";
+import { blogPostsFor } from "@/lib/blog-posts";
 import { EXTRA_LOCALES, alternatesFor, canonical, isLocale, type ExtraLocale } from "@/lib/i18n";
 import { getContent } from "@/lib/store";
 import { jsonLd } from "@/lib/json-ld";
@@ -11,18 +11,18 @@ type Props = { params: Promise<{ locale: string; slug: string }> };
 export async function generateStaticParams() {
   const content = await getContent();
   return EXTRA_LOCALES.flatMap((locale) =>
-    postsFor(content, locale).map((p) => ({ locale, slug: p.slug }))
+    blogPostsFor(content, locale).map((p) => ({ locale, slug: p.slug }))
   );
 }
 
 async function findPost(locale: ExtraLocale, slug: string) {
   const content = await getContent();
-  return postsFor(content, locale).find((p) => p.slug === slug);
+  return blogPostsFor(content, locale).find((p) => p.slug === slug);
 }
 
 async function relatedTo(locale: ExtraLocale, slug: string) {
   const content = await getContent();
-  return postsFor(content, locale).filter((p) => p.slug !== slug).slice(0, 4);
+  return blogPostsFor(content, locale).filter((p) => p.slug !== slug).slice(0, 4);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

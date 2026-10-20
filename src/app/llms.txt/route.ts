@@ -2,7 +2,8 @@ import { WHATSAPP_HREF } from "@/components/home/ui";
 import { getDictionary } from "@/content/dictionary";
 import { COMPANY, COMPANY_BLURB, SITE_URL } from "@/lib/company";
 import { cityPath } from "@/lib/city-route";
-import { planFor, postsFor, rupees } from "@/lib/content";
+import { planFor, rupees } from "@/lib/content";
+import { blogPostsFor } from "@/lib/blog-posts";
 import { EXTRA_LOCALES, localePath, type ExtraLocale } from "@/lib/i18n";
 import { PLAN_PAGES } from "@/lib/plan-pages";
 import { getContent } from "@/lib/store";
@@ -42,7 +43,7 @@ export async function GET() {
     return [`- [${plan.name.en}](${link(path)})${summary ? `: ${summary}` : ""}`];
   });
 
-  const guides = postsFor(content, "en").map((p) => `- [${p.title}](${link(`/blog/${p.slug}`)})${p.excerpt ? `: ${p.excerpt}` : ""}`);
+  const guides = blogPostsFor(content, "en").map((p) => `- [${p.title}](${link(`/blog/${p.slug}`)})${p.excerpt ? `: ${p.excerpt}` : ""}`);
 
   const lines = [
     "# Everest Fleet",

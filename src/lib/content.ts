@@ -193,6 +193,8 @@ export type Post = {
   published: boolean;
   date: string;
   coverImage: ImageSlot;
+  /** The reporting a daily post is based on (blog-posts.ts). The admin's posts have none. */
+  sources?: { title: string; url: string }[];
 };
 
 /**

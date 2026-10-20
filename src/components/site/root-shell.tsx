@@ -7,7 +7,7 @@ import { PreviewBanner } from "@/components/site/preview-banner";
 import { CardSpotlight } from "@/components/fx/card-spotlight";
 import { RevealOnScroll } from "@/components/fx/reveal-on-scroll";
 import { SmoothScroll } from "@/components/fx/smooth-scroll";
-import { postsFor } from "@/lib/content";
+import { blogPostsFor } from "@/lib/blog-posts";
 import { FONT_VARS } from "@/lib/fonts";
 import { LOCALE_META, MAIN_LOCALES, type Locale } from "@/lib/i18n";
 import { getContent } from "@/lib/store";
@@ -22,7 +22,7 @@ export async function RootShell({ locale, children }: { locale: Locale; children
   const meta = LOCALE_META[locale];
   // The language picker opens a blog post in another language only where that post is published.
   const content = await getContent();
-  const posts = Object.fromEntries(MAIN_LOCALES.map((l) => [l, postsFor(content, l).map((p) => p.slug)]));
+  const posts = Object.fromEntries(MAIN_LOCALES.map((l) => [l, blogPostsFor(content, l).map((p) => p.slug)]));
   return (
     <html lang={meta.htmlLang} className={`${FONT_VARS} antialiased`}>
       <body className={meta.fontVar}>

@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/company";
 import { cityPath } from "@/lib/city-route";
-import { planFor, postsFor } from "@/lib/content";
+import { planFor } from "@/lib/content";
+import { blogPostsFor } from "@/lib/blog-posts";
 import { DEFAULT_LOCALE, LOCALES, MAIN_LOCALES, alternatesFor, localePath, type Locale } from "@/lib/i18n";
 import { NEWS, newsPath } from "@/lib/news";
 import { PLAN_PAGES } from "@/lib/plan-pages";
@@ -100,7 +101,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   for (const locale of LOCALES) {
-    for (const post of postsFor(content, locale)) {
+    for (const post of blogPostsFor(content, locale)) {
       entries.push({
         url: url(localePath(locale, `/blog/${post.slug}`)),
         lastModified: new Date(post.date || lastModified),

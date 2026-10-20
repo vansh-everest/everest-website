@@ -17,14 +17,15 @@ import { GUIDE_SLUGS } from "@/components/blog/stories";
 import { SiteImage } from "@/components/site/site-image";
 import { getDictionary } from "@/content/dictionary";
 import { SITE_URL } from "@/lib/company";
-import { postsFor, type Post, type SiteContent } from "@/lib/content";
+import { type Post, type SiteContent } from "@/lib/content";
+import { blogPostsFor } from "@/lib/blog-posts";
 import { LOCALE_META, localePath, type Locale } from "@/lib/i18n";
 
 /** /blog/ in every locale. Driver stories and press are English only, so they show on /blog/ alone. */
 export function BlogIndex({ locale, content }: { locale: Locale; content: SiteContent }) {
   const dict = getDictionary(locale);
   const copy = blogCopy(locale);
-  const posts = postsFor(content, locale);
+  const posts = blogPostsFor(content, locale);
   const [featured, ...rest] = posts;
   const guides = GUIDE_SLUGS.map((slug) => posts.find((p) => p.slug === slug)).filter((p): p is Post => Boolean(p));
   const english = locale === "en";
@@ -73,12 +74,33 @@ export function BlogPost({ locale, post, related = [] }: { locale: Locale; post:
           </div>
           <p className="mt-8 text-lg leading-8 text-navy lg:text-xl">{post.excerpt}</p>
           <div className="mt-5 grid gap-5">
-            {post.body.map((paragraph, i) => (
-              <p key={i} className="text-base leading-7 text-ink-soft lg:text-lg lg:leading-[30px]">
-                {paragraph}
-              </p>
-            ))}
+            {post.body.map((paragraph, i) =>
+              // A paragraph that starts "## " is a subheading; the daily posts use them, the admin's do not.
+              paragraph.startsWith("## ") ? (
+                <h2 key={i} className="mt-4 text-[22px] font-bold leading-8 text-navy lg:text-[28px] lg:leading-9">
+                  {paragraph.slice(3)}
+                </h2>
+              ) : (
+                <p key={i} className="text-base leading-7 text-ink-soft lg:text-lg lg:leading-[30px]">
+                  {paragraph}
+                </p>
+              )
+            )}
           </div>
+          {post.sources?.length ? (
+            <div className="mt-10 border-t border-line pt-6">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.08em] text-ink-soft">{copy.sources}</h2>
+              <ul className="mt-3 grid gap-2">
+                {post.sources.map((source) => (
+                  <li key={source.url} className="text-[15px] leading-6">
+                    <a href={source.url} target="_blank" rel="noopener noreferrer nofollow" className="text-brand underline-offset-2 hover:underline">
+                      {source.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </div>
       </article>
       {related.length ? <Guides posts={related} locale={locale} copy={copy} title={copy.moreTitle} /> : null}
