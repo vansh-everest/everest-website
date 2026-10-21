@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ArrowRight, BriefcaseBusiness, Building2, Clock, IndianRupee, Plane, Repeat, Route, ShieldCheck } from "lucide-react";
 import { IntercityHero, BookRide } from "@/components/b2b/intercity";
-import { Steps } from "@/components/b2b/steps";
 import { Features } from "@/components/b2b/features";
 import { Commitments } from "@/components/b2b/commitments";
 import { Quotes } from "@/components/b2b/quotes";
@@ -17,15 +16,6 @@ export default function IntercityPage() {
   return (
     <>
       <IntercityHero />
-      <Steps
-        title="Four Steps From City To City"
-        steps={[
-          { title: "Choose Your Route", body: "Pick-up and drop in 370+ places" },
-          { title: "Pick A Date And Time", body: "Leave whenever it suits you" },
-          { title: "Add Your Details", body: "How many are travelling, and how to reach you" },
-          { title: "Talk To Our Experts", body: "We call to confirm your ride" },
-        ]}
-      />
       <Features
         eyebrow="Our rides"
         title={["Six Ways To", "Ride With Us"]}

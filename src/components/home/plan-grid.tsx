@@ -39,9 +39,11 @@ function PlanCard({ plan, join }: { plan: PlanCardView; join: string }) {
               {plan.figures.map((f) => (
                 <div
                   key={f.label}
-                  className={`flex flex-col rounded-lg border px-2.5 py-2.5 lg:px-3.5 lg:py-3 ${dark ? "border-sun/30 bg-sun/10" : "border-[#f3e7a0] bg-[#fdfae2]"}`}
+                  className={`flex flex-col rounded-lg border px-2.5 py-2.5 lg:px-3.5 lg:py-3 ${
+                    plan.figures.length === 1 ? "col-span-2 w-[calc(50%-4px)] justify-self-center text-center lg:w-[calc(50%-4.5px)]" : ""
+                  } ${dark ? "border-sun/30 bg-sun/10" : "border-[#f3e7a0] bg-[#fdfae2]"}`}
                 >
-                  {/* Label, figure and "Onwards" each on their own line, so every tile lines up whatever the figure's length. */}
+                  {/* Label, figure and "Onwards" each on their own line, so every tile lines up whatever the figure's length. A lone tile sits centred at its usual width. */}
                   <dt className={`text-xs font-semibold lg:text-[13px] ${dark ? "text-sun" : "text-brand"}`}>{f.label}</dt>
                   <dd className="mt-1 flex flex-col">
                     <span className="whitespace-nowrap text-[15px] font-bold leading-5 lg:text-lg lg:leading-6">{f.value}</span>

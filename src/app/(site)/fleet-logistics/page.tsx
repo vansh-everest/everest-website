@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Croissant, Leaf, Milk, ShieldCheck, Clock, Snowflake, Sparkle, Store, Thermometer } from "lucide-react";
 import { PHONE_HREF } from "@/components/home/ui";
 import { B2BHero } from "@/components/b2b/hero";
-import { Steps } from "@/components/b2b/steps";
 import { Features } from "@/components/b2b/features";
 import { FigureBand, FleetMix } from "@/components/b2b/figures";
 import { Commitments } from "@/components/b2b/commitments";
@@ -47,15 +46,6 @@ export default function FleetLogisticsPage() {
           phone: "/figma/b2b/fleet-hero-phone.webp",
           alt: "Everest Logistics refrigerated truck with shelves of fresh fruit and vegetables",
         }}
-      />
-      <Steps
-        title="Four Steps From Your Door To Theirs"
-        steps={[
-          { title: "Tell Us Your Route", body: "Pick-up, drop, temperature and the time it has to land" },
-          { title: "We Assign The Van", body: "Ambient, chilled, frozen or air-conditioned, to suit the load" },
-          { title: "Track The Whole Trip", body: "Live location from the moment it leaves you" },
-          { title: "Delivered, With Proof", body: "A real-time notification the moment it is handed over" },
-        ]}
       />
       <Features
         eyebrow="What we carry"
