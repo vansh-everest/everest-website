@@ -175,9 +175,14 @@ function blankCar(id: string): Car {
 
 /** Hero figures the seed used to carry, keyed "label|value". Saved content still holds them, so each takes its new wording. */
 const RETERMED: Record<string, Row> = {
-  "Liability|Zero": { label: "Earning Potential", value: "₹35,000/month" },
-  "Ownership|24 Months": { label: "Ownership", value: "11 Months onwards" },
+  "Liability|Zero": { label: "Earning Potential", value: "₹35,000/m" },
+  "Earning Potential|₹35,000/month": { label: "Earning Potential", value: "₹35,000/m" },
+  "Ownership|24 Months": { label: "Ownership", value: "11 Months* onwards" },
+  "Ownership|11 Months onwards": { label: "Ownership", value: "11 Months* onwards" },
 };
+
+/** Hero tags the seed used to carry and the page no longer shows. */
+const DROPPED_TAGS = new Set(["Non-refundable"]);
 
 function term(v: unknown): Row {
   const t = obj(v);
@@ -195,7 +200,7 @@ function page(v: unknown, base: PlanPage): PlanPage {
     heroImage: image(o.heroImage, base.heroImage),
     heroImagePhone: image(o.heroImagePhone, base.heroImagePhone),
     term: "term" in o ? term(o.term) : { ...base.term },
-    tags: "tags" in o ? lines(o.tags, 4, 48) : [...base.tags],
+    tags: ("tags" in o ? lines(o.tags, 4, 48) : [...base.tags]).filter((t) => !DROPPED_TAGS.has(t)),
     whyTag: pick("whyTag", 40),
     whyTitle: pick("whyTitle", 90),
     whySubtitle: pick("whySubtitle", 120),

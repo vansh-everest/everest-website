@@ -233,7 +233,7 @@ export type SiteContent = {
 };
 
 /** Bump when SiteContent changes shape, so no deployment reads a cache written by an older one. */
-export const CONTENT_VERSION = "13";
+export const CONTENT_VERSION = "14";
 
 export const placeholder = (label: string, alt = ""): ImageSlot => ({ label, url: "", alt });
 
@@ -322,7 +322,7 @@ const PLAN_SEED: Plan[] = [
       heroImage: { label: "Own Now, hero photo", url: "/figma/own-hero.webp", alt: "Everest driver holding up the keys to his car" },
       heroImagePhone: { label: "Own Now, phone hero photo", url: "/figma/plans/hero-phone-own-now.webp", alt: "An Everest driver holding up the keys to his car" },
       term: { label: "Tenure", value: "12 Months" },
-      tags: ["Ownership plan", "Pay upfront", "Non-refundable"],
+      tags: ["Ownership plan", "Pay upfront"],
       whyTag: "Benefits of this plan",
       whyTitle: "Everything a driver needs, in one plan",
       whySubtitle: "",
@@ -380,7 +380,7 @@ const PLAN_SEED: Plan[] = [
       highlight: "a Low Deposit",
       heroImage: { label: "Drive to Own, hero photo", url: "/figma/hero-drive-to-own.webp", alt: "A hand holding out car keys in front of a row of Everest cars" },
       heroImagePhone: { label: "Drive to Own, phone hero photo", url: "/figma/plans/hero-phone-drive-to-own.webp", alt: "A hand holding out car keys beside a white car" },
-      term: { label: "Ownership", value: "11 Months onwards" },
+      term: { label: "Ownership", value: "11 Months* onwards" },
       tags: ["Ownership plan", "Low deposit", "Refundable"],
       whyTag: "Benefits of this plan",
       whyTitle: "Why Drivers Choose Drive To Own",
@@ -434,7 +434,7 @@ const PLAN_SEED: Plan[] = [
       highlight: "Owning Anything",
       heroImage: { label: "Drive to Earn, hero photo", url: "/figma/hero-drive-to-earn.webp", alt: "A driver sitting in the open door of his Everest car" },
       heroImagePhone: { label: "Drive to Earn, phone hero photo", url: "/figma/plans/hero-phone-drive-to-earn.webp", alt: "A driver sitting in the open door of his Everest car" },
-      term: { label: "Earning Potential", value: "₹35,000/month" },
+      term: { label: "Earning Potential", value: "₹35,000/m" },
       tags: ["Leasing plan", "Low deposit", "Refundable"],
       whyTag: "Benefits of this plan",
       whyTitle: "Why Drivers Choose Drive To Earn",

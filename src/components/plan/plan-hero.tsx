@@ -80,7 +80,7 @@ export function PlanHero({ view, startHref, wide }: { view: PlanPageView; startH
             {view.figures.map((f, i) => (
               <div
                 key={i}
-                className="min-w-0 flex-auto px-1.5 lg:h-[71px] lg:flex-none lg:w-[199px] lg:rounded-[10px] lg:border lg:border-white/30 lg:bg-white/10 lg:px-3 lg:py-2.5 lg:backdrop-blur-[2px]"
+                className="min-w-0 flex-auto px-1.5 lg:h-[71px] lg:flex-none lg:min-w-[199px] lg:whitespace-nowrap lg:rounded-[10px] lg:border lg:border-white/30 lg:bg-white/10 lg:px-3 lg:py-2.5 lg:backdrop-blur-[2px]"
               >
                 <dt className="text-[11px] font-semibold uppercase leading-4 tracking-[0.5px] text-white/85 lg:text-[13px] lg:font-medium lg:tracking-[1px]">
                   {f.label}

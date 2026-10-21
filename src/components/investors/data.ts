@@ -135,7 +135,7 @@ export type TeamMember = { name: string; photo: string | null };
  */
 export const TEAM: TeamMember[] = [
   { name: "Siddharth Ladsariya", photo: "siddharth" },
-  { name: "Sunny Sapra", photo: null },
+  { name: "Sunny Sapra", photo: "sunny" },
   { name: "Apurav Mahajan", photo: "apurav" },
   { name: "Amar Kerkar", photo: "amar" },
   { name: "Sidarth Vohra", photo: "sidarth" },

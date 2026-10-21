@@ -111,8 +111,14 @@ export type PlanFigure = { label: string; value: string; suffix: string };
 
 /**
  * The upfront or the deposit, then the plan's own third figure. A figure the plan leaves blank is
- * left out rather than shown as zero.
+ * left out rather than shown as zero. A third figure ending "onwards" sets that word small after
+ * the value, as the deposit does, so it stays on one line.
  */
+function splitOnwards(value: string): { value: string; suffix: string } {
+  const m = /^(.*\S)\s+onwards$/i.exec(value);
+  return m ? { value: m[1], suffix: "onwards" } : { value, suffix: "" };
+}
+
 export function planFigures(plan: Plan): PlanFigure[] {
   const price = plan.price;
   const suffix = (plan.depositNote || "Onwards").toLowerCase();
@@ -121,7 +127,7 @@ export function planFigures(plan: Plan): PlanFigure[] {
     price.upfront
       ? { label: "Upfront", value: rupees(price.upfront), suffix }
       : { label: "Deposit", value: rupees(price.deposit), suffix },
-    { ...term, suffix: "" },
+    { label: term.label, ...splitOnwards(term.value) },
   ].filter((f) => f.label && f.value);
 }
 
