@@ -138,7 +138,7 @@ export const TEAM: TeamMember[] = [
   { name: "Sunny Sapra", photo: null },
   { name: "Apurav Mahajan", photo: "apurav" },
   { name: "Amar Kerkar", photo: "amar" },
-  { name: "Sidarth Vohra", photo: null },
+  { name: "Sidarth Vohra", photo: "sidarth" },
   { name: "Prihans Dedhiya", photo: "prihans" },
   { name: "Monil Sheth", photo: "monil" },
   { name: "Shivang Unadkat", photo: "shivang" },
