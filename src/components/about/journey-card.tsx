@@ -34,9 +34,11 @@ export function JourneyCard({ stop, className = "", style }: { stop: JourneyStop
       <ul className="w-full space-y-2 rounded-xl bg-[#fdffe4] px-3.5 py-3 text-left shadow-[0_10px_28px_rgba(0,0,0,0.22)]">
         {stop.entries.map((e) => (
           <li key={`${e.month}${e.text}`} className="flex items-baseline gap-2 text-[13px] leading-[18px] text-[#4b5563]">
-            <span className="w-9 shrink-0 rounded bg-[#e3ecff] py-px text-center text-[10px] font-semibold uppercase leading-4 tracking-[0.4px] text-[#2d5bd3]">
-              {e.month}
-            </span>
+            {e.month ? (
+              <span className="w-9 shrink-0 rounded bg-[#e3ecff] py-px text-center text-[10px] font-semibold uppercase leading-4 tracking-[0.4px] text-[#2d5bd3]">
+                {e.month}
+              </span>
+            ) : null}
             <span>
               <Bolded text={e.text} />
             </span>

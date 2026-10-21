@@ -3,6 +3,7 @@ import { BenefitCards } from "@/components/careers/benefit-cards";
 import { CareersHero } from "@/components/careers/careers-hero";
 import { Culture } from "@/components/careers/culture";
 import { EmployeeVideos } from "@/components/careers/employee-videos";
+import { LifeAtEverest } from "@/components/careers/life-at-everest";
 import { MoveIndia } from "@/components/careers/move-india";
 
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ export default function CareersPage() {
       <CareersHero />
       <MoveIndia />
       <Culture />
+      <LifeAtEverest />
       <BenefitCards />
       <EmployeeVideos />
     </>

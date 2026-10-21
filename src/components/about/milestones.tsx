@@ -1,28 +1,28 @@
 import { JourneyCard, JourneyPin, type JourneyStop } from "./journey-card";
 import { JourneyMap } from "./journey-map";
 
-/** Everest's journey timeline, oldest first. Words between ** are set in bold, as the timeline sets them. */
+/** Everest's journey timeline, oldest first. A date with no month is a year card without a month. */
 const milestones = [
-  { date: "Oct 2016", text: "Started Operations In **Mumbai**" },
-  { date: "Oct 2018", text: "Started Operations In **Bengaluru**" },
-  { date: "Nov 2019", text: "Pivoted To Funding Car Purchase Via **Off Balance Sheet Model**" },
-  { date: "Nov 2020", text: "Launched **MITR** Business" },
-  { date: "Mar 2021", text: "Started Operations In **Delhi**" },
-  { date: "Nov 2021", text: "Started Operations In **Hyderabad**" },
-  { date: "Feb 2022", text: "Launched **Refrigerated Vans** Business" },
-  { date: "May 2022", text: "Started Operations In **Pune**" },
-  { date: "Aug 2022", text: "Started Operations In **Kolkata** And Launched **EV Pilot**" },
-  { date: "Nov 2022", text: "Started Operations In **Chennai**" },
-  { date: "Jun 2023", text: "Partnered With Uber India To Launch **Uber Green**" },
-  { date: "Jul 2023", text: "Launched **Intercity** Business" },
-  { date: "Dec 2023", text: "Onboarded First DFI As A Lender, **GuarantCo**" },
-  { date: "Jan 2024", text: "Launched **B2B (ETS)** Business" },
-  { date: "Oct 2025", text: "**21,000+** Cars In India" },
+  { date: "Oct 2016", text: "Started operations in Mumbai" },
+  { date: "Oct 2018", text: "Started operations in Bengaluru" },
+  { date: "Nov 2020", text: "Launched the MITR business" },
+  { date: "Mar 2021", text: "Started operations in Delhi" },
+  { date: "Nov 2021", text: "Started operations in Hyderabad" },
+  { date: "Feb 2022", text: "Launched the Logistics business (refrigerated vans)" },
+  { date: "May 2022", text: "Started operations in Pune" },
+  { date: "Aug 2022", text: "Started operations in Kolkata and launched the EV Pilot" },
+  { date: "Nov 2022", text: "Started operations in Chennai" },
+  { date: "Jun 2023", text: "Partnered with Uber India to launch Uber Green" },
+  { date: "Jul 2023", text: "Launched the Intercity business" },
+  { date: "Jan 2024", text: "Launched the ETS business" },
+  { date: "Aug 2025", text: "Launched Own Now: drivers on the road to owning their car" },
+  { date: "Oct 2025", text: "First employee turned fleet partner: Talentium" },
+  { date: "2026", text: "Added the Toyota Rumion and grew to 11 cities" },
 ];
 
 /** One stop per year, so the road carries a pin a year rather than fifteen. */
 const stops: JourneyStop[] = milestones.reduce<JourneyStop[]>((years, m) => {
-  const [month, year] = m.date.split(" ");
+  const [month, year] = m.date.includes(" ") ? m.date.split(" ") : ["", m.date];
   const last = years[years.length - 1];
   if (last?.year === year) last.entries.push({ month, text: m.text });
   else years.push({ year, entries: [{ month, text: m.text }] });

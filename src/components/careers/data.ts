@@ -49,3 +49,15 @@ export const VIDEOS = [
   { id: "8yZV6g2UpqE", name: "Awadhesh Yaduvanshi, City Lead", image: "/figma/careers/video-awadhesh.webp" },
   { id: "naV2lSpkLOQ", name: "Sagar Moondra, Founder’s Office", image: "/figma/careers/video-sagar.webp" },
 ];
+
+/** Photos from the old site's gallery (everestfleet.com/gallery), 3:2 at 600×400; files are /figma/careers/life-<n>.webp. */
+export const LIFE = [
+  "The whole Everest Fleet team together at the office",
+  "Colleagues laughing together at a company celebration",
+  "Teammates holding up trophies on a football turf",
+  "Christmas celebrations at the Everest Fleet hub",
+  "The team seated together at an annual event",
+  "A team meeting in the Everest Fleet office",
+  "Cutting the cake at an office celebration",
+  "Colleagues preparing fruit for a team activity",
+];

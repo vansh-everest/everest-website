@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const ALT = "Four Everest Fleet colleagues standing together in the office";
+const ALT = "The Everest Fleet team standing together in matching blue T-shirts";
 
 /** Phones: heading on white above a framed photo. From lg up the photo runs edge to edge and fades into the navy band below. */
 export function CareersHero() {
