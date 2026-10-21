@@ -11,9 +11,10 @@ const initials = (name: string) =>
     .join("")
     .slice(0, 2);
 
+/** A card's width for two, three or six to a row, so a short last row can sit centred. */
 function TeamCard({ member }: { member: TeamMember }) {
   return (
-    <li>
+    <li className="w-[calc((100%-12px)/2)] sm:w-[calc((100%-24px)/3)] lg:w-[calc((100%-80px)/6)]">
       <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-mist">
         {member.photo ? (
           <Image
@@ -66,7 +67,7 @@ export function Leadership() {
         <FounderStory short flush className="mt-6 lg:mt-8" />
 
         <Label className="mt-12 lg:mt-16">Leadership team</Label>
-        <ul className="mt-[26px] grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 lg:mt-4 lg:grid-cols-6 lg:gap-x-4 lg:gap-y-6">
+        <ul className="mt-[26px] flex flex-wrap justify-center gap-x-3 gap-y-5 lg:mt-4 lg:gap-x-4 lg:gap-y-6">
           {TEAM.map((m) => (
             <TeamCard key={m.name} member={m} />
           ))}
