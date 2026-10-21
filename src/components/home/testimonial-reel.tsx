@@ -17,6 +17,9 @@ export type Story = {
   length: string | null;
 };
 
+/** Playback volume, out of 100. */
+const VOLUME = 60;
+
 /* ----------------------------------------------------------------------------- cards */
 
 /** Vertical stories play in a 9:16 card, landscape ones in a 16:9 card. */
@@ -93,20 +96,21 @@ function Length({ length }: { length: string }) {
 }
 
 /**
- * Driver stories, each in a card of its video's shape. The middle one plays: on its own, muted,
- * once the section is half in view for a moment, and from the start with sound when tapped. When it
- * ends the next one takes over. Only the middle card ever holds a player; the others are stills.
+ * Driver stories, each in a card of its video's shape, opening on the first landscape one. The middle
+ * one plays on its own once the section is half in view for a moment, with sound at 60% where the
+ * browser allows it and muted with Tap For Sound where it does not. When it ends the next one takes
+ * over. Only the middle card ever holds a player; the others are stills.
  */
 export function TestimonialReel({ stories, copy }: { stories: Story[]; copy: StoryCopy }) {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(() => Math.max(0, stories.findIndex((s) => s.shape === "landscape")));
   const [started, setStarted] = useState(false);
   const [ready, setReady] = useState(false);
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const host = useRef<HTMLDivElement>(null);
   const player = useRef<YTPlayer | null>(null);
   const inView = useRef(false);
-  const soundOn = useRef(false);
+  const soundOn = useRef(true);
   const touch = useRef<number | null>(null);
   const many = stories.length > 1;
   const current = stories[index];
@@ -177,8 +181,10 @@ export function TestimonialReel({ stories, copy }: { stories: Story[]; copy: Sto
               if (!alive) return;
               // Its methods exist only from here; a pause asked for earlier would throw.
               player.current = e.target;
-              if (soundOn.current) e.target.unMute();
-              else e.target.mute();
+              if (soundOn.current) {
+                e.target.unMute();
+                e.target.setVolume(VOLUME);
+              } else e.target.mute();
               if (!inView.current) {
                 e.target.pauseVideo();
                 return;
@@ -231,7 +237,7 @@ export function TestimonialReel({ stories, copy }: { stories: Story[]; copy: Sto
     setMuted(false);
     if (player.current) {
       player.current.unMute();
-      player.current.setVolume(100);
+      player.current.setVolume(VOLUME);
       player.current.playVideo();
     }
     setStarted(true);

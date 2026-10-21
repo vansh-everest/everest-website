@@ -4,11 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSyncExternalStore, type ReactNode } from "react";
 
-/** The id of the driver lead form a page ends with (StartDriving, the driver and Dost pages). */
+/** The id of the lead form a page ends with (StartDriving, the driver and Dost pages). The Dost one carries data-dost. */
 export const FORM_ID = "apply";
 
 const subscribeNothing = () => () => {};
-const formHere = () => document.getElementById(FORM_ID) !== null;
+/** A driver lead form on this page; the Dost page's form is for referrers, so it does not count. */
+const formHere = () => {
+  const form = document.getElementById(FORM_ID);
+  return form !== null && !form.hasAttribute("data-dost");
+};
 const notKnown = () => false;
 
 /**

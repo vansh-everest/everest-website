@@ -137,14 +137,14 @@ export const TEAM: TeamMember[] = [
   { name: "Siddharth Ladsariya", photo: "siddharth" },
   { name: "Sunny Sapra", photo: null },
   { name: "Apurav Mahajan", photo: null },
-  { name: "Amar Kerkar", photo: null },
+  { name: "Amar Kerkar", photo: "amar" },
   { name: "Sidarth Vohra", photo: null },
   { name: "Prihans Dedhiya", photo: null },
-  { name: "Monil Sheth", photo: null },
+  { name: "Monil Sheth", photo: "monil" },
   { name: "Shivang Unadkat", photo: "shivang" },
   { name: "Pradnya", photo: null },
   { name: "Ganesh Jatadharan", photo: null },
-  { name: "Himani Ladsariya", photo: null },
+  { name: "Himani Ladsariya", photo: "himani" },
 ];
 
 export type PressLink = { title: string; date: string; url: string };

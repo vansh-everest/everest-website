@@ -6,6 +6,7 @@ export async function DostApply() {
   return (
     <section
       id="apply"
+      data-dost
       className="scroll-mt-20 bg-blue-gradient lg:bg-[linear-gradient(160deg,#062f50_0%,#0b3d6b_100%)] px-4 pb-6 pt-6 sm:px-6 sm:pb-12 lg:pb-12 lg:pt-12"
     >
       <div className="text-center">

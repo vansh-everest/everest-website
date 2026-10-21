@@ -2,6 +2,7 @@ import { getImageProps } from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowRight, ChevronRight } from "lucide-react";
+import { FormLink } from "@/components/home/form-link";
 import { PHONE_HREF } from "@/components/home/ui";
 import { Carousel } from "@/components/site/carousel";
 import { SiteImage } from "@/components/site/site-image";
@@ -319,13 +320,13 @@ export function BlogCta({ locale, copy }: { locale: Locale; copy: BlogCopy }) {
       </h2>
       <p className="mt-3 text-[15px] leading-[22px] text-white/85 lg:mt-[18px] lg:text-xl lg:leading-7">{copy.ctaSub}</p>
       <div className="mx-auto mt-6 grid max-w-[380px] gap-3 sm:flex sm:max-w-none sm:justify-center sm:gap-4 lg:mt-[30px]">
-        <Link
-          href={localePath(locale, "/drive-with-us")}
+        <FormLink
+          home={localePath(locale, "/")}
           className="flex h-[52px] items-center justify-center gap-3 rounded-full bg-sun px-7 text-[17px] font-semibold text-navy transition hover:brightness-95 lg:h-[54px] lg:text-lg"
         >
           {copy.ctaDrive}
           <ArrowRight aria-hidden className="hidden size-[18px] lg:block" strokeWidth={2.25} />
-        </Link>
+        </FormLink>
         <a
           href={PHONE_HREF}
           className="flex h-[52px] items-center justify-center rounded-full border-2 border-white px-7 text-[17px] font-medium text-white transition hover:bg-white/10 lg:h-[57px] lg:text-lg"

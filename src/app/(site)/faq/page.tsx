@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { FormLink } from "@/components/home/form-link";
 import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
 import { SITE_URL } from "@/lib/company";
 import { jsonLd } from "@/lib/json-ld";
@@ -119,12 +119,9 @@ export default function Page() {
             >
               WhatsApp
             </a>
-            <Link
-              href="/drive-with-us"
-              className="flex h-12 items-center rounded-full border border-white/30 px-7 text-sm font-bold text-white"
-            >
+            <FormLink home="/" className="flex h-12 items-center rounded-full border border-white/30 px-7 text-sm font-bold text-white">
               Drive With Us
-            </Link>
+            </FormLink>
           </div>
         </div>
       </section>
