@@ -59,14 +59,19 @@ export function NewsList({ posts, title, all = false, heading = "h2" }: { posts:
         <ul className="mt-5 border-t border-line lg:mt-10">
           {posts.map((p) => (
             <li key={p.slug} className="border-b border-line">
-              <Link
-                href={newsPath(p.slug)}
-                className="group grid gap-1 py-4 lg:min-h-[88px] lg:grid-cols-[172px_1fr_auto] lg:items-center lg:gap-0 lg:py-5"
-              >
-                <time dateTime={p.date} className="text-[13px] leading-5 text-ink-soft lg:text-[15px]">
-                  {newsDate(p.date)}
-                </time>
-                <span className="text-[17px] font-bold leading-[22px] text-navy group-hover:text-brand lg:text-[22px] lg:leading-8">{p.title}</span>
+              <Link href={newsPath(p.slug)} className="group flex items-center gap-4 py-4 lg:gap-8 lg:py-6">
+                {/* The story's own picture; the title beside it already names it. */}
+                <span className="relative aspect-[16/10] w-[112px] shrink-0 overflow-hidden rounded-xl bg-mist lg:w-[220px]">
+                  {p.image ? (
+                    <Image src={p.image.src} alt="" fill sizes="(min-width: 1024px) 220px, 112px" className="object-cover motion-safe:transition group-hover:scale-105" />
+                  ) : null}
+                </span>
+                <span className="grid min-w-0 flex-1 gap-1 lg:gap-2">
+                  <time dateTime={p.date} className="text-[13px] leading-5 text-ink-soft lg:text-[15px]">
+                    {newsDate(p.date)}
+                  </time>
+                  <span className="text-[15px] font-bold leading-5 text-navy group-hover:text-brand lg:text-[22px] lg:leading-8">{p.title}</span>
+                </span>
                 <span className="hidden items-center gap-2 pl-6 text-[15px] font-semibold text-brand lg:inline-flex">
                   Read <ArrowRight aria-hidden className="size-4" />
                 </span>
