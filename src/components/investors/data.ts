@@ -136,10 +136,10 @@ export type TeamMember = { name: string; photo: string | null };
 export const TEAM: TeamMember[] = [
   { name: "Siddharth Ladsariya", photo: "siddharth" },
   { name: "Sunny Sapra", photo: null },
-  { name: "Apurav Mahajan", photo: null },
+  { name: "Apurav Mahajan", photo: "apurav" },
   { name: "Amar Kerkar", photo: "amar" },
   { name: "Sidarth Vohra", photo: null },
-  { name: "Prihans Dedhiya", photo: null },
+  { name: "Prihans Dedhiya", photo: "prihans" },
   { name: "Monil Sheth", photo: "monil" },
   { name: "Shivang Unadkat", photo: "shivang" },
   { name: "Pradnya", photo: null },
