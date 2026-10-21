@@ -1,5 +1,58 @@
 [
   {
+    "slug": "rajmargyatra-toll-feedback-and-fastag-reward-guide",
+    "locale": "en",
+    "title": "Rajmargyatra Toll Feedback and FASTag Reward Guide",
+    "excerpt": "Learn how to report toll plaza issues on Rajmargyatra and when a toilet report can earn a FASTag recharge.",
+    "body": [
+      "NHAI added a Toll Plaza Feedback feature to the Rajmargyatra app on 19 October 2026, according to PIB. If you drive on National Highways, you can now rate a toll plaza, share what happened, and add remarks from your phone after a trip.",
+      "## What changed for highway drivers",
+      "The new feature is meant for National Highway users who cross NHAI toll plazas. It gives you a direct place inside the Rajmargyatra app to share your toll plaza experience, instead of only telling staff at the booth or leaving the issue unreported.",
+      "According to PIB, Annual Pass users will get a Rajmargyatra notification after crossing a National Highway toll plaza. The notification asks them to share feedback. Other users can also open the app menu and use the Toll Plaza Feedback option for any toll plaza.",
+      "This can help when you notice a service issue at a toll plaza during an outstation airport ride, a long intercity booking, or a personal highway trip. It is not a replacement for safe driving, FASTag balance checks, or keeping trip documents ready. It is an extra channel to record your experience after crossing the plaza.",
+      "## Who should use the feature",
+      "You can use this if you drive a cab, private car, or other vehicle on National Highways and have the Rajmargyatra app. The Financial Express reported that the feature is available for Rajmargyatra users on Android and iOS devices, including users who do not have a FASTag Annual Pass.",
+      "For a cab driver, the best time to use it is after you have safely crossed the toll plaza and stopped at a safe place. Do not try to type remarks while driving. If a passenger is in the car, finish the ride first unless there is a safe break.",
+      "Use simple details when you report. Mention the toll plaza name if the app shows it, the date of travel, the direction of travel if you remember it, and what you faced. Keep the language calm and factual. For example, you can say that a lane was slow, a sign was unclear, or a facility needed attention.",
+      "## How to submit toll feedback",
+      "Open the Rajmargyatra app on your phone. If you are an Annual Pass user and you get a notification after crossing a toll plaza, tap that notification. If you do not get a notification, or if you are not an Annual Pass user, open the app menu and select Toll Plaza Feedback.",
+      "The Financial Express said users can rate the experience using the options shown in the app, select the feedback options that match the journey, and add remarks if they want to give more detail. After checking the information, submit the feedback in the app.",
+      "PIB said the feature helps NHAI identify and monitor toll plazas where services may need improvement. The Financial Express also reported that the official announcement does not give a fixed timeline for solving each individual concern. So treat the submission as a record of your experience, not as an instant complaint ticket with a promised response time.",
+      "Before a highway duty, keep your phone charged and internet working if possible. Update the Rajmargyatra app before a long trip. Keep your FASTag active and funded through your usual FASTag provider, because feedback submission does not replace toll payment or FASTag rules.",
+      "## Separate toilet report reward to know",
+      "There is also a separate NHAI Clean Toilet Picture Challenge for dirty toilets at toll plazas. PIB said on 23 July 2026 that NHAI extended this initiative to 30 June 2027. This is different from the general Toll Plaza Feedback feature.",
+      "Under this toilet reporting initiative, a National Highway user can upload clear, geo-tagged and time-stamped pictures through the latest Rajmargyatra app. PIB said the user must give basic details such as name, location, vehicle registration number and mobile number while submitting the picture.",
+      "For each eligible vehicle registration number, the reward is Rs 1,000 as FASTag recharge credited to the linked vehicle registration number, according to PIB. The reward is non-transferable and cannot be taken as cash. Each vehicle registration number can get only one reward during the full scheme period.",
+      "There are limits you should remember before expecting a reward. PIB said the toilet must be constructed, operated or maintained under NHAI jurisdiction. Toilets at retail fuel stations, dhabas or other public facilities outside NHAI control are not covered. If more than one report comes for the same toilet on the same day, only the first valid entry through Rajmargyatra is considered.",
+      "PIB also said entries are checked through AI-assisted screening and manual verification where needed. This means you should not upload old, unclear, edited or duplicate images. Take the picture only when it is safe and lawful to do so, and do not include faces, number plates or private details of other people if you can avoid it.",
+      "## What to check before your next highway trip",
+      "If you drive long routes, keep Rajmargyatra ready along with your main driver apps. It can help you give toll plaza feedback and, where eligible, report an NHAI toilet issue. Use it only when parked safely.",
+      "Keep your driving licence, registration certificate, insurance, PUC and permit documents ready in physical or DigiLocker form as applicable. Keep your FASTag balance checked before leaving the city. If a toll plaza experience is poor, note it after crossing and submit one clear report instead of sending repeated remarks.",
+      "For cab drivers, small habits on highways save time. Start with enough fuel or CNG, keep water in the car, and plan rest stops before you feel tired. If you need a car for app-based driving, Everest Fleet is one place where drivers can go for a car."
+    ],
+    "published": true,
+    "date": "2026-10-21",
+    "coverImage": {
+      "label": "Daily post cover",
+      "url": "/blog/auto/rajmargyatra-toll-feedback-and-fastag-reward-guide.webp",
+      "alt": "A cab driver checks a phone beside a parked car near a highway toll area."
+    },
+    "sources": [
+      {
+        "title": "NHAI Introduces Toll Plaza Feedback Feature on Rajmargyatra App to Improve National Highway User Experience",
+        "url": "https://www.pib.gov.in/PressReleaseIframePage.aspx?PRID=2325131&lang=2&reg=48"
+      },
+      {
+        "title": "When and how to use NHAI’s toll plaza feedback feature via Rajmargyatra app",
+        "url": "https://www.financialexpress.com/business/roadways-when-and-how-to-use-nhais-toll-plaza-feedback-feature-via-rajmargyatra-app-4365250/lite/"
+      },
+      {
+        "title": "एनएचएआई ने 'क्लीन टॉयलेट पिक्चर चैलेंज' को 30 जून 2027 तक बढ़ाया",
+        "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2288631&lang=2&reg=3"
+      }
+    ]
+  },
+  {
     "slug": "mahindra-xuv-3xo-zng-cng-what-cab-drivers-should-check",
     "locale": "en",
     "title": "Mahindra XUV 3XO ZNG CNG: What Cab Drivers Should Check",
