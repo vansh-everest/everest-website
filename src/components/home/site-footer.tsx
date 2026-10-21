@@ -17,7 +17,7 @@ const columns: { title: "drivers" | "company" | "investors"; links: { key: LinkK
       { key: "driveToOwn", href: "/drive-to-own" },
       { key: "driveToEarn", href: "/drive-to-earn" },
       { key: "faq", href: "/faq" },
-      { key: "benefits", href: "/our-services" },
+      { key: "services", href: "/our-services" },
     ],
   },
   {

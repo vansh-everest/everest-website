@@ -173,6 +173,19 @@ function blankCar(id: string): Car {
   };
 }
 
+/** Hero figures the seed used to carry, keyed "label|value". Saved content still holds them, so each takes its new wording. */
+const RETERMED: Record<string, Row> = {
+  "Liability|Zero": { label: "Earning Potential", value: "₹35,000/month" },
+  "Ownership|24 Months": { label: "Ownership", value: "11 Months onwards" },
+};
+
+function term(v: unknown): Row {
+  const t = obj(v);
+  const row = { label: text(t.label, 24), value: text(t.value, 24) };
+  const next = RETERMED[`${row.label}|${row.value}`];
+  return next ? { ...next } : row;
+}
+
 function page(v: unknown, base: PlanPage): PlanPage {
   const o = obj(v);
   const pick = (key: keyof PlanPage, max: number) => (key in o ? text(o[key], max) : (base[key] as string));
@@ -181,7 +194,7 @@ function page(v: unknown, base: PlanPage): PlanPage {
     highlight: pick("highlight", 60),
     heroImage: image(o.heroImage, base.heroImage),
     heroImagePhone: image(o.heroImagePhone, base.heroImagePhone),
-    term: "term" in o ? { label: text(obj(o.term).label, 24), value: text(obj(o.term).value, 24) } : { ...base.term },
+    term: "term" in o ? term(o.term) : { ...base.term },
     tags: "tags" in o ? lines(o.tags, 4, 48) : [...base.tags],
     whyTag: pick("whyTag", 40),
     whyTitle: pick("whyTitle", 90),
@@ -443,7 +456,8 @@ function testimonials(v: unknown): Testimonial[] {
  * a phrase inside a longer text (a summary, a guide paragraph) is replaced where it appears.
  */
 const REWORDED: Record<string, string> = {
-  "High upfront · low daily rental plan": "High upfront",
+  "High upfront · low daily rental plan": "Pay upfront",
+  "High upfront": "Pay upfront",
   "Low deposit · high daily rental plan": "Low deposit",
   "No fixed rent - earnings-linked model": "Earnings-linked model",
   "Own a Car Without": "Own a Car With",

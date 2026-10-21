@@ -45,8 +45,7 @@ export function FounderStory({ className = "", short = false, flush = false }: {
       </figure>
       <div className="lg:max-w-[620px]">
         <p className="text-lg font-bold leading-7 tracking-[-0.3px] text-navy sm:text-[22px] sm:leading-[30px] lg:text-[26px] lg:leading-[34px]">
-          Our Journey Has Always Been About More Than Cars.
-          <br /> It Has Always Been About People.
+          Our Journey Has Always Been About More Than Cars, It Has Always Been About People
         </p>
         <div className="mt-4 space-y-3 text-sm leading-[18px] text-ink-soft sm:mt-5 sm:text-[15px] sm:leading-[25px]">
           <p>
