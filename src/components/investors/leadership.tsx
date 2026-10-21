@@ -1,8 +1,38 @@
 import type { CSSProperties } from "react";
 import Image from "next/image";
 import { FounderStory } from "@/components/about/founder";
-import { BACKERS, LENDERS, type Logo } from "./data";
+import { BACKERS, LENDERS, TEAM, type Logo, type TeamMember } from "./data";
 import { Heading, Label } from "./ui";
+
+const initials = (name: string) =>
+  name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2);
+
+function TeamCard({ member }: { member: TeamMember }) {
+  return (
+    <li>
+      <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-mist">
+        {member.photo ? (
+          <Image
+            src={`/figma/investors/team-${member.photo}.webp`}
+            alt={member.name}
+            fill
+            sizes="(min-width: 1024px) 172px, (min-width: 640px) 33vw, 50vw"
+            className="object-cover"
+          />
+        ) : (
+          <span aria-hidden className="grid h-full place-items-center text-[28px] font-bold text-navy/30 lg:text-[32px]">
+            {initials(member.name)}
+          </span>
+        )}
+      </div>
+      <p className="mt-2.5 text-sm font-semibold leading-5 text-navy lg:text-[15px]">{member.name}</p>
+    </li>
+  );
+}
 
 const tile = "grid h-16 place-items-center rounded-xl border border-line bg-white lg:h-[88px]";
 
@@ -34,6 +64,13 @@ export function Leadership() {
 
         <Label className="mt-[30px] lg:mt-11">Founder</Label>
         <FounderStory short flush className="mt-6 lg:mt-8" />
+
+        <Label className="mt-12 lg:mt-16">Leadership team</Label>
+        <ul className="mt-[26px] grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 lg:mt-4 lg:grid-cols-6 lg:gap-x-4 lg:gap-y-6">
+          {TEAM.map((m) => (
+            <TeamCard key={m.name} member={m} />
+          ))}
+        </ul>
 
         <Label className="mt-12 lg:mt-16">Backed by</Label>
         <ul className="mt-[26px] grid grid-cols-2 gap-3 lg:mt-4 lg:flex lg:gap-4">

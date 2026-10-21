@@ -127,6 +127,26 @@ export const LENDERS: Logo[] = [
   { id: "toyota", name: "Toyota Financial Services", w: 96, h: 31 },
 ];
 
+export type TeamMember = { name: string; photo: string | null };
+
+/**
+ * Leadership team, in the stakeholder's order. A photo is /figma/investors/team-<photo>.webp,
+ * a 4:5 crop; a member with no photo yet shows initials.
+ */
+export const TEAM: TeamMember[] = [
+  { name: "Siddharth Ladsariya", photo: "siddharth" },
+  { name: "Sunny Sapra", photo: null },
+  { name: "Apurav Mahajan", photo: null },
+  { name: "Amar Kerkar", photo: null },
+  { name: "Sidarth Vohra", photo: null },
+  { name: "Prihans Dedhiya", photo: null },
+  { name: "Monil Sheth", photo: null },
+  { name: "Shivang Unadkat", photo: "shivang" },
+  { name: "Pradnya", photo: null },
+  { name: "Ganesh Jatadharan", photo: null },
+  { name: "Himani Ladsariya", photo: null },
+];
+
 export type PressLink = { title: string; date: string; url: string };
 
 /** Coverage hosted elsewhere, shown ahead of the newsroom's own stories in "Recent News". Headline and date as the publisher's page states them. */
