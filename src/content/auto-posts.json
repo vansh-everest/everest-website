@@ -1,5 +1,63 @@
 [
   {
+    "slug": "fuel-price-check-for-cab-drivers-on-22-october",
+    "locale": "en",
+    "title": "Fuel price check for cab drivers on 22 October",
+    "excerpt": "A simple guide to check petrol, diesel and CNG rates before planning today’s cab shifts.",
+    "body": [
+      "Fuel is one of your biggest daily costs. On 21 October, petrol and diesel were largely steady in major cities, while CNG moved up in some places, so drivers should check the local pump rate before starting work on 22 October.",
+      "## What changed in the latest fuel update",
+      "According to Livemint, fuel prices were largely steady across listed cities on 21 October. The same report said petrol and diesel did not change in Delhi, Mumbai, Kolkata and Chennai on that day.",
+      "The main movement was in CNG. Livemint reported that CNG prices rose in nine listed locations, with increases from 50 paise to ₹2 per kg. Chennai, Mathura and Meerut saw the biggest listed CNG increase of ₹2 per kg.",
+      "This matters more for cab drivers than for many private car owners. If you drive 150 to 250 km in a day, even a small change per litre or per kg can affect your take-home amount over a week.",
+      "Do not depend only on yesterday’s WhatsApp message or a screenshot from another driver. Fuel prices can be city-specific, and the rate can change across city borders such as Delhi, Noida, Ghaziabad and Gurugram.",
+      "## Petrol and diesel rates drivers should note",
+      "For petrol and diesel, Dataful’s dataset for Indian Oil Corporation, sourced to the Petroleum Planning and Analysis Cell, shows the metro rates for 21 October. It lists Delhi petrol at ₹102.12 per litre and diesel at ₹95.20 per litre.",
+      "The same dataset lists Mumbai petrol at ₹111.21 per litre and diesel at ₹97.83 per litre. It lists Kolkata petrol at ₹113.51 per litre and diesel at ₹99.82 per litre, and Chennai petrol at ₹107.77 per litre and diesel at ₹99.55 per litre.",
+      "Business Today also listed petrol and diesel prices for major cities on 20 October. It gave Bengaluru petrol at ₹111.68 per litre and diesel at ₹99.56 per litre, and Hyderabad petrol at ₹116.15 per litre and diesel at ₹104.23 per litre.",
+      "Use these numbers as a recent reference, not as a promise for every pump. The final price you pay is the retail price shown at the fuel station when you fill. If you drive between two cities, compare the rate near your home, the airport zone, and your usual night halt point.",
+      "For petrol and diesel cab drivers, the practical step is simple. Fill only after checking the displayed price, keep the bill if you track expenses, and note the litres filled and odometer reading in your phone. This helps you calculate real mileage instead of guessing.",
+      "## CNG rates to watch in Delhi NCR and other cities",
+      "CNG drivers should check prices even more carefully because the rate can differ sharply between nearby areas. IGL’s official CNG price page says its CNG retail prices apply from 6:00 AM on 29 August 2026 for the listed areas.",
+      "According to IGL, CNG is ₹86.98 per kg in NCT of Delhi. The same IGL page lists Noida and Ghaziabad at ₹95.59 per kg, Meerut at ₹95.47 per kg, Gurugram at ₹92.01 per kg, and Rewari at ₹91.59 per kg.",
+      "This means a Delhi NCR driver should plan the refill point, not only the nearest pump. If your tank is low before a long airport or intercity trip, refuelling on the cheaper side of your route can help. But do not run the tank too low just to save a few rupees, because waiting in a long CNG queue can cost you trips.",
+      "Livemint reported that Mumbai CNG rose by ₹1 to ₹89.00 per kg on 21 October. It also reported Bengaluru CNG at ₹98.00 per kg after a ₹1 increase, Chennai CNG at ₹99.50 per kg after a ₹2 increase, and Hyderabad CNG at ₹112.00 per kg.",
+      "If you drive a CNG cab, keep your refill habit fixed. Fill during a quieter time if possible, check the pressure at the pump, and close the fuel lid properly before leaving. If mileage drops suddenly after a refill, note the station name and get the car checked if the issue repeats.",
+      "## How to plan today’s shift around fuel cost",
+      "Start your day by checking three things. Check the fuel price at your usual pump, the expected distance for your shift, and your car’s real mileage from recent trips. Do this before you accept a long pickup far from your normal area.",
+      "Petrol and diesel rates are under daily pricing. Dataful notes that daily price change is applicable from 6:00 AM, and its dataset says the practice started in India on 16 June 2017. This is why morning checking is better than relying on last night’s rate.",
+      "If you drive on an app, compare fuel cost with the trip pattern, not only with total earnings. A long empty return, heavy traffic, AC use, hill roads, and long idling at stations or airports can reduce your real mileage. Keep a simple note of kilometres, fuel filled, and money spent for at least seven days.",
+      "For CNG drivers, plan around queue time as well as price. A cheaper pump is not always cheaper if it takes 40 minutes during peak demand. If you lose one good trip while waiting, the saving can disappear.",
+      "For owners, the same tracking helps you decide if a car needs service. Low tyre pressure, dirty air filters, poor wheel alignment, old spark plugs, and rough driving can all increase fuel use. The pump price is outside your control, but car condition and driving style are partly in your control.",
+      "Before every shift, carry enough fuel for the first few rides, keep payment options ready, and avoid last-minute refuelling with a passenger waiting. If you want to drive without owning a cab, Everest Fleet is one place where drivers can go for a car."
+    ],
+    "published": true,
+    "date": "2026-10-22",
+    "coverImage": {
+      "label": "Daily post cover",
+      "url": "/blog/auto/fuel-price-check-for-cab-drivers-on-22-october.webp",
+      "alt": "Cab driver checking fuel prices on a phone beside a car at a CNG station"
+    },
+    "sources": [
+      {
+        "title": "Fuel prices today: Check petrol, diesel and CNG rates on 21 October in different cities across India",
+        "url": "https://www.livemint.com/news/india/fuel-prices-today-check-petrol-diesel-and-cng-rates-on-21-october-in-different-cities-across-india-11792548287210.html"
+      },
+      {
+        "title": "Petrol, diesel prices today (October 20): Check latest rates in Delhi, Mumbai, Chennai, Kolkata & more",
+        "url": "https://www.businesstoday.in/amp/india/story/petrol-diesel-prices-today-october-20-check-latest-rates-in-delhi-mumbai-chennai-kolkata-more-562589-2026-10-20"
+      },
+      {
+        "title": "Welcome To Indraprastha Gas Limited (IGL)",
+        "url": "https://www.iglonline.net/cng-png-prices"
+      },
+      {
+        "title": "Daily Retail Selling Price of Petrol and Diesel in Metro Cities for Indian Oil Corporation (IOC)",
+        "url": "https://dataful.in/datasets/329/"
+      }
+    ]
+  },
+  {
     "slug": "rajmargyatra-toll-feedback-and-fastag-reward-guide",
     "locale": "en",
     "title": "Rajmargyatra Toll Feedback and FASTag Reward Guide",
