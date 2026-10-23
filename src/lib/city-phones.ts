@@ -5,7 +5,16 @@
  * e.g. mumbai: "+919736364364", and every call link on a driver page switches to it for that city.
  * Business pages keep the main number (NOT_FOR_DRIVERS in components/home/city-picker.tsx).
  */
-export const CITY_PHONES: Record<string, string> = {};
+export const CITY_PHONES: Record<string, string> = {
+  // The dialer's recruitment inbound campaigns, one per city (dialer support, 23 Oct 2026).
+  mumbai: "+919736364364",
+  delhi: "+919493145000",
+  bengaluru: "+919493275000",
+  hyderabad: "+919493153000",
+  chennai: "+919136318918",
+  pune: "+919819144026",
+  kolkata: "+919493257000",
+};
 
 /** Cookie holding the chosen city's slug, so a choice outlives the visit. */
 export const CITY_COOKIE = "ef_city";
