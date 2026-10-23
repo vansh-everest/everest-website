@@ -1,5 +1,62 @@
 [
   {
+    "slug": "driving-licence-address-change-draft-rules-for-drivers",
+    "locale": "en",
+    "title": "Driving licence address change draft rules for drivers",
+    "excerpt": "Learn what the proposed driving licence changes mean for address updates, documents, fees and learner licence tests.",
+    "body": [
+      "The Ministry of Road Transport and Highways has proposed changes to driving licence rules that may make address and contact-detail updates simpler. These are draft rules, not final rules, so you should keep following the current process until the final notification is issued.",
+      "## What has been proposed",
+      "The draft amendment to the Central Motor Vehicles Rules, 1989 was published in the Gazette on 21 October 2026, according to The Economic Times. It covers driving licence details, learner licence testing, documents, online applications and some fees.",
+      "For drivers, the most useful part is the proposed Rule 16A. The Gazette text carried by Gazette Tracker says an application to change particulars in a driving licence would be made on the portal in Form 2A, with valid proof for the correct details.",
+      "The same draft says the licensing authority would have 15 days to approve or reject a change in licence particulars. If it rejects the application, the reason must be recorded in writing and communicated to the applicant, including through electronic means.",
+      "For address change only, the draft adds one more protection. If the application is not accepted or rejected within 30 days, it would be treated as approved, according to the Gazette text carried by Gazette Tracker and NDTV Profit.",
+      "## Who should pay attention",
+      "This matters to you if your driving licence still shows an old address, old mobile number, old email ID or incorrect personal details. A cab driver often needs a clean and updated licence record for platform onboarding, vehicle paperwork, insurance work and RTO checks.",
+      "It also matters if you are planning to become a driver and have not yet received a learner licence. The Economic Times reported that the draft proposes raising the safe-driving tutorial pass mark from 60 percent to 75 percent, and the tutorial would have to be at least 30 minutes.",
+      "The draft does not mean your present licence becomes invalid. It also does not mean every RTO counter process has changed today. The Economic Times clearly says the proposals will take effect only after the government issues a final notification, and until then existing rules and fees continue to apply.",
+      "The Ministry has invited objections and suggestions within 30 days from the date the Gazette copies are made available to the public, according to the draft text. If you run a driving school, own cabs or handle driver documents, this is the period to read the draft carefully.",
+      "## Fees and documents to keep ready",
+      "The draft proposes that no fee should be charged for changing the address in a driving licence or updating the mobile number or email ID, according to the Gazette text carried by Gazette Tracker. NDTV Profit also reported that the proposed fee waiver would cover address, mobile number and email ID updates.",
+      "The draft also proposes no fee for certain services availed through online Aadhaar authentication. The Economic Times cautioned that the exact scope of fee exemptions will depend on the final notification, so do not assume that every licence service is free until the final rule is issued.",
+      "For address proof, the draft lists documents such as Aadhaar, voter photo identity card, passport, e-ration card, service photo identity card, pensioner photo identity card, electricity bill not older than three months, household gas bill not older than three months, and any other document prescribed by the state government. For foreign nationals, the draft also mentions proof of legal presence in India along with proof of residence.",
+      "For identity proof, the draft lists Aadhaar, valid Indian passport, e-ration card, service photo identity card, pensioner photo identity card and PAN. For age proof, it lists passport, recognised education certificate with date of birth, birth certificate, service photo identity card, pensioner photo identity card and other state-prescribed documents.",
+      "Before you apply, keep your current driving licence number, date of birth, mobile number, Aadhaar if you use Aadhaar authentication, and a clear address proof ready. If your electricity bill or gas bill is used, check the date because the draft mentions bills not older than three months.",
+      "## What you can do now",
+      "If your licence address is wrong, first check the existing online route instead of waiting for the draft to become final. The Uttarakhand Transport Department says licence-related services such as new learning licence, driving licence, renewal, change of address, change of mobile number and international driving permit can be availed online on the Sarathi portal, and that applicants can apply online 24x7.",
+      "Open the Sarathi portal from your state transport website or Parivahan, select your state, and choose the driving licence service for the work you need. If your state asks for an appointment or original documents at the RTO, follow that instruction because state-wise customisation can differ.",
+      "After applying, save the application number, payment receipt if any, uploaded document details and acknowledgement on your phone. Take screenshots also, because these are useful when you check status later or visit an RTO helpdesk.",
+      "If you are applying for a learner licence, prepare for a stricter tutorial test if the draft becomes final. Read road signs, lane rules, speed rules, parking rules and basic safety questions properly instead of rushing through the video or tutorial.",
+      "If you drive daily for work, make one folder on your phone for licence, RC, permit, insurance, PUC, fitness certificate if applicable, and challan receipts. A clean document folder saves time during onboarding, airport entry checks, toll issues and RTO visits.",
+      "If you need a car to start or continue cab driving, Everest Fleet is one place where drivers can go for a car."
+    ],
+    "published": true,
+    "date": "2026-10-23",
+    "coverImage": {
+      "label": "Daily post cover",
+      "url": "/blog/auto/driving-licence-address-change-draft-rules-for-drivers.webp",
+      "alt": "A cab driver checking a phone beside a car on an Indian city road"
+    },
+    "sources": [
+      {
+        "title": "Amendment in CMVR,1989 - Gazette Tracker",
+        "url": "https://www.gazettetracker.com/g/CG-DL-E-21102026-277305"
+      },
+      {
+        "title": "Driving Licence Address Change May Become Free, RTO Inaction For 30 Days Could Mean Approval",
+        "url": "https://www.ndtvprofit.com/india/driving-licence-address-change-may-become-free-rto-inaction-for-30-days-could-mean-approval-12220516"
+      },
+      {
+        "title": "Driving licence new rules: 75% pass mark, 15-day deadline for name & address changes, some online services may be free; check what could change soon",
+        "url": "https://m.economictimes.com/industry/transportation/roadways/driving-licence-new-rules-75-pass-mark-15-day-deadline-for-name-address-changes-some-online-services-may-be-free-check-what-could-change-soon/amp_articleshow/135113203.cms"
+      },
+      {
+        "title": "License Related Services | Transport Department, Uttarakhand | India",
+        "url": "https://transport.uk.gov.in/service/license-related-services/"
+      }
+    ]
+  },
+  {
     "slug": "fuel-price-check-for-cab-drivers-on-22-october",
     "locale": "en",
     "title": "Fuel price check for cab drivers on 22 October",
