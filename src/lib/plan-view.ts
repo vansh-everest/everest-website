@@ -232,7 +232,17 @@ export function planOverviews(content: SiteContent): PlanOverviewView[] {
  * What a picker's car asks first: the lowest upfront or deposit (`deposit`, blank when Jarvis has
  * no figure), and whether more can be paid on top of it (`onwards`).
  */
-export type WizardOption = { deposit: string; onwards?: boolean };
+/**
+ * A car's (or a model year's) figure. `months` is the tenure Jarvis gives, "30–40" or "36", and ""
+ * where it gives none; absent on the admin's own sample points, where the admin's tenure applies.
+ */
+export type WizardOption = { deposit: string; onwards?: boolean; months?: string };
+
+/** A tenure range as the picker prints it: [30, 40] → "30–40", [36, 36] → "36", none → "". */
+export function monthsText(range: PlanYear["months"]): string {
+  if (!range) return "";
+  return range[0] === range[1] ? String(range[0]) : `${range[0]}–${range[1]}`;
+}
 
 /** One car in a plan page's picker, with the figures the plan's calculator sets for it, if any. */
 export type WizardCar = {
@@ -338,8 +348,9 @@ function lowest(options: DepositOption[]): WizardOption | undefined {
  * figure where Jarvis has none, so the car does not borrow the plan's own.
  */
 function yearPoint(year: PlanYear): WizardOption {
-  if (year.money === null) return { deposit: "" };
-  return { deposit: String(year.money), onwards: (year.maxMoney ?? year.money) > year.money };
+  const months = monthsText(year.months);
+  if (year.money === null) return { deposit: "", months };
+  return { deposit: String(year.money), onwards: (year.maxMoney ?? year.money) > year.money, months };
 }
 
 /** "Wagon R - 2025" is offered as 2025; a model name without a year stays whole. */

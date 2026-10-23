@@ -6,6 +6,23 @@ import type { CityOption, WizardCar } from "@/lib/plan-view";
 import type { MoneyStepCopy, Said } from "./wizard-copy";
 import { Say, StepHeading, type Figures } from "./wizard-ui";
 
+/**
+ * A line with `{months}` in it, filled. A range reads "in 30–40 months" where the admin wrote
+ * "at month {months}"; with no tenure the line is left out.
+ */
+function fillMonths(line: string, months: string): string | null {
+  if (!line.includes("{months}")) return line;
+  if (!months) return null;
+  if (months.includes("–")) {
+    // Keeps the admin's casing: "at month" → "in … months", "At Month" → "In … Months".
+    const ranged = line.replace(/(at) (month) \{months\}/i, (_, at: string, month: string) =>
+      at[0] === "A" ? `In ${months} ${month[0] === "M" ? "Months" : "months"}` : `in ${months} months`
+    );
+    return ranged.replace("{months}", months);
+  }
+  return line.replace("{months}", months);
+}
+
 const box = "rounded-xl border border-[#dfe4e8] bg-white";
 
 /** A choice that invites a tap: the cue's light sweeps across it (wizard-motion.ts) and it gives under the finger. */
@@ -206,7 +223,7 @@ export function MoneyStep({
   figures: Figures;
   headingId: string;
 }) {
-  const lines = perks.map((p) => p.replace("{months}", tenure)).filter((p) => !p.includes("{"));
+  const lines = perks.flatMap((p) => fillMonths(p, tenure) ?? []).filter((p) => !p.includes("{"));
   const months = copy.tenure ? tenures : [];
   const years = copy.years && car.years.length > 1 ? sortedYears(car) : [];
   return (

@@ -220,6 +220,8 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
   const cityName = view.cities.find((c) => c.slug === city)?.name ?? "";
   // Only a money step with a tenure asks for one; the others use the plan's own term.
   const figures = figuresFor(view, car, city, money?.tenure ? tenure : "");
+  // With Jarvis's tenure the admin's tenure choices step aside.
+  const jarvisTenure = car.option?.months !== undefined;
   const carLabel = year ? `${car.name} ${year}` : car.name;
   const name = copy.steps[step];
 
@@ -228,7 +230,7 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
   const single = [
     view.cities.length < 2,
     cars.length < 2 && (!yearsOnCar || car.years.length < 2),
-    (!money?.tenure || view.tenures.length < 2) && (yearsOnCar || car.years.length < 2),
+    (!money?.tenure || jarvisTenure || view.tenures.length < 2) && (yearsOnCar || car.years.length < 2),
   ];
   const awake = chosen.includes(step) || Boolean(single[step]);
   // The first step is cued as soon as the intro has landed; a later one once its choices have.
@@ -304,8 +306,8 @@ export function PlanWizard({ view }: { view: PlanWizardView }) {
               carLabel={carLabel}
               cityName={cityName}
               perks={view.perks}
-              tenures={view.tenures}
-              tenure={tenure}
+              tenures={jarvisTenure ? [] : view.tenures}
+              tenure={jarvisTenure ? figures.months : tenure}
               onTenure={(m) => {
                 choose(2);
                 setTenure(m);

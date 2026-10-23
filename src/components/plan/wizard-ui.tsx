@@ -26,10 +26,14 @@ export type Figures = { money: string; onwards?: boolean; upfront: boolean; mont
  */
 export function figuresFor(view: PlanWizardView, car: WizardCar, city: string, tenure: string): Figures {
   const base = view.prices[city] ?? { money: "", upfront: false, months: "" };
+  // Jarvis's tenure for this car and model year, when the picker has Jarvis's cars: a range, or
+  // nothing at all rather than the admin's single figure.
+  if (car.option?.months !== undefined) tenure = car.option.months;
   // Jarvis's figures for this very car beat both the admin's sample point and the city's.
   const own = view.carPrices[city]?.[car.id];
-  if (own) return { ...own, months: tenure || own.months || base.months };
-  const months = tenure || base.months;
+  const jarvis = car.option?.months !== undefined;
+  if (own) return { ...own, months: jarvis ? tenure : tenure || own.months || base.months };
+  const months = jarvis ? tenure : tenure || base.months;
   // The calculator's figure is the upfront on a plan with an upfront step, the deposit elsewhere.
   const upfront = view.kind === "now";
   return car.option ? { money: car.option.deposit, onwards: car.option.onwards, upfront, months } : { ...base, months };

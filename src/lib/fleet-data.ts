@@ -100,7 +100,12 @@ export type PlanYear = {
   maxMoney: number | null;
   moneyStep: number;
   rentStep: number;
+  /** Own Now and Drive to Own: the shortest and longest tenure in months; null where Jarvis gives none. */
+  months: MonthsRange | null;
 };
+
+/** [shortest, longest] in whole months. */
+export type MonthsRange = [number, number];
 
 export type LiveCar = {
   name: string;
@@ -255,10 +260,11 @@ function planYear(
     maxMoney: slides ? top : paid,
     moneyStep: slides ? moneyStep : 0,
     rentStep: slides ? down : 0,
+    months: null,
   };
 }
 
-function yearsFromAnswer(answer: JarvisCarYears | null): PlanYear[] {
+function yearsFromAnswer(answer: JarvisCarYears | null, tenure: Tenure | null): PlanYear[] {
   return (answer?.model_years ?? []).flatMap((name) => {
     const row = answer?.[name] as JarvisYearRow | undefined;
     if (!row) return [];
@@ -268,12 +274,12 @@ function yearsFromAnswer(answer: JarvisCarYears | null): PlanYear[] {
       "min_upfront" in row
         ? planYear(label, price(row.min_rent) ?? low, null, price(row.min_upfront), price(row.max_upfront), row.downpayment_stepup, row.rent_stepdown)
         : planYear(label, low, high, price(row.min_sd_amount), null, null, null);
-    return year ? [year] : [];
+    return year ? [{ ...year, months: tenure?.years[name] ?? null }] : [];
   });
 }
 
 /** A car Jarvis prices without a model-year choice: its plan figures, as one unnamed year. */
-function yearsFromOffer(offer: JarvisPlanOption): PlanYear[] {
+function yearsFromOffer(offer: JarvisPlanOption, tenure: Tenure | null): PlanYear[] {
   const low = price(offer.rent_info?.min_amount) ?? range(offer.rent)[0];
   const high = price(offer.rent_info?.max_amount) ?? range(offer.rent)[1];
   const [upfront, maxUpfront] = range(offer.upfront_fee);
@@ -281,7 +287,50 @@ function yearsFromOffer(offer: JarvisPlanOption): PlanYear[] {
     offer.plan_uri === "own-now"
       ? planYear("", low, null, upfront, maxUpfront, offer.downpayment_stepup, offer.rent_stepdown)
       : planYear("", low, high, price(offer.min_sd_amount), null, null, null);
-  return year ? [year] : [];
+  return year ? [{ ...year, months: tenure?.overall ?? null }] : [];
+}
+
+/* ------------------------------------------------------------------------- tenure */
+
+/** Jarvis's tenure answer, in days: each model year's range (keyed like plan-years) and the range over all. */
+type JarvisSpan = { min_days?: number | string | null; max_days?: number | string | null };
+type JarvisTenure = { years?: Record<string, JarvisSpan>; overall?: JarvisSpan | null };
+type Tenure = { years: Record<string, MonthsRange>; overall: MonthsRange | null };
+
+/** The plans Jarvis keeps a tenure for. */
+const TENURE_URIS = ["own-now", "drive-to-own"];
+
+/** 1460 days → 48 months, 1095 → 36, 730 → 24. */
+const DAYS_PER_MONTH = 365.25 / 12;
+
+function monthsRange(span: JarvisSpan | null | undefined): MonthsRange | null {
+  const low = Math.round(Number(span?.min_days) / DAYS_PER_MONTH);
+  const high = Math.round(Number(span?.max_days) / DAYS_PER_MONTH);
+  if (!(low > 0) || !(high > 0)) return null;
+  return [Math.min(low, high), Math.max(low, high)];
+}
+
+/**
+ * How long a driver can take this car for, per model year. Tenure is extra: an error here is
+ * logged and the car keeps its prices, with no tenure, rather than failing the whole read.
+ */
+async function readTenure(planUri: string, query: URLSearchParams): Promise<Tenure | null> {
+  if (!TENURE_URIS.includes(planUri)) return null;
+  const ask = new URLSearchParams({ plan_uri: planUri, city_id: query.get("city_id") ?? "", car_name: query.get("car_name") ?? "" });
+  try {
+    const answer = await records<JarvisTenure>(`/everest_website/tenure?${ask}`, [400, 404, 422]);
+    if (!answer) return null;
+    const years = Object.fromEntries(
+      Object.entries(answer.years ?? {}).flatMap(([name, span]) => {
+        const months = monthsRange(span);
+        return months ? [[name, months]] : [];
+      })
+    );
+    return { years, overall: monthsRange(answer.overall) };
+  } catch (error) {
+    console.warn(`tenure for ${ask}: ${error instanceof Error ? error.message : error}`);
+    return null;
+  }
 }
 
 /** Jarvis's plans that have a calculator on the site; Revenue Share has none. */
@@ -300,12 +349,13 @@ async function readCity(city: JarvisCity): Promise<LiveCity> {
     for (const offer of (categories ?? []).flatMap((c) => c.options ?? [])) {
       if (!offer.rent || !CALCULATOR_URIS.includes(offer.plan_uri)) continue;
       let found: PlanYear[] = [];
+      const tenure = await readTenure(offer.plan_uri, query);
       if (offer.car_year_screen) {
         const byYear = new URLSearchParams(query);
         byYear.set("plan_uri", offer.plan_uri);
-        found = yearsFromAnswer(await records<JarvisCarYears>(`/everest_website/plan-years?${byYear}`, [400, 404]));
+        found = yearsFromAnswer(await records<JarvisCarYears>(`/everest_website/plan-years?${byYear}`, [400, 404]), tenure);
       }
-      years[PLAN_IDS[offer.plan_uri]] = found.length ? found : yearsFromOffer(offer);
+      years[PLAN_IDS[offer.plan_uri]] = found.length ? found : yearsFromOffer(offer, tenure);
     }
     return {
       name: car.car_name,
@@ -344,7 +394,7 @@ async function readLive(): Promise<LiveData | null> {
  * render tries again. The page keeps its fifteen-minute refresh either way, since Next records the
  * revalidate before running the read.
  */
-const cachedLive = unstable_cache(readLive, ["fleet-data", "v5"], { revalidate: REFRESH_SECONDS, tags: [FLEET_DATA_TAG] });
+const cachedLive = unstable_cache(readLive, ["fleet-data", "v6"], { revalidate: REFRESH_SECONDS, tags: [FLEET_DATA_TAG] });
 
 /** Jarvis's figures and, when the last read failed with nothing to fall back on, why. */
 export async function getLiveStatus(): Promise<{ live: LiveData | null; error: string | null }> {
@@ -582,7 +632,7 @@ export type CalculatorCityView = { slug: string; name: string; cars: CalculatorC
 export type PlanCalculatorView = { label: string; tenures: string[]; perks: string[]; cities: CalculatorCityView[] };
 
 /** A model year as a visitor's page gets it: what is paid first, and never the daily figure. */
-export type PublicYear = Pick<PlanYear, "name" | "money" | "maxMoney">;
+export type PublicYear = Pick<PlanYear, "name" | "money" | "maxMoney" | "months">;
 export type PublicCalculatorView = Omit<PlanCalculatorView, "cities"> & {
   cities: { slug: string; name: string; cars: (Omit<CalculatorCarView, "years"> & { years: PublicYear[] })[] }[];
 };
@@ -593,7 +643,7 @@ export function publicCalculator(view: PlanCalculatorView): PublicCalculatorView
     ...view,
     cities: view.cities.map((city) => ({
       ...city,
-      cars: city.cars.map((car) => ({ ...car, years: car.years.map(({ name, money, maxMoney }) => ({ name, money, maxMoney })) })),
+      cars: city.cars.map((car) => ({ ...car, years: car.years.map(({ name, money, maxMoney, months }) => ({ name, money, maxMoney, months })) })),
     })),
   };
 }

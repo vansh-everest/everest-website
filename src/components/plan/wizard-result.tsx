@@ -16,7 +16,7 @@ function tiles(view: PlanWizardView, f: Figures): Tile[] {
   const money = rupees(f.money);
   const unit = f.onwards ? "onwards" : undefined;
   const deposit: Tile = { label: "Deposit", value: money, unit, note: "Refundable" };
-  const tenure: Tile = { label: "Tenure", value: f.months, unit: "months", note: "Fixed", accent: true };
+  const tenure: Tile = { label: "Tenure", value: f.months, unit: "months", note: "", accent: true };
   const list: Tile[] =
     view.kind === "now"
       ? [tenure, f.upfront ? { label: "Upfront", value: money, unit, note: ["Paid once, at the start", "Paid once"] } : { ...deposit, note: "" }]
@@ -137,7 +137,7 @@ export function ResultStep({
             className="mt-4 inline-flex h-[35px] items-center gap-2.5 rounded-full bg-brand px-4 text-[15px] font-bold text-white lg:mt-[18px] lg:h-[38px] lg:bg-sun lg:text-base lg:text-navy"
           >
             <Key size={17} strokeWidth={2} className="rotate-180" />
-            The Car Is Yours In Month {figures.months}
+            {figures.months.includes("–") ? `The Car Is Yours In ${figures.months} Months` : `The Car Is Yours In Month ${figures.months}`}
           </p>
         ) : view.kind === "earn" ? (
           <p
