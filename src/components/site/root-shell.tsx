@@ -29,7 +29,7 @@ export async function RootShell({ locale, children }: { locale: Locale; children
         <LocalePosts posts={posts}>
           <SmoothScroll />
           <div aria-hidden className="fx-progress" />
-          <TopBar locale={locale} />
+          <TopBar locale={locale} cities={content.cities.map((c) => ({ slug: c.slug, name: c.name[locale] || c.name.en }))} />
           <SiteHeader locale={locale} />
           <main className="overflow-x-clip">{children}</main>
           <RevealOnScroll />
