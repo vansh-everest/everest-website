@@ -2,7 +2,8 @@
  * The visitor's city, as the top bar's picker keeps it, and each city's own phone number.
  *
  * A city with no number here keeps the main number (PHONE_HREF). Fill a slug with an E.164 number,
- * e.g. mumbai: "+918355897935", and every call link on the page switches to it for that city.
+ * e.g. mumbai: "+919736364364", and every call link on a driver page switches to it for that city.
+ * Business pages keep the main number (NOT_FOR_DRIVERS in components/home/city-picker.tsx).
  */
 export const CITY_PHONES: Record<string, string> = {};
 

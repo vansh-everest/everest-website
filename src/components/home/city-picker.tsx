@@ -25,12 +25,20 @@ function saveCity(slug: string) {
   window.dispatchEvent(new CustomEvent(CITY_EVENT, { detail: slug }));
 }
 
+/**
+ * Pages for businesses, investors and job seekers. The city numbers run the driver recruitment call
+ * flow, so on these pages call links keep the main number.
+ */
+const NOT_FOR_DRIVERS = ["/fleet-logistics", "/employee-mobility", "/intercity", "/advertise-with-us", "/our-services", "/investors", "/careers", "/newsroom"];
+
+const forDrivers = () => !NOT_FOR_DRIVERS.some((path) => location.pathname.startsWith(path));
+
 /** Each text node's own words, so switching city twice never compounds a change. */
 const firstText = new WeakMap<Text, string>();
 
-/** Points every link to the main number at the city's number instead, or back to the main one. */
+/** On a driver page, points every link to the main number at the city's number instead; elsewhere, or with no city number, back to the main one. */
 function applyPhone(slug: string) {
-  const phone = cityPhone(slug);
+  const phone = forDrivers() ? cityPhone(slug) : null;
   for (const link of document.querySelectorAll<HTMLAnchorElement>('a[href^="tel:"]')) {
     if (link.dataset.mainTel !== PHONE_HREF && link.getAttribute("href") !== PHONE_HREF) continue;
     link.dataset.mainTel = PHONE_HREF;
@@ -48,7 +56,7 @@ function applyPhone(slug: string) {
 /**
  * The visitor's city in the top bar. A choice is kept in a cookie; on a first visit the city the
  * request came from (/api/geo) fills it in, and the visitor can change it. Where the city has its
- * own number (lib/city-phones.ts), every call link on the page uses it.
+ * own number (lib/city-phones.ts), every call link on a driver page uses it.
  */
 export function CityPicker({ cities }: { cities: CityOption[] }) {
   const id = useId();
