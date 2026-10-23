@@ -26,6 +26,10 @@ const MOVED: Array<[string, string]> = [
   ["/blog/rent-or-own-a-car", "/blog/lease-or-own-a-car/"],
   // A PDF the old newsroom linked to.
   ["/wp-content/uploads/2026/05/ESG-Report.pdf", "/investors/"],
+  // The old sitemaps, as Search Console and robots.txt know them: all to the one sitemap here.
+  ...["sitemap_index", "wp-sitemap", "page-sitemap", "post-sitemap", "category-sitemap", "author-sitemap"].map(
+    (name): [string, string] => [`/${name}.xml`, "/sitemap.xml"]
+  ),
 ];
 
 const nextConfig: NextConfig = {

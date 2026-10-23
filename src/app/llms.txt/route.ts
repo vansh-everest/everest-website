@@ -5,6 +5,7 @@ import { cityPath } from "@/lib/city-route";
 import { planFor, rupees } from "@/lib/content";
 import { blogPostsFor } from "@/lib/blog-posts";
 import { EXTRA_LOCALES, localePath, type ExtraLocale } from "@/lib/i18n";
+import { NEWS, newsDate, newsPath } from "@/lib/news";
 import { PLAN_PAGES } from "@/lib/plan-pages";
 import { getContent } from "@/lib/store";
 
@@ -69,10 +70,31 @@ export async function GET() {
     ...plans,
     "",
     ...(guides.length ? ["## Driver guides", ...guides, ""] : []),
+    "## Refer a driver",
+    `- [Everest Dost](${link("/everest-dost")}): refer drivers through the Everest Dost app and get paid at every milestone, from car allotted to trip targets`,
+    "",
+    "## Services for businesses",
+    `- [All services](${link("/our-services")}): fleet logistics, employee mobility, intercity travel and advertising on cars`,
+    `- [Fleet Logistics](${link("/fleet-logistics")}): chilled, frozen and ambient delivery vans, tracked live on every trip`,
+    `- [Employee Mobility](${link("/employee-mobility")}): electric office cabs with certified drivers, route planning and backup cabs`,
+    `- [Intercity](${link("/intercity")}): one way, round trip and multi-way cabs, airport transfers and city rides`,
+    `- [Advertise With Us](${link("/advertise-with-us")}): in-cab branding, cab branding and in-cab sampling across ${COMPANY.vehicles} cabs`,
+    "",
     "## Company",
     `- [About Everest Fleet](${link("/about-us")}): founded ${COMPANY.founded}, ${COMPANY.vehicles} cars, ${COMPANY.cities} cities (as of ${COMPANY.asOf})`,
-    `- [Services](${link("/our-services")})`,
+    `- [Investors](${link("/investors")}): backers, debt partners, leadership team and milestones`,
+    `- [Careers](${link("/careers")}): open roles, employee benefits and life at Everest`,
     `- [FAQ](${link("/faq")})`,
+    "",
+    "## In the news",
+    `- [Newsroom](${link("/newsroom")}): every press story about Everest Fleet`,
+    ...NEWS.slice(0, 5).map((p) => `- [${p.title}](${link(newsPath(p.slug))}) (${newsDate(p.date)})`),
+    "",
+    "## Legal",
+    `- [Privacy Policy](${link("/privacy-policy")})`,
+    `- [Terms of Service](${link("/terms-of-service")})`,
+    `- [App Privacy Policy](${link("/app-privacy-policy")})`,
+    `- [Referral Program Terms](${link("/terms-and-conditions-for-referral-program")})`,
     "",
   ];
 
