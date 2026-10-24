@@ -1,5 +1,67 @@
 [
   {
+    "slug": "how-cab-drivers-can-use-tata-evs-1000-charging-points",
+    "locale": "en",
+    "title": "How Cab Drivers Can Use Tata EV’s 1,000 Charging Points",
+    "excerpt": "EV cab drivers can learn where the new fast chargers matter and what to check before city or highway trips.",
+    "body": [
+      "On 22 October 2026, TATA.ev’s MegaCharging network crossed 1,000 live charging connectors across India, according to Fortune India. For an EV cab driver, this mainly means more places to plan a fast top-up during city duty, airport trips, and intercity rides.",
+      "## What has changed for EV drivers",
+      "TATA.ev, the electric vehicle brand of Tata Motors, now has more than 1,000 live connectors under its MegaCharging network. Fortune India reported that the network covers 200 cities and 180 highway corridors, with 40 MW of installed charging capacity.",
+      "The company said the network has already powered 32 million electric kilometres. Fortune India also reported that it stretches from Amritsar in the north to Thoothukudi in Tamil Nadu in the south, and from Dwarka in Gujarat to Murakati in Jharkhand in the east.",
+      "This is useful for drivers because charging options on known corridors reduce the chance of losing duty time while searching for a working charger. It is still important to check the charger status before you drive to the location, because every charger can have different availability, speed, and waiting time.",
+      "## Who can use these chargers",
+      "TATA.ev’s February 2025 press release said the Mega Charger network would be open to all EVs. It also said TATA.ev customers would get priority access and tariff benefits at these chargers.",
+      "This means you should not assume the charger is only for one car brand. If your EV supports the connector and the charging app shows the charger as available, you can plan a stop there.",
+      "TATA.ev had said it was working with charge point operators including Tata Power, ChargeZone, Statiq and Zeon. The same press release said partner chargers could be tracked and paid for through the iRA.ev app for TATA.ev users, instead of downloading many charging apps.",
+      "For a driver, the simple rule is to keep the correct charging apps ready before the trip starts. Do not wait until the battery is low to install an app, complete login, add payment, or check whether the charger is visible.",
+      "## Corridors and city spots that matter for cab work",
+      "Some MegaCharging sites are useful for city and airport duties. Tata Power said in September 2026 that the Tata Power x TATA.ev hub near Terminal 2 of Mumbai’s Chhatrapati Shivaji Maharaj International Airport has 16 charging guns and 600 kW capacity, and is designed for private EV owners, taxis, ride-hailing fleets, and other frequent users.",
+      "Tata Power also listed hubs on the Yamuna Expressway between Greater Noida and Agra. It listed three locations on the Hyderabad to Vijayawada corridor, one on the Bengaluru to Tirupati route, one on the Pune to Bengaluru corridor, and city mobility hubs in Mumbai and Hyderabad.",
+      "The first 10 TATA.ev MegaChargers announced in May 2025 were placed on routes including Mumbai to Ahmedabad, Delhi to Jaipur, Pune to Nashik, Bengaluru city, and Udaipur city. The May 2025 TATA.ev release said these sites were chosen for highways and urban hubs, and mentioned facilities such as restrooms and dining at some locations.",
+      "If you drive airport trips or outstation rides, save two charging options on the route before you start. Keep one main stop and one backup stop, because a charger may be occupied when you reach.",
+      "## What to check before you start charging",
+      "Open the charging app and check whether the charger is live, what power rating it shows, and whether your car can use that charger. Tata Power says its EZ Charge app lets users see charging stations in real time, find a charger, and pay online.",
+      "Charging time is not the same for every car or every charger. Tata Power says public charging can take from 30 minutes to a few hours, depending on the charger’s power rating and the vehicle battery capacity.",
+      "Do not plan your duty assuming the fastest time every day. If your car battery is hot, the charger is shared, or your car cannot accept the full charger speed, your session may take longer.",
+      "Before plugging in, check the parking space, charging gun condition, app payment balance, and whether you need to move the car after charging. After the session starts, stay near the vehicle or keep checking the app, because a stopped session can waste valuable duty time.",
+      "## How drivers can use this in daily planning",
+      "For city work, use fast charging during natural breaks such as lunch, airport waiting time, or the gap after a long trip. For highway work, start with enough charge to reach the planned charger with a safe buffer, instead of reaching with a very low battery.",
+      "If you drive for an app, remember that the next ride may take you away from your preferred charger. It is safer to top up when you have a good charger nearby, rather than waiting for the battery to fall too low during peak hours.",
+      "Keep your charging bills and app records in case you track running cost for your vehicle. Also keep a simple note of reliable chargers on your regular routes, including which ones have toilets, food, shade, or less waiting time.",
+      "More charging points do not remove the need for planning, but they can make EV cab work easier when used well. If you want a car for cab work instead of buying one, you can also visit Everest Fleet."
+    ],
+    "published": true,
+    "date": "2026-10-24",
+    "coverImage": {
+      "label": "Daily post cover",
+      "url": "/blog/auto/how-cab-drivers-can-use-tata-evs-1000-charging-points.webp",
+      "alt": "An electric cab charging while a driver checks a phone nearby"
+    },
+    "sources": [
+      {
+        "title": "TATA.ev's MegaCharging network crosses 1,000 connectors across 200 cities",
+        "url": "https://www.fortuneindia.com/auto/tataevs-megacharging-network-crosses-1000-connectors-across-200-cities/166199?aihub=true"
+      },
+      {
+        "title": "Tata Power and Tata Passenger Electric Mobility Ltd Expand Fast-Charging Footprint Across 10 locations in India, Clock 70,000+ Charging Sessions",
+        "url": "https://www.tatapower.com/news-and-media/media-releases/tata-power-and-tata-passenger-electric-mobility-ltd-expand-fast--charging-footprint-across-10-locations-in-india-clock-70000--charging-sessions"
+      },
+      {
+        "title": "Fast EV Charging Stations in India - Tata Power EZ Charge",
+        "url": "https://www.tatapower.com/ezcharge"
+      },
+      {
+        "title": "TATA.ev to boost India’s Charging Infrastructure to 400,000 Charge Points",
+        "url": "https://static-assets.tatamotors.com/Production/www-tatamotors-com-NEW/wp-content/uploads/2025/02/PR-TATA.ev-boost-India-Charging-Infrastructure-400000-ChargePoints-v2.pdf"
+      },
+      {
+        "title": "TATA.ev Accelerates India’s EV Journey with Launch of 10 TATA.ev MegaChargers",
+        "url": "https://static-assets.tatamotors.com/Production/www-tatamotors-com-NEW/wp-content/uploads/2025/05/NationalPR-TATA.ev-MegaCharger-Launch.pdf"
+      }
+    ]
+  },
+  {
     "slug": "driving-licence-address-change-draft-rules-for-drivers",
     "locale": "en",
     "title": "Driving licence address change draft rules for drivers",
