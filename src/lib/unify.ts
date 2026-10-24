@@ -66,22 +66,37 @@ export type UnifyLeadReport = {
   sent_at: string | null;
 };
 
-/** The website's leads in Unify since `since`, oldest first; null when Unify is not set up or not answering. */
-export async function readUnifyLeads(since: Date, limit = 2000): Promise<{ leads: UnifyLeadReport[]; truncated: boolean } | null> {
+const UNIFY_PAGE = 2000;
+const UNIFY_PAGES = 5;
+
+/**
+ * The website's leads in Unify since `since`, oldest first; null when Unify is not set up or not
+ * answering. Unify answers 2,000 at a time, so later pages start where the last one ended.
+ */
+export async function readUnifyLeads(since: Date): Promise<{ leads: UnifyLeadReport[]; truncated: boolean } | null> {
   if (!unifyEnabled()) return null;
+  const seen = new Map<string, UnifyLeadReport>();
+  let from = since.toISOString();
   try {
-    const query = new URLSearchParams({ since: since.toISOString(), limit: String(limit) });
-    const res = await fetch(`${base()}${PATH}?${query}`, {
-      headers: { authorization: `Bearer ${key()}` },
-      cache: "no-store",
-      signal: AbortSignal.timeout(8000),
-    });
-    if (!res.ok) {
-      console.error("[leads flow] Unify answered", res.status);
-      return null;
+    for (let page = 0; page < UNIFY_PAGES; page++) {
+      const query = new URLSearchParams({ since: from, limit: String(UNIFY_PAGE) });
+      const res = await fetch(`${base()}${PATH}?${query}`, {
+        headers: { authorization: `Bearer ${key()}` },
+        cache: "no-store",
+        signal: AbortSignal.timeout(8000),
+      });
+      if (!res.ok) {
+        console.error("[leads flow] Unify answered", res.status);
+        return null;
+      }
+      const body = (await res.json()) as { leads?: UnifyLeadReport[]; truncated?: boolean };
+      const leads = body.leads ?? [];
+      for (const lead of leads) seen.set(lead.lead_id, lead);
+      const last = leads[leads.length - 1]?.received_at;
+      if (!body.truncated || !last || last === from) return { leads: [...seen.values()], truncated: false };
+      from = last;
     }
-    const body = (await res.json()) as { leads?: UnifyLeadReport[]; truncated?: boolean };
-    return { leads: body.leads ?? [], truncated: Boolean(body.truncated) };
+    return { leads: [...seen.values()], truncated: true };
   } catch (error) {
     console.error("[leads flow] Unify unreachable", error);
     return null;
