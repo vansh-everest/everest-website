@@ -9,6 +9,7 @@
 #   FLEET_CONNECT_URL, FLEET_CONNECT_KEY, JARVIS_API_URL, HAWKEYE_URL
 # And for analytics: NEXT_PUBLIC_GTM_ID=GTM-5PC2NFDV (read at build time, so it needs a rebuild to change).
 # And for the lead forms' captcha: RECAPTCHA_SECRET_KEY (from the Google reCAPTCHA admin, site "Everest Fleet website").
+# And for driver leads to reach the CRM through Unify: UNIFY_LEADS_URL and UNIFY_LEADS_KEY (Unify's WEBSITE_LEADS_KEY).
 # grep exits 1 when none of the variables is set; || true keeps that from failing the build.
 version: 1
 frontend:
@@ -21,7 +22,7 @@ frontend:
         - rm -rf .next/cache/fetch-cache
     build:
       commands:
-        - env | grep -e SESSION_SECRET -e ADMIN_ -e VIEWER_ -e BLOB_READ_WRITE_TOKEN -e LEAD_WEBHOOK_URL -e VERCEL_ENV -e FLEET_CONNECT_ -e JARVIS_API_URL -e HAWKEYE_URL -e NEXT_PUBLIC_GA_ID -e NEXT_PUBLIC_GTM_ID -e RECAPTCHA_ >> .env.production || true
+        - env | grep -e SESSION_SECRET -e ADMIN_ -e VIEWER_ -e BLOB_READ_WRITE_TOKEN -e LEAD_WEBHOOK_URL -e VERCEL_ENV -e FLEET_CONNECT_ -e JARVIS_API_URL -e HAWKEYE_URL -e NEXT_PUBLIC_GA_ID -e NEXT_PUBLIC_GTM_ID -e RECAPTCHA_ -e UNIFY_LEADS_ >> .env.production || true
         - npm run build
   artifacts:
     baseDirectory: .next

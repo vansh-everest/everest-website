@@ -1,7 +1,9 @@
+import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { fleetConnectEnabled, fleetSend } from "@/lib/jarvis";
 import { appendLead, type Lead } from "@/lib/leads";
 import { UNKNOWN_CALLER, callerKey, tooMany } from "@/lib/throttle";
+import { isDriverForm, sendToUnify } from "@/lib/unify";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,6 +21,9 @@ export const dynamic = "force-dynamic";
  * With fleet_connect configured, the lead goes to Jarvis, where the website admin lists it,
  * together with every other field the form had (company, email, trip details). If that fails,
  * the site's own store keeps it, so a Jarvis outage never loses a lead.
+ *
+ * A driver form's lead also goes to Unify (lib/unify.ts), which sends it on to the CRM. Each
+ * submission gets an ID, kept with the lead in Jarvis too, so the two can be matched.
  */
 
 const TEN_DIGITS = /^[6-9]\d{9}$/;
@@ -86,7 +91,23 @@ export async function POST(request: Request) {
     details[key.slice(0, 40)] = raw.trim().slice(0, 300);
   }
 
+  const leadId = randomUUID();
+  details.lead_id = leadId;
   if (!(await sentToJarvis(lead, details))) await appendLead(lead);
+
+  if (isDriverForm(lead.source)) {
+    await sendToUnify({
+      lead_id: leadId,
+      name: lead.name,
+      phone: lead.mobile,
+      city: lead.city,
+      form: lead.source,
+      page: lead.page,
+      campaign: lead.campaign,
+      locale: lead.locale,
+      submitted_at: lead.at,
+    });
+  }
 
   const hook = process.env.LEAD_WEBHOOK_URL;
   if (hook && !tooMany("lead:webhook", WEBHOOK_PER_MINUTE, WINDOW_MS)) {

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Download, PenSquare } from "lucide-react";
+import { Download, GitBranch, PenSquare } from "lucide-react";
 import { readSession } from "@/lib/auth";
 import { jarvisAdmin, jarvisAdminEnabled } from "@/lib/jarvis";
 import { updateLeadAction } from "./actions";
@@ -58,6 +58,10 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
           <span aria-hidden className="h-6 w-px bg-line" />
           <h1 className="text-[15px] font-bold text-navy">Leads</h1>
           <div className="ml-auto flex items-center gap-1 sm:gap-2">
+            <Link href="/admin/leads/flow" className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-navy hover:bg-mist">
+              <GitBranch size={14} />
+              Flow to CRM
+            </Link>
             <a
               href={`/admin/leads/export?${leadQuery(params)}`}
               className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-navy hover:bg-mist"
