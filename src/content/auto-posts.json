@@ -1,5 +1,60 @@
 [
   {
+    "slug": "proposed-aeb-adas-rules-for-taxi-drivers",
+    "locale": "en",
+    "title": "Proposed AEB and ADAS Rules for Taxi Drivers",
+    "excerpt": "Understand the draft safety rules, key dates, and what to check before buying or running a taxi.",
+    "body": [
+      "The Road Ministry has proposed new safety rules for passenger cars, including taxi cars, with dates from 2027 to 2032. These rules are still in draft form, so your present car does not need any change today.",
+      "## What the draft rule is about",
+      "The Ministry of Road Transport and Highways has published draft changes to the Central Motor Vehicles Rules, 1989. Gazette Tracker’s text of the draft says the notification is G.S.R. 904(E), dated October 19, 2026, with issue date October 21, 2026 and publication date October 22, 2026.",
+      "The main feature is Advanced Emergency Braking System, or AEBS. Akashvani News explains that AEBS can apply the brakes if the driver does not respond in an emergency, either to avoid a crash or reduce the impact.",
+      "This is part of ADAS, which means advanced driver assistance systems. CarDekho explains that AEBS uses a camera, radar, or both to watch the road ahead, warn the driver, and then brake if there is no response.",
+      "The draft also covers steering effort, automatic steering functions, emergency lane keeping, driver drowsiness and attention warning, ISOFIX child-seat anchorage standards, and luggage retention requirements. These are not all starting on the same day, so drivers and owners should look at the date that applies to their vehicle type.",
+      "## Key dates for taxis and passenger cars",
+      "Autocar India states that M1 category vehicles are passenger vehicles with up to eight seats besides the driver. Most app-based taxi cars used for city rides will normally fall in this broad passenger-car category, but you should still confirm the vehicle category on the registration certificate or with the dealer when buying a new car.",
+      "From October 1, 2027, the Gazette text says steering effort on most motor vehicles manufactured on and after that date must meet AIS-193. It also says M1 vehicles with Automatic Command Steering Functionalities from that date must meet AIS-193, and M1 vehicles with Emergency Lane Keeping System from that date must meet AIS-191 Part 1.",
+      "The taxi-related date is October 1, 2029. The Gazette text says M1 vehicles to be registered as transport vehicles and manufactured on or after that date must be fitted with Automatic Command Steering Functionalities and Emergency Lane Keeping System. It also says such transport vehicles must have Driver Drowsiness and Attention Warning Systems meeting AIS-184.",
+      "For AEBS, there are two later dates. The Gazette text says M1 and N1 vehicles manufactured on and after October 1, 2028 must meet AIS-185 if they are provided with AEBS. It then says M1 vehicles manufactured on and after October 1, 2030 for new models, and October 1, 2032 for all models, must be fitted with AEBS meeting AIS-185.",
+      "## What it means if you drive today",
+      "There is no immediate change for a driver using an existing petrol, diesel, CNG, hybrid, or electric cab today. CarDekho says the draft does not ask existing owners to retrofit AEBS, and the proposal is not final yet.",
+      "If you are planning to buy a car now, you do not have to wait only because of this draft. But if you plan to keep the car for many years as a taxi, ask the dealer whether the car is an M1 vehicle, whether it is meant for private or transport registration, and whether any ADAS features already fitted meet the named AIS standards.",
+      "If you buy a car with AEBS or other ADAS features, take time to understand them before using the car for paid trips. CarDekho explains that under India’s AEBS standard, the system must warn the driver in at least two ways, such as sound, vibration, or visual alert, before braking.",
+      "CarDekho also says the driver can override AEBS by steering or pressing the accelerator, and the system cannot be switched off above 10 kmph. If it is switched off, it comes back on when the car is restarted. This matters in daily taxi work because different drivers may share the same car.",
+      "## Steps drivers and owners can take",
+      "First, remember that this is a draft rule. Gazette Tracker’s text says objections and suggestions will be considered within thirty days of the notification being published in the Gazette of India. CarDekho says comments can be emailed to comments-morth@gov.in before the window closes.",
+      "Second, keep the vehicle papers clear. When you buy or renew documents for a taxi, check whether the registration category says transport vehicle and whether the vehicle is in the M1 category. The proposed 2029 requirements are written for M1 vehicles to be registered as transport vehicles.",
+      "Third, ask for a simple feature explanation at delivery. If the car has lane keeping, automatic steering support, drowsiness warning, or AEBS, ask the showroom to show where the warning appears, what sound it makes, and how the driver can safely take control. This is useful when a car is driven by more than one person.",
+      "Fourth, keep your normal safe-driving habits. AEBS and driver warnings are support systems, not a replacement for watching the road, keeping distance, and resting when tired. The draft rule is about new vehicle standards, but your day-to-day driving still depends on attention and smooth control.",
+      "If you need a car for app-based work, Everest Fleet is one place where drivers can go for a car."
+    ],
+    "published": true,
+    "date": "2026-10-25",
+    "coverImage": {
+      "label": "Daily post cover",
+      "url": "/blog/auto/proposed-aeb-adas-rules-for-taxi-drivers.webp",
+      "alt": "Driver checking a car dashboard on a quiet Indian city road"
+    },
+    "sources": [
+      {
+        "title": "Amendment in CMVR, 1989",
+        "url": "https://www.gazettetracker.com/g/CG-DL-E-22102026-277340"
+      },
+      {
+        "title": "Road Ministry proposes mandatory emergency braking systems for all new car models from October 2030",
+        "url": "https://newsonair.gov.in/road-ministry-proposes-mandatory-emergency-braking-systems-for-all-new-car-models-from-october-2030/"
+      },
+      {
+        "title": "Mandatory AEB In Cars From 2030? What The Government's Draft Rule Means For You",
+        "url": "https://www.cardekho.com/news/general/your-next-car-could-brake-on-its-own-government-proposes-mandatory-aeb-from-2030-36854.htm"
+      },
+      {
+        "title": "MoRTH proposes mandatory emergency braking for all cars from October 2032",
+        "url": "https://www.autocarindia.com/industry-amp/morth-proposes-mandatory-aeb-for-all-cars-from-october-2032-441114"
+      }
+    ]
+  },
+  {
     "slug": "how-cab-drivers-can-use-tata-evs-1000-charging-points",
     "locale": "en",
     "title": "How Cab Drivers Can Use Tata EV’s 1,000 Charging Points",
