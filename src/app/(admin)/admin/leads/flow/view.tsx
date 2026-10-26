@@ -355,7 +355,7 @@ export function FlowView({ f, jarvis, unify, unifyOn, all, result }: { f: Filter
         {unifyOn && unify ? <SendBar f={f} missing={all.filter((l) => l.stage === "missing").length} result={result} /> : null}
 
         <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          <Tile label="Submissions" value={t.total.toLocaleString("en-IN")} note={formLabel(f.form)} />
+          <Tile label="Submissions" value={t.total.toLocaleString("en-IN")} note={f.form ? formLabel(f.form) : `${t.driver} driver, ${t.total - t.driver} other forms`} />
           <Tile label="Driver applications" value={t.driver.toLocaleString("en-IN")} note={`${pct(t.driver, t.total)} of submissions`} />
           <Tile label="New in CRM" value={t.sent.toLocaleString("en-IN")} note={`${pct(t.sent, t.driver)} of applications`} strong />
           <Tile label="Duplicate" value={t.duplicate.toLocaleString("en-IN")} note={`${pct(t.duplicate, t.driver)} of applications`} />
