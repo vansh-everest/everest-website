@@ -158,11 +158,14 @@ export function toUnifyLead(lead: JarvisLead): UnifyLead {
 
 /** Joins Jarvis's submissions to Unify's reports by the lead id the website gave both. */
 export function joinLeads(leads: JarvisLead[], reports: UnifyLeadReport[]): FlowLead[] {
-  const byId = new Map(reports.map((r) => [r.lead_id, r]));
+  // Unify keeps the first 32 characters of an id as its job reference, and reported that before it
+  // reported the whole id; either form finds the lead.
+  const byId = new Map(reports.flatMap((r) => [[r.lead_id, r] as const, [r.lead_id.slice(0, 32), r] as const]));
   return leads.map((lead) => {
     const when = istParts(lead.created_at);
     const driver = isDriverForm(lead.source);
-    const report = driver ? byId.get(leadIdOf(lead)) : undefined;
+    const id = leadIdOf(lead);
+    const report = driver ? (byId.get(id) ?? byId.get(id.slice(0, 32))) : undefined;
     const stage: Stage | null = !driver ? null : !report ? "missing" : report.status ? (STAGE_OF[report.status] ?? "waiting") : "waiting";
     const minutes =
       report?.received_at && report.sent_at && stage === "sent"

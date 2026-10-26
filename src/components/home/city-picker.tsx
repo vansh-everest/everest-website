@@ -20,6 +20,16 @@ function watchCity(change: () => void) {
 
 const noCity = () => "";
 
+/** Shown, and its number used, when the visitor's city cannot be found; never saved, so the next visit looks again. */
+const DEFAULT_CITY = "mumbai";
+let fallback = "";
+const shownCity = () => savedCity() || fallback;
+
+function showDefaultCity() {
+  fallback = DEFAULT_CITY;
+  window.dispatchEvent(new CustomEvent(CITY_EVENT, { detail: DEFAULT_CITY }));
+}
+
 function saveCity(slug: string) {
   document.cookie = `${CITY_COOKIE}=${slug}; path=/; max-age=${YEAR_SECONDS}; samesite=lax`;
   window.dispatchEvent(new CustomEvent(CITY_EVENT, { detail: slug }));
@@ -61,7 +71,7 @@ function applyPhone(slug: string) {
 export function CityPicker({ cities }: { cities: CityOption[] }) {
   const id = useId();
   const select = useRef<HTMLSelectElement>(null);
-  const saved = useSyncExternalStore(watchCity, savedCity, noCity);
+  const saved = useSyncExternalStore(watchCity, shownCity, noCity);
   const city = cities.some((c) => c.slug === saved) ? saved : "";
 
   // The picker renders blank until it knows the city (saved, or looked up on a first visit), so
@@ -77,9 +87,13 @@ export function CityPicker({ cities }: { cities: CityOption[] }) {
       .then((res) => (res.ok ? res.json() : null))
       .then((answer: { city?: string | null } | null) => {
         const slug = answer?.city ?? "";
-        if (live && cities.some((c) => c.slug === slug)) saveCity(slug);
+        if (!live) return;
+        if (cities.some((c) => c.slug === slug)) saveCity(slug);
+        else showDefaultCity();
       })
-      .catch(() => {})
+      .catch(() => {
+        if (live) showDefaultCity();
+      })
       .finally(() => {
         if (live) shown();
       });
