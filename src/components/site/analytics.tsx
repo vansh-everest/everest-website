@@ -5,9 +5,11 @@ import { SITE_URL } from "@/lib/company";
 /**
  * Tags run on the live domain only. Drafts and previews (the Amplify address, website-admin,
  * localhost) load nothing, so test visits and test leads never reach GA4 or the Ads conversion.
+ * Automated browsers (navigator.webdriver: headless crawlers, uptime and test scripts) load
+ * nothing either; GA4 showed hundreds of such users a week from an AWS data centre (Boardman, US).
  */
 const LIVE = new URL(SITE_URL).hostname;
-const onLive = `['${LIVE}','www.${LIVE}'].indexOf(location.hostname)>-1`;
+const onLive = `['${LIVE}','www.${LIVE}'].indexOf(location.hostname)>-1&&!navigator.webdriver`;
 
 /**
  * Google's tags, on public pages only. With NEXT_PUBLIC_GTM_ID the Tag Manager container loads and
