@@ -5,6 +5,7 @@ import { rupees } from "@/lib/content";
 import type { CityOption, WizardCar } from "@/lib/plan-view";
 import type { MoneyStepCopy, Said } from "./wizard-copy";
 import { Say, StepHeading, type Figures } from "./wizard-ui";
+import { CarPlaceholder } from "./car-placeholder";
 
 /**
  * A line with `{months}` in it, filled. A range reads "in 30–40 months" where the admin wrote
@@ -127,7 +128,9 @@ export function CarStep({
               <span className="relative block aspect-[163/96] overflow-hidden rounded-lg bg-mist lg:aspect-[228/140]">
                 {c.image.url ? (
                   <Image src={c.image.url} alt={c.image.alt} fill sizes="(min-width: 1024px) 230px, 45vw" className="object-cover" />
-                ) : null}
+                ) : (
+                  <CarPlaceholder />
+                )}
               </span>
               <span className="mt-2.5 flex min-h-6 items-center justify-between gap-2 lg:mt-[11px]">
                 <span className="text-[17px] font-bold leading-6 text-navy">{c.name}</span>
@@ -232,7 +235,7 @@ export function MoneyStep({
       <div className="lg:mt-[30px] lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:items-start lg:gap-8">
         <div className="mt-[18px] flex items-center gap-4 lg:mt-0 lg:block">
           <span className="relative block aspect-[456/280] w-[44%] shrink-0 overflow-hidden rounded-2xl bg-mist lg:w-full">
-            {car.image.url ? <Image src={car.image.url} alt={car.image.alt} fill sizes="(min-width: 1024px) 360px, 45vw" className="object-cover" /> : null}
+            {car.image.url ? <Image src={car.image.url} alt={car.image.alt} fill sizes="(min-width: 1024px) 360px, 45vw" className="object-cover" /> : <CarPlaceholder size={72} />}
           </span>
           <span className="block min-w-0 lg:mt-5">
             <span className="block text-xl font-extrabold leading-7 text-navy lg:text-[28px] lg:leading-9">{carLabel}</span>

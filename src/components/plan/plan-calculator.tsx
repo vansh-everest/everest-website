@@ -8,6 +8,7 @@ import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
 import { rupees } from "@/lib/content";
 import type { PublicCalculatorView } from "@/lib/fleet-data";
 import { useTapInvite } from "./wizard-motion";
+import { CarPlaceholder } from "./car-placeholder";
 
 /** "Wagon R - 2025" reads as 2025 in the Model year picker; a car Jarvis prices without years reads "Any Year". */
 const yearLabel = (name: string) => (name ? (/(\d{4})\s*$/.exec(name)?.[1] ?? name) : "Any Year");
@@ -137,11 +138,13 @@ export function PlanCalculator({ view, id = "plan" }: { view: PublicCalculatorVi
           className="mt-6 grid overflow-hidden rounded-2xl border-t-[3px] border-sun bg-white shadow-[0_10px_40px_rgb(6_47_80/0.08)] lg:mt-11 lg:grid-cols-[519px_1fr] lg:rounded-[24px] lg:border-t-0"
         >
           <div className="border-line lg:border-r lg:p-8">
-            <div className="aspect-[456/280] overflow-hidden bg-mist lg:rounded-2xl">
+            <div className="relative aspect-[456/280] overflow-hidden bg-mist lg:rounded-2xl">
               {car.photo ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img key={car.photo.url} src={car.photo.url} alt={car.photo.alt || car.name} className="wz-swap size-full object-cover" />
-              ) : null}
+              ) : (
+                <CarPlaceholder size={80} />
+              )}
             </div>
             <h3 key={car.key} className="wz-swap mx-5 mt-5 text-[22px] font-bold leading-7 tracking-[-0.3px] text-navy lg:mx-0 lg:mt-8 lg:text-[44px] lg:font-extrabold lg:leading-[52px] lg:tracking-[-0.5px]">
               {car.name}

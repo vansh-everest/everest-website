@@ -8,6 +8,7 @@ import type { PlanWizardView, WizardCar } from "@/lib/plan-view";
 import type { Said } from "./wizard-copy";
 import { SEQ_GAP_MS, SEQ_START_MS } from "./wizard-motion";
 import { Say, StepHeading, type Figures } from "./wizard-ui";
+import { CarPlaceholder } from "./car-placeholder";
 
 type Tile = { label: string; value: string; unit?: string; note: Said; accent?: boolean };
 
@@ -101,7 +102,9 @@ export function ResultStep({
         <div className="relative aspect-[110/72] w-[110px] shrink-0 overflow-hidden rounded-lg bg-mist lg:aspect-[340/230] lg:w-full lg:rounded-xl">
           {car.image.url ? (
             <Image src={car.image.url} alt={car.image.alt} fill sizes="(min-width: 1024px) 340px, 110px" className="object-cover" />
-          ) : null}
+          ) : (
+            <CarPlaceholder size={40} />
+          )}
         </div>
         <div className="min-w-0">
           <StepHeading id={headingId}>
