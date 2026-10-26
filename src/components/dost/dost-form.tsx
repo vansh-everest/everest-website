@@ -36,7 +36,7 @@ export function DostForm({ cities }: { cities: { slug: string; name: string }[] 
     data.set("campaign", new URLSearchParams(window.location.search).toString());
     try {
       const res = await fetch("/api/lead/", { method: "POST", body: data });
-      if (res.ok) trackLead("everest-dost");
+      if (res.ok) trackLead("everest-dost", data);
       setState(res.ok ? "done" : "failed");
     } catch {
       setState("failed");

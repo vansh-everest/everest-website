@@ -14,10 +14,8 @@ const PATH = "/api/public/website-leads";
 
 export const unifyEnabled = () => Boolean(base() && key());
 
-/** The forms a driver applies through. Business enquiries, Dost sign-ups and EIP stay on the website. */
-export function isDriverForm(source: string): boolean {
-  return ["home", "drive-with-us", "our-plans", "about-us"].includes(source) || /^(plan|city)\//.test(source);
-}
+/** The forms a driver applies through; only these go on to Unify. */
+export { isDriverForm } from "./forms";
 
 export type UnifyLead = {
   lead_id: string;

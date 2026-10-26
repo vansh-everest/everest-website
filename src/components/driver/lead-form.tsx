@@ -56,7 +56,7 @@ export function LeadForm({
     data.set("campaign", new URLSearchParams(window.location.search).toString());
     try {
       const res = await fetch("/api/lead/", { method: "POST", body: data });
-      if (res.ok) trackLead(String(data.get("source") ?? ""));
+      if (res.ok) trackLead(String(data.get("source") ?? ""), data);
       setState(res.ok ? "done" : "failed");
     } catch {
       setState("failed");
