@@ -65,6 +65,10 @@ export type FlowLead = {
   minutesToCrm: number | null;
   phoneLast4: string;
   receivedLabel: string;
+  /** Business, Dost or other, for submissions that are not driver applications. */
+  group: string;
+  /** The one detail a business or Dost form adds that says what it is about. */
+  summary: string;
 };
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -156,6 +160,45 @@ export function toUnifyLead(lead: JarvisLead): UnifyLead {
   };
 }
 
+const BUSINESS = /^(fleet-logistics|employee-mobility|intercity|advertise-with-us|our-services)(\/|$)/;
+
+/** Business enquiry, Dost sign-up, or Other for anything else that is not a driver application. */
+export function formGroup(source: string): string {
+  if (BUSINESS.test(source)) return "Business enquiry";
+  if (source === "everest-dost") return "Dost sign-up";
+  return "Other";
+}
+
+function summaryOf(details: Record<string, string | number | boolean | null>): string {
+  const get = (k: string) => (details[k] == null ? "" : String(details[k]).trim());
+  if (get("company")) return [get("company"), get("service")].filter(Boolean).join(" · ");
+  if (get("pickup") || get("drop")) return [get("pickup"), get("drop")].filter(Boolean).join(" → ");
+  return get("service") || get("occupation") || get("email") || "–";
+}
+
+/** The desk statuses set on the Leads page, in stack order; for submissions that do not go to the CRM. */
+export const DESK = [
+  { status: "converted", label: "Converted", color: "#0ca30c" },
+  { status: "contacted", label: "Contacted", color: "#2a78d6" },
+  { status: "new", label: "New", color: "#eda100" },
+  { status: "closed", label: "Closed", color: "#5b6b80" },
+] as const;
+
+/** Desk-status counts per key, in DESK order, biggest first. */
+export function deskTally(leads: FlowLead[], key: (lead: FlowLead) => string): [string, number[]][] {
+  const out = new Map<string, number[]>();
+  for (const lead of leads) {
+    const k = key(lead);
+    const row = out.get(k) ?? DESK.map(() => 0);
+    const i = DESK.findIndex((d) => d.status === lead.deskStatus);
+    // A status the page does not know counts as New.
+    row[i >= 0 ? i : DESK.length - 2] += 1;
+    out.set(k, row);
+  }
+  const sum = (v: number[]) => v.reduce((a, b) => a + b, 0);
+  return [...out.entries()].sort((a, b) => sum(b[1]) - sum(a[1]) || a[0].localeCompare(b[0]));
+}
+
 /** Joins Jarvis's submissions to Unify's reports by the lead id the website gave both. */
 export function joinLeads(leads: JarvisLead[], reports: UnifyLeadReport[]): FlowLead[] {
   // Unify keeps the first 32 characters of an id as its job reference, and reported that before it
@@ -190,6 +233,8 @@ export function joinLeads(leads: JarvisLead[], reports: UnifyLeadReport[]): Flow
       minutesToCrm: minutes,
       phoneLast4: digits.slice(-4),
       receivedLabel: when.label,
+      group: driver ? "Driver" : formGroup(lead.source),
+      summary: summaryOf(lead.details ?? {}),
     };
   });
 }

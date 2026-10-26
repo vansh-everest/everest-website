@@ -4,9 +4,11 @@ import { List } from "lucide-react";
 import { sendToUnifyAction } from "./actions";
 import { Funnel, Legend, StackedBars, StackedColumns, type Datum, type Series } from "./charts";
 import {
+  DESK,
   STAGES,
   dayLabel,
   daySpan,
+  deskTally,
   emptyCounts,
   median,
   pct,
@@ -205,7 +207,7 @@ const STAGE_INFO = Object.fromEntries(STAGES.map((s) => [s.stage, s]));
 function LatestTable({ leads }: { leads: FlowLead[] }) {
   return (
     <section className={card}>
-      <h2 className={`border-b border-line px-4 py-3 ${cardTitle}`}>Latest {leads.length}</h2>
+      <h2 className={`border-b border-line px-4 py-3 ${cardTitle}`}>Latest driver applications</h2>
       <div className="overflow-x-auto">
         <table className="w-full text-[13px] text-navy">
           <thead>
@@ -288,6 +290,81 @@ function SendBar({ f, missing, result }: { f: Filters; missing: number; result: 
         </form>
       ) : null}
     </div>
+  );
+}
+
+const DESK_SERIES: Series[] = DESK.map((d) => ({ key: d.status, label: d.label, color: d.color }));
+const deskData = (rows: [string, number[]][]): Datum[] =>
+  rows.slice(0, TOP).map(([name, values]) => ({ key: name, label: name, values, note: `${pct(values[0], values.reduce((a, b) => a + b, 0))} converted` }));
+
+/** Business enquiries, Dost sign-ups and other forms: they stay on the website, so the desk status is their outcome. */
+function OtherForms({ leads, days }: { leads: FlowLead[]; days: string[] }) {
+  const groups = new Map(deskTally(leads, (l) => l.group));
+  const count = (g: string) => (groups.get(g) ?? []).reduce((a, b) => a + b, 0);
+  const converted = leads.filter((l) => l.deskStatus === "converted").length;
+  const contacted = leads.filter((l) => l.deskStatus === "contacted").length;
+  const byDay = new Map(deskTally(leads, (l) => l.day));
+  const dayData: Datum[] = days.map((d) => ({ key: d, label: dayLabel(d), values: byDay.get(d) ?? DESK.map(() => 0) }));
+  return (
+    <section className="space-y-5 border-t border-line pt-6">
+      <h2 className="text-[15px] font-bold text-navy">Business and Dost forms</h2>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <Tile label="Submissions" value={leads.length.toLocaleString("en-IN")} note="Not driver applications" />
+        <Tile label="Business enquiries" value={count("Business enquiry").toLocaleString("en-IN")} note="Logistics, mobility, intercity, ads" />
+        <Tile label="Dost sign-ups" value={count("Dost sign-up").toLocaleString("en-IN")} note="Everest Dost" />
+        <Tile label="Contacted" value={contacted.toLocaleString("en-IN")} note={`${pct(contacted, leads.length)} of submissions`} />
+        <Tile label="Converted" value={converted.toLocaleString("en-IN")} note={`${pct(converted, leads.length)} of submissions`} strong />
+      </div>
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <ChartCard title="By form" legend={DESK_SERIES}>
+          <StackedBars series={DESK_SERIES} data={deskData(deskTally(leads, (l) => l.form))} />
+        </ChartCard>
+        {days.length > 1 ? (
+          <ChartCard title="Per day" legend={DESK_SERIES}>
+            <StackedColumns series={DESK_SERIES} data={dayData} height={160} />
+          </ChartCard>
+        ) : (
+          <ChartCard title="By city" legend={DESK_SERIES}>
+            <StackedBars series={DESK_SERIES} data={deskData(deskTally(leads, (l) => l.city))} />
+          </ChartCard>
+        )}
+      </div>
+      <section className={card}>
+        <h2 className={`border-b border-line px-4 py-3 ${cardTitle}`}>Latest {Math.min(leads.length, RECENT)}</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[13px] text-navy">
+            <thead>
+              <tr className="border-b border-line">
+                {["Received", "Type", "Form", "City", "Channel", "Mobile", "About", "Desk"].map((h) => (
+                  <th key={h} className={`${headBase} text-left`}>
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {leads.slice(0, RECENT).map((l) => (
+                <tr key={l.id} className="border-b border-line last:border-0">
+                  <td className="whitespace-nowrap px-3 py-2">{l.receivedLabel}</td>
+                  <td className="whitespace-nowrap px-3 py-2">{l.group}</td>
+                  <td className="px-3 py-2">{l.form}</td>
+                  <td className="px-3 py-2">{l.city}</td>
+                  <td className="whitespace-nowrap px-3 py-2">{l.channel}</td>
+                  <td className="px-3 py-2 tabular-nums">{l.phoneLast4 ? `•••••• ${l.phoneLast4}` : "–"}</td>
+                  <td className="max-w-[18rem] break-words px-3 py-2 text-ink-soft">{l.summary}</td>
+                  <td className="whitespace-nowrap px-3 py-2">
+                    <span className="inline-flex items-center gap-1.5 capitalize">
+                      <span aria-hidden className="size-2 rounded-full" style={{ background: DESK.find((d) => d.status === l.deskStatus)?.color ?? "#eda100" }} />
+                      {l.deskStatus}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
   );
 }
 
@@ -395,8 +472,11 @@ export function FlowView({ f, jarvis, unify, unifyOn, all, result }: { f: Filter
           </ChartCard>
         </div>
 
+        {leads.some((l) => !l.driver) ? <OtherForms leads={leads.filter((l) => !l.driver)} days={days} /> : null}
+
         {leads.length ? (
           <>
+            <h2 className="border-t border-line pt-6 text-[15px] font-bold text-navy">Tables</h2>
             <CountsTable title="By day" first="Day" rows={daysTable} />
             <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
               <CountsTable title="By city" first="City" rows={cities} />
@@ -405,7 +485,7 @@ export function FlowView({ f, jarvis, unify, unifyOn, all, result }: { f: Filter
               <CountsTable title="By campaign" first="utm_campaign" rows={campaigns} />
               <CountsTable title="By language" first="Language" rows={languages} />
             </div>
-            <LatestTable leads={leads.slice(0, RECENT)} />
+            <LatestTable leads={leads.filter((l) => l.driver).slice(0, RECENT)} />
           </>
         ) : jarvis ? (
           <p className={`${card} px-4 py-6 text-center text-[13px] text-ink-soft`}>0 submissions in this range</p>
