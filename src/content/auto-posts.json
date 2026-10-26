@@ -1,5 +1,60 @@
 [
   {
+    "slug": "pm-e-drive-ev-charging-support-guide-for-cab-drivers",
+    "locale": "en",
+    "title": "PM E-DRIVE EV Charging Support Guide for Cab Drivers",
+    "excerpt": "Learn what PM E-DRIVE means for EV charging, e-vouchers and vehicle checks before you shift to electric work.",
+    "body": [
+      "PM E-DRIVE is the Central Government scheme for electric vehicles and charging infrastructure. For cab drivers, the main point is simple: it may improve public charging access, but you should check vehicle eligibility carefully before buying or renting an EV for work.",
+      "## What PM E-DRIVE covers",
+      "PM E-DRIVE stands for PM Electric Drive Revolution in Innovative Vehicle Enhancement. The Ministry of Heavy Industries says the scheme was launched through a Gazette notification dated 29 September 2024 and implemented from October 2024.",
+      "The latest PIB factsheet opened for this post says the scheme has been extended until 31 March 2028. It gives the total outlay as ₹11,900 crore and says the scheme supports demand incentives and infrastructure support across different EV categories.",
+      "The categories listed by PIB are registered electric two-wheelers, electric three-wheelers, e-ambulances, e-trucks, e-buses, charging infrastructure and upgradation of testing agencies. Electric taxi cars are not listed as a demand-incentive category on the official pages opened for this post, so do not assume that a cab car will get a PM E-DRIVE purchase benefit.",
+      "This matters if you are planning to move from CNG or diesel to an EV. The scheme may help the wider charging network, but your car choice, charging time and daily route still decide whether EV work is practical for you.",
+      "## Charging support that can help daily work",
+      "PIB says ₹2,000 crore has been earmarked for nationwide EV public charging stations under PM E-DRIVE. The same PIB factsheet says ₹851 crore had been approved for deployment of 8,147 chargers to three oil marketing companies and 10 states as of 28 September 2026.",
+      "Another PIB release explains where supported charging stations can come up. It lists places such as railway stations, airports operated and maintained by the Airports Authority of India, public sector oil company retail outlets, state transport bus stations, metro stations, municipal parking lots, public sector ports, toll plazas controlled by NHAI or state governments, and way-side amenities on highways and expressways.",
+      "For a driver, these locations are useful because they are close to real trip points. Airport queues, station pickups, highway rides and city parking breaks are places where a planned charge can save time. Before depending on any new charger, check whether it is working, what plug type it has, what the tariff is and whether parking is allowed while charging.",
+      "The official release also says government departments, central public sector enterprises, states, Union Territories and their public sector undertakings are eligible to submit proposals for EV public charging stations. This means a driver does not apply directly for a public charger under this scheme. You benefit when the charger becomes available for public use.",
+      "## E-vouchers and buyer checks",
+      "The PM E-DRIVE portal says the Ministry of Heavy Industries uses e-vouchers for eligible EV customers to get the demand incentive. The portal says the e-voucher is generated at the time of purchase after Aadhaar Face authentication, and a download link is sent to the customer’s registered mobile number.",
+      "The FAQ page says only one EV of a specific category per individual will qualify for incentives. It also says individuals must validate Aadhaar authentication linked to their mobile number, and each mobile number can be used only once for incentive purposes.",
+      "The FAQ page also says resold EVs are not eligible for incentives, and only the original purchase qualifies. It says EVs manufactured under the FAME-II scheme are not eligible for incentives under PM E-DRIVE 2024.",
+      "If you are buying an eligible EV, ask the dealer to show the model’s eligibility on the PM E-DRIVE portal before you make the final payment. Keep your Aadhaar-linked mobile number active, check the invoice, and confirm that the incentive has been adjusted in the vehicle price if the model is eligible.",
+      "## What cab drivers should do before shifting to EV",
+      "First, separate two questions. One is whether the vehicle gets a government incentive. The other is whether the vehicle can earn well on your route after charging time, parking time and daily kilometres are counted.",
+      "If you work long airport or highway trips, check charging points on both ends of the route, not only near your home. If you work inside the city, check whether there is a charger near your usual waiting area, lunch stop or night parking location.",
+      "If you rent or take a car on a monthly plan, ask who pays for charging, where the car can be charged and what happens if a charger is down. Ask about battery range with AC on, charging time from low battery to usable range, and whether the car supports fast charging.",
+      "Keep your driving licence, registration certificate, insurance, permit, PUC and fitness-related documents ready as usual. EVs reduce fuel-station visits, but they do not reduce your duty to carry valid vehicle and driver documents on every trip.",
+      "PM E-DRIVE is useful to track because it shows where public charging support is going. For now, use it as one input in your EV decision, along with your city, duty hours, charging access and vehicle cost. If you want to drive a cab without owning a car, Everest Fleet is one place where you can ask for a car."
+    ],
+    "published": true,
+    "date": "2026-10-26",
+    "coverImage": {
+      "label": "Daily post cover",
+      "url": "/blog/auto/pm-e-drive-ev-charging-support-guide-for-cab-drivers.webp",
+      "alt": "An electric cab at a public charging point with a driver checking a phone"
+    },
+    "sources": [
+      {
+        "title": "PM E-DRIVE Scheme",
+        "url": "https://www.pib.gov.in/FactsheetDetails.aspx?Id=151062&lang=1&reg=+3"
+      },
+      {
+        "title": "EV CHARGING INFRASTRUCTURE UNDER PM E-DRIVE SCHEME",
+        "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2199445&lang=1&reg=3"
+      },
+      {
+        "title": "Home - PM E-DRIVE",
+        "url": "https://pmedrive.heavyindustries.gov.in/"
+      },
+      {
+        "title": "FAQ's - PM E-DRIVE",
+        "url": "https://pmedrive.heavyindustries.gov.in/FAQs"
+      }
+    ]
+  },
+  {
     "slug": "proposed-aeb-adas-rules-for-taxi-drivers",
     "locale": "en",
     "title": "Proposed AEB and ADAS Rules for Taxi Drivers",
