@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useSyncExternalStore } from "react";
+import { useEffect, useId, useRef, useSyncExternalStore } from "react";
 import { ChevronDown, MapPin } from "lucide-react";
 import { CITY_COOKIE, CITY_EVENT, CITY_PHONES, cityPhone } from "@/lib/city-phones";
 import { PHONE_DISPLAY, PHONE_HREF } from "./ui";
@@ -60,11 +60,18 @@ function applyPhone(slug: string) {
  */
 export function CityPicker({ cities }: { cities: CityOption[] }) {
   const id = useId();
+  const select = useRef<HTMLSelectElement>(null);
   const saved = useSyncExternalStore(watchCity, savedCity, noCity);
   const city = cities.some((c) => c.slug === saved) ? saved : "";
 
+  // The picker renders blank until it knows the city (saved, or looked up on a first visit), so
+  // the placeholder never flashes ahead of the answer.
   useEffect(() => {
-    if (cities.some((c) => c.slug === savedCity())) return;
+    const shown = () => select.current?.removeAttribute("data-detecting");
+    if (cities.some((c) => c.slug === savedCity())) {
+      shown();
+      return;
+    }
     let live = true;
     fetch("/api/geo/", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
@@ -72,7 +79,10 @@ export function CityPicker({ cities }: { cities: CityOption[] }) {
         const slug = answer?.city ?? "";
         if (live && cities.some((c) => c.slug === slug)) saveCity(slug);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => {
+        if (live) shown();
+      });
     return () => {
       live = false;
     };
@@ -103,12 +113,14 @@ export function CityPicker({ cities }: { cities: CityOption[] }) {
       <MapPin aria-hidden size={15} className="pointer-events-none absolute left-0 text-white/80" />
       <select
         id={id}
+        ref={select}
+        data-detecting=""
         value={city}
         onChange={(e) => saveCity(e.target.value)}
-        className="h-8 max-w-[130px] cursor-pointer appearance-none truncate bg-transparent pl-5 pr-5 text-sm font-semibold text-white outline-none transition hover:text-sun focus-visible:text-sun"
+        className="h-8 max-w-[130px] cursor-pointer appearance-none truncate bg-transparent pl-5 pr-5 text-sm font-semibold text-white outline-none transition hover:text-sun focus-visible:text-sun data-[detecting]:text-transparent"
       >
         <option value="" disabled className="text-navy">
-          Your city
+          Select city
         </option>
         {cities.map((c) => (
           <option key={c.slug} value={c.slug} className="text-navy">
