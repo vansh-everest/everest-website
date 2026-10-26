@@ -4,7 +4,7 @@ import { jarvisAdminEnabled } from "@/lib/jarvis";
 import { readUnifyLeads, unifyEnabled } from "@/lib/unify";
 import { joinLeads } from "./flow-data";
 import { readJarvisLeads } from "./load";
-import { FlowView, readFilters, type Filters } from "./view";
+import { FlowView, readFilters, type Filters, type SendResult } from "./view";
 
 export const dynamic = "force-dynamic";
 
@@ -15,12 +15,19 @@ async function load(f: Filters) {
   return { jarvis, unify, all: joinLeads(jarvis?.leads ?? [], unify?.leads ?? []) };
 }
 
+/** The counts "Send to Unify" put in the address it returned to. */
+function sendResult(params: Record<string, string | string[] | undefined>): SendResult {
+  const n = (key: string) => Number([params[key]].flat()[0] ?? "") || 0;
+  return params.sent === undefined ? null : { sent: n("sent"), had: n("had"), refused: n("refused"), stopped: params.stopped !== undefined };
+}
+
 /** Website submissions on their way to the CRM, as Jarvis and Unify report them. */
 export default async function LeadsFlowPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   if (!jarvisAdminEnabled()) redirect("/admin");
   if (!(await readSession())) redirect("/admin");
 
-  const f = readFilters(await searchParams);
+  const params = await searchParams;
+  const f = readFilters(params);
   const loaded = await load(f);
-  return <FlowView f={f} unifyOn={unifyEnabled()} {...loaded} />;
+  return <FlowView f={f} unifyOn={unifyEnabled()} result={sendResult(params)} {...loaded} />;
 }

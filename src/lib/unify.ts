@@ -50,6 +50,45 @@ export async function sendToUnify(lead: UnifyLead): Promise<boolean> {
   return false;
 }
 
+const BATCH = 200;
+
+/**
+ * Many leads at once, BATCH a request (Unify takes up to 500). Unify keys each lead by its
+ * lead_id, so sending one again counts as a duplicate and changes nothing. Null when Unify is
+ * not set up; `failed` when a batch was refused or Unify stopped answering partway.
+ */
+export async function sendManyToUnify(
+  leads: UnifyLead[]
+): Promise<{ sent: number; new: number; duplicates: number; rejected: number; failed: boolean } | null> {
+  if (!unifyEnabled()) return null;
+  const out = { sent: 0, new: 0, duplicates: 0, rejected: 0, failed: false };
+  for (let i = 0; i < leads.length; i += BATCH) {
+    const batch = leads.slice(i, i + BATCH);
+    try {
+      const res = await fetch(`${base()}${PATH}`, {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${key()}` },
+        body: JSON.stringify({ leads: batch }),
+        cache: "no-store",
+        signal: AbortSignal.timeout(30_000),
+      });
+      if (!res.ok) {
+        console.error("[lead] Unify refused a batch", res.status, (await res.text()).slice(0, 200));
+        return { ...out, failed: true };
+      }
+      const body = (await res.json()) as { new?: number; duplicates?: number; rejected?: unknown[] };
+      out.sent += batch.length;
+      out.new += body.new ?? 0;
+      out.duplicates += body.duplicates ?? 0;
+      out.rejected += body.rejected?.length ?? 0;
+    } catch (error) {
+      console.error("[lead] Unify unreachable", error);
+      return { ...out, failed: true };
+    }
+  }
+  return out;
+}
+
 /** One website lead as Unify reports it: where it is on the way to the CRM. */
 export type UnifyLeadReport = {
   lead_id: string;

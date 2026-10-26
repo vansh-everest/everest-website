@@ -1,4 +1,4 @@
-import { isDriverForm, type UnifyLeadReport } from "@/lib/unify";
+import { isDriverForm, type UnifyLead, type UnifyLeadReport } from "@/lib/unify";
 
 /**
  * The Leads flow page's numbers: every website submission from Jarvis, joined by lead id to what
@@ -134,13 +134,35 @@ export function campaignOf(campaign: string): string {
 
 const LOCALES: Record<string, string> = { en: "English", hi: "Hindi", mr: "Marathi", ta: "Tamil", te: "Telugu", kn: "Kannada", bn: "Bengali" };
 
+/**
+ * The id Unify knows a submission by: the website's own lead id, or for a submission from before
+ * the website gave one, its Jarvis row ("jarvis-1234").
+ */
+export const leadIdOf = (lead: JarvisLead) => String(lead.details?.lead_id || `jarvis-${lead.id}`);
+
+/** A stored submission as Unify takes it. Jarvis keeps Indian time without a zone. */
+export function toUnifyLead(lead: JarvisLead): UnifyLead {
+  const at = /[zZ]|[+-]\d{2}:?\d{2}$/.test(lead.created_at) ? lead.created_at : `${lead.created_at}+05:30`;
+  return {
+    lead_id: leadIdOf(lead),
+    name: lead.name,
+    phone: lead.mobile,
+    city: lead.city,
+    form: lead.source,
+    page: lead.page,
+    campaign: lead.campaign,
+    locale: lead.locale,
+    submitted_at: new Date(at).toISOString(),
+  };
+}
+
 /** Joins Jarvis's submissions to Unify's reports by the lead id the website gave both. */
 export function joinLeads(leads: JarvisLead[], reports: UnifyLeadReport[]): FlowLead[] {
   const byId = new Map(reports.map((r) => [r.lead_id, r]));
   return leads.map((lead) => {
     const when = istParts(lead.created_at);
     const driver = isDriverForm(lead.source);
-    const report = driver ? byId.get(String(lead.details?.lead_id ?? "")) : undefined;
+    const report = driver ? byId.get(leadIdOf(lead)) : undefined;
     const stage: Stage | null = !driver ? null : !report ? "missing" : report.status ? (STAGE_OF[report.status] ?? "waiting") : "waiting";
     const minutes =
       report?.received_at && report.sent_at && stage === "sent"

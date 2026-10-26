@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { List } from "lucide-react";
+import { sendToUnifyAction } from "./actions";
 import { Funnel, Legend, StackedBars, StackedColumns, type Datum, type Series } from "./charts";
 import {
   STAGES,
@@ -260,8 +261,38 @@ function ChartCard({ title, children, legend }: { title: string; children: React
 
 type Loaded = { jarvis: { capped: boolean } | null; unify: { truncated: boolean } | null; unifyOn: boolean; all: FlowLead[] };
 
+/** What the last "Send to Unify" did, from the address it returned to. */
+export type SendResult = { sent: number; had: number; refused: number; stopped: boolean } | null;
+
+function SendBar({ f, missing, result }: { f: Filters; missing: number; result: SendResult }) {
+  if (!result && !missing) return null;
+  return (
+    <div className="flex flex-wrap items-center gap-3 rounded-xl border border-line bg-white px-4 py-3 text-[13px] text-navy">
+      {result ? (
+        <p>
+          Sent to Unify: <span className="font-semibold">{result.sent}</span> new, {result.had} already there
+          {result.refused ? `, ${result.refused} refused` : ""}
+          {result.stopped ? ", stopped early" : ""}
+        </p>
+      ) : null}
+      {missing ? (
+        <form action={sendToUnifyAction} className="ml-auto flex items-center gap-3">
+          <input type="hidden" name="from" value={f.from} />
+          <input type="hidden" name="to" value={f.to} />
+          <span>
+            Not in Unify: <span className="font-semibold">{missing}</span>
+          </span>
+          <button type="submit" className="h-9 rounded-lg bg-navy px-4 text-[13px] font-semibold text-white hover:bg-navy/90">
+            Send to Unify
+          </button>
+        </form>
+      ) : null}
+    </div>
+  );
+}
+
 /** Website submissions on their way to the CRM: where they come from and what became of them. */
-export function FlowView({ f, jarvis, unify, unifyOn, all }: { f: Filters } & Loaded) {
+export function FlowView({ f, jarvis, unify, unifyOn, all, result }: { f: Filters; result: SendResult } & Loaded) {
   const leads = all.filter((l) => matches(l, f));
   const t = totals(leads);
   const reached = t.driver - t.missing;
@@ -320,6 +351,8 @@ export function FlowView({ f, jarvis, unify, unifyOn, all }: { f: Filters } & Lo
         {jarvis?.capped || unify?.truncated ? (
           <p className="rounded-xl border border-[#f3e7a0] bg-[#fdfae2] px-4 py-3 text-[13px] text-navy">Range too large: shorten it for complete counts</p>
         ) : null}
+
+        {unifyOn && unify ? <SendBar f={f} missing={all.filter((l) => l.stage === "missing").length} result={result} /> : null}
 
         <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           <Tile label="Submissions" value={t.total.toLocaleString("en-IN")} note={formLabel(f.form)} />
