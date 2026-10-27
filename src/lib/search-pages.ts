@@ -3,7 +3,7 @@ import type { SiteContent } from "./content";
 /**
  * Every page built for a search term, in one list: the sitemap, llms.txt, the cross links and the
  * admin's Search pages section all read it, so a new page counts everywhere once it is added here.
- * They sit outside the main menu; search, the footer and the driver pages lead to them.
+ * They sit outside the main menu and the footer; search and the driver pages lead to them.
  */
 
 export const RENT_ROOT = "/car-on-rent-for-uber";
