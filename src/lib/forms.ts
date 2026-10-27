@@ -1,6 +1,6 @@
 /** The forms a driver applies through. Business enquiries, Dost sign-ups and EIP are the rest. */
 export function isDriverForm(source: string): boolean {
-  return ["home", "drive-with-us", "our-plans", "about-us"].includes(source) || /^(plan|city)\//.test(source);
+  return ["home", "drive-with-us", "our-plans", "about-us"].includes(source) || /^(plan|city|rent|guide)\//.test(source);
 }
 
 const BUSINESS = /^(fleet-logistics|employee-mobility|intercity|advertise-with-us|our-services)(\/|$)/;

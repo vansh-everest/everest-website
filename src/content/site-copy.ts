@@ -9,6 +9,8 @@ import { DEFAULT_LOCALE, isMainLocale, type Locale, type MainLocale } from "@/li
 /** Every link the header, menus and footer carry. */
 export type LinkKey =
   | "home"
+  | "carRent"
+  | "uberRequirements"
   | "about"
   | "plans"
   | "ownNow"
@@ -70,6 +72,8 @@ export type SiteCopy = {
 
 const en: SiteCopy = {
   links: {
+    carRent: "Car On Rent For Uber",
+    uberRequirements: "Uber Driver Requirements",
     home: "Home",
     about: "About Us",
     plans: "Our Plans",
@@ -125,6 +129,8 @@ const en: SiteCopy = {
 
 const hi: SiteCopy = {
   links: {
+    carRent: "Uber के लिए किराये पर गाड़ी",
+    uberRequirements: "Uber ड्राइवर की ज़रूरतें",
     home: "होम",
     about: "हमारे बारे में",
     plans: "हमारे प्लान",
@@ -180,6 +186,8 @@ const hi: SiteCopy = {
 
 const kn: SiteCopy = {
   links: {
+    carRent: "Uber ಗಾಗಿ ಬಾಡಿಗೆ ಕಾರು",
+    uberRequirements: "Uber ಡ್ರೈವರ್ ಅವಶ್ಯಕತೆಗಳು",
     home: "ಮುಖಪುಟ",
     about: "ನಮ್ಮ ಬಗ್ಗೆ",
     plans: "ನಮ್ಮ ಪ್ಲಾನ್‌ಗಳು",
@@ -235,6 +243,8 @@ const kn: SiteCopy = {
 
 const ta: SiteCopy = {
   links: {
+    carRent: "Uber-க்கு வாடகை கார்",
+    uberRequirements: "Uber டிரைவர் தேவைகள்",
     home: "முகப்பு",
     about: "எங்களைப் பற்றி",
     plans: "எங்கள் திட்டங்கள்",

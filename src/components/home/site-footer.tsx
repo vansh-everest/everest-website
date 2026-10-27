@@ -16,6 +16,8 @@ const columns: { title: "drivers" | "company" | "investors"; links: { key: LinkK
       { key: "ownNow", href: "/own-now" },
       { key: "driveToOwn", href: "/drive-to-own" },
       { key: "driveToEarn", href: "/drive-to-earn" },
+      { key: "carRent", href: "/car-on-rent-for-uber" },
+      { key: "uberRequirements", href: "/uber-driver-requirements" },
       { key: "faq", href: "/faq" },
       { key: "services", href: "/our-services" },
     ],

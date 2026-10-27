@@ -7,6 +7,8 @@ import { blogPostsFor } from "@/lib/blog-posts";
 import { EXTRA_LOCALES, localePath, type ExtraLocale } from "@/lib/i18n";
 import { NEWS, newsDate, newsPath } from "@/lib/news";
 import { PLAN_PAGES } from "@/lib/plan-pages";
+import { getLiveData } from "@/lib/fleet-data";
+import { RENT_ROOT, cheapest, inr, listNames, rentCities, rentPath } from "@/lib/seo-data";
 import { getContent } from "@/lib/store";
 
 // Rebuilt hourly, so a price published in the admin reaches this file the same day.
@@ -28,8 +30,13 @@ const link = (path: string) => `${SITE_URL}${path.endsWith("/") ? path : `${path
  * from the same content as the pages, so an assistant quoting this file quotes the site.
  */
 export async function GET() {
-  const content = await getContent();
+  const [content, live] = await Promise.all([getContent(), getLiveData()]);
   const dict = getDictionary("en");
+  const rent = rentCities(content, live).map((c) => {
+    const b = cheapest(c.from);
+    const cars = listNames(c.cars.map((x) => x.name));
+    return `- [Car on rent for Uber in ${c.name}](${link(rentPath(c.slug))})${b?.rent ? `: from ${inr(b.rent)} a day (${b.name})` : ""}; cars: ${cars}; ${c.hubs.length} hubs`;
+  });
   const cities = content.cities.map((c) => c.name.en);
 
   const plans = PLAN_PAGES.flatMap(({ path, planId }) => {
@@ -52,6 +59,15 @@ export async function GET() {
     `> ${COMPANY_BLURB}`,
     "",
     `Everest Fleet offers driver jobs in ${cities.join(", ")}. It gives the driver a car, the insurance and the permit to drive on Uber, and pays out every week. Drivers can lease the car or own it at the end of a plan.`,
+    "",
+    "## Driver guides",
+    `- [Uber driver requirements in India](${link("/uber-driver-requirements")}): documents, licence, and driving on Uber without a car`,
+    `- [Uber fleet partner](${link("/uber-fleet-partner")}): what driving with a fleet partner means, Everest Fleet's cities and hubs`,
+    `- [EV driver jobs](${link("/ev-driver-jobs")}): electric cars on Uber, live daily rates`,
+    "",
+    "## Car on rent for Uber (live daily rates)",
+    `- [All cities](${link(RENT_ROOT)})`,
+    ...rent,
     "",
     "## Driver jobs",
     `- [Driver jobs in all cities](${link("/drive-with-us")}): plans, hubs and how to apply`,

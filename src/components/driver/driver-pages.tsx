@@ -20,14 +20,16 @@ import { cityPath } from "@/lib/city-route";
 import { findCity, planFor, priceIn, rupees, type City, type Plan, type SiteContent } from "@/lib/content";
 import { localePath, type Locale } from "@/lib/i18n";
 import { PLAN_PAGES } from "@/lib/plan-pages";
+import { RelatedLinks } from "@/components/seo/seo-ui";
+import { rentPath } from "@/lib/seo-data";
 
 /** The cities as cards, in the page's language. */
-function cityCards(content: SiteContent, locale: Locale) {
+export function cityCards(content: SiteContent, locale: Locale) {
   return content.cities.map((c) => ({ slug: c.slug, name: c.name[locale], state: c.state }));
 }
 
 /** The cities for the form's picker, in the page's language. */
-function formCities(content: SiteContent, locale: Locale) {
+export function formCities(content: SiteContent, locale: Locale) {
   return content.cities.map((c) => ({ slug: c.slug, label: c.name[locale] }));
 }
 
@@ -52,6 +54,19 @@ export function DriverHub({ locale, content }: { locale: Locale; content: SiteCo
           <CityCards locale={locale} cities={cityCards(content, locale)} />
         </div>
       </section>
+
+      {locale === "en" ? (
+        <RelatedLinks
+          id="driver-guides"
+          title="Guides For Uber Drivers"
+          links={[
+            { href: "/uber-driver-requirements/", label: "Uber Driver Requirements", note: "Documents and licence" },
+            { href: "/car-on-rent-for-uber/", label: "Car On Rent For Uber", note: "Live prices by city" },
+            { href: "/uber-fleet-partner/", label: "Uber Fleet Partner", note: "How driving with a fleet works" },
+            { href: "/ev-driver-jobs/", label: "EV Driver Jobs", note: "Electric cars on Uber" },
+          ]}
+        />
+      ) : null}
 
       <ApplyBand locale={locale} dict={dict} cities={formCities(content, locale)} source="drive-with-us" />
 
@@ -161,7 +176,7 @@ function Plans({ city, plans, locale, dict }: { city: City; plans: Plan[]; local
 const columnHead = "text-2xl font-bold leading-8 tracking-[-0.3px] text-navy lg:text-[30px] lg:leading-[38px]";
 
 /** "What to bring" beside the city's hubs; the documents take the full width when it has none. */
-function DocumentsAndHubs({ city, locale, dict }: { city: City; locale: Locale; dict: Dictionary }) {
+export function DocumentsAndHubs({ city, locale, dict }: { city: City; locale: Locale; dict: Dictionary }) {
   const hubs = city.hubs;
   return (
     <section aria-labelledby="city-documents" className={`${band} ${tint}`}>
@@ -293,6 +308,18 @@ export function CityPage({
       <DocumentsAndHubs city={city} locale={locale} dict={dict} />
 
       <Faq dict={dict} />
+
+      {locale === "en" ? (
+        <RelatedLinks
+          id="city-guides"
+          title={`More For Drivers In ${name}`}
+          links={[
+            { href: `${rentPath(slug)}/`, label: `Car On Rent In ${name}`, note: "Live prices by car and plan" },
+            { href: "/uber-driver-requirements/", label: "Uber Driver Requirements", note: "Documents and licence" },
+            { href: "/ev-driver-jobs/", label: "EV Driver Jobs", note: "Electric cars on Uber" },
+          ]}
+        />
+      ) : null}
 
       <CityLinks
         id="city-others"
