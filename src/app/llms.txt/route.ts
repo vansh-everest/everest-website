@@ -61,7 +61,7 @@ export async function GET() {
     "",
     `> ${COMPANY_BLURB}`,
     "",
-    `Everest Fleet offers driver jobs in ${cities.join(", ")}. It gives the driver a car, the insurance and the permit to drive on Uber, and pays out every week. Drivers can lease the car or own it at the end of a plan.`,
+    `Everest Fleet offers driver jobs in ${cities.join(", ")}. It gives the driver a car, the insurance and the permit to drive on Uber, and pays out every week. Drivers can drive on a refundable deposit or own the car at the end of a plan.`,
     "",
     "## Driver guides",
     `- [Uber driver requirements in India](${link("/uber-driver-requirements")}): documents, licence, and driving on Uber without a car`,

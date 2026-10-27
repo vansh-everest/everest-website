@@ -90,7 +90,7 @@ export type PlanStep = { title: string; body: string; image: ImageSlot };
 export type PlanOverview = {
   /** The block's heading. Blank uses the plan name. */
   title: string;
-  /** Small text after the heading, e.g. "Leasing plan". */
+  /** Small text after the heading, e.g. "Earning plan". */
   note: string;
   /** Numbered photo cards. With none, the photo and points show instead. */
   steps: PlanStep[];
@@ -420,7 +420,7 @@ const PLAN_SEED: Plan[] = [
       bn: "ফেরতযোগ্য ডিপোজিট, কেনার কোনো বাধ্যবাধকতা নেই।",
       ta: "திரும்பக் கிடைக்கும் டெபாசிட், வாங்க வேண்டிய கட்டாயம் இல்லை.",
     },
-    tag: "Leasing Plan",
+    tag: "Earning Plan",
     theme: "light",
     price: { amount: "399", unit: "/day", deposit: "5000", upfront: "", tenureMonths: "" },
     depositNote: "",
@@ -435,7 +435,7 @@ const PLAN_SEED: Plan[] = [
       heroImage: { label: "Drive to Earn, hero photo", url: "/figma/hero-drive-to-earn.webp", alt: "A driver sitting in the open door of his Everest car" },
       heroImagePhone: { label: "Drive to Earn, phone hero photo", url: "/figma/plans/hero-phone-drive-to-earn.webp", alt: "A driver sitting in the open door of his Everest car" },
       term: { label: "Earning Potential", value: "₹35,000/m" },
-      tags: ["Leasing plan", "Low deposit", "Refundable"],
+      tags: ["Earning plan", "Low deposit", "Refundable"],
       whyTag: "Benefits of this plan",
       whyTitle: "Why Drivers Choose Drive To Earn",
       whySubtitle: "",
@@ -452,10 +452,10 @@ const PLAN_SEED: Plan[] = [
     },
     overview: {
       title: "Drive To Earn",
-      note: "Leasing Plan",
+      note: "Earning Plan",
       steps: [],
       image: { label: "Drive to Earn, Our Plans photo", url: "/figma/our-plans/drive-to-earn.webp", alt: "A driver checking his phone beside an Everest car" },
-      points: ["Simple leasing, no commitment", "Low refundable deposit", "We set up your Uber account", "Earn Uber incentives on every ride", "24×7 Breakdown Help, zero maintenance"],
+      points: ["No commitment to buy", "Low refundable deposit", "We set up your Uber account", "Earn Uber incentives on every ride", "24×7 Breakdown Help, zero maintenance"],
       highlights: ["Earnings-Linked", "100% Uber incentive", "24×7 Breakdown Help", "Free Maintenance"],
     },
   },
@@ -606,15 +606,15 @@ const SEED_POSTS: Post[] = [
     ],
   },
   {
-    slug: "lease-or-own-a-car",
+    slug: "earn-or-own-a-car",
     locale: "en",
-    title: "Leasing, or owning at the end of the term",
+    title: "Earning without owning, or owning at the end of the term",
     excerpt: "Three plans, and the question each one answers.",
     date: "2026-09-16",
     published: true,
     coverImage: placeholder("Guide cover, plans", ""),
     body: [
-      "Leasing is a refundable deposit, with no commitment to buy. It suits a driver testing whether full time driving works for them.",
+      "Drive to Earn is a refundable deposit, with no commitment to buy. It suits a driver testing whether full time driving works for them.",
       "Drive to Own is a deposit and monthly instalments, and ownership transfers at the end of the term.",
       "Own Now is a lower amount upfront and a daily payment, and the car transfers to you at the end.",
       "Insurance and maintenance are covered on all three. Fuel or charging is paid by the driver. The exact deposit depends on the city and is confirmed at the hub.",

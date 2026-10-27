@@ -7,7 +7,7 @@ import { Features } from "@/components/b2b/features";
 import { Enquiry } from "@/components/b2b/enquiry";
 
 /**
- * Everest Intrapreneurship Program: a driver-partner leases cars from Everest Fleet and runs a cab
+ * Everest Intrapreneurship Program: a driver-partner takes cars from Everest Fleet and runs a cab
  * fleet of their own. A first version for the team to review (QC P1): the words are the old site's
  * (its EIP line on Drive With Us and its /franchise/ page), so the figures wait on the EIP owner's
  * brief. Kept out of search and the sitemap until then.
@@ -15,7 +15,7 @@ import { Enquiry } from "@/components/b2b/enquiry";
 export const metadata: Metadata = {
   // The site layout's title template appends " | Everest Fleet".
   title: "Everest Intrapreneurship Program",
-  description: "Lease cars from Everest Fleet and run your own cab fleet on Uber, with Everest's cars, hubs and support behind you.",
+  description: "Get cars from Everest Fleet and run your own cab fleet on Uber, with Everest's cars, hubs and support behind you.",
   alternates: { canonical: "/eip/" },
   robots: { index: false, follow: true },
 };
@@ -60,7 +60,7 @@ export default function EipPage() {
       <Features
         eyebrow="What you get"
         title={["Everything A Fleet", "Needs, From", "Day One"]}
-        sub="Lease cars from Everest Fleet and grow from one car to many."
+        sub="Get cars from Everest Fleet and grow from one car to many."
         items={SUPPORT}
       />
       <Enquiry

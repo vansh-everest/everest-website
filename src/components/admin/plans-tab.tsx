@@ -407,7 +407,7 @@ function OverviewEditor({ overview, onChange, disabled }: { overview: PlanOvervi
     <>
       <Row cols={2}>
         <Text label="Heading" hint="blank uses the plan name" value={overview.title} disabled={disabled} onChange={(title) => set({ title })} />
-        <Text label="Note after the heading" placeholder="Leasing Plan" value={overview.note} disabled={disabled} onChange={(note) => set({ note })} />
+        <Text label="Note after the heading" placeholder="Earning Plan" value={overview.note} disabled={disabled} onChange={(note) => set({ note })} />
       </Row>
 
       <div className="grid gap-2">

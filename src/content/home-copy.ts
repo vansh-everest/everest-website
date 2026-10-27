@@ -614,7 +614,7 @@ export function homeCopy(locale: Locale): HomeCopy {
 const SEED_TEXT: Record<string, Record<Exclude<MainLocale, "en">, string>> = {
   // Plan cards: the tab above the card.
   "Ownership Plan": { hi: "मालिकाना प्लान", kn: "ಮಾಲೀಕತ್ವದ ಪ್ಲಾನ್", ta: "சொந்தமாக்கும் திட்டம்" },
-  "Leasing Plan": { hi: "लीज़ प्लान", kn: "ಲೀಸ್ ಪ್ಲಾನ್", ta: "லீஸ் திட்டம்" },
+  "Earning Plan": { hi: "कमाई प्लान", kn: "ಗಳಿಕೆಯ ಪ್ಲಾನ್", ta: "சம்பாதிக்கும் திட்டம்" },
   "Earning model": { hi: "कमाई का मॉडल", kn: "ಗಳಿಕೆಯ ಮಾದರಿ", ta: "வருமான மாடல்" },
   // Plan cards: the figure boxes.
   Upfront: { hi: "शुरुआती रकम", kn: "ಮುಂಗಡ", ta: "முன்பணம்" },

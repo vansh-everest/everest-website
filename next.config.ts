@@ -22,8 +22,9 @@ const MOVED: Array<[string, string]> = [
     (city): [string, string] => [`/thank-you-${city}`, `/drive-with-us/driver-job-in-${city}/`]
   ),
   ["/thank-you", "/"],
-  // A driver guide under its earlier address.
-  ["/blog/rent-or-own-a-car", "/blog/lease-or-own-a-car/"],
+  // A driver guide under its earlier addresses.
+  ["/blog/rent-or-own-a-car", "/blog/earn-or-own-a-car/"],
+  ["/blog/lease-or-own-a-car", "/blog/earn-or-own-a-car/"],
   // A PDF the old newsroom linked to.
   ["/wp-content/uploads/2026/05/ESG-Report.pdf", "/investors/"],
   // The old sitemaps, as Search Console and robots.txt know them: all to the one sitemap here.

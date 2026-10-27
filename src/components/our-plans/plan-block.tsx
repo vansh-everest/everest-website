@@ -24,7 +24,7 @@ export function PlanBlock({ plan }: { plan: PlanOverviewView }) {
 
 function Head({ plan }: { plan: PlanOverviewView }) {
   const title = plan.name;
-  // Phones label each plan: its note ("Leasing Plan") or else its first tag ("Ownership plan").
+  // Phones label each plan: its note ("Earning Plan") or else its first tag ("Ownership plan").
   const eyebrow = plan.note || plan.tags[0]?.full;
   return (
     <header className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">

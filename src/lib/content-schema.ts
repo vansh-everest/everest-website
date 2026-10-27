@@ -456,7 +456,7 @@ function testimonials(v: unknown): Testimonial[] {
 }
 
 /**
- * Seed wording that named the rent, reworded. Content saved before the change still holds the old
+ * Seed wording that named the rent or the lease, reworded. Content saved before the change still holds the old
  * seed text, so a whole line that matches takes its new wording ("" drops it from its list) and
  * a phrase inside a longer text (a summary, a guide paragraph) is replaced where it appears.
  */
@@ -467,13 +467,18 @@ const REWORDED: Record<string, string> = {
   "No fixed rent - earnings-linked model": "Earnings-linked model",
   "Own a Car Without": "Own a Car With",
   "a Fixed Rent": "a Low Deposit",
-  "Renting Plan": "Leasing Plan",
-  "Rental plan": "Leasing plan",
-  "Simple renting, no commitment": "Simple leasing, no commitment",
+  "Renting Plan": "Earning Plan",
+  "Leasing Plan": "Earning Plan",
+  "Rental plan": "Earning plan",
+  "Leasing plan": "Earning plan",
+  "Simple renting, no commitment": "No commitment to buy",
+  "Simple leasing, no commitment": "No commitment to buy",
   "No fixed rent": "No fixed cost",
   "No rent to find on a slow day": "Pay less on a slow day",
-  "rent-or-own-a-car": "lease-or-own-a-car",
-  "Renting, or owning at the end of the term": "Leasing, or owning at the end of the term",
+  "rent-or-own-a-car": "earn-or-own-a-car",
+  "lease-or-own-a-car": "earn-or-own-a-car",
+  "Renting, or owning at the end of the term": "Earning without owning, or owning at the end of the term",
+  "Leasing, or owning at the end of the term": "Earning without owning, or owning at the end of the term",
   "During tenure pay rent which is {price} onwards": "",
 };
 
@@ -492,7 +497,8 @@ const REPHRASED: [string, string][] = [
   ["ವಿಳಾಸದ ಪುರಾವೆಯಾಗಿ ಬಾಡಿಗೆ ಒಪ್ಪಂದ, ವಿದ್ಯುತ್", "ವಿಳಾಸದ ಪುರಾವೆಯಾಗಿ ವಿದ್ಯುತ್"],
   ["ঠিকানার প্রমাণ হিসেবে ভাড়ার চুক্তি, বিদ্যুতের", "ঠিকানার প্রমাণ হিসেবে বিদ্যুতের"],
   ["முகவரிச் சான்றாக வாடகை ஒப்பந்தம், மின்", "முகவரிச் சான்றாக மின்"],
-  ["Leasing is a refundable deposit and a daily rent, with no commitment to buy.", "Leasing is a refundable deposit, with no commitment to buy."],
+  ["Leasing is a refundable deposit and a daily rent, with no commitment to buy.", "Drive to Earn is a refundable deposit, with no commitment to buy."],
+  ["Leasing is a refundable deposit, with no commitment to buy.", "Drive to Earn is a refundable deposit, with no commitment to buy."],
   ["The exact deposit and daily figure depends on the city", "The exact deposit depends on the city"],
   ["less the rent for the week.", "less your plan payment for the week."],
 ];

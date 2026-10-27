@@ -5,7 +5,7 @@ import type { WizardPrice } from "@/lib/plan-view";
 import { fleetConnectEnabled, fleetGet } from "@/lib/jarvis";
 
 /**
- * Live fleet figures from Jarvis, read through fleet_connect: the cities Everest leases in, the
+ * Live fleet figures from Jarvis, read through fleet_connect: the cities Everest runs in, the
  * cars ready to hand over in each, their hubs, and every plan's rent, deposit and upfront per
  * city, as the driver app quotes them.
  *

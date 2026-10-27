@@ -41,4 +41,4 @@ export const STORIES: Story[] = [
 ];
 
 /** Guide order on the index, by post slug. Posts not listed here are not shown as guides. */
-export const GUIDE_SLUGS = ["lease-or-own-a-car", "how-weekly-payouts-work", "documents-to-drive-an-uber"];
+export const GUIDE_SLUGS = ["earn-or-own-a-car", "how-weekly-payouts-work", "documents-to-drive-an-uber"];

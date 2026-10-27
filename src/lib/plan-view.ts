@@ -170,7 +170,7 @@ export type PlanOverviewView = {
   id: string;
   /** The block's heading: the overview title, or the plan name. */
   name: string;
-  /** Small text after the heading, e.g. "Leasing Plan". */
+  /** Small text after the heading, e.g. "Earning Plan". */
   note: string;
   /** The plan's own page. */
   href: string;
@@ -276,7 +276,7 @@ export type PlanWizardView = {
   byCity?: Record<string, WizardCar[]>;
   /** The plan's third figure, e.g. Liability: Zero. */
   term: Row;
-  /** The plan's first tag, e.g. "Leasing plan". */
+  /** The plan's first tag, e.g. "Earning plan". */
   tag: string;
 };
 
