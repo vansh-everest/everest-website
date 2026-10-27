@@ -35,12 +35,18 @@ export function LeadForm({
   cities,
   defaultCity,
   source,
+  placement,
+  callHref,
 }: {
   copy: { form: Dictionary["form"]; cta: Dictionary["cta"] };
   locale: Locale;
   cities: { slug: string; label: string }[];
   defaultCity?: string;
   source: string;
+  /** Which of a page's forms this is (hero, middle, bottom), kept with the lead. */
+  placement?: string;
+  /** A city page's own number for the Call button; the main number otherwise. */
+  callHref?: string;
 }) {
   const [state, setState] = useState<"idle" | "sending" | "done" | "failed">("idle");
   const { form, cta } = copy;
@@ -54,6 +60,12 @@ export function LeadForm({
     data.set("page", window.location.pathname);
     data.set("referrer", document.referrer);
     data.set("campaign", new URLSearchParams(window.location.search).toString());
+    if (placement) data.set("placement", placement);
+    // The visit's first page (set in RootShell), so a lead sent from another page still counts for the page it came in on.
+    try {
+      const landing = sessionStorage.getItem("ef_landing");
+      if (landing) data.set("landing", landing);
+    } catch {}
     try {
       const res = await fetch("/api/lead/", { method: "POST", body: data });
       if (res.ok) trackLead(String(data.get("source") ?? ""), data);
@@ -72,7 +84,7 @@ export function LeadForm({
   }
 
   return (
-    <form onSubmit={submit} className="grid gap-4 sm:gap-5">
+    <form onSubmit={submit} data-lead-form className="grid gap-4 sm:gap-5">
       <label className={label}>
         {form.name}
         <Required />
@@ -124,7 +136,7 @@ export function LeadForm({
           {state === "sending" ? form.sending : form.submit}
         </button>
         <a
-          href={PHONE_HREF}
+          href={callHref ?? PHONE_HREF}
           className="flex h-12 items-center justify-center gap-2 rounded-full border-[1.5px] border-brand px-3 text-[15px] font-semibold text-brand transition hover:bg-brand/5 sm:h-14 sm:border-2 sm:text-[17px]"
         >
           <Phone aria-hidden size={18} strokeWidth={1.75} className="shrink-0 sm:size-5" />

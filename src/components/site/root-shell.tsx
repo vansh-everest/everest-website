@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { TopBar } from "@/components/home/top-bar";
 import { SiteHeader } from "@/components/home/site-header";
 import { SiteFooter } from "@/components/home/site-footer";
@@ -37,6 +38,9 @@ export async function RootShell({ locale, children }: { locale: Locale; children
           <SiteFooter locale={locale} />
           <PreviewBanner />
           <Analytics />
+          <Script id="landing" strategy="afterInteractive">
+            {"try{sessionStorage.ef_landing||(sessionStorage.ef_landing=location.pathname)}catch(e){}"}
+          </Script>
         </LocalePosts>
       </body>
     </html>

@@ -1,16 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { formCities } from "@/components/driver/driver-pages";
-import { DriverHero } from "@/components/driver/driver-hero";
 import { StickyBar } from "@/components/driver/sticky-bar";
-import { ApplyBand, HeroActions, HeroChip } from "@/components/driver/driver-ui";
-import { AnswerBox, GuideSection, JsonLd, RelatedLinks, SeoFaq, crumbsLd, faqLd, type QA } from "@/components/seo/seo-ui";
+import { ApplyBand } from "@/components/driver/driver-ui";
+import {
+  APPLY_POINTS,
+  AnswerBox,
+  BackChip,
+  FormBand,
+  GuideSection,
+  JsonLd,
+  RelatedLinks,
+  SearchForm,
+  SearchHero,
+  SeoFaq,
+  crumbsLd,
+  faqLd,
+  type QA,
+} from "@/components/seo/seo-ui";
 import { getDictionary } from "@/content/dictionary";
 import { SITE_URL } from "@/lib/company";
 import { cityPath } from "@/lib/city-route";
 import { getLiveData } from "@/lib/fleet-data";
-import { cheapest, inr, listNames, rentCities, rentPath, docName } from "@/lib/seo-data";
+import { allCityFacts, docName, listNames, rentPath } from "@/lib/seo-data";
 import { getContent } from "@/lib/store";
 
 export const revalidate = 3600;
@@ -30,9 +42,8 @@ export const metadata: Metadata = {
 export default async function Page() {
   const [content, live] = await Promise.all([getContent(), getLiveData()]);
   const dict = getDictionary("en");
-  const cities = rentCities(content, live);
-  const lows = cities.flatMap((c) => (cheapest(c.from)?.rent ? [cheapest(c.from)!.rent!] : []));
-  const low = lows.length ? Math.min(...lows) : null;
+  const cities = allCityFacts(content, live);
+  const source = "guide/uber-driver-requirements";
   const documents = listNames(dict.documents.map(docName));
   const cityNames = listNames(content.cities.map((c) => c.name.en));
 
@@ -53,7 +64,6 @@ export default async function Page() {
       q: "What is an Uber fleet partner?",
       a: "Uber calls them non-driving partners: they own cars, keep the registration, insurance and permit, and drivers drive them on Uber. Everest Fleet is a fleet partner in 7 cities.",
     },
-    ...(low ? [{ q: "How much does it cost to start driving on Uber without a car?", a: `With Everest Fleet, cars start from ${inr(low)} a day. Rates, deposits and upfront amounts differ by city and plan, and every city page lists them.` }] : []),
     ...dict.faq.filter((f) => /paid|fuel/i.test(f.q)),
   ];
 
@@ -78,20 +88,11 @@ export default async function Page() {
           ]),
         ]}
       />
-      <DriverHero
-        photo={content.cities[0]?.heroImage}
-        top={null}
-        chip={
-          <Link href="/drive-with-us/" className="transition hover:opacity-85">
-            <HeroChip>
-              <ArrowLeft aria-hidden size={14} strokeWidth={2.25} />
-              {dict.hub.eyebrow}
-            </HeroChip>
-          </Link>
-        }
+      <SearchHero
+        chip={<BackChip href="/drive-with-us/" label={dict.hub.eyebrow} />}
         title="Uber Driver Requirements In India"
         intro="The documents Uber asks for, and the fastest way to start without a car."
-        actions={<HeroActions cta={dict.cta} />}
+        form={<SearchForm content={content} source={source} placement="hero" />}
       />
 
       <AnswerBox title="In Short">
@@ -153,21 +154,22 @@ export default async function Page() {
           <li>Pick a plan and collect your car.</li>
           <li>Start driving on Uber the same week.</li>
         </ol>
-        {low ? (
-          <p>
-            Cars start from <strong>{inr(low)} a day</strong>. On Own Now and Drive To Own the car becomes yours at the end of the term. See{" "}
-            <Link href="/car-on-rent-for-uber/">car on rent prices in every city</Link>.
-          </p>
-        ) : null}
+        <p>
+          On Own Now and Drive To Own the car becomes yours at the end of the term. See <Link href="/drive-for-uber-without-a-car/">driving for Uber without a
+          car</Link>.
+        </p>
       </GuideSection>
+
+      <FormBand id="req-apply" title="Start Driving On Uber This Week" points={APPLY_POINTS} form={<SearchForm content={content} source={source} placement="middle" />} />
 
       <RelatedLinks
         id="by-city"
         title="Start In Your City"
-        links={cities.map((c) => {
-          const b = cheapest(c.from);
-          return { href: `${cityPath(c.slug)}/`, label: `Driver Jobs In ${c.name}`, note: [b?.rent ? `Cars from ${inr(b.rent)}/day` : "", `${c.hubs.length} hubs`].filter(Boolean).join(" · ") };
-        })}
+        links={cities.map((c) => ({
+          href: `${cityPath(c.slug)}/`,
+          label: `Driver Jobs In ${c.name}`,
+          note: [c.readyCars ? `${c.readyCars.toLocaleString("en-IN")} cars ready` : "", c.hubs.length ? `${c.hubs.length} hubs` : ""].filter(Boolean).join(" · ") || undefined,
+        }))}
       />
 
       <SeoFaq id="req-faq" title="Questions About Uber Requirements" items={items} />
@@ -177,13 +179,14 @@ export default async function Page() {
         title="Keep Reading"
         links={[
           { href: "/uber-fleet-partner/", label: "Uber Fleet Partner", note: "What it means for drivers" },
-          { href: "/car-on-rent-for-uber/", label: "Car On Rent For Uber", note: "Prices by city" },
+          { href: "/drive-for-uber-without-a-car/", label: "Drive For Uber Without A Car", note: "Car included" },
+          { href: "/car-on-rent-for-uber/", label: "Car On Rent For Uber", note: "Cars by city" },
           { href: "/ev-driver-jobs/", label: "EV Driver Jobs", note: "Electric cars on Uber" },
           ...(cities[0] ? [{ href: `${rentPath(cities[0].slug)}/`, label: `Car On Rent In ${cities[0].name}` }] : []),
         ]}
       />
 
-      <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} source="guide/uber-driver-requirements" />
+      <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} source={source} placement="bottom" />
 
       <StickyBar call={dict.cta.call} whatsapp={dict.cta.whatsapp} />
     </>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { List } from "lucide-react";
+import { searchPageAt, type SearchPage } from "@/lib/search-pages";
 import { sendToUnifyAction } from "./actions";
 import { Funnel, Legend, StackedBars, StackedColumns, type Datum, type Series } from "./charts";
 import {
@@ -47,15 +48,20 @@ export function readFilters(params: Record<string, string | string[] | undefined
   return { from, to, city: get("city").slice(0, 60), form: get("form").slice(0, 80), channel: get("channel").slice(0, 60), today };
 }
 
-function matches(lead: FlowLead, f: Filters): boolean {
+/** The search page a lead was sent from, else the one its visit began on. */
+const searchOf = (lead: FlowLead, pages: SearchPage[]) => searchPageAt(pages, lead.page) ?? searchPageAt(pages, lead.landing);
+
+function matches(lead: FlowLead, f: Filters, pages: SearchPage[]): boolean {
   if (f.city && lead.city !== f.city) return false;
   if (f.channel && lead.channel !== f.channel) return false;
+  if (f.form === "search") return Boolean(searchOf(lead, pages));
   if (f.form === "driver") return lead.driver;
   if (f.form === "other") return !lead.driver;
   return !f.form || lead.form === f.form;
 }
 
-const formLabel = (form: string) => (form === "driver" ? "Driver forms" : form === "other" ? "Business and Dost forms" : form || "All forms");
+const formLabel = (form: string) =>
+  form === "driver" ? "Driver forms" : form === "other" ? "Business and Dost forms" : form === "search" ? "Search pages" : form || "All forms";
 
 const options = (leads: FlowLead[], key: (l: FlowLead) => string) => tally(leads, key).map(([name]) => name);
 
@@ -122,6 +128,7 @@ function FiltersBar({ f, cities, forms, channels }: { f: Filters; cities: string
         <option value="">All forms</option>
         <option value="driver">Driver forms</option>
         <option value="other">Business and Dost forms</option>
+        <option value="search">Search pages</option>
         {forms.map((c) => (
           <option key={c}>{c}</option>
         ))}
@@ -261,7 +268,7 @@ function ChartCard({ title, children, legend }: { title: string; children: React
   );
 }
 
-type Loaded = { jarvis: { capped: boolean } | null; unify: { truncated: boolean } | null; unifyOn: boolean; all: FlowLead[] };
+type Loaded = { jarvis: { capped: boolean } | null; unify: { truncated: boolean } | null; unifyOn: boolean; all: FlowLead[]; pages: SearchPage[] };
 
 /** What the last "Send to Unify" did, from the address it returned to. */
 export type SendResult = { sent: number; had: number; refused: number; stopped: boolean } | null;
@@ -368,9 +375,107 @@ function OtherForms({ leads, days }: { leads: FlowLead[]; days: string[] }) {
   );
 }
 
+const PLACEMENTS: Record<string, string> = { hero: "Top of page", middle: "Middle of page", bottom: "Bottom of page" };
+const ONE: Series[] = [{ key: "all", label: "Leads", color: "#2a78d6" }];
+
+/**
+ * The pages built for search terms (lib/search-pages.ts), every one listed even at zero: leads
+ * sent from each, and leads whose visit began on one and applied on another page.
+ */
+function SearchPages({ leads, pages }: { leads: FlowLead[]; pages: SearchPage[] }) {
+  const sentOn = new Map<string, FlowLead[]>();
+  const cameIn = new Map<string, FlowLead[]>();
+  const add = (map: Map<string, FlowLead[]>, key: string, lead: FlowLead) => map.set(key, [...(map.get(key) ?? []), lead]);
+  for (const lead of leads) {
+    const sent = searchPageAt(pages, lead.page);
+    if (sent) add(sentOn, sent.path, lead);
+    const landed = searchPageAt(pages, lead.landing);
+    if (landed && landed.path !== sent?.path) add(cameIn, landed.path, lead);
+  }
+  const sent = [...sentOn.values()].flat();
+  const came = [...cameIn.values()].flat();
+  const ids = new Set([...sent, ...came].map((l) => l.id));
+  const all = leads.filter((l) => ids.has(l.id));
+  const t = totals(all);
+  const groupOf = (l: FlowLead) => (searchPageAt(pages, l.page) ?? searchPageAt(pages, l.landing))?.group ?? "Other";
+  const byPlacement = new Map(tally(sent, (l) => PLACEMENTS[l.placement] ?? "Not recorded"));
+  const placements = [...Object.values(PLACEMENTS), "Not recorded"].flatMap((name) => {
+    const c = byPlacement.get(name);
+    return c ? [{ key: name, label: name, values: [c.total] }] : [];
+  });
+  const order = new Map(pages.map((p, i) => [p.path, i]));
+  const rows = pages
+    .map((p) => {
+      const here = [...(sentOn.get(p.path) ?? []), ...(cameIn.get(p.path) ?? [])];
+      return { p, sent: sentOn.get(p.path)?.length ?? 0, came: cameIn.get(p.path)?.length ?? 0, c: totals(here) };
+    })
+    .sort((a, b) => b.sent + b.came - (a.sent + a.came) || (order.get(a.p.path) ?? 0) - (order.get(b.p.path) ?? 0));
+  const muted = (n: number) => `${cell} ${n ? "" : "text-ink-soft/50"}`;
+
+  return (
+    <section className="space-y-5 border-t border-line pt-6">
+      <h2 className="text-[15px] font-bold text-navy">
+        Search pages <span className="font-normal text-ink-soft">· {pages.length} pages</span>
+      </h2>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <Tile label="Sent on a search page" value={sent.length.toLocaleString("en-IN")} note="Form on the page itself" strong />
+        <Tile label="Came in on one" value={came.length.toLocaleString("en-IN")} note="Applied on another page" />
+        <Tile label="New in CRM" value={t.sent.toLocaleString("en-IN")} note={`${pct(t.sent, t.driver)} of applications`} />
+        <Tile label="Marked converted" value={t.converted.toLocaleString("en-IN")} note={`${pct(t.converted, all.length)} of these leads`} />
+      </div>
+      {all.length ? (
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+          <ChartCard title="By page type" legend={SERIES.filter((s) => STAGES.some((x) => x.stage === s.key && t[x.stage] > 0))}>
+            {t.driver ? <StackedBars series={SERIES} data={barData(tally(all, groupOf))} /> : <p className="text-[13px] text-ink-soft">0 driver applications</p>}
+          </ChartCard>
+          <ChartCard title="By form position">
+            {placements.length ? <StackedBars series={ONE} data={placements} /> : <p className="text-[13px] text-ink-soft">0 leads sent on a search page</p>}
+          </ChartCard>
+        </div>
+      ) : null}
+      <section className={card}>
+        <h2 className={`border-b border-line px-4 py-3 ${cardTitle}`}>Every search page</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[13px] text-navy">
+            <thead>
+              <tr className="border-b border-line">
+                <th className={`${headBase} text-left`}>Page</th>
+                <th className={`${headBase} text-left`}>Type</th>
+                <th className={head}>Sent here</th>
+                <th className={head}>Came in here</th>
+                <th className={head}>Driver</th>
+                <th className={head}>New in CRM</th>
+                <th className={head}>Converted</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(({ p, sent: s, came: c, c: n }) => (
+                <tr key={p.path} className="border-b border-line last:border-0">
+                  <td className="px-3 py-2">
+                    <a href={p.path} target="_blank" rel="noopener noreferrer" className="font-medium text-brand hover:underline">
+                      {p.label}
+                    </a>
+                    <span className="block text-[11px] text-ink-soft">{p.keyword}</span>
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-2">{p.group}</td>
+                  <td className={`${muted(s)} font-semibold`}>{s}</td>
+                  <td className={muted(c)}>{c}</td>
+                  <td className={muted(n.driver)}>{n.driver}</td>
+                  <td className={muted(n.sent)}>{n.sent}</td>
+                  <td className={muted(n.converted)}>{n.converted}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  );
+}
+
 /** Website submissions on their way to the CRM: where they come from and what became of them. */
-export function FlowView({ f, jarvis, unify, unifyOn, all, result }: { f: Filters; result: SendResult } & Loaded) {
-  const leads = all.filter((l) => matches(l, f));
+export function FlowView({ f, jarvis, unify, unifyOn, all, pages, result }: { f: Filters; result: SendResult } & Loaded) {
+  const leads = all.filter((l) => matches(l, f, pages));
   const t = totals(leads);
   const reached = t.driver - t.missing;
   const minutes = median(leads.flatMap((l) => (l.minutesToCrm === null ? [] : [l.minutesToCrm])));
@@ -471,6 +576,8 @@ export function FlowView({ f, jarvis, unify, unifyOn, all, result }: { f: Filter
             <StackedColumns series={[{ key: "all", label: "Submissions", color: "#2a78d6" }]} data={hourData} height={160} />
           </ChartCard>
         </div>
+
+        <SearchPages leads={leads} pages={pages} />
 
         {leads.some((l) => !l.driver) ? <OtherForms leads={leads.filter((l) => !l.driver)} days={days} /> : null}
 

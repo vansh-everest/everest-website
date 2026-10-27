@@ -21,7 +21,7 @@ import { findCity, planFor, priceIn, rupees, type City, type Plan, type SiteCont
 import { localePath, type Locale } from "@/lib/i18n";
 import { PLAN_PAGES } from "@/lib/plan-pages";
 import { RelatedLinks } from "@/components/seo/seo-ui";
-import { rentPath } from "@/lib/seo-data";
+import { contactPath, fleetPath, rentPath } from "@/lib/search-pages";
 
 /** The cities as cards, in the page's language. */
 export function cityCards(content: SiteContent, locale: Locale) {
@@ -61,7 +61,9 @@ export function DriverHub({ locale, content }: { locale: Locale; content: SiteCo
           title="Guides For Uber Drivers"
           links={[
             { href: "/uber-driver-requirements/", label: "Uber Driver Requirements", note: "Documents and licence" },
-            { href: "/car-on-rent-for-uber/", label: "Car On Rent For Uber", note: "Live prices by city" },
+            { href: "/drive-for-uber-without-a-car/", label: "Drive For Uber Without A Car", note: "Car included" },
+            { href: "/car-on-rent-for-uber/", label: "Car On Rent For Uber", note: "Cars and hubs by city" },
+            { href: "/driver-job-contact-number/", label: "Driver Job Contact Number", note: "Every city's number" },
             { href: "/uber-fleet-partner/", label: "Uber Fleet Partner", note: "How driving with a fleet works" },
             { href: "/ev-driver-jobs/", label: "EV Driver Jobs", note: "Electric cars on Uber" },
           ]}
@@ -314,7 +316,9 @@ export function CityPage({
           id="city-guides"
           title={`More For Drivers In ${name}`}
           links={[
-            { href: `${rentPath(slug)}/`, label: `Car On Rent In ${name}`, note: "Live prices by car and plan" },
+            { href: `${contactPath(slug)}/`, label: `Driver Job Contact Number, ${name}`, note: "Call, WhatsApp, hubs" },
+            { href: `${rentPath(slug)}/`, label: `Car On Rent In ${name}`, note: "Cars and plans" },
+            { href: `${fleetPath(slug)}/`, label: `Uber Fleet In ${name}`, note: "Everest Fleet in the city" },
             { href: "/uber-driver-requirements/", label: "Uber Driver Requirements", note: "Documents and licence" },
             { href: "/ev-driver-jobs/", label: "EV Driver Jobs", note: "Electric cars on Uber" },
           ]}

@@ -8,7 +8,8 @@ import { EXTRA_LOCALES, localePath, type ExtraLocale } from "@/lib/i18n";
 import { NEWS, newsDate, newsPath } from "@/lib/news";
 import { PLAN_PAGES } from "@/lib/plan-pages";
 import { getLiveData } from "@/lib/fleet-data";
-import { RENT_ROOT, cheapest, inr, listNames, rentCities, rentPath } from "@/lib/seo-data";
+import { CONTACT_ROOT, FLEET_ROOT, RENT_ROOT, contactPath, fleetPath, rentPath } from "@/lib/search-pages";
+import { allCityFacts, listNames } from "@/lib/seo-data";
 import { getContent } from "@/lib/store";
 
 // Rebuilt hourly, so a price published in the admin reaches this file the same day.
@@ -32,11 +33,13 @@ const link = (path: string) => `${SITE_URL}${path.endsWith("/") ? path : `${path
 export async function GET() {
   const [content, live] = await Promise.all([getContent(), getLiveData()]);
   const dict = getDictionary("en");
-  const rent = rentCities(content, live).map((c) => {
-    const b = cheapest(c.from);
+  const facts = allCityFacts(content, live);
+  const rent = facts.map((c) => {
     const cars = listNames(c.cars.map((x) => x.name));
-    return `- [Car on rent for Uber in ${c.name}](${link(rentPath(c.slug))})${b?.rent ? `: from ${inr(b.rent)} a day (${b.name})` : ""}; cars: ${cars}; ${c.hubs.length} hubs`;
+    return `- [Car on rent for Uber in ${c.name}](${link(rentPath(c.slug))})${cars ? `: ${cars}` : ""}${c.hubs.length ? `; ${c.hubs.length} hubs` : ""}`;
   });
+  const fleet = facts.map((c) => `- [Uber fleet in ${c.name}](${link(fleetPath(c.slug))})${c.readyCars ? `: ${c.readyCars.toLocaleString("en-IN")} cars ready` : ""}${c.hubs.length ? `; ${c.hubs.length} hubs` : ""}`);
+  const contact = facts.map((c) => `- [Driver job contact number, ${c.name}](${link(contactPath(c.slug))})${c.phone ? `: ${c.phone.display}` : ""}`);
   const cities = content.cities.map((c) => c.name.en);
 
   const plans = PLAN_PAGES.flatMap(({ path, planId }) => {
@@ -62,12 +65,21 @@ export async function GET() {
     "",
     "## Driver guides",
     `- [Uber driver requirements in India](${link("/uber-driver-requirements")}): documents, licence, and driving on Uber without a car`,
-    `- [Uber fleet partner](${link("/uber-fleet-partner")}): what driving with a fleet partner means, Everest Fleet's cities and hubs`,
-    `- [EV driver jobs](${link("/ev-driver-jobs")}): electric cars on Uber, live daily rates`,
+    `- [Drive for Uber without a car](${link("/drive-for-uber-without-a-car")}): getting a car from a fleet partner, plans and documents`,
+    `- [Fleet management company](${link("/fleet-management-company")}): Everest Fleet across India, by city`,
+    `- [EV driver jobs](${link("/ev-driver-jobs")}): electric cars on Uber by city`,
     "",
-    "## Car on rent for Uber (live daily rates)",
+    "## Car on rent for Uber",
     `- [All cities](${link(RENT_ROOT)})`,
     ...rent,
+    "",
+    "## Uber fleet partner by city",
+    `- [Uber fleet partner](${link(FLEET_ROOT)}): what driving with a fleet partner means`,
+    ...fleet,
+    "",
+    "## Driver job contact numbers",
+    `- [All cities](${link(CONTACT_ROOT)})`,
+    ...contact,
     "",
     "## Driver jobs",
     `- [Driver jobs in all cities](${link("/drive-with-us")}): plans, hubs and how to apply`,

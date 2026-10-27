@@ -69,6 +69,11 @@ export type FlowLead = {
   group: string;
   /** The one detail a business or Dost form adds that says what it is about. */
   summary: string;
+  /** The page the form was sent from, and the page the visit began on (blank before 28 Oct 2026). */
+  page: string;
+  landing: string;
+  /** Which of a search page's forms it was: hero, middle or bottom. */
+  placement: string;
 };
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -235,6 +240,9 @@ export function joinLeads(leads: JarvisLead[], reports: UnifyLeadReport[]): Flow
       receivedLabel: when.label,
       group: driver ? "Driver" : formGroup(lead.source),
       summary: summaryOf(lead.details ?? {}),
+      page: lead.page || "",
+      landing: String(lead.details?.landing ?? ""),
+      placement: String(lead.details?.placement ?? ""),
     };
   });
 }

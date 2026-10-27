@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { readSession } from "@/lib/auth";
 import { jarvisAdminEnabled } from "@/lib/jarvis";
+import { searchPages } from "@/lib/search-pages";
+import { getContent } from "@/lib/store";
 import { readUnifyLeads, unifyEnabled } from "@/lib/unify";
 import { joinLeads } from "./flow-data";
 import { readJarvisLeads } from "./load";
@@ -11,8 +13,8 @@ export const dynamic = "force-dynamic";
 /** Everything the page shows for one date range, before the city, form and channel cuts. */
 async function load(f: Filters) {
   const unifySince = new Date(Date.parse(`${f.from}T00:00:00+05:30`) - 86_400_000);
-  const [jarvis, unify] = await Promise.all([readJarvisLeads(f.from, f.to), readUnifyLeads(unifySince)]);
-  return { jarvis, unify, all: joinLeads(jarvis?.leads ?? [], unify?.leads ?? []) };
+  const [jarvis, unify, content] = await Promise.all([readJarvisLeads(f.from, f.to), readUnifyLeads(unifySince), getContent()]);
+  return { jarvis, unify, all: joinLeads(jarvis?.leads ?? [], unify?.leads ?? []), pages: searchPages(content) };
 }
 
 /** The counts "Send to Unify" put in the address it returned to. */

@@ -10,16 +10,21 @@ import { PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
  * It slides away once the apply form (#apply) comes into view, where the form's own Apply and
  * Call take over, and stays away over the footer below it, which lists both again.
  */
-export function StickyBar({ call, whatsapp }: { call: string; whatsapp: string }) {
+export function StickyBar({ call, whatsapp, callHref }: { call: string; whatsapp: string; callHref?: string }) {
   const [away, setAway] = useState(false);
 
   useEffect(() => {
-    const form = document.getElementById("apply");
-    if (!form) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      setAway(entry.isIntersecting || entry.boundingClientRect.top < 0);
+    // Any other lead form on the page (a search page's hero and middle ones) also sends the bar away while it is on screen.
+    const apply = document.getElementById("apply");
+    const forms = [...document.querySelectorAll<HTMLElement>("[data-lead-form]")].filter((el) => !apply?.contains(el));
+    if (!apply && !forms.length) return;
+    const shown = new Map<Element, boolean>();
+    const observer = new IntersectionObserver((entries) => {
+      for (const e of entries) shown.set(e.target, e.isIntersecting || (e.target === apply && e.boundingClientRect.top < 0));
+      setAway([...shown.values()].some(Boolean));
     });
-    observer.observe(form);
+    if (apply) observer.observe(apply);
+    for (const form of forms) observer.observe(form);
     return () => observer.disconnect();
   }, []);
 
@@ -33,7 +38,7 @@ export function StickyBar({ call, whatsapp }: { call: string; whatsapp: string }
         away ? "translate-y-[calc(100%+32px)]" : ""
       }`}
     >
-      <a href={PHONE_HREF} className={`${button} bg-navy text-white`}>
+      <a href={callHref ?? PHONE_HREF} className={`${button} bg-navy text-white`}>
         <Phone aria-hidden size={18} strokeWidth={1.75} />
         {call}
       </a>

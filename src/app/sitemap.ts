@@ -6,7 +6,7 @@ import { blogPostsFor } from "@/lib/blog-posts";
 import { DEFAULT_LOCALE, LOCALES, MAIN_LOCALES, alternatesFor, localePath, type Locale } from "@/lib/i18n";
 import { NEWS, newsPath } from "@/lib/news";
 import { PLAN_PAGES } from "@/lib/plan-pages";
-import { rentPath } from "@/lib/seo-data";
+import { searchPages } from "@/lib/search-pages";
 import { getContent } from "@/lib/store";
 
 type Entry = MetadataRoute.Sitemap[number];
@@ -37,11 +37,6 @@ const fixed: Array<{ path: string; priority: number; changeFrequency: Freq }> = 
   { path: "/drive-to-own", priority: 0.9, changeFrequency: "weekly" },
   { path: "/drive-to-earn", priority: 0.9, changeFrequency: "weekly" },
   { path: "/revenue-share", priority: 0.8, changeFrequency: "weekly" },
-  // Search pages built from Jarvis's live figures (see lib/seo-data.ts).
-  { path: "/car-on-rent-for-uber", priority: 0.8, changeFrequency: "daily" },
-  { path: "/uber-driver-requirements", priority: 0.8, changeFrequency: "monthly" },
-  { path: "/uber-fleet-partner", priority: 0.7, changeFrequency: "monthly" },
-  { path: "/ev-driver-jobs", priority: 0.7, changeFrequency: "weekly" },
   { path: "/our-services", priority: 0.7, changeFrequency: "monthly" },
   { path: "/about-us", priority: 0.5, changeFrequency: "monthly" },
   { path: "/faq", priority: 0.7, changeFrequency: "monthly" },
@@ -83,9 +78,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entries.push({ url: url(path), lastModified, changeFrequency, priority });
   }
 
-  // A car-on-rent page per city, in English.
-  for (const city of content.cities) {
-    entries.push({ url: url(rentPath(city.slug)), lastModified, changeFrequency: "daily", priority: 0.8 });
+  // The search pages, in English (lib/search-pages.ts).
+  for (const page of searchPages(content)) {
+    entries.push({ url: url(page.path), lastModified, changeFrequency: "weekly", priority: page.city ? 0.7 : 0.8 });
   }
 
   // Driver pages and the blog index exist in every locale, each declaring the other two.

@@ -182,12 +182,16 @@ export function ApplyBand({
   cities,
   defaultCity,
   source,
+  placement,
+  callHref,
 }: {
   locale: Locale;
   dict: Dictionary;
   cities: { slug: string; label: string }[];
   defaultCity?: string;
   source: string;
+  placement?: string;
+  callHref?: string;
 }) {
   return (
     <section
@@ -206,7 +210,7 @@ export function ApplyBand({
         </h2>
       </div>
       <div className="relative mx-auto mt-5 max-w-[744px] rounded-2xl bg-white p-4 shadow-[0_20px_60px_rgba(0,0,0,0.2)] sm:mt-8 sm:rounded-3xl sm:border sm:border-line sm:px-14 sm:pb-8 sm:pt-11">
-        <LeadForm copy={{ form: dict.form, cta: dict.cta }} locale={locale} cities={cities} defaultCity={defaultCity} source={source} />
+        <LeadForm copy={{ form: dict.form, cta: dict.cta }} locale={locale} cities={cities} defaultCity={defaultCity} source={source} placement={placement} callHref={callHref} />
       </div>
     </section>
   );

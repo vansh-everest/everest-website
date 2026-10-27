@@ -1,70 +1,68 @@
 import { cityPhone } from "./city-phones";
-import { planFor, type Hub, type SiteContent } from "./content";
-import { siteCityFor, type LiveData, type LivePlanPrice } from "./fleet-data";
+import { planFor, priceIn, rupees, type Hub, type SiteContent } from "./content";
+import { siteCityFor, type LiveData } from "./fleet-data";
 import { PLAN_PAGES } from "./plan-pages";
 
 /**
- * The figures behind the search pages (cars on rent per city, EV jobs), all from Jarvis's live
- * plan data and the admin's cities, so every number on them is the number a driver is quoted.
+ * The facts behind the search pages: which cars each city runs (Jarvis's live data) and each
+ * plan's deposit, upfront and term as the city job pages show them (the admin's plan prices).
+ * Daily rent is never published on the site, so it is not read here at all.
  */
 
-export const RENT_ROOT = "/car-on-rent-for-uber";
-export const rentPath = (slug: string) => `${RENT_ROOT}/${slug}`;
+export { RENT_ROOT, rentPath } from "./search-pages";
 
-/** The plans in the order the pages list them, with each plan's own page. */
+/** The plans in the order the pages list them. */
 const ORDER = ["leasing", "drive-to-own", "own-now"] as const;
 
-export type PlanFigure = { planId: string; name: string; path: string; rent: number | null; deposit: number | null; upfront: number | null };
-export type RentCar = { name: string; fuel: string; plans: PlanFigure[] };
-export type RentCity = {
+export type PlanRef = { planId: string; name: string; path: string };
+/** A plan in one city: the figures a city job page shows, blank where the admin has none. */
+export type PlanTerms = PlanRef & { deposit: string; upfront: string; months: number | null };
+export type CityCar = { name: string; fuel: string; plans: PlanRef[] };
+export type CityFacts = {
   slug: string;
   name: string;
   state: string;
   readyCars: number;
   hubs: Hub[];
   phone: { href: string; display: string } | null;
-  cars: RentCar[];
-  /** Per plan, the lowest of each figure across the city's cars. */
-  from: PlanFigure[];
+  cars: CityCar[];
+  plans: PlanTerms[];
 };
 
-export const inr = (n: number) => `₹${n.toLocaleString("en-IN")}`;
-
-const lowest = (values: (number | null)[]) => {
-  const real = values.filter((v): v is number => v !== null && v > 0);
-  return real.length ? Math.min(...real) : null;
-};
-
-function figure(content: SiteContent, planId: string, price: LivePlanPrice | undefined): PlanFigure | null {
+function planRef(content: SiteContent, planId: string): PlanRef | null {
   const plan = planFor(content, planId);
   const page = PLAN_PAGES.find((p) => p.planId === planId);
-  if (!plan?.visible || !page || !price) return null;
-  if (price.rent === null && price.deposit === null && price.upfront === null) return null;
-  return { planId, name: plan.name.en, path: `${page.path}/`, rent: price.rent, deposit: price.deposit, upfront: price.upfront };
+  if (!plan?.visible || !page) return null;
+  return { planId, name: plan.name.en, path: `${page.path}/` };
 }
 
-/** One city's cars and plan figures; null when Jarvis prices no car there. */
-export function rentCity(content: SiteContent, live: LiveData | null, slug: string, fuel?: RegExp): RentCity | null {
+/** Every visible plan with a page of its own, in page order, without figures (they differ by city). */
+export function planRefs(content: SiteContent): PlanRef[] {
+  return ORDER.map((id) => planRef(content, id)).filter((p): p is PlanRef => Boolean(p));
+}
+
+/** One city's cars, plans and hubs; null for a slug the admin does not list. */
+export function cityFacts(content: SiteContent, live: LiveData | null, slug: string, fuel?: RegExp): CityFacts | null {
   const city = content.cities.find((c) => c.slug === slug);
-  if (!city || !live) return null;
+  if (!city) return null;
   const seen = new Set<string>();
-  const cars: RentCar[] = [];
-  for (const liveCity of live.cities.filter((c) => siteCityFor(c, content) === slug)) {
+  const cars: CityCar[] = [];
+  for (const liveCity of (live?.cities ?? []).filter((c) => siteCityFor(c, content) === slug)) {
     for (const car of liveCity.cars) {
       const key = `${car.name}|${car.fuel}`.toLowerCase();
       if (seen.has(key) || (fuel && !fuel.test(car.fuel))) continue;
-      const plans = ORDER.map((id) => figure(content, id, car.plans[id])).filter((p): p is PlanFigure => Boolean(p));
+      const plans = ORDER.filter((id) => car.plans[id]).map((id) => planRef(content, id)).filter((p): p is PlanRef => Boolean(p));
       if (!plans.length) continue;
       seen.add(key);
       cars.push({ name: car.name, fuel: car.fuel || "CNG", plans });
     }
   }
-  if (!cars.length) return null;
-  const from = ORDER.flatMap((id) => {
-    const rows = cars.flatMap((c) => c.plans.filter((p) => p.planId === id));
-    if (!rows.length) return [];
-    const first = rows[0];
-    return [{ ...first, rent: lowest(rows.map((r) => r.rent)), deposit: lowest(rows.map((r) => r.deposit)), upfront: lowest(rows.map((r) => r.upfront)) }];
+  const plans = ORDER.filter((id) => city.plans.includes(id)).flatMap((id) => {
+    const ref = planRef(content, id);
+    const plan = planFor(content, id);
+    if (!ref || !plan) return [];
+    const price = priceIn(plan.price, plan.cityPrices, slug);
+    return [{ ...ref, deposit: rupees(price.deposit), upfront: rupees(price.upfront), months: Number(price.tenureMonths) || null }];
   });
   return {
     slug,
@@ -74,36 +72,26 @@ export function rentCity(content: SiteContent, live: LiveData | null, slug: stri
     hubs: fuel ? city.hubs.filter((h) => !h.fuel || fuel.test(h.fuel)) : city.hubs,
     phone: cityPhone(slug),
     cars,
-    from,
+    plans,
   };
 }
 
-/** Every city Jarvis prices a car in, in the admin's order. */
-export function rentCities(content: SiteContent, live: LiveData | null, fuel?: RegExp): RentCity[] {
+/** Every city in the admin's order; with `fuel`, only the cities running such a car. */
+export function allCityFacts(content: SiteContent, live: LiveData | null, fuel?: RegExp): CityFacts[] {
   return content.cities.flatMap((c) => {
-    const view = rentCity(content, live, c.slug, fuel);
-    return view ? [view] : [];
+    const facts = cityFacts(content, live, c.slug, fuel);
+    return facts && (!fuel || facts.cars.length) ? [facts] : [];
   });
 }
 
-/** "₹650 a day" for a plan's lowest daily figure, or its deposit / upfront when it has no rent. */
-export function lead(f: PlanFigure): string {
-  if (f.rent) return `${inr(f.rent)} a day`;
-  if (f.deposit) return `${inr(f.deposit)} deposit`;
-  if (f.upfront) return `${inr(f.upfront)} upfront`;
-  return "";
-}
-
-/**
- * The figure a "car on rent from" line quotes: Drive To Earn (the rental plan) first, then Drive To
- * Own; Own Now's daily figure follows an upfront payment, so it is quoted only where nothing else is.
- */
-export function cheapest(figures: PlanFigure[]): PlanFigure | null {
-  for (const id of ["leasing", "drive-to-own", "own-now"]) {
-    const f = figures.find((x) => x.planId === id && x.rent);
-    if (f) return f;
-  }
-  return null;
+/** "Drive To Own: ₹10,000 refundable deposit" for each plan with a figure, as a city job page lists them. */
+export function planLines(plans: PlanTerms[]): string[] {
+  return plans.flatMap((p) => {
+    const money = p.deposit ? `${p.deposit} refundable deposit` : p.upfront ? `${p.upfront} upfront` : "";
+    const term = p.months ? `${p.months}-month term` : "";
+    const detail = [money, term].filter(Boolean).join(", ");
+    return detail ? [`${p.name}: ${detail}`] : [];
+  });
 }
 
 /** Car names as a reader says them: "WagonR, Dzire and S-Presso". */
@@ -114,3 +102,9 @@ export function listNames(names: string[], joiner = "and"): string {
 
 /** "Aadhaar Card" → "Aadhaar card", "PAN Card" → "PAN card": document names mid-sentence. */
 export const docName = (doc: string) => doc.split(" ").map((w, i) => (/^[A-Z]{2,}$/.test(w) || (i === 0 && w === "Aadhaar") ? w : w.toLowerCase())).join(" ");
+
+/** "9 am to 7 pm, every day" for a hub, or its hours as entered. */
+export const hubHours = (hub: Hub) => (hub.hours ? (hub.daily ? `${hub.hours}, every day` : hub.hours) : "");
+
+/** Cars ready across the cities, as one figure. */
+export const readyTotal = (cities: { readyCars: number }[]) => cities.reduce((s, c) => s + c.readyCars, 0);
