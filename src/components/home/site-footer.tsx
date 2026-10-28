@@ -6,7 +6,7 @@ import { BrandLogo } from "@/components/site/brand-logo";
 import { siteCopy, type LinkKey } from "@/content/site-copy";
 import { COMPANY, OFFICE_LINE } from "@/lib/company";
 import { DEFAULT_LOCALE, fill, hrefIn, type Locale } from "@/lib/i18n";
-import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "./ui";
+import { PHONE_DISPLAY, PHONE_HREF } from "./ui";
 
 // Only routes that exist are linked. A placeholder link wastes crawl budget and fails a visitor.
 const columns: { title: "drivers" | "company" | "investors"; links: { key: LinkKey; href: string }[] }[] = [
@@ -108,11 +108,6 @@ export function SiteFooter({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
               <li>
                 <a href={PHONE_HREF} className={item}>
                   +91 {PHONE_DISPLAY}
-                </a>
-              </li>
-              <li>
-                <a href={WHATSAPP_HREF} className="text-whatsapp transition hover:brightness-110">
-                  {links.whatsapp}
                 </a>
               </li>
               <li>

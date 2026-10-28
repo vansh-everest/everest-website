@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { FormLink } from "@/components/home/form-link";
-import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
+import { PHONE_DISPLAY, PHONE_HREF } from "@/components/home/ui";
 import { SITE_URL } from "@/lib/company";
 import { jsonLd } from "@/lib/json-ld";
 
@@ -112,12 +112,6 @@ export default function Page() {
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <a href={PHONE_HREF} className="flex h-12 items-center rounded-full bg-sun px-7 text-sm font-bold text-navy">
               Call {PHONE_DISPLAY}
-            </a>
-            <a
-              href={WHATSAPP_HREF}
-              className="flex h-12 items-center rounded-full bg-whatsapp px-7 text-sm font-bold text-white"
-            >
-              WhatsApp
             </a>
             <FormLink home="/" className="flex h-12 items-center rounded-full border border-white/30 px-7 text-sm font-bold text-white">
               Drive With Us

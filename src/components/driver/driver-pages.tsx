@@ -72,7 +72,7 @@ export function DriverHub({ locale, content }: { locale: Locale; content: SiteCo
 
       <ApplyBand locale={locale} dict={dict} cities={formCities(content, locale)} source="drive-with-us" />
 
-      <StickyBar call={dict.cta.call} whatsapp={dict.cta.whatsapp} />
+      <StickyBar call={dict.cta.call} />
     </>
   );
 }
@@ -316,7 +316,7 @@ export function CityPage({
           id="city-guides"
           title={`More For Drivers In ${name}`}
           links={[
-            { href: `${contactPath(slug)}/`, label: `Driver Job Contact Number, ${name}`, note: "Call, WhatsApp, hubs" },
+            { href: `${contactPath(slug)}/`, label: `Driver Job Contact Number, ${name}`, note: "Number and hubs" },
             { href: `${rentPath(slug)}/`, label: `Car On Rent In ${name}`, note: "Cars and plans" },
             { href: `${fleetPath(slug)}/`, label: `Uber Fleet In ${name}`, note: "Everest Fleet in the city" },
             { href: "/uber-driver-requirements/", label: "Uber Driver Requirements", note: "Documents and licence" },
@@ -334,7 +334,7 @@ export function CityPage({
 
       <ApplyBand locale={locale} dict={dict} cities={formCities(content, locale)} defaultCity={slug} source={`city/${slug}`} />
 
-      <StickyBar call={dict.cta.call} whatsapp={dict.cta.whatsapp} />
+      <StickyBar call={dict.cta.call} />
     </>
   );
 }

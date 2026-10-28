@@ -2,15 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { Phone } from "lucide-react";
-import { WhatsappLogo } from "@phosphor-icons/react/ssr";
-import { PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
+import { PHONE_HREF } from "@/components/home/ui";
 
 /**
- * Call and WhatsApp, fixed to the bottom of a phone screen so a person is never scrolled away.
+ * Call, fixed to the bottom of a phone screen so a person is never scrolled away.
  * It slides away once the apply form (#apply) comes into view, where the form's own Apply and
  * Call take over, and stays away over the footer below it, which lists both again.
  */
-export function StickyBar({ call, whatsapp, callHref }: { call: string; whatsapp: string; callHref?: string }) {
+export function StickyBar({ call, callHref }: { call: string; callHref?: string }) {
   const [away, setAway] = useState(false);
 
   useEffect(() => {
@@ -41,10 +40,6 @@ export function StickyBar({ call, whatsapp, callHref }: { call: string; whatsapp
       <a href={callHref ?? PHONE_HREF} className={`${button} bg-navy text-white`}>
         <Phone aria-hidden size={18} strokeWidth={1.75} />
         {call}
-      </a>
-      <a href={WHATSAPP_HREF} className={`${button} bg-whatsapp text-white`}>
-        <WhatsappLogo aria-hidden size={20} weight="fill" />
-        {whatsapp}
       </a>
     </div>
   );

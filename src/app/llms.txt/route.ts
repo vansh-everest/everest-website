@@ -1,4 +1,3 @@
-import { WHATSAPP_HREF } from "@/components/home/ui";
 import { getDictionary } from "@/content/dictionary";
 import { COMPANY, COMPANY_BLURB, SITE_URL } from "@/lib/company";
 import { cityPath } from "@/lib/city-route";
@@ -90,7 +89,6 @@ export async function GET() {
     `- Online: the form on any driver job page, three fields (name, mobile number, city)`,
     `- Phone: ${COMPANY.phone}`,
     `- Email: ${COMPANY.email}`,
-    `- WhatsApp: ${WHATSAPP_HREF}`,
     `- Documents to bring: ${dict.documents.join(", ")}`,
     "",
     "## Plans",

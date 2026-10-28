@@ -1,10 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowLeft, ArrowRight, Check, Phone, Plus } from "lucide-react";
-import { WhatsappLogo } from "@phosphor-icons/react/ssr";
 import { LeadForm } from "@/components/driver/lead-form";
 import { HeroChip, SectionHead, band, tint, wrap } from "@/components/driver/driver-ui";
-import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
+import { PHONE_DISPLAY, PHONE_HREF } from "@/components/home/ui";
 import { fill, getDictionary } from "@/content/dictionary";
 import { SITE_URL } from "@/lib/company";
 import type { SiteContent } from "@/lib/content";
@@ -119,10 +118,6 @@ export function SearchHero({
             <a href={phone?.href ?? PHONE_HREF} className={`${pill} border-2 border-white text-white hover:bg-white/10`}>
               <Phone aria-hidden size={18} strokeWidth={1.75} />
               {phone?.display ?? PHONE_DISPLAY}
-            </a>
-            <a href={WHATSAPP_HREF} className={`${pill} bg-whatsapp text-white hover:brightness-95`}>
-              <WhatsappLogo aria-hidden size={20} weight="fill" />
-              {dict.cta.whatsapp}
             </a>
           </div>
         </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
+import { PHONE_DISPLAY, PHONE_HREF } from "@/components/home/ui";
 import { PICK_SERVICE_EVENT, SERVICES } from "./services";
 import { trackLead } from "@/lib/analytics";
 import { Captcha } from "@/components/site/captcha";
@@ -157,10 +157,6 @@ export function EnquiryForm({ source }: { source: string }) {
         Or reach us directly ·{" "}
         <a href={PHONE_HREF} className="hover:text-brand">
           <span aria-hidden>📞</span> {PHONE_DISPLAY}
-        </a>{" "}
-        ·{" "}
-        <a href={WHATSAPP_HREF} className="hover:text-brand">
-          <span aria-hidden>💬</span> WhatsApp
         </a>
       </p>
     </form>

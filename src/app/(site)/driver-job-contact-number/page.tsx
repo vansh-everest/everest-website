@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { formCities } from "@/components/driver/driver-pages";
 import { StickyBar } from "@/components/driver/sticky-bar";
 import { ApplyBand, SectionHead, band, wrap } from "@/components/driver/driver-ui";
-import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
+import { PHONE_DISPLAY, PHONE_HREF } from "@/components/home/ui";
 import {
   APPLY_POINTS,
   AnswerBox,
@@ -28,14 +28,10 @@ import { getContent } from "@/lib/store";
 export const revalidate = 3600;
 
 const PATH = `${CONTACT_ROOT}/`;
-const WHATSAPP_DISPLAY = (() => {
-  const local = WHATSAPP_HREF.replace(/\D/g, "").replace(/^91/, "");
-  return `${local.slice(0, 5)} ${local.slice(5)}`;
-})();
 
 export const metadata: Metadata = {
   title: "Driver Job Contact Number: Everest Fleet Hiring Lines by City",
-  description: "Driver job contact numbers for Mumbai, Delhi NCR, Bengaluru, Hyderabad, Pune, Kolkata and Chennai: call or WhatsApp Everest Fleet for an Uber driver job with a car.",
+  description: "Driver job contact numbers for Mumbai, Delhi NCR, Bengaluru, Hyderabad, Pune, Kolkata and Chennai: call Everest Fleet for an Uber driver job with a car.",
   alternates: { canonical: PATH },
 };
 
@@ -49,7 +45,7 @@ export default async function Page() {
   const items: QA[] = [
     {
       q: "What is the driver job contact number?",
-      a: `Each city has its own hiring line: ${rows.map((r) => `${r.name} ${r.call.display}`).join(", ")}. WhatsApp ${WHATSAPP_DISPLAY} works in every city.`,
+      a: `Each city has its own hiring line: ${rows.map((r) => `${r.name} ${r.call.display}`).join(", ")}.`,
     },
     {
       q: "What is the Uber driver job contact number?",
@@ -77,12 +73,12 @@ export default async function Page() {
         chip={<BackChip href="/drive-with-us/" label={dict.hub.eyebrow} />}
         title="Driver Job Contact Number"
         intro="Call your city's hiring line for an Uber driver job with a car included."
-        facts={[{ label: "Cities", value: String(rows.length) }, { label: "WhatsApp", value: WHATSAPP_DISPLAY }]}
+        facts={[{ label: "Cities", value: String(rows.length) }]}
         form={<SearchForm content={content} source={source} placement="hero" />}
       />
 
       <AnswerBox title="In Short">
-        Everest Fleet hires drivers in {rows.length} cities, each with its own number. Call your city below or WhatsApp {WHATSAPP_DISPLAY}, then visit a hub
+        Everest Fleet hires drivers in {rows.length} cities, each with its own number. Call your city below, then visit a hub
         with your documents and collect a car to drive on Uber.
       </AnswerBox>
 
@@ -114,7 +110,7 @@ export default async function Page() {
 
       <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} source={source} placement="bottom" />
 
-      <StickyBar call={dict.cta.call} whatsapp={dict.cta.whatsapp} />
+      <StickyBar call={dict.cta.call} />
     </>
   );
 }

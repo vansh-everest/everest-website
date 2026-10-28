@@ -1,3 +1,4 @@
+import { formName } from "@/lib/forms";
 import { isDriverForm, type UnifyLead, type UnifyLeadReport } from "@/lib/unify";
 
 /**
@@ -225,7 +226,7 @@ export function joinLeads(leads: JarvisLead[], reports: UnifyLeadReport[]): Flow
       day: when.day,
       hour: when.hour,
       city: cityLabel(lead.city),
-      form: lead.source || "unknown",
+      form: formName(lead.source) || "unknown",
       driver,
       channel: channelOf(lead.campaign ?? "", lead.referrer ?? ""),
       campaign: campaignOf(lead.campaign ?? ""),

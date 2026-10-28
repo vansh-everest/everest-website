@@ -6,6 +6,7 @@ import { readSession } from "@/lib/auth";
 import { jarvisAdmin, jarvisAdminEnabled } from "@/lib/jarvis";
 import { updateLeadAction } from "./actions";
 import { LEAD_STATUSES, leadFilters, leadQuery } from "./query";
+import { formName } from "@/lib/forms";
 
 export const dynamic = "force-dynamic";
 
@@ -137,7 +138,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
                   </td>
                   <td className="px-3 py-2.5">{lead.city}</td>
                   <td className="px-3 py-2.5">
-                    {lead.source}
+                    {formName(lead.source)}
                     {lead.page ? <span className="block text-xs text-ink-soft">{lead.page}</span> : null}
                   </td>
                   <td className="px-3 py-2.5 text-ink-soft">

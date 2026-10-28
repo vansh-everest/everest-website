@@ -150,7 +150,7 @@ export default async function Page({ params }: Props) {
         title="Keep Reading"
         links={[
           { href: `${cityPath(slug)}/`, label: `Driver Jobs In ${name}`, note: "Car included" },
-          { href: `${contactPath(slug)}/`, label: `Driver Job Contact Number, ${name}`, note: "Call, WhatsApp, hubs" },
+          { href: `${contactPath(slug)}/`, label: `Driver Job Contact Number, ${name}`, note: "Number and hubs" },
           { href: `${fleetPath(slug)}/`, label: `Uber Fleet In ${name}`, note: "Everest Fleet in the city" },
           { href: "/uber-driver-requirements/", label: "Uber Driver Requirements", note: "Documents and licence" },
           ...others.slice(0, 2).map((o) => ({ href: `${rentPath(o.slug)}/`, label: `Car On Rent In ${o.name}`, note: `${o.hubs.length} hubs` })),
@@ -159,7 +159,7 @@ export default async function Page({ params }: Props) {
 
       <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} defaultCity={slug} source={source} placement="bottom" callHref={facts.phone?.href} />
 
-      <StickyBar call={dict.cta.call} whatsapp={dict.cta.whatsapp} callHref={facts.phone?.href} />
+      <StickyBar call={dict.cta.call} callHref={facts.phone?.href} />
     </>
   );
 }

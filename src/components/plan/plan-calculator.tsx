@@ -4,7 +4,7 @@ import { useId, useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronDown, CircleCheck, MapPin, Phone } from "lucide-react";
 import { CountUp } from "@/components/fx/count-up";
-import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
+import { PHONE_DISPLAY, PHONE_HREF } from "@/components/home/ui";
 import { rupees } from "@/lib/content";
 import type { PublicCalculatorView } from "@/lib/fleet-data";
 import { useTapInvite } from "./wizard-motion";
@@ -226,10 +226,6 @@ export function PlanCalculator({ view, id = "plan" }: { view: PublicCalculatorVi
               Or reach us directly ·{" "}
               <a href={PHONE_HREF} className="hover:underline">
                 {PHONE_DISPLAY}
-              </a>{" "}
-              ·{" "}
-              <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                WhatsApp
               </a>
             </p>
           </div>

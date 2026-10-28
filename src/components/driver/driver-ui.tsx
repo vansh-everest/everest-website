@@ -2,8 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Phone } from "lucide-react";
-import { WhatsappLogo } from "@phosphor-icons/react/ssr";
-import { PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
+import { PHONE_HREF } from "@/components/home/ui";
 import { LeadForm } from "@/components/driver/lead-form";
 import type { Dictionary } from "@/content/dictionary";
 import { cityPath } from "@/lib/city-route";
@@ -63,22 +62,18 @@ export function LanguageSwitch({ locale, path, label }: { locale: Locale; path: 
 const pill = "flex h-14 items-center justify-center gap-2.5 rounded-full px-7 text-[17px] font-semibold transition";
 
 /**
- * Apply, call and WhatsApp in one row. Phones show Apply alone: the bar fixed to the bottom of
- * the screen (StickyBar) carries the other two there.
+ * Apply and call in one row. Phones show Apply alone: the bar fixed to the bottom of the screen
+ * (StickyBar) carries the call there.
  */
 export function HeroActions({ cta }: { cta: Dictionary["cta"] }) {
   return (
     <div className="grid gap-3 md:grid-cols-2 lg:flex lg:flex-wrap">
-      <a href="#apply" className={`${pill} bg-sun text-navy hover:brightness-95 md:col-span-2 lg:min-w-[220px]`}>
+      <a href="#apply" className={`${pill} bg-sun text-navy hover:brightness-95 lg:min-w-[220px]`}>
         {cta.apply}
       </a>
       <a href={PHONE_HREF} className={`${pill} hidden border-2 border-white px-4 text-white hover:bg-white/10 md:flex`}>
         <Phone aria-hidden size={20} strokeWidth={1.75} />
         {cta.call}
-      </a>
-      <a href={WHATSAPP_HREF} className={`${pill} hidden bg-whatsapp px-4 text-white hover:brightness-95 md:flex`}>
-        <WhatsappLogo aria-hidden size={22} weight="fill" />
-        {cta.whatsapp}
       </a>
     </div>
   );

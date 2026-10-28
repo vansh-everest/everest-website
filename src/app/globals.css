@@ -16,7 +16,6 @@
   --color-navy: #062f50;
   --color-brand: #006db8;
   --color-sun: #f1d614;
-  --color-whatsapp: #25d366;
   --color-leaf: #22c55e;
   --color-plum: #a03f97;
   --color-lime: #b9d532;
@@ -236,7 +235,7 @@ body {
 }
 
 /* Drive With Us (batch 9) */
-/* The driver pages' call and WhatsApp bar on phones (StickyBar, src/components/driver/sticky-bar.tsx)
+/* The driver pages' call bar on phones (StickyBar, src/components/driver/sticky-bar.tsx)
    slides away once the apply form is on screen and stays away over the footer, so the footer
    needs no room kept for it. */
 

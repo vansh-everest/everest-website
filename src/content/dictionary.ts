@@ -34,7 +34,7 @@ export type Dictionary = {
     map: string;
     otherCities: string;
   };
-  cta: { apply: string; call: string; whatsapp: string; formTitle: string; formNote: string };
+  cta: { apply: string; call: string; formTitle: string; formNote: string };
   form: { name: string; mobile: string; city: string; selectCity: string; submit: string; sending: string; done: string; failed: string };
   documents: string[];
   /** One line per plan on a city page, by plan id, worded as the plan's own page describes it. */
@@ -74,7 +74,6 @@ const en: Dictionary = {
   cta: {
     apply: "Apply Now",
     call: "Call Us",
-    whatsapp: "WhatsApp",
     formTitle: "Apply In 30 Seconds",
     formNote: "We call you back.",
   },
@@ -140,7 +139,6 @@ const hi: Dictionary = {
   cta: {
     apply: "अभी अप्लाई करें",
     call: "कॉल करें",
-    whatsapp: "WhatsApp",
     formTitle: "30 सेकंड में अप्लाई कीजिए",
     formNote: "हम आपको कॉल करेंगे।",
   },
@@ -206,7 +204,6 @@ const te: Dictionary = {
   cta: {
     apply: "ఇప్పుడే దరఖాస్తు చేయండి",
     call: "కాల్ చేయండి",
-    whatsapp: "WhatsApp",
     formTitle: "30 సెకన్లలో దరఖాస్తు",
     formNote: "మేము మీకు కాల్ చేస్తాము.",
   },
@@ -272,7 +269,6 @@ const mr: Dictionary = {
   cta: {
     apply: "आत्ताच अर्ज करा",
     call: "कॉल करा",
-    whatsapp: "WhatsApp",
     formTitle: "30 सेकंदांत अर्ज करा",
     formNote: "आम्ही तुम्हाला कॉल करू.",
   },
@@ -338,7 +334,6 @@ const kn: Dictionary = {
   cta: {
     apply: "ಈಗಲೇ ಅರ್ಜಿ ಹಾಕಿ",
     call: "ಕರೆ ಮಾಡಿ",
-    whatsapp: "WhatsApp",
     formTitle: "30 ಸೆಕೆಂಡುಗಳಲ್ಲಿ ಅರ್ಜಿ",
     formNote: "ನಾವು ನಿಮಗೆ ಕರೆ ಮಾಡುತ್ತೇವೆ.",
   },
@@ -404,7 +399,6 @@ const bn: Dictionary = {
   cta: {
     apply: "এখনই আবেদন করুন",
     call: "কল করুন",
-    whatsapp: "WhatsApp",
     formTitle: "30 সেকেন্ডে আবেদন করুন",
     formNote: "আমরা আপনাকে কল করব।",
   },
@@ -470,7 +464,6 @@ const ta: Dictionary = {
   cta: {
     apply: "இப்போதே விண்ணப்பியுங்கள்",
     call: "அழையுங்கள்",
-    whatsapp: "WhatsApp",
     formTitle: "30 விநாடிகளில் விண்ணப்பம்",
     formNote: "நாங்கள் உங்களை அழைப்போம்.",
   },

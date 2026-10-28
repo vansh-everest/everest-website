@@ -107,7 +107,7 @@ export default async function Page() {
 
       <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} source={source} placement="bottom" />
 
-      <StickyBar call={dict.cta.call} whatsapp={dict.cta.whatsapp} />
+      <StickyBar call={dict.cta.call} />
     </>
   );
 }

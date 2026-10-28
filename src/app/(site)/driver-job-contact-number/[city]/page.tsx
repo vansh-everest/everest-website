@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { MapPin, Phone } from "lucide-react";
-import { WhatsappLogo } from "@phosphor-icons/react/ssr";
 import { DocumentsAndHubs, formCities } from "@/components/driver/driver-pages";
 import { StickyBar } from "@/components/driver/sticky-bar";
 import { ApplyBand, SectionHead, band, wrap } from "@/components/driver/driver-ui";
-import { PHONE_DISPLAY, PHONE_HREF, WHATSAPP_HREF } from "@/components/home/ui";
+import { PHONE_DISPLAY, PHONE_HREF } from "@/components/home/ui";
 import {
   APPLY_POINTS,
   AnswerBox,
@@ -34,12 +33,6 @@ type Props = { params: Promise<{ city: string }> };
 
 export const revalidate = 3600;
 
-/** WhatsApp's number as people read it: "91262 14248". */
-const WHATSAPP_DISPLAY = (() => {
-  const local = WHATSAPP_HREF.replace(/\D/g, "").replace(/^91/, "");
-  return `${local.slice(0, 5)} ${local.slice(5)}`;
-})();
-
 export async function generateStaticParams() {
   const content = await getContent();
   return content.cities.map((c) => ({ city: c.slug }));
@@ -59,7 +52,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const call = callOf(facts);
   return {
     title: `${facts.name} Driver Job Contact Number: ${call.display}`,
-    description: `Driver job in ${facts.name} with a car included: call Everest Fleet on ${call.display} or WhatsApp ${WHATSAPP_DISPLAY}. Hub addresses, timings and documents to bring.`,
+    description: `Driver job in ${facts.name} with a car included: call Everest Fleet on ${call.display}. Hub addresses, timings and documents to bring.`,
     alternates: { canonical: `${contactPath(slug)}/` },
   };
 }
@@ -69,8 +62,7 @@ function faqs(f: CityFacts): QA[] {
   const call = callOf(f);
   const hours = f.hubs.map(hubHours).find(Boolean);
   return [
-    { q: `What is the driver job contact number in ${f.name}?`, a: `Call Everest Fleet's ${f.name} hiring line on ${call.display}, or WhatsApp ${WHATSAPP_DISPLAY}.` },
-    { q: "Can I apply on WhatsApp?", a: `Yes. Message ${WHATSAPP_DISPLAY} with your name and city, or fill the form on this page and the team calls you back.` },
+    { q: `What is the driver job contact number in ${f.name}?`, a: `Call Everest Fleet's ${f.name} hiring line on ${call.display}.` },
     ...(hours ? [{ q: `What are the hub timings in ${f.name}?`, a: `${hours}. Each hub's timings are listed on this page.` }] : []),
     { q: "What should I bring to the hub?", a: `Your ${listNames(dict.documents.map(docName))}.` },
     { q: "Is this an Uber driver job?", a: `Yes. You drive an Everest Fleet car on Uber in ${f.name}, with insurance and permit included and weekly payouts.` },
@@ -119,14 +111,14 @@ export default async function Page({ params }: Props) {
       <SearchHero
         chip={<BackChip href={`${CONTACT_ROOT}/`} label="All Cities" />}
         title={`Driver Job Contact Number In ${name}`}
-        intro={`Call, WhatsApp or visit a hub to start driving on Uber in ${name}, car included.`}
+        intro={`Call or visit a hub to start driving on Uber in ${name}, car included.`}
         facts={[{ label: "Call", value: call.display }, ...(facts.hubs.length ? [{ label: "Hubs", value: String(facts.hubs.length) }] : [])]}
         phone={call}
         form={<SearchForm content={content} source={source} placement="hero" defaultCity={slug} callHref={call.href} />}
       />
 
       <AnswerBox title="In Short">
-        Everest Fleet&apos;s driver hiring number in {name} is <strong>{call.display}</strong>, and WhatsApp is <strong>{WHATSAPP_DISPLAY}</strong>.
+        Everest Fleet&apos;s driver hiring number in {name} is <strong>{call.display}</strong>.
         {firstHub ? ` To apply in person, visit ${listNames(facts.hubs.map((h) => h.name))}${hubHours(firstHub) ? ` (${hubHours(firstHub)})` : ""}.` : ""} The
         job comes with a car, insurance and permit, and payouts every week.
       </AnswerBox>
@@ -134,19 +126,12 @@ export default async function Page({ params }: Props) {
       <section aria-labelledby="contact-ways" className={band}>
         <div className={wrap}>
           <SectionHead id="contact-ways" title={`Reach Everest Fleet In ${name}`} />
-          <ul className="mt-8 grid gap-3 sm:grid-cols-3 lg:mt-10 lg:gap-5">
+          <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:mt-10 lg:gap-5">
             <li>
               <a href={call.href} className={card}>
                 <Phone aria-hidden size={22} className="text-brand" />
                 <span className={`mt-3 ${cardLabel}`}>Call</span>
                 <span className={cardValue}>{call.display}</span>
-              </a>
-            </li>
-            <li>
-              <a href={WHATSAPP_HREF} className={card}>
-                <WhatsappLogo aria-hidden size={24} weight="fill" className="text-whatsapp" />
-                <span className={`mt-3 ${cardLabel}`}>WhatsApp</span>
-                <span className={cardValue}>{WHATSAPP_DISPLAY}</span>
               </a>
             </li>
             <li>
@@ -192,7 +177,7 @@ export default async function Page({ params }: Props) {
 
       <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} defaultCity={slug} source={source} placement="bottom" callHref={call.href} />
 
-      <StickyBar call={dict.cta.call} whatsapp={dict.cta.whatsapp} callHref={call.href} />
+      <StickyBar call={dict.cta.call} callHref={call.href} />
     </>
   );
 }

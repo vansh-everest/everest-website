@@ -12,3 +12,6 @@ export function leadType(source: string): "driver" | "business" | "dost" | "othe
   if (source === "everest-dost") return "dost";
   return "other";
 }
+
+/** A form's name as the admin shows it: the Drive To Earn form still sends its old key, "plan/leasing". */
+export const formName = (source: string) => (source === "plan/leasing" ? "plan/drive-to-earn" : source);

@@ -29,7 +29,6 @@ export type LinkKey =
   | "metrics"
   | "leadership"
   | "reports"
-  | "whatsapp"
   | "investorsPartners"
   | "newsroom"
   | "privacy"
@@ -91,7 +90,6 @@ const en: SiteCopy = {
     metrics: "Metrics & Impact",
     leadership: "Leadership",
     reports: "Reports & Downloads",
-    whatsapp: "WhatsApp Us",
     investorsPartners: "For Investors & Partners",
     newsroom: "Newsroom",
     privacy: "Privacy Policy",
@@ -146,7 +144,6 @@ const hi: SiteCopy = {
     metrics: "आँकड़े और असर",
     leadership: "लीडरशिप",
     reports: "रिपोर्ट और डाउनलोड",
-    whatsapp: "WhatsApp कीजिए",
     investorsPartners: "निवेशकों और पार्टनर्स के लिए",
     newsroom: "न्यूज़रूम",
     privacy: "प्राइवेसी पॉलिसी",
@@ -201,7 +198,6 @@ const kn: SiteCopy = {
     metrics: "ಅಂಕಿಅಂಶ ಮತ್ತು ಪರಿಣಾಮ",
     leadership: "ನಾಯಕತ್ವ",
     reports: "ವರದಿಗಳು ಮತ್ತು ಡೌನ್‌ಲೋಡ್‌ಗಳು",
-    whatsapp: "WhatsApp ಮಾಡಿ",
     investorsPartners: "ಹೂಡಿಕೆದಾರರು ಮತ್ತು ಪಾಲುದಾರರಿಗೆ",
     newsroom: "ನ್ಯೂಸ್‌ರೂಮ್",
     privacy: "ಗೌಪ್ಯತಾ ನೀತಿ",
@@ -256,7 +252,6 @@ const ta: SiteCopy = {
     metrics: "அளவீடுகள் மற்றும் தாக்கம்",
     leadership: "தலைமை",
     reports: "அறிக்கைகள் மற்றும் பதிவிறக்கங்கள்",
-    whatsapp: "WhatsApp செய்யுங்கள்",
     investorsPartners: "முதலீட்டாளர்கள் மற்றும் பார்ட்னர்களுக்கு",
     newsroom: "நியூஸ்ரூம்",
     privacy: "தனியுரிமைக் கொள்கை",
