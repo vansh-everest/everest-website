@@ -1,5 +1,53 @@
 [
   {
+    "slug": "e-shram-card-guide-for-cab-and-platform-drivers",
+    "locale": "en",
+    "title": "e-Shram Card Guide for Cab and Platform Drivers",
+    "excerpt": "Learn who can register on e-Shram, what to keep ready, and how the UAN card can help you track welfare schemes.",
+    "body": [
+      "The Labour Ministry’s Shram Samvad programme in Lucknow on 26 and 27 October 2026 again put focus on social protection for unorganised, gig and platform workers. If you drive a cab on an app or work as an independent driver, this is a good time to check whether e-Shram registration is useful for you.",
+      "## What e-Shram is and why drivers should know it",
+      "e-Shram is the Government of India’s national database for unorganised workers, run by the Ministry of Labour and Employment. After registration, a worker gets a 12-digit Universal Account Number, called UAN, and an e-Shram card.",
+      "The ministry says e-Shram is meant to help deliver welfare schemes and social security benefits to unorganised workers. It is also part of e-Shram One-Stop Solution, which brings many schemes into one place so a worker does not have to visit many different portals for every scheme.",
+      "For a driver, the important point is simple. The card does not by itself promise a fixed payment or job benefit, but it gives you an identity on the e-Shram system and helps you see schemes for which you may be able to apply.",
+      "The official e-Shram FAQ says the One-Stop Solution shows scheme categories such as health, insurance, pension, credit, housing, food security, employment and skilling. It also lists schemes including One Nation One Ration Card, PM-SYM, National Career Service, PMJJBY, PMSBY and Ayushman Bharat PM-JAY among schemes available on the platform.",
+      "## Who can register and what you need",
+      "The e-Shram FAQ says an unorganised worker is a home-based worker, self-employed worker or wage worker in the unorganised sector who is not a member of ESIC or EPFO. Many app-based and independent drivers may fit this broad idea, but you should check your own EPFO or ESIC status before registering.",
+      "Any person doing unorganised work and aged 16 years or above can register, subject to other conditions. The FAQ also says there is no income criterion for registering on e-Shram and no educational qualification is prescribed.",
+      "You need your Aadhaar number and an Aadhaar-linked mobile number for self-registration. If your mobile number is not linked to Aadhaar, the FAQ says you may visit the nearest Common Service Centre or State Seva Kendra and register through biometric authentication.",
+      "Registration is free. The official FAQ clearly says workers are not required to pay any charge to any registering entity. If you go through a CSC, carry your Aadhaar number and mobile, as the FAQ says no other document has to be submitted at the centre.",
+      "## How to register or update your card",
+      "You can access e-Shram services through the official e-Shram portal. The FAQ says workers may register themselves on the portal or use an assisted route by visiting the nearest CSC.",
+      "Before starting, keep your Aadhaar, mobile phone and bank details ready. Use your own phone number if possible, because OTPs and future updates are easier when the number is in your control.",
+      "While registering, choose the occupation that matches your current work. The FAQ says the worker must select the occupation that best represents the activity currently being done. If driving is your main source of income, choose the closest driving-related occupation shown on the portal.",
+      "If you are already registered, you do not need to register again for e-Shram One-Stop Solution. The FAQ says existing registrants can use their UAN to log in and monitor schemes in which they are enrolled.",
+      "Keep your details updated. The e-Shram homepage advises registrants to update their profile and occupation for continued benefits. The FAQ says you can update address, contact number, bank account information and other details by logging in with UAN and OTP, or through a CSC.",
+      "## What to check after registration",
+      "After login, the e-Shram FAQ says the homepage can show your name and UAN, profile picture, update profile tabs, download UAN card option, find eligible schemes option, looking for a job option, scheme enrolment categories and enrolled schemes.",
+      "Check the Find Eligible Schemes section when you have time, not during duty hours. If the portal shows an Apply button for a scheme, the FAQ says it means you are not yet enrolled and can start enrolment. If it shows View, it means you are already enrolled and can check details.",
+      "The e-Shram card does not expire, and the FAQ says renewal is not required. Still, you should update your mobile number, address, bank account and occupation whenever they change, because wrong details can create problems when you try to use a scheme.",
+      "For help, the e-Shram site shows helpdesk numbers 14434 and 18008896811, with timing from 9.00 AM to 6.00 PM daily, including Sundays. If you are registering through a CSC, ask the operator to let you check the details before final submission, especially your name, mobile number, occupation and bank details.",
+      "Do not share OTPs with unknown people and do not pay for e-Shram registration. If you need a car to drive on platforms, Everest Fleet is one place where drivers can enquire for a car."
+    ],
+    "published": true,
+    "date": "2026-10-28",
+    "coverImage": {
+      "label": "Daily post cover",
+      "url": "/blog/auto/e-shram-card-guide-for-cab-and-platform-drivers.webp",
+      "alt": "A driver checks a phone beside a cab on an Indian city road."
+    },
+    "sources": [
+      {
+        "title": "Shram Samvad - Two-Day State-Level Capacity-Building and Awareness Programme on Labour Codes, Labour Welfare and Social Protection Concludes in Lucknow",
+        "url": "https://www.pib.gov.in/PressReleseDetailm.aspx?PRID=2328983&lang=1&reg=3"
+      },
+      {
+        "title": "Home | e-Shram",
+        "url": "https://eshram.gov.in/"
+      }
+    ]
+  },
+  {
     "slug": "hyundai-bayon-cng-guide-for-cab-drivers",
     "locale": "en",
     "title": "Hyundai Bayon CNG Guide for Cab Drivers Before Booking",
