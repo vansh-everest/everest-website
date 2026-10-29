@@ -536,5 +536,6 @@ export function normalizeContent(raw: unknown): SiteContent {
     images: Object.fromEntries(
       Object.entries(DEFAULT_CONTENT.images).map(([key, base]) => [key, image(savedImages[key], base)])
     ),
+    hiddenDailyPosts: [...new Set(lines(o.hiddenDailyPosts, 2000, 120))],
   };
 }

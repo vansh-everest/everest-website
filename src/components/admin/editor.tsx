@@ -3,6 +3,7 @@
 import { useActionState, useMemo, useState } from "react";
 import { Calculator, Car, Clapperboard, ExternalLink, History, ImageIcon, Layers, MapPin, Newspaper } from "lucide-react";
 import { discardDraftAction, editAction, type EditState } from "@/app/(admin)/admin/actions";
+import type { DailyPost } from "@/lib/blog-posts";
 import type { SiteContent } from "@/lib/content";
 import { CalculatorTab } from "./calculator-tab";
 import { CarsTab } from "./cars-tab";
@@ -41,6 +42,7 @@ export function Editor({
   storeMode,
   notice,
   jarvis = null,
+  dailyPosts,
 }: {
   initial: SiteContent;
   /** The marker the first change must send back: the draft's timestamp, or Jarvis's revision. */
@@ -54,6 +56,8 @@ export function Editor({
   notice?: string;
   /** On Jarvis: its figures, shown read only in place of the editable ones. */
   jarvis?: JarvisView | null;
+  /** The EC2 job's posts, listed under the Blog tab's own posts. */
+  dailyPosts: DailyPost[];
 }) {
   const [content, setContent] = useState<SiteContent>(initial);
   const [tab, setTab] = useState<Tab>("Plans");
@@ -113,7 +117,7 @@ export function Editor({
     Plans: content.plans.length,
     Cars: content.cars.length,
     Cities: content.cities.length,
-    Blog: content.posts.length,
+    Blog: content.posts.length + dailyPosts.length,
     Stories: content.testimonials.length,
     History: versions.length,
   };
@@ -255,7 +259,7 @@ export function Editor({
           {tab === "Cars" ? <CarsTab content={content} setContent={setContent} locked={locked} jarvis={jarvis} /> : null}
           {tab === "Calculator" ? <CalculatorTab content={content} setContent={setContent} locked={locked} jarvis={jarvis} /> : null}
           {tab === "Cities" ? <CitiesTab content={content} setContent={setContent} locked={locked} jarvis={jarvis} /> : null}
-          {tab === "Blog" ? <BlogTab content={content} setContent={setContent} locked={locked} /> : null}
+          {tab === "Blog" ? <BlogTab content={content} setContent={setContent} locked={locked} daily={dailyPosts} /> : null}
           {tab === "Stories" ? <StoriesTab content={content} setContent={setContent} locked={locked} /> : null}
           {tab === "Images" ? <ImagesTab content={content} setContent={setContent} locked={locked} /> : null}
           {tab === "History" ? <HistoryTab versions={versions} locked={locked} /> : null}

@@ -1,8 +1,10 @@
 "use client";
 
 import { Plus } from "lucide-react";
+import type { DailyPost } from "@/lib/blog-posts";
+import { SITE_URL } from "@/lib/company";
 import type { City, Hub, Post, SiteContent } from "@/lib/content";
-import { LOCALES, LOCALE_META, type Locale } from "@/lib/i18n";
+import { DEFAULT_LOCALE, LOCALES, LOCALE_META, type Locale } from "@/lib/i18n";
 import { Area, Badge, Checks, Collapsible, ImageField, ListControls, Panel, Row, Section, Select, Text, Toggle, button } from "./fields";
 import { JarvisHubs, ReadOnly } from "./jarvis-fields";
 import type { JarvisView, Setter } from "./shared";
@@ -89,7 +91,42 @@ function blankPost(): Post {
   };
 }
 
-export function BlogTab({ content, setContent, locked }: Props) {
+/** The EC2 job's posts: read only here, and each one can be taken off the site. */
+function DailyPosts({ content, setContent, locked, daily }: Props & { daily: DailyPost[] }) {
+  if (!daily.length) return null;
+  const hidden = new Set(content.hiddenDailyPosts);
+  const show = (slug: string, on: boolean) =>
+    setContent((c) => ({
+      ...c,
+      hiddenDailyPosts: on ? c.hiddenDailyPosts.filter((s) => s !== slug) : [...c.hiddenDailyPosts, slug],
+    }));
+  // A daily post whose address an own post holds is served at the address with its date added.
+  const own = new Set(content.posts.filter((p) => p.published).map((p) => `${p.locale}:${p.slug}`));
+  const href = (p: DailyPost) => {
+    const slug = own.has(`${p.locale}:${p.slug}`) ? `${p.slug}-${p.date}` : p.slug;
+    return `${SITE_URL}${p.locale === DEFAULT_LOCALE ? "" : `/${p.locale}`}/blog/${slug}/`;
+  };
+
+  return (
+    <Panel title="Daily posts" aside={<Badge>{daily.length}</Badge>}>
+      <ul className="-my-2 divide-y divide-line">
+        {daily.map((p) => (
+          <li key={`${p.locale}:${p.slug}`} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3">
+            <div className="min-w-0 flex-1">
+              <a href={href(p)} target="_blank" rel="noreferrer" className="text-sm font-semibold text-navy hover:underline">
+                {p.title}
+              </a>
+              <p className="mt-0.5 text-xs text-ink-soft">{p.date}</p>
+            </div>
+            <Toggle label="On site" checked={!hidden.has(p.slug)} disabled={locked} onChange={(on) => show(p.slug, on)} />
+          </li>
+        ))}
+      </ul>
+    </Panel>
+  );
+}
+
+export function BlogTab({ content, setContent, locked, daily }: Props & { daily: DailyPost[] }) {
   const patch = (i: number, p: Partial<Post>) =>
     setContent((c) => ({ ...c, posts: c.posts.map((x, j) => (j === i ? { ...x, ...p } : x)) }));
 
@@ -159,6 +196,7 @@ export function BlogTab({ content, setContent, locked }: Props) {
         <Plus size={15} />
         Add post
       </button>
+      <DailyPosts content={content} setContent={setContent} locked={locked} daily={daily} />
     </div>
   );
 }

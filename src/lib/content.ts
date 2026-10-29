@@ -230,10 +230,12 @@ export type SiteContent = {
   posts: Post[];
   testimonials: Testimonial[];
   images: Record<string, ImageSlot>;
+  /** Addresses of the daily posts (blog-posts.ts) an editor has taken off the site. */
+  hiddenDailyPosts: string[];
 };
 
 /** Bump when SiteContent changes shape, so no deployment reads a cache written by an older one. */
-export const CONTENT_VERSION = "14";
+export const CONTENT_VERSION = "15";
 
 export const placeholder = (label: string, alt = ""): ImageSlot => ({ label, url: "", alt });
 
@@ -756,6 +758,7 @@ export const DEFAULT_CONTENT: SiteContent = {
     "blog-hero": placeholder("Driver guides, hero image", ""),
     "our-plans-hero": { label: "Our Plans, hero photo", url: "/figma/our-plans/hero.webp", alt: "Rows of white Everest cars in front of a city skyline" },
   },
+  hiddenDailyPosts: [],
 };
 
 export function findCity(content: SiteContent, slug: string): City | undefined {

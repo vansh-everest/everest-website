@@ -5,6 +5,7 @@ import { signOutAction } from "@/app/(admin)/admin/actions";
 import { Editor } from "@/components/admin/editor";
 import { LoginForm } from "@/components/admin/login-form";
 import { authConfigured, readSession } from "@/lib/auth";
+import { dailyPostList } from "@/lib/blog-posts";
 import { getLiveData } from "@/lib/fleet-data";
 import { fleetConnectEnabled, hawkeyeUrl, jarvisAdminEnabled, jarvisSignIn, signInDiagnosis } from "@/lib/jarvis";
 import { PREVIEW_PAGES } from "@/lib/preview";
@@ -132,6 +133,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
         storeMode={mode}
         notice={notice}
         jarvis={jarvis}
+        dailyPosts={dailyPostList()}
       />
     </>
   );
