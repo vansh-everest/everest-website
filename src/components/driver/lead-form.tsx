@@ -68,7 +68,7 @@ export function LeadForm({
     } catch {}
     try {
       const res = await fetch("/api/lead/", { method: "POST", body: data });
-      if (res.ok) trackLead(String(data.get("source") ?? ""), data);
+      if (res.ok) trackLead(String(data.get("source") ?? ""), data, res);
       setState(res.ok ? "done" : "failed");
     } catch {
       setState("failed");

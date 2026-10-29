@@ -15,7 +15,7 @@ export async function sendLead(data: FormData, source: string): Promise<boolean>
   data.set("campaign", new URLSearchParams(window.location.search).toString());
   try {
     const res = await fetch("/api/lead/", { method: "POST", body: data });
-    if (res.ok) trackLead(source, data);
+    if (res.ok) trackLead(source, data, res);
     return res.ok;
   } catch {
     return false;

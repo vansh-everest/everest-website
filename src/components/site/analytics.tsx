@@ -1,5 +1,5 @@
 import Script from "next/script";
-import { GA_ID, GTM_ID } from "@/lib/analytics";
+import { GA_ID, GTM_ID, META_PIXEL_ID } from "@/lib/analytics";
 import { SITE_URL } from "@/lib/company";
 
 /**
@@ -17,6 +17,15 @@ const onLive = `['${LIVE}','www.${LIVE}'].indexOf(location.hostname)>-1&&!naviga
  * NEXT_PUBLIC_GA_ID loads GA4 on its own. With neither, nothing renders.
  */
 export function Analytics() {
+  return (
+    <>
+      <GoogleTags />
+      <MetaPixel />
+    </>
+  );
+}
+
+function GoogleTags() {
   if (GTM_ID) {
     return (
       <Script id="gtm" strategy="afterInteractive">
@@ -28,6 +37,19 @@ export function Analytics() {
   return (
     <Script id="ga4" strategy="afterInteractive">
       {`if(${onLive}){var t=document.createElement('script');t.async=true;t.src='https://www.googletagmanager.com/gtag/js?id=${GA_ID}';document.head.appendChild(t);window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}window.gtag=gtag;gtag('js',new Date());gtag('config','${GA_ID}');}`}
+    </Script>
+  );
+}
+
+/**
+ * Meta's Pixel: a PageView on every public page (it follows client-side navigation itself), and the
+ * Lead event from trackLead. Ad clicks that land on the city job pages show up in Events Manager.
+ */
+function MetaPixel() {
+  if (!META_PIXEL_ID) return null;
+  return (
+    <Script id="meta-pixel" strategy="afterInteractive">
+      {`if(${onLive}){!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${META_PIXEL_ID}');fbq('track','PageView');}`}
     </Script>
   );
 }
