@@ -1,5 +1,65 @@
 [
   {
+    "slug": "fastag-local-pass-rules-for-drivers-near-toll-plazas",
+    "locale": "en",
+    "title": "FASTag Local Pass Rules for Drivers Near Toll Plazas",
+    "excerpt": "Learn who can use the new annual FASTag local pass, what it costs, and what cab drivers should check before applying.",
+    "body": [
+      "A new concessional FASTag local pass starts at eligible National Highway fee plazas from November 1, 2026. It is useful for people who live near one toll plaza, but cab drivers must note one important point: MoRTH says it is only for non-commercial vehicles with a valid and functional FASTag.",
+      "## What the new local pass is",
+      "The Ministry of Road Transport and Highways, through PIB, said the Government of India has introduced a Concessional Local Pass for eligible non-commercial vehicle owners who live within 20 km of a National Highway fee plaza. The rule comes into effect on November 1, 2026.",
+      "This pass is for travel through one specific fee plaza. PIB said it will be valid only for that fee plaza and will not be transferable to any other plaza. This means it is not a pass for all toll plazas on a route.",
+      "The annual fee is based on the location of the fee plaza. According to PIB, the pass will cost Rs 1,500 per year where the fee plaza is outside a municipal or local town area, and Rs 3,000 per year where the fee plaza is within those limits.",
+      "PIB also said the rates may be revised every year by the Central Government, with any revision taking effect on April 1. So if you are planning for yearly running cost, check the current fee before paying.",
+      "## Who it applies to, and who should be careful",
+      "The pass is for eligible non-commercial vehicle owners. PIB said the vehicle must have a valid and functional FASTag, and the owner must live within 20 km of the fee plaza.",
+      "For cab drivers, the most important check is the vehicle category. If your car is registered for commercial use as a taxi or cab, this local pass is not meant for that vehicle because the official release says it is for non-commercial vehicles.",
+      "This may still matter to you if you own a private car at home and live near a National Highway fee plaza. It may also matter to car owners who are not using the car as a taxi and regularly cross the same nearby plaza.",
+      "The local pass is different from the general FASTag annual pass. Autocar India reported that the standard FASTag annual pass costs Rs 3,075 for 2026-27, while this new local pass costs Rs 1,500 or Rs 3,000 depending on the plaza location. The local pass is cheaper in some cases, but it works only at the selected fee plaza.",
+      "## When and where you can get it",
+      "PIB said the Annual Local Pass will be available at eligible toll plazas from November 1, 2026. The same release said it will also be available through the Rajmargyatra App from December 1, 2026.",
+      "This date difference is important. If you want to apply during November 2026, check at the eligible toll plaza first. If you prefer the app route, wait for the Rajmargyatra App option from December 1, 2026, as stated by PIB.",
+      "The Indian Express reported that the eligible toll plaza list will become available on the Rajmargyatra app. The same report said the facility is integrated with DigiLocker and VAHAN to retrieve the commuter’s address, vehicle details and linked FASTag for checking the 20 km condition.",
+      "Before applying, make sure your FASTag is active and working. Also check that your vehicle details in VAHAN and your address details used for verification are correct, because the 20 km rule depends on residence near the fee plaza.",
+      "## Where the pass will not work",
+      "The pass will not be available everywhere. PIB said it will not be issued on National Highways or Expressways where toll fee collection is based on a closed user-fee collection system.",
+      "PIB also said the pass will not be issued where a service road or alternative road is available for use by commuters. So living within 20 km does not by itself confirm that you will get the pass.",
+      "Business Standard reported that eligible vehicle owners can choose between the existing monthly pass and the new annual local pass. This means you should compare your present monthly cost with the annual cost before deciding.",
+      "If you cross many toll plazas for airport trips, outstation trips or intercity duty, this local pass may not help for those other plazas. It is made for regular movement through one nearby fee plaza, not for full-route toll savings.",
+      "## What you should check before paying",
+      "First, check whether your vehicle is non-commercial or commercial. If it is a cab with commercial registration, do not assume this pass will apply to your working car.",
+      "Next, check the fee plaza. Confirm whether it is covered, whether it is outside or inside municipal or local town limits, and whether the yearly fee is Rs 1,500 or Rs 3,000.",
+      "Then check your actual use. If you cross the same eligible plaza often in a private vehicle, the local pass may be useful. If your driving is mainly on different routes and different toll plazas, normal FASTag deductions or another applicable pass may be more relevant.",
+      "Keep your FASTag balance active even if you use a pass, because the pass is linked to a valid and functional FASTag. Also remember that once the pass is tied to one fee plaza, it cannot be shifted to another plaza for your convenience.",
+      "If you drive for a living and need a cab without owning one, Everest Fleet is one place where drivers can go for a car."
+    ],
+    "published": true,
+    "date": "2026-10-29",
+    "coverImage": {
+      "label": "Daily post cover",
+      "url": "/blog/auto/fastag-local-pass-rules-for-drivers-near-toll-plazas.webp",
+      "alt": "A cab approaching a highway toll lane in daylight"
+    },
+    "sources": [
+      {
+        "title": "Government of India Introduces Concessional Local Pass for National Highway Users Living Near Fee Plazas",
+        "url": "https://www.pib.gov.in/PressReleasePage.aspx?PRID=2329077&lang=2&reg=48"
+      },
+      {
+        "title": "FASTag local pass vs annual pass: Cost, rules and differences explained",
+        "url": "https://www.business-standard.com/amp/finance/personal-finance/fastag-local-pass-vs-annual-pass-cost-rules-and-differences-explained-126102800743_1.html?isa=yes"
+      },
+      {
+        "title": "NHAI annual toll pass: Cost, eligibility, rules and how to apply",
+        "url": "https://indianexpress.com/article/explained/nhai-annual-local-toll-pass-fee-eligibility-rules-10940579/"
+      },
+      {
+        "title": "Govt introduces FASTag local pass for residents within 20km of toll plazas",
+        "url": "https://www.autocarindia.com/car-news/govt-introduces-fastag-local-pass-for-residents-within-20-km-of-toll-plazas-441152"
+      }
+    ]
+  },
+  {
     "slug": "e-shram-card-guide-for-cab-and-platform-drivers",
     "locale": "en",
     "title": "e-Shram Card Guide for Cab and Platform Drivers",
