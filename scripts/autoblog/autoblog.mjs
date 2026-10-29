@@ -66,6 +66,86 @@ const EVERGREEN = [
   "how to handle a traffic challan and pay it online",
 ];
 
+/**
+ * Guides that come before the news, one a day in this order, until each has a post (asked for on
+ * 2026-10-29: earning more on ride-hailing apps). `search` is how drivers phrase it on Google India
+ * (autocomplete, 2026-10-29), so the title and opening use those words. A post records its `series`
+ * key, which is how the next run knows the guide is done.
+ */
+const SERIES = [
+  {
+    key: "earnings-best-time",
+    search: "best time to drive uber on weekdays and weekends",
+    brief: "the hours of the day and days of the week when ride requests are highest in Indian cities (office commutes, late evenings, weekends, festival and wedding nights, rain), how surge pricing shows where demand is, and how to plan a shift around those windows",
+  },
+  {
+    key: "earnings-best-areas",
+    search: "uber driver best locations",
+    brief: "where ride requests gather in a city (airports, railway stations, office districts and tech parks, malls, hospitals, hotels and nightlife areas), how to cut empty kilometres between trips, and where to wait so the next request comes quickly",
+  },
+  {
+    key: "earnings-rating",
+    search: "how to increase uber driver rating",
+    brief: "what riders rate a trip on (a clean car, AC, calm driving, a good route, a polite pickup call, help with luggage), how Uber says ratings work, and the everyday habits that keep a rating high",
+  },
+  {
+    key: "earnings-acceptance-cancellation",
+    search: "uber driver acceptance rate and cancellation rate",
+    brief: "what acceptance and cancellation rates are, where the app shows them, how they connect to trip flow and incentives as Uber describes it, and how to keep cancellations low",
+  },
+  {
+    key: "earnings-incentives",
+    search: "uber incentives for drivers in india",
+    brief: "how Uber's driver incentives and quests work in India as the official pages describe them, where to find them in the app, and how to plan a week so the trips taken count towards them",
+  },
+  {
+    key: "earnings-airport",
+    search: "uber airport queue",
+    brief: "how airport pickups and the airport queue work in Indian cities, the rules drivers follow at the airport, and how to judge when an airport run is worth it against city trips",
+  },
+  {
+    key: "earnings-costs",
+    search: "cab driver earnings per hour",
+    brief: "earnings as what is left after fuel and running costs: tracking earnings per hour and per kilometre in the app, CNG and EV running costs against petrol, fuel-saving driving habits, tyre pressure and servicing, and cutting dead kilometres",
+  },
+  {
+    key: "earnings-shift-plan",
+    search: "how to earn more in uber",
+    brief: "putting it together as a weekly plan: when to start and stop, where to begin the day, breaks and rest, keeping the phone and documents ready, and reading the week's earnings in the app to adjust the next week",
+  },
+];
+
+/**
+ * Cover framings. Each day offers the writer three that sit four apart, so the sets on consecutive
+ * days never share one and the writer can still pick the one that suits the story. The light and the
+ * car colour run on their own cycles.
+ */
+const FRAMINGS = [
+  "close-up from the passenger seat of a driver's hands on the steering wheel, city traffic soft through the windscreen",
+  "wide high-angle view of a busy city junction with several cars and buses",
+  "a car moving along an elevated expressway or flyover, slight motion blur",
+  "still life on a car dashboard: a phone in a mount, car keys and a folded document, nothing readable",
+  "rear three-quarter view of a car waiting in an airport arrivals pickup lane",
+  "rain on a windscreen with headlights and traffic beyond, seen from the driver's seat",
+  "a quiet residential street with one parked car and a driver walking towards it, seen from behind",
+  "a small roadside garage where a mechanic checks a car's tyre",
+  "aerial view looking straight down on a city road with lane markings and a few cars",
+  "a driver on a tea break at a roadside stall, seen from behind, the car parked beside",
+  "a row of cars at a fuel or charging station, photographed from a low angle",
+  "a car's side mirror reflecting a city skyline",
+];
+const LIGHTS = ["early morning haze", "bright midday sun", "late afternoon", "warm golden hour", "blue hour after sunset", "night with street lights", "overcast monsoon light"];
+const COLOURS = ["silver", "grey", "dark blue", "white", "maroon"];
+
+function coverLook(today) {
+  const day = Math.floor(Date.parse(today) / 86_400_000);
+  const pick = (list, offset = 0) => list[(day + offset) % list.length];
+  return {
+    framings: [pick(FRAMINGS), pick(FRAMINGS, 4), pick(FRAMINGS, 8)],
+    finish: `${pick(LIGHTS)}; any car in frame is ${pick(COLOURS)}`,
+  };
+}
+
 main().catch((error) => {
   log(`FAILED: ${error.stack || error.message}`);
   process.exit(1);
@@ -81,27 +161,29 @@ async function main() {
     return;
   }
 
-  const headlines = await collectHeadlines();
-  log(`${headlines.length} headlines from the last three days`);
+  const done = new Set(existing.map((p) => p.series).filter(Boolean));
+  const series = SERIES.find((s) => !done.has(s.key));
+  const look = coverLook(today);
 
-  let draft;
-  let post;
-  const refusals = [];
-  for (let attempt = 1; !post; attempt++) {
-    draft = await writePost({ headlines, existing, today, refusals });
+  let result;
+  if (series) {
+    log(`series guide: ${series.key}`);
     try {
-      post = finalise(draft, existing, today);
-      await secondRead(post);
+      result = await draftPost({ headlines: [], existing, today, series, look });
     } catch (error) {
-      post = undefined;
-      log(`draft ${attempt} "${draft.title}": ${error.message}`);
-      if (attempt === 3) throw error;
-      refusals.push(`"${draft.title}" was refused: ${error.message.replace(/^post refused: /, "")}. Pick a different, uncontroversial topic.`);
+      // The guide stays next in line for tomorrow; today still gets a post from the news.
+      log(`series guide ${series.key} not written today: ${error.message}`);
     }
   }
+  if (!result) {
+    const headlines = await collectHeadlines();
+    log(`${headlines.length} headlines from the last three days`);
+    result = await draftPost({ headlines, existing, today, look });
+  }
+  const { draft, post } = result;
   log(`post: "${post.title}" (${wordCount(post)} words, ${post.sources.length} sources) -> /blog/${post.slug}/`);
 
-  const cover = await makeCover(draft.image_prompt);
+  const cover = await makeCover(draft.image_prompt, look);
   log(`cover: ${(cover.length / 1024).toFixed(0)} KB`);
 
   if (DRY_RUN) {
@@ -115,6 +197,27 @@ async function main() {
 
   const commit = await commitPost(post, cover);
   log(`committed ${commit.slice(0, 7)} to ${CONFIG.repo}@${CONFIG.branch}; Amplify builds it next`);
+}
+
+/** Up to three drafts; each refusal goes back to the writer with its reason. */
+async function draftPost({ headlines, existing, today, series, look }) {
+  const refusals = [];
+  const retry = series
+    ? "Write the same guide again and fix exactly that, for example by rewording the sentence it names."
+    : "Pick a different, uncontroversial topic.";
+  for (let attempt = 1; ; attempt++) {
+    const draft = await writePost({ headlines, existing, today, refusals, series, look });
+    try {
+      const post = finalise(draft, existing, today);
+      if (series) post.series = series.key;
+      await secondRead(post);
+      return { draft, post };
+    } catch (error) {
+      log(`draft ${attempt} "${draft.title}": ${error.message}`);
+      if (attempt === 3) throw error;
+      refusals.push(`"${draft.title}" was refused: ${error.message.replace(/^post refused: /, "")}. ${retry}`);
+    }
+  }
 }
 
 /* --------------------------------------------------------------------------- news */
@@ -213,14 +316,20 @@ Rules for the post:
 - excerpt: one sentence on what a driver gets from reading it.
 - slug: lowercase words joined by hyphens, from the title, at most 70 characters.
 - sources: 2 to 5 pages you actually opened, each with the article's own headline as title and its full URL. Only URLs you visited in this session.
-- image_prompt: a realistic editorial photograph that fits the story, set in an Indian city: for example a cab on a city road, a CNG station, an EV charging point, an airport pickup lane, a driver checking a phone beside a car. Calm and everyday; no police, crowds, protests or damaged vehicles. Natural light, documentary style, 3:2 landscape. No text, no signage with readable words, no logos or brand marks, no number plates, no recognisable faces (people far away or from behind).
+- On earnings: give practical habits and explain how the app's features work, as the sources describe them. Give an income, fare or incentive figure only when a source states it, naming the source; never promise or estimate what a reader will earn.
+- Never use the words rent, rental, lease or leasing.
+- image_prompt: a realistic editorial photograph for the story, set in an Indian city and built on one of today's cover framings from the input. Describe the scene concretely: the place, the objects, the light. Never the stock picture of a person standing beside a white car looking at a phone. Calm and everyday; no police, crowds, protests or damaged vehicles. Documentary style, 3:2 landscape. No text, no signage with readable words, no logos or brand marks, no number plates, no recognisable faces (people far away, from behind, or only their hands).
 - image_alt: what the photo shows, plainly.`;
 
-async function writePost({ headlines, existing, today, refusals = [] }) {
+async function writePost({ headlines, existing, today, refusals = [], series, look }) {
   const recent = existing.slice(0, 30).map((p) => `- ${p.date}: ${p.title}`).join("\n") || "- none yet";
   const candidates = headlines.map((h) => `- ${h.title}${h.source ? ` (${h.source})` : ""}${h.published ? `, ${h.published}` : ""}`).join("\n") || "- none (search yourself)";
+  const topic = series
+    ? `Today's topic is set, so skip step 1: a practical guide on earning more on ride-hailing apps, covering ${series.brief}. Drivers search for this as "${series.search}", so the title and the opening paragraph use those words naturally. Ground it in pages you open: Uber's own driver pages and newsroom first, then national papers and government pages.`
+    : `Candidate headlines from Google News, last 3 days:\n${candidates}`;
   const refused = refusals.length ? `\n\nEarlier drafts today, do not repeat them:\n${refusals.map((r) => `- ${r}`).join("\n")}` : "";
-  const input = `Today is ${today} (India).\n\nRecent posts, do not repeat these stories:\n${recent}\n\nCandidate headlines from Google News, last 3 days:\n${candidates}${refused}`;
+  const framings = look.framings.map((f) => `- ${f}`).join("\n");
+  const input = `Today is ${today} (India).\n\nRecent posts, do not repeat these stories:\n${recent}\n\n${topic}\n\nToday's cover framings, use the one that suits the story best:\n${framings}\nLight and colour: ${look.finish}.${refused}`;
 
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
@@ -277,7 +386,10 @@ function verifiedSources(sources, res) {
 /** Drops tracking parameters and doubled slashes. */
 function cleanUrl(url) {
   const u = new URL(url);
-  for (const key of [...u.searchParams.keys()]) if (/^utm_|^fbclid$|^gclid$/.test(key)) u.searchParams.delete(key);
+  for (const [key, value] of [...u.searchParams.entries()]) {
+    // Search results sometimes carry escaped quote marks ("us"??"), which no page needs.
+    if (/^utm_|^fbclid$|^gclid$/.test(key) || /\\u[0-9a-f]{4}|"/i.test(value)) u.searchParams.delete(key);
+  }
   u.pathname = u.pathname.replace(/\/{2,}/g, "/");
   return u.toString();
 }
@@ -345,6 +457,8 @@ function finalise(draft, existing, today) {
   const heavy = body.join(" ").match(CONTROVERSY_BODY) ?? [];
   if (heavy.length >= 2) problems.push(`the body is about a dispute or crime ("${heavy.slice(0, 3).join('", "')}")`);
   if (/everest/i.test(`${title} ${excerpt}`)) problems.push("Everest in the title or excerpt");
+  const rentWord = `${title} ${excerpt} ${body.join(" ")}`.match(/\b(rent(s|al|als|ed|ing)?|lease[sd]?|leasing)\b/i);
+  if (rentWord) problems.push(`uses the word "${rentWord[0]}"`);
   const text = sentences(body.join(" "));
   const mentions = text.flatMap((sentence, i) => (/everest/i.test(sentence) ? [i] : []));
   if (mentions.length > 1) problems.push(`Everest mentioned ${mentions.length} times`);
@@ -407,8 +521,8 @@ function uniqueSlug(raw, existing) {
 
 /* ---------------------------------------------------------------------------- cover */
 
-async function makeCover(prompt) {
-  const full = `${prompt}\n\nPhotorealistic, editorial, no text, no logos, no number plates, no recognisable faces.`;
+async function makeCover(prompt, look) {
+  const full = `${prompt}\n\n${look.finish}.\n\nPhotorealistic, editorial, no text, no logos, no number plates, no recognisable faces.`;
   for (const model of [CONFIG.imageModel, CONFIG.fallbackImageModel]) {
     try {
       const res = await openai("/v1/images/generations", {
