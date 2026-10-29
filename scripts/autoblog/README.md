@@ -43,6 +43,10 @@ today's post and exits if it is there.
 ## Operating it
 
 - Logs: `/home/ubuntu/everest-autoblog/logs/<yyyy-mm>.log`
+- Failures: `run.sh` calls `alert.mjs` after a failed run, which posts the error, a fix for known
+  errors (OpenAI credits or key, GitHub token) and the next retry time to the Content Engine
+  WhatsApp group through WA_BOT's send API (`WA_API_SECRET` in `.env`). One message per error per
+  day; a retry failing the same way stays quiet. Last alert sent: `logs/alert.json`.
 - Try without publishing: `node autoblog.mjs --dry-run` (writes to `out/`)
 - Take a post down: switch it off under Daily posts in the admin's Blog tab and publish. In git,
   set `"published": false` on it in `src/content/auto-posts.json`. A `git revert`
