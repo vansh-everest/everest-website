@@ -1,5 +1,65 @@
 [
   {
+    "slug": "best-time-drive-uber-weekdays-weekends-india",
+    "locale": "en",
+    "title": "Best Time to Drive Uber on Weekdays and Weekends in India",
+    "excerpt": "Learn how to plan weekday and weekend shifts around rush hours, evenings, rain, events and surge areas.",
+    "body": [
+      "If you search for the best time to drive Uber on weekdays and weekends, the answer is simple but city-specific. Ride requests usually rise during office travel, evenings, weekends, bad weather and special events, so your shift should be planned around those windows, not only around the clock.",
+      "## Start with your city’s busy hours",
+      "Uber Help says busy times usually include weekends, morning and evening rush hours, and evening hours. That matches the daily pattern you see in most Indian cities, where people travel to offices, colleges, stations, markets, restaurants and homes at fixed times.",
+      "Use the Driver app before you start. Uber Help says you can open the app, tap the arrow icon in the lower-left corner, choose “See hourly trends”, and select the city or area shown next to “View For”. This chart is useful because one part of the city can be busy while another part is slow.",
+      "For weekdays, think of your day in blocks. The morning block is for office, school and station trips. The evening block is for office returns, shopping, dinner and late trains or flights. If you drive the full day, keep your longest break in a slower middle period instead of leaving the road during peak demand.",
+      "## Plan around office and school movement",
+      "A government travel survey gives a clear reason why mornings matter. The Press Information Bureau said on October 5, 2026 that the National Statistics Office survey covered July 2025 to June 2026 and found that 94.9 percent of workers going to fixed workplaces leave before 10:00 AM. The same release said worker departures peak from 8:00 AM to 10:00 AM, with 56.5 percent leaving in that window.",
+      "The same survey said 82.0 percent of students depart between 7:00 AM and 10:00 AM, with the biggest school departure window from 8:00 AM to 9:00 AM. For a cab driver, this means early morning demand can build around residential areas, metro stations, railway stations, bus stands, schools, colleges and office roads.",
+      "Do not look only at demand. Look at traffic and pickup time too. Uber India’s Upfront Fares page says real-time demand can include surge pricing, how busy the pickup area is, how busy the destination is, the chance of getting another trip quickly, and traffic. A trip that takes you to another busy area can be better for your next ride than a trip that leaves you far from demand.",
+      "## Use weekends, evenings and late nights carefully",
+      "Uber India’s 2025 travel report, as reported by ETTravelWorld, found that 6:00 PM was the most common booking time and Friday was the busiest day for ride requests in 2025. The same report said Mumbai and Kolkata led in late-night trips, while Bhubaneswar and Thiruvananthapuram had the highest share of office-hour rides.",
+      "This tells you not to copy another city blindly. In an office-heavy city or area, weekday morning and evening trips may matter most. In a city with strong nightlife, railway movement, airport movement or weekend shopping, Friday evening, Saturday evening and Sunday return trips can be stronger.",
+      "Festival and wedding nights should be treated like special-event nights. Uber’s surge page says special events can bring many riders to the app at the same time. On such nights, check the heat map before you move, keep enough fuel or charge, and avoid driving empty for a long distance only because you heard one area is busy.",
+      "## Read surge, but do not chase it blindly",
+      "Uber says surge pricing happens when ride demand is high and there are not enough cars nearby. The app may show a multiplier, an additional surge amount, or an upfront fare that includes surge, depending on the city. Uber also says surge updates in real time and can be specific to one neighbourhood.",
+      "In the Driver app, shaded areas show demand. Uber Help says darker shades show higher demand, while brighter or lighter areas show lower demand. It also says you may see surge labels such as 1.3x, 1.4x or 2.1x when you zoom in, but the latest amount should be checked at the bottom of the screen.",
+      "A simple rule is to move towards nearby demand, not faraway demand. If a red area is close, it may be worth going there. If it is far and traffic is heavy, the surge may reduce before you arrive. Watch whether the area is near offices, malls, stations, airports, hotels or event venues, because these places can produce more than one trip.",
+      "## Build a shift that keeps you near demand",
+      "Before going online, check hourly trends and decide your first pickup area. During the shift, use the heat map and your trip offer details together. Uber India says upfront trip information can show how much you will make including surge pricing, where you will go, pickup time and distance, and drop-off time and distance.",
+      "For weekdays, one practical plan is to start near homes or transport points before the morning rush, move towards office districts during the day, take a break after the rush, and return before the evening office exit. For weekends, start later if your city wakes up late, but be ready for evening shopping, restaurant, station, airport and family travel.",
+      "For rain, first keep safety above demand. Uber says bad weather can cause many people to request rides at the same time. If roads are waterlogged or visibility is poor, slow down, keep extra distance, and choose pickups where you can stop safely without blocking traffic.",
+      "The best shift is not the longest shift. It is the shift where more of your online time is close to real demand, with fewer empty kilometres and fewer long waits. If you need a car for app-based driving, Everest Fleet is one place where drivers can go for a car."
+    ],
+    "published": true,
+    "date": "2026-10-30",
+    "coverImage": {
+      "label": "Daily post cover",
+      "url": "/blog/auto/best-time-drive-uber-weekdays-weekends-india.webp",
+      "alt": "Driver’s hands on a steering wheel with city traffic ahead in bright daylight."
+    },
+    "sources": [
+      {
+        "title": "How Surge Pricing Works | Drive with Uber | Uber",
+        "url": "https://www.uber.com/in/en/drive/driver-app/how-surge-works/"
+      },
+      {
+        "title": "High demand rides",
+        "url": "https://help.uber.com/hi-IN/driving-and-delivering/article/%D8%B3%D8%A8-%D8%B3%DB%92-%D8%B2%DB%8C%D8%A7%D8%AF%DB%81-%D9%85%D8%B3%D8%A7%D9%81%D8%B1-%DA%A9%D8%A8-%D8%A7%D9%88%D8%B1-%DA%A9%DB%81%D8%A7%DA%BA-%DB%81%D9%88%D8%AA%DB%92-%DB%81%DB%8C%DA%BA%D8%9F?nodeId=456fcc51-39ad-4b7d-999d-6c78c3a388bf"
+      },
+      {
+        "title": "Tracking Your Earnings | Driver App | Uber India",
+        "url": "https://www.uber.com/in/en/drive/basics/tracking-your-earnings/?valueOf=877412"
+      },
+      {
+        "title": "National Household Travel Survey July, 2025 – June, 2026",
+        "url": "https://www.pib.gov.in/PressReleseDetailm.aspx?PRID=2319180&lang=1&reg=3"
+      },
+      {
+        "title": "Uber India 2025 report reveals 11.6 bn kms travelled, reflecting India’s expanding ridesharing revolution",
+        "url": "https://travel.economictimes.indiatimes.com/news/research-and-statistics/research/uber-india-2025-report-reveals-11-6-bn-kms-travelled-reflecting-indias-expanding-ridesharing-revolution/126390107"
+      }
+    ],
+    "series": "earnings-best-time"
+  },
+  {
     "slug": "fastag-local-pass-rules-for-drivers-near-toll-plazas",
     "locale": "en",
     "title": "FASTag Local Pass Rules for Drivers Near Toll Plazas",
