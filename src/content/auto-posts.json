@@ -1,5 +1,67 @@
 [
   {
+    "slug": "how-to-increase-uber-driver-rating-daily-trip-habits",
+    "locale": "en",
+    "title": "How to Increase Uber Driver Rating With Daily Trip Habits",
+    "excerpt": "A simple guide to what riders rate, how Uber ratings work, and daily habits that can protect your score.",
+    "body": [
+      "If you search for how to increase Uber driver rating, start with the small things riders feel in the first two minutes. A clean car, working AC, calm driving, a clear route, a polite pickup call, and help with luggage can make the trip feel safe and easy.",
+      "This guide is for cab drivers using Uber and other ride-hailing apps in Indian cities. It does not promise extra income, but it explains habits that can support better ratings, fewer complaints, and steadier daily work.",
+      "## How Uber says driver ratings work",
+      "Uber says drivers and riders can rate each other from 1 to 5 stars after each trip. The rating is based on the trip experience, and the app may ask for more feedback when someone gives less than 5 stars.",
+      "Your driver rating on Uber is the average of your last 500 rated trips, according to Uber’s driver page. If you have done fewer than 500 rated trips, the average is based on the rated trips you have completed so far.",
+      "This means one bad rating is not the full story, especially after you have completed many trips. Uber also says ratings linked to issues outside your control, such as traffic, app issues, or pricing, may be excluded from your score.",
+      "You can check your rating, feedback, and compliments in the Driver app. Uber says you can tap the menu icon, tap your profile photo, and then tap the average rating under your name to see the details.",
+      "## What riders usually notice first",
+      "The first thing many riders notice is the car. Uber’s 5-star trip tips say riders appreciate a car that is clean, well maintained, and scent-free. Before your first trip, remove wrappers, bottles, dust, and any strong smell from the cabin.",
+      "AC also matters in Indian city traffic. Uber’s India vehicle requirements page lists working windows and air conditioning for UberX and UberXL, so check the AC before going online, not after a rider complains.",
+      "Keep a small cloth in the car and wipe the dashboard, door handles, and rear seat area during breaks. If you drive a CNG car, also check the boot area so luggage space is clean and safe to use.",
+      "A rider may not remember your whole day of driving. They will remember whether the car felt ready for them when they opened the door.",
+      "## Pickup, route, and conversation habits",
+      "A polite pickup call can prevent confusion at a mall gate, society tower, station road, or office park. Keep the call short. Say your name, confirm the pickup point, and ask for a clear landmark if the pin is not exact.",
+      "Do not sound irritated if the rider takes a minute to explain the gate or lane. Uber’s Community Guidelines ask riders and drivers to treat each other with respect, and the same tone helps at pickup.",
+      "For the route, start with the app navigation, then ask if the rider has a preferred route. Uber’s 5-star trip tips say a rider’s preferred route may be different from what navigation shows.",
+      "If the rider suggests another road, confirm it calmly before changing. If you must change because of a closure, traffic, or a no-entry point, explain it in one sentence and continue driving safely.",
+      "Conversation should be light. Uber says many 5-star drivers greet riders at the start and then let the rider decide whether to talk. This is useful in morning office rides, airport rides, and late evening rides when many riders prefer a quiet trip.",
+      "## Safe driving and end-of-trip habits",
+      "Calm driving is one of the strongest rating habits because the rider feels every brake, turn, and lane change. Delhi Traffic Police safety guidelines say drivers should follow signals, avoid mobile phone distraction, keep a safe distance, follow speed limits, and regularly check brakes, tyres, lights, and signals.",
+      "Use a phone mount and do not scroll while moving. If you need to check the map closely, stop safely first. A rider may not say anything during the trip, but unsafe phone use can show up later in feedback.",
+      "At the drop point, stop where it is safe and allowed. If the rider has luggage, offer help when it is safe to step out. Uber’s rating guidance says riders appreciate help with doors and luggage.",
+      "Before ending your shift, read your weekly review if it is available in the app. Uber says this review shares ratings and rider comments, so treat it like a service report. If the same issue appears again, such as car smell, route choice, or harsh braking, fix that first the next day.",
+      "Good ratings come from repeatable habits, not one special trip. Keep the car clean, keep the AC working, speak calmly, drive smoothly, and make the rider feel that the trip is under control. If you need a car for cab work, you can also visit Everest Fleet."
+    ],
+    "published": true,
+    "date": "2026-11-01",
+    "coverImage": {
+      "label": "Daily post cover",
+      "url": "/blog/auto/how-to-increase-uber-driver-rating-daily-trip-habits.webp",
+      "alt": "A driver walks toward a white car on a quiet Indian residential street at golden hour"
+    },
+    "sources": [
+      {
+        "title": "How star ratings work",
+        "url": "https://www.uber.com/in/en/drive/basics/how-ratings-work/?countryiso2=us%2Fu0022%3F%3Feffect%3D"
+      },
+      {
+        "title": "Understand and improve your driver rating",
+        "url": "https://help.uber.com/driving-and-delivering/article/how-to-improve-ratings?nodeId=b7625579-3e02-42ae-b7ad-8795f0b36bd4"
+      },
+      {
+        "title": "5-Star Trips",
+        "url": "https://www.uber.com/in/en/drive/basics/5-star-pro-tips/"
+      },
+      {
+        "title": "Vehicle requirements in India",
+        "url": "https://www.uber.com/in/en/drive/requirements/vehicle-requirements/"
+      },
+      {
+        "title": "General Safety Guidelines",
+        "url": "https://staging.parivahan.gov.in/delhitrafficpolice/en/node/88"
+      }
+    ],
+    "series": "earnings-rating"
+  },
+  {
     "slug": "uber-driver-best-locations-waiting-tips-more-trips",
     "locale": "en",
     "title": "Uber Driver Best Locations and Waiting Tips for More Trips",
