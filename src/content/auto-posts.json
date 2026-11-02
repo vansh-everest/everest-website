@@ -1,5 +1,68 @@
 [
   {
+    "slug": "uber-driver-acceptance-rate-cancellation-rate-guide",
+    "locale": "en",
+    "title": "Uber Driver Acceptance Rate and Cancellation Rate Guide",
+    "excerpt": "Learn where to check your Uber rates, how they affect trip flow and offers, and simple habits to reduce cancellations.",
+    "body": [
+      "If you search for “uber driver acceptance rate and cancellation rate”, this guide explains the two numbers in simple words. These rates matter because Uber uses them to show your trip behaviour, and some promotions or Uber Pro rewards can depend on them.",
+      "## What the two rates mean",
+      "Acceptance rate is the share of ride requests you accept compared with the requests you receive. Uber Help says this rate is shown for the last 30 days, and it may update with a delay.",
+      "Cancellation rate is different. Uber India’s Community Guidelines say it is calculated as the percentage of trips cancelled out of your last 100 accepted requests. This includes trips you cancel, and in some cases rider cancellations that Uber says may be linked to your actions.",
+      "A simple way to remember it is this. If you are online and a request comes, accepting or declining affects acceptance rate. If you accept first and then cancel, it affects cancellation rate.",
+      "Uber says drivers with good quality typically have a cancellation rate below 5%. You do not need to panic about one genuine problem, but repeated cancellations can hurt your account quality and your access to some rewards.",
+      "## Where to see the numbers in the app",
+      "Uber Help says you can view your acceptance rate and cancellation rate in your Partner Area or by going to your Profile at the top right corner of the app. If the number looks old, Uber recommends restarting the app because the rate may update after a delay.",
+      "For promotions, check the correct screen. Uber Help says promotion-specific acceptance and cancellation rates are shown in the Earnings tab, not only in the Ratings tab. Open the Driver app, go to Earnings, tap Promotions, and then open the promotion to see its rules and your progress.",
+      "This matters because your overall rate and your promotion rate may not be the same. A promotion may count only a specific time, area or set of trips. Always read the offer in the app before you start chasing it.",
+      "Uber’s Driver app page also says the app shows your earnings after each trip and lets you track daily and weekly goals. Use that along with your rates, so you know whether your online time is turning into completed trips.",
+      "## How rates connect to trip flow and incentives",
+      "Uber says a high acceptance rate helps reduce waiting time for riders and pickup time for drivers. In daily work, that means you should go online only when you are ready to take a trip, reach the pickup, and complete the ride.",
+      "Promotions usually require completed trips. Uber Help says cancelled trips do not count for minimum completed trip requirements, and cancelled trips are excluded when trips per hour are calculated for a promotion.",
+      "Some promotions may also have acceptance rate rules, opt-in rules, online hour rules, or location rules. Uber says location-based trips are counted by the rider’s request pickup location, not by where you were standing when you accepted the trip.",
+      "Uber Pro can also use these numbers. Uber India’s Uber Pro terms say active eligible drivers in participating cities are automatically enrolled, and Gold, Platinum and Diamond tiers need points plus programme standards such as rating, cancellation rate and acceptance rate. The exact standards and calculation method are shown inside the Uber Driver app for your city.",
+      "The Uber Pro terms also say points are earned in fixed 3-month periods and reset at the end of each period. They add that cancellation and acceptance rates may take about 72 hours to refresh in the programme account.",
+      "For four-wheeler drivers, Uber Pro terms mention some city-specific rewards such as Pro Perk in Hyderabad, Mumbai and Chandigarh. Do not assume a reward is active for you only because another driver has it. Check the Uber Pro screen in your own app and city.",
+      "## How to keep cancellations low",
+      "The best habit is to go online only when you are fully ready. Before tapping Go Online, finish tea, toilet breaks, CNG filling, charging, cash change, document checks and any personal call. If you need a break, log off instead of staying online and declining or cancelling requests.",
+      "Keep your phone charged and mounted where you can see the request clearly. Poor battery, weak data or a hidden phone can make you miss important trip details. If the app is slow, stop safely, restart it and then continue.",
+      "Read the request before accepting. Check pickup distance, route direction, expected time, payment information if shown, and any promotion condition you are trying to complete. Accept only when you are willing to go to the pickup and complete the ride as shown in the app.",
+      "After accepting, call or message only when needed, and keep it polite and short. Do not ask the rider to cancel. Uber’s guidelines say cancellations can include cases where a rider cancellation may be attributed to the driver’s actions.",
+      "Plan fuel, CNG or charging before peak hours. Many cancellations happen because the car is not ready after the driver accepts a good request. If the tank is low, log off, fill up, and come back online near a busy area.",
+      "Use a simple end-of-day check. Open your rate screens, look at any active promotion, and note why cancellations happened that day. If the reason was avoidable, fix the routine the next day. If you need a car to start or continue cab work, you can speak to Everest Fleet."
+    ],
+    "published": true,
+    "date": "2026-11-02",
+    "coverImage": {
+      "label": "Daily post cover",
+      "url": "/blog/auto/uber-driver-acceptance-rate-cancellation-rate-guide.webp",
+      "alt": "Phone mount, car keys and folded document on a maroon cab dashboard at blue hour"
+    },
+    "sources": [
+      {
+        "title": "What is my acceptance rate? | Driving & Delivering | Uber Help",
+        "url": "https://help.uber.com/driving-and-delivering/article/what-is-my-acceptance-rate?nodeId=397107ba-14ad-4c6d-b57b-e2f695065d38"
+      },
+      {
+        "title": "General Community Guidelines",
+        "url": "https://www.uber.com/in/en/legal/general-community-guidelines/"
+      },
+      {
+        "title": "Tracking Acceptance and Cancellation Rates | Driving & Delivering | Uber Help",
+        "url": "https://help.uber.com/driving-and-delivering/article/c%C3%B3mo-hacer-un-seguimiento-de-las-tasas-de-aceptaci%C3%B3n-y-cancelaci%C3%B3n?nodeId=41d29702-a232-4d28-9ec1-a9b085080883"
+      },
+      {
+        "title": "How driver promotions work | Driving & Delivering | Uber Help",
+        "url": "https://help.uber.com/driving-and-delivering/article/how-do-driver-promotions-work-?nodeId=2aa91e41-f139-4b4a-bfce-bf36c00ebc60"
+      },
+      {
+        "title": "Uber Pro-Program Terms",
+        "url": "https://www.uber.com/in/en/legal/uber-pro-program-terms/"
+      }
+    ],
+    "series": "earnings-acceptance-cancellation"
+  },
+  {
     "slug": "how-to-increase-uber-driver-rating-daily-trip-habits",
     "locale": "en",
     "title": "How to Increase Uber Driver Rating With Daily Trip Habits",
