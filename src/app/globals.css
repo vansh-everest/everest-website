@@ -1063,9 +1063,7 @@ html.lenis.lenis-stopped:not(.lenis-autoToggle) {
   }
 }
 
-/* reCAPTCHA's invisible-mode badge sits above the phone bar (Apply and Call) instead of under it. */
-@media (max-width: 767px) {
-  .grecaptcha-badge {
-    bottom: 84px !important;
-  }
+/* reCAPTCHA's invisible-mode badge floats over the forms, so it is hidden; each form carries Google's notice line instead (components/site/captcha.tsx). */
+.grecaptcha-badge {
+  visibility: hidden;
 }

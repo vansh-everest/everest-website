@@ -176,7 +176,7 @@ export function IntercityBooking({ cities }: { cities: { slug: string; name: str
             <ArrowRight aria-hidden size={18} className="lg:hidden" />
           </button>
         </div>
-        <Captcha className="mt-4" />
+        <Captcha className="mt-4" tone="dark" />
         {state === "failed" ? (
           <p role="alert" className="mt-3 text-center text-sm text-white lg:text-navy">
             Not sent: try again, or call {PHONE_DISPLAY}

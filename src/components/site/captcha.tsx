@@ -90,7 +90,7 @@ function onFirstTouch(form: HTMLFormElement | null, start: () => void, delay: nu
   return cleanup;
 }
 
-export function Captcha({ lang = "en", className = "" }: { lang?: string; className?: string }) {
+export function Captcha({ lang = "en", className = "", tone = "light" }: { lang?: string; className?: string; tone?: "light" | "dark" }) {
   const box = useRef<HTMLDivElement>(null);
   const field = useRef<HTMLInputElement>(null);
 
@@ -170,7 +170,24 @@ export function Captcha({ lang = "en", className = "" }: { lang?: string; classN
   }, [lang]);
 
   if (V3_KEY) {
-    return <input ref={field} type="hidden" name={TOKEN_FIELD} defaultValue="" />;
+    // Google's badge is hidden (globals.css) because it floats over the forms on phones; its terms
+    // then require this line in the form instead.
+    return (
+      <>
+        <input ref={field} type="hidden" name={TOKEN_FIELD} defaultValue="" />
+        <p className={`text-center text-[11px] leading-4 ${tone === "dark" ? "text-white/75" : "text-ink-soft"} ${className}`}>
+          This site is protected by reCAPTCHA and the Google{" "}
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+            Privacy Policy
+          </a>{" "}
+          and{" "}
+          <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+            Terms of Service
+          </a>{" "}
+          apply.
+        </p>
+      </>
+    );
   }
   if (!SITE_KEY) return null;
   return (
