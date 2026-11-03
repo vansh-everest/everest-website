@@ -55,11 +55,24 @@ export function basePath(pathname: string): string {
  * Whether the page at an English address is also published in `locale`: the home page in the main
  * languages, the driver pages and the blog index in every one. Blog posts are checked one by one.
  */
+/** The search pages also written in Hindi (lib/search-pages-hi.ts), each root with its city pages. */
+const HINDI_ROOTS = [
+  "/car-on-rent-for-uber",
+  "/uber-fleet-partner",
+  "/driver-job-contact-number",
+  "/uber-driver-requirements",
+  "/drive-for-uber-without-a-car",
+  "/fleet-management-company",
+  "/ev-driver-jobs",
+];
+
 export function existsIn(locale: Locale, path: string): boolean {
   if (locale === DEFAULT_LOCALE) return true;
   const clean = path.replace(/\/+$/, "") || "/";
   if (clean === "/") return isMainLocale(locale);
-  return clean === "/drive-with-us" || clean.startsWith("/drive-with-us/") || clean === "/blog";
+  if (locale === "hi" && HINDI_ROOTS.some((root) => clean === root || clean.startsWith(`${root}/`))) return true;
+  // The hub and city pages; the hub pages under a city (/drive-with-us/driver-job-in-mumbai/thane) are English only.
+  return clean === "/drive-with-us" || /^\/drive-with-us\/driver-job-in-[a-z-]+$/.test(clean) || clean === "/blog";
 }
 
 /** The page in `locale` when it is published there, otherwise the English page. */

@@ -30,9 +30,9 @@ export const revalidate = 3600;
 const PATH = `${FLEET_ROOT}/`;
 
 export const metadata: Metadata = {
-  title: "Uber Fleet Partner: Drive an Everest Fleet Car on Uber",
+  title: "Uber Fleet Partner in India: Join an Uber Fleet With a Car",
   description: `Everest Fleet is an Uber fleet partner in ${COMPANY.cities} cities, giving drivers a car with insurance and permit, weekly payouts and plans to own the car.`,
-  alternates: { canonical: PATH },
+  alternates: { canonical: PATH, languages: { "en-IN": PATH, "hi-IN": `/hi${PATH}`, "x-default": PATH } },
 };
 
 export default async function Page() {
@@ -136,7 +136,7 @@ export default async function Page() {
 
       <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} source={source} placement="bottom" />
 
-      <StickyBar call={dict.cta.call} />
+      <StickyBar call={dict.cta.call} apply={dict.cta.apply} />
     </>
   );
 }

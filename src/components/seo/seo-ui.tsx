@@ -7,6 +7,7 @@ import { PHONE_DISPLAY, PHONE_HREF } from "@/components/home/ui";
 import { fill, getDictionary } from "@/content/dictionary";
 import { SITE_URL } from "@/lib/company";
 import type { SiteContent } from "@/lib/content";
+import type { Locale } from "@/lib/i18n";
 import { jsonLd } from "@/lib/json-ld";
 import type { CityCar, PlanRef, PlanTerms } from "@/lib/seo-data";
 
@@ -35,26 +36,28 @@ export const crumbsLd = (items: { name: string; path: string }[]) => ({
   itemListElement: items.map((item, i) => ({ "@type": "ListItem", position: i + 1, name: item.name, item: `${SITE_URL}${item.path}` })),
 });
 
-/** The driver lead form in English, tagged with where on the page it sits. */
+/** The driver lead form in the page's language (English unless given), tagged with where on the page it sits. */
 export function SearchForm({
   content,
   source,
   placement,
   defaultCity,
   callHref,
+  locale = "en",
 }: {
   content: SiteContent;
   source: string;
   placement: "hero" | "middle";
   defaultCity?: string;
   callHref?: string;
+  locale?: Locale;
 }) {
-  const dict = getDictionary("en");
+  const dict = getDictionary(locale);
   return (
     <LeadForm
       copy={{ form: dict.form, cta: dict.cta }}
-      locale="en"
-      cities={content.cities.map((c) => ({ slug: c.slug, label: c.name.en }))}
+      locale={locale}
+      cities={content.cities.map((c) => ({ slug: c.slug, label: c.name[locale] || c.name.en }))}
       defaultCity={defaultCity}
       source={source}
       placement={placement}
@@ -88,6 +91,7 @@ export function SearchHero({
   facts = [],
   phone,
   form,
+  locale = "en",
 }: {
   chip: ReactNode;
   title: string;
@@ -95,8 +99,9 @@ export function SearchHero({
   facts?: { label: string; value: string }[];
   phone?: { href: string; display: string } | null;
   form: ReactNode;
+  locale?: Locale;
 }) {
-  const dict = getDictionary("en");
+  const dict = getDictionary(locale);
   return (
     <section className="bg-[linear-gradient(to_bottom_right,#062f50,#0b3e6c)] px-4 pb-10 pt-6 sm:px-6 lg:px-10 lg:pb-16 lg:pt-12">
       <div className={`${wrap} grid gap-8 lg:grid-cols-[minmax(0,1fr)_460px] lg:items-center lg:gap-14`}>
@@ -169,7 +174,21 @@ export function AnswerBox({ title, children }: { title: string; children: ReactN
 }
 
 /** Every car a city runs against the plans it comes on, from Jarvis. */
-export function CarsTable({ id, title, sub, cars, plans }: { id: string; title: string; sub?: string; cars: CityCar[]; plans: PlanRef[] }) {
+export function CarsTable({
+  id,
+  title,
+  sub,
+  cars,
+  plans,
+  carLabel = "Car",
+}: {
+  id: string;
+  title: string;
+  sub?: string;
+  cars: CityCar[];
+  plans: PlanRef[];
+  carLabel?: string;
+}) {
   return (
     <section aria-labelledby={id} className={band}>
       <div className={wrap}>
@@ -178,7 +197,7 @@ export function CarsTable({ id, title, sub, cars, plans }: { id: string; title: 
           <table className="w-full min-w-[520px] text-left text-[15px] leading-6">
             <thead>
               <tr className="border-b border-line bg-[#f5f8fc]">
-                <th className="px-4 py-3 text-sm font-semibold text-navy">Car</th>
+                <th className="px-4 py-3 text-sm font-semibold text-navy">{carLabel}</th>
                 {plans.map((p) => (
                   <th key={p.planId} className="px-4 py-3 text-center text-sm font-semibold">
                     <Link href={p.path} className="text-brand hover:underline">
@@ -217,8 +236,8 @@ export function CarsTable({ id, title, sub, cars, plans }: { id: string; title: 
 }
 
 /** The plans as cards, each with its line and the figures a city job page shows. */
-export function PlanCards({ id, title, plans }: { id: string; title: string; plans: (PlanRef | PlanTerms)[] }) {
-  const dict = getDictionary("en");
+export function PlanCards({ id, title, plans, locale = "en" }: { id: string; title: string; plans: (PlanRef | PlanTerms)[]; locale?: Locale }) {
+  const dict = getDictionary(locale);
   const lines = dict.plans as Record<string, string | undefined>;
   return (
     <section aria-labelledby={id} className={band}>

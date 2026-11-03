@@ -21,7 +21,7 @@ import { findCity, planFor, priceIn, rupees, type City, type Plan, type SiteCont
 import { localePath, type Locale } from "@/lib/i18n";
 import { PLAN_PAGES } from "@/lib/plan-pages";
 import { RelatedLinks } from "@/components/seo/seo-ui";
-import { contactPath, fleetPath, rentPath } from "@/lib/search-pages";
+import { contactPath, fleetPath, hubPath, rentPath, uberJobPath, vacancyPath } from "@/lib/search-pages";
 
 /** The cities as cards, in the page's language. */
 export function cityCards(content: SiteContent, locale: Locale) {
@@ -72,7 +72,7 @@ export function DriverHub({ locale, content }: { locale: Locale; content: SiteCo
 
       <ApplyBand locale={locale} dict={dict} cities={formCities(content, locale)} source="drive-with-us" />
 
-      <StickyBar call={dict.cta.call} />
+      <StickyBar call={dict.cta.call} apply={dict.cta.apply} />
     </>
   );
 }
@@ -208,7 +208,14 @@ export function DocumentsAndHubs({ city, locale, dict }: { city: City; locale: L
                 <li key={`${hub.name}|${hub.address}`} className="rounded-xl border border-[#dfecf6] bg-white px-4 py-3">
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="flex flex-wrap items-center gap-x-2 gap-y-1 text-base font-bold leading-6 text-navy">
-                      {hub.name}
+                      {/* Each hub has its own English page; the other languages list the name alone. */}
+                      {locale === "en" ? (
+                        <Link href={`${hubPath(city, hub)}/`} className="underline-offset-2 transition hover:text-brand hover:underline">
+                          {hub.name}
+                        </Link>
+                      ) : (
+                        hub.name
+                      )}
                       {hub.fuel ? (
                         <span className="rounded-full bg-[#e7f0f8] px-2 py-0.5 text-xs font-semibold leading-4 text-brand">{hub.fuel}</span>
                       ) : null}
@@ -319,6 +326,8 @@ export function CityPage({
             { href: `${contactPath(slug)}/`, label: `Driver Job Contact Number, ${name}`, note: "Number and hubs" },
             { href: `${rentPath(slug)}/`, label: `Car On Rent In ${name}`, note: "Cars and plans" },
             { href: `${fleetPath(slug)}/`, label: `Uber Fleet In ${name}`, note: "Everest Fleet in the city" },
+            { href: `${vacancyPath(slug)}/`, label: `Driver Vacancy In ${name}`, note: "Cars waiting for drivers" },
+            { href: `${uberJobPath(slug)}/`, label: `Uber Driver Job In ${name}`, note: "Steps to start" },
             { href: "/uber-driver-requirements/", label: "Uber Driver Requirements", note: "Documents and licence" },
             { href: "/ev-driver-jobs/", label: "EV Driver Jobs", note: "Electric cars on Uber" },
           ]}
@@ -334,7 +343,7 @@ export function CityPage({
 
       <ApplyBand locale={locale} dict={dict} cities={formCities(content, locale)} defaultCity={slug} source={`city/${slug}`} />
 
-      <StickyBar call={dict.cta.call} />
+      <StickyBar call={dict.cta.call} apply={dict.cta.apply} />
     </>
   );
 }

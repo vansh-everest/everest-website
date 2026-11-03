@@ -33,10 +33,10 @@ const UBER_SOURCE = "https://www.uber.com/in/en/drive/requirements/";
 const UPDATED = "2026-10-27";
 
 export const metadata: Metadata = {
-  title: "Uber Driver Requirements in India (2026): Documents and Licence",
+  title: "Uber Driver Requirements in India 2026: Documents, Licence, Car",
   description:
     "Uber driver requirements in India: driving licence, plus RC, insurance and commercial permit for your own car, or drive under a fleet partner with no car of your own.",
-  alternates: { canonical: PATH },
+  alternates: { canonical: PATH, languages: { "en-IN": PATH, "hi-IN": `/hi${PATH}`, "x-default": PATH } },
 };
 
 export default async function Page() {
@@ -188,7 +188,7 @@ export default async function Page() {
 
       <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} source={source} placement="bottom" />
 
-      <StickyBar call={dict.cta.call} />
+      <StickyBar call={dict.cta.call} apply={dict.cta.apply} />
     </>
   );
 }

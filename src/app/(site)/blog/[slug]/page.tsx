@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogPost, postJsonLd } from "@/components/driver/blog-pages";
+import { formCities } from "@/components/driver/driver-pages";
 import { DEFAULT_LOCALE, alternatesFor, canonical } from "@/lib/i18n";
 import { blogPostsFor } from "@/lib/blog-posts";
 import { getContent } from "@/lib/store";
@@ -46,7 +47,7 @@ export default async function Page({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(postJsonLd(post, DEFAULT_LOCALE)) }}
       />
-      <BlogPost locale={DEFAULT_LOCALE} post={post} related={await relatedTo(slug)} />
+      <BlogPost locale={DEFAULT_LOCALE} post={post} related={await relatedTo(slug)} cities={formCities(await getContent(), DEFAULT_LOCALE)} />
     </>
   );
 }

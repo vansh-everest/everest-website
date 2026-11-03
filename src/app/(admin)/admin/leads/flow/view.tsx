@@ -5,12 +5,17 @@ import { searchPageAt, type SearchPage } from "@/lib/search-pages";
 import { sendToUnifyAction } from "./actions";
 import { Funnel, Legend, StackedBars, StackedColumns, type Datum, type Series } from "./charts";
 import {
+  BASELINE,
   DESK,
+  LEVERS,
+  LEVER_GROUPS,
   STAGES,
+  TARGET_PER_DAY,
   dayLabel,
   daySpan,
   deskTally,
   emptyCounts,
+  leverOf,
   median,
   pct,
   tally,
@@ -473,6 +478,97 @@ function SearchPages({ leads, pages }: { leads: FlowLead[]; pages: SearchPage[] 
   );
 }
 
+const LEVER_SERIES: Series[] = LEVER_GROUPS.map((g) => ({ key: g.key, label: g.key, color: g.color }));
+const GROUP_OF = new Map(LEVERS.map((l) => [l.key, l.group]));
+const perDay = (n: number, days: number) => (days ? Math.round((n / days) * 10) / 10 : 0);
+const signed = (n: number) => `${n > 0 ? "+" : ""}${n.toLocaleString("en-IN")}`;
+
+/**
+ * Driver applications per day against the 300-a-day goal, split by what brought them. It reads
+ * every lead in the date range, ignoring the city, form and channel filters, since the goal and
+ * the baseline are site-wide. "Last 7
+ * days" are the range's last seven full days (today is left out while it is still going), compared
+ * with each source's average before the growth work (BASELINE).
+ */
+function RoadTo300({ leads, days }: { leads: FlowLead[]; days: string[] }) {
+  const driver = leads.filter((l) => l.driver);
+  const today = istToday();
+  const full = days.filter((d) => d < today);
+  const week = new Set(full.slice(-7));
+  const inWeek = driver.filter((l) => week.has(l.day));
+  const weekAvg = perDay(inWeek.length, week.size);
+  const weekNew = perDay(inWeek.filter((l) => l.stage === "sent").length, week.size);
+  const gap = Math.max(0, Math.round(TARGET_PER_DAY - weekAvg));
+
+  const byDay = new Map<string, Map<string, number>>();
+  for (const l of driver) {
+    const group = GROUP_OF.get(leverOf(l)) ?? "Other";
+    const row = byDay.get(l.day) ?? new Map<string, number>();
+    row.set(group, (row.get(group) ?? 0) + 1);
+    byDay.set(l.day, row);
+  }
+  const data: Datum[] = days.map((d) => ({ key: d, label: dayLabel(d), values: LEVER_GROUPS.map((g) => byDay.get(d)?.get(g.key) ?? 0) }));
+
+  const byLever = new Map(tally(driver, leverOf));
+  const weekByLever = new Map(tally(inWeek, leverOf));
+  const rows = LEVERS.map((lever) => {
+    const now = perDay(weekByLever.get(lever.key)?.total ?? 0, week.size);
+    const c = byLever.get(lever.key) ?? emptyCounts();
+    return { lever, now, change: Math.round((now - lever.base) * 10) / 10, c };
+  });
+
+  return (
+    <section className="space-y-5 border-t border-line pt-6">
+      <h2 className="text-[15px] font-bold text-navy">
+        Road to {TARGET_PER_DAY} a day <span className="font-normal text-ink-soft">· driver applications, all cities and channels</span>
+      </h2>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <Tile label="Per day, last 7 days" value={week.size ? weekAvg.toLocaleString("en-IN") : "–"} note={week.size ? `${weekNew} new in CRM a day` : "No full day in range"} strong />
+        <Tile label="Goal" value={TARGET_PER_DAY.toLocaleString("en-IN")} note="Per day" />
+        <Tile label="Still to add" value={week.size ? gap.toLocaleString("en-IN") : "–"} note="Per day" />
+        <Tile label="Baseline" value={BASELINE.perDay.toLocaleString("en-IN")} note={`Per day, ${BASELINE.label}`} />
+      </div>
+      {days.length > 1 ? (
+        <ChartCard title="Driver applications per day, by source" legend={LEVER_SERIES}>
+          <StackedColumns series={LEVER_SERIES} data={data} target={{ value: TARGET_PER_DAY, label: `Goal ${TARGET_PER_DAY}` }} />
+        </ChartCard>
+      ) : null}
+      <section className={card}>
+        <h2 className={`border-b border-line px-4 py-3 ${cardTitle}`}>By source</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[13px] text-navy">
+            <thead>
+              <tr className="border-b border-line">
+                <th className={`${headBase} text-left`}>Source</th>
+                <th className={head}>Baseline a day</th>
+                <th className={head}>Last 7 days a day</th>
+                <th className={head}>Change</th>
+                <th className={head}>In range</th>
+                <th className={head}>New in CRM</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(({ lever, now, change, c }) => (
+                <tr key={lever.key} className="border-b border-line last:border-0">
+                  <td className="px-3 py-2">
+                    <span className="font-medium">{lever.key}</span>
+                    {lever.group !== lever.key ? <span className="block text-[11px] text-ink-soft">{lever.group}</span> : null}
+                  </td>
+                  <td className={cell}>{lever.base}</td>
+                  <td className={`${cell} font-semibold`}>{now}</td>
+                  <td className={`${cell} ${change > 0 ? "text-[#0a7d0a]" : change < 0 ? "text-[#b3261e]" : "text-ink-soft/60"}`}>{signed(change)}</td>
+                  <td className={cell}>{c.driver}</td>
+                  <td className={cell}>{c.driver ? `${c.sent} (${pct(c.sent, c.driver)})` : "–"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  );
+}
+
 /** Website submissions on their way to the CRM: where they come from and what became of them. */
 export function FlowView({ f, jarvis, unify, unifyOn, all, pages, result }: { f: Filters; result: SendResult } & Loaded) {
   const leads = all.filter((l) => matches(l, f, pages));
@@ -544,6 +640,8 @@ export function FlowView({ f, jarvis, unify, unifyOn, all, pages, result }: { f:
           <Tile label="Marked converted" value={t.converted.toLocaleString("en-IN")} note={`${pct(t.converted, t.total)} of submissions`} />
           <Tile label="Time to CRM" value={minutes === null ? "–" : `${minutes} min`} note="Median, new leads" />
         </section>
+
+        <RoadTo300 leads={all} days={days} />
 
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
           <ChartCard title="Conversion">

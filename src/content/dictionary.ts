@@ -52,7 +52,7 @@ const en: Dictionary = {
     title: "Driver Jobs With A Car Included",
     intro: "Drive in a car from Everest Fleet.",
     pickCity: "Choose Your City",
-    metaTitle: "Driver Jobs in 7 Cities, Car Included",
+    metaTitle: "Cab Driver Jobs in 7 Cities, Car Included",
     metaDescription:
       "Apply for a cab driver job in Mumbai, Delhi NCR, Bengaluru, Hyderabad, Chennai, Pune or Kolkata. Car, insurance and permit included. Weekly payouts.",
   },
@@ -60,7 +60,7 @@ const en: Dictionary = {
     title: "Driver Job In {city}, Car Included",
     intro: "Drive in {city} in a car from Everest Fleet.",
     jobTitle: "Cab Driver (Uber)",
-    metaTitle: "Driver Job in {city}, Car Included",
+    metaTitle: "Driver Jobs in {city}: Cab Driver Job, Car Included",
     metaDescription:
       "Apply for a cab driver job in {city}. Car included, refundable deposit, weekly payouts, hub addresses and the documents you need.",
     plansHeading: "Plans In {city}",

@@ -1,6 +1,7 @@
 import { cityPhone } from "./city-phones";
 import { planFor, priceIn, rupees, type Hub, type SiteContent } from "./content";
 import { siteCityFor, type LiveData } from "./fleet-data";
+import type { Locale } from "./i18n";
 import { PLAN_PAGES } from "./plan-pages";
 
 /**
@@ -29,20 +30,20 @@ export type CityFacts = {
   plans: PlanTerms[];
 };
 
-function planRef(content: SiteContent, planId: string): PlanRef | null {
+function planRef(content: SiteContent, planId: string, locale: Locale = "en"): PlanRef | null {
   const plan = planFor(content, planId);
   const page = PLAN_PAGES.find((p) => p.planId === planId);
   if (!plan?.visible || !page) return null;
-  return { planId, name: plan.name.en, path: `${page.path}/` };
+  return { planId, name: plan.name[locale] || plan.name.en, path: `${page.path}/` };
 }
 
 /** Every visible plan with a page of its own, in page order, without figures (they differ by city). */
-export function planRefs(content: SiteContent): PlanRef[] {
-  return ORDER.map((id) => planRef(content, id)).filter((p): p is PlanRef => Boolean(p));
+export function planRefs(content: SiteContent, locale: Locale = "en"): PlanRef[] {
+  return ORDER.map((id) => planRef(content, id, locale)).filter((p): p is PlanRef => Boolean(p));
 }
 
-/** One city's cars, plans and hubs; null for a slug the admin does not list. */
-export function cityFacts(content: SiteContent, live: LiveData | null, slug: string, fuel?: RegExp): CityFacts | null {
+/** One city's cars, plans and hubs, with the city and plan names in `locale`; null for a slug the admin does not list. */
+export function cityFacts(content: SiteContent, live: LiveData | null, slug: string, fuel?: RegExp, locale: Locale = "en"): CityFacts | null {
   const city = content.cities.find((c) => c.slug === slug);
   if (!city) return null;
   const seen = new Set<string>();
@@ -51,14 +52,14 @@ export function cityFacts(content: SiteContent, live: LiveData | null, slug: str
     for (const car of liveCity.cars) {
       const key = `${car.name}|${car.fuel}`.toLowerCase();
       if (seen.has(key) || (fuel && !fuel.test(car.fuel))) continue;
-      const plans = ORDER.filter((id) => car.plans[id]).map((id) => planRef(content, id)).filter((p): p is PlanRef => Boolean(p));
+      const plans = ORDER.filter((id) => car.plans[id]).map((id) => planRef(content, id, locale)).filter((p): p is PlanRef => Boolean(p));
       if (!plans.length) continue;
       seen.add(key);
       cars.push({ name: car.name, fuel: car.fuel || "CNG", plans });
     }
   }
   const plans = ORDER.filter((id) => city.plans.includes(id)).flatMap((id) => {
-    const ref = planRef(content, id);
+    const ref = planRef(content, id, locale);
     const plan = planFor(content, id);
     if (!ref || !plan) return [];
     const price = priceIn(plan.price, plan.cityPrices, slug);
@@ -66,7 +67,7 @@ export function cityFacts(content: SiteContent, live: LiveData | null, slug: str
   });
   return {
     slug,
-    name: city.name.en,
+    name: city.name[locale] || city.name.en,
     state: city.state,
     readyCars: city.readyCars,
     hubs: fuel ? city.hubs.filter((h) => !h.fuel || fuel.test(h.fuel)) : city.hubs,
@@ -77,18 +78,25 @@ export function cityFacts(content: SiteContent, live: LiveData | null, slug: str
 }
 
 /** Every city in the admin's order; with `fuel`, only the cities running such a car. */
-export function allCityFacts(content: SiteContent, live: LiveData | null, fuel?: RegExp): CityFacts[] {
+export function allCityFacts(content: SiteContent, live: LiveData | null, fuel?: RegExp, locale: Locale = "en"): CityFacts[] {
   return content.cities.flatMap((c) => {
-    const facts = cityFacts(content, live, c.slug, fuel);
+    const facts = cityFacts(content, live, c.slug, fuel, locale);
     return facts && (!fuel || facts.cars.length) ? [facts] : [];
   });
 }
 
+/** Each plan's figures, worded in English or Hindi. */
+const LINE_WORDS = {
+  en: { deposit: (v: string) => `${v} refundable deposit`, upfront: (v: string) => `${v} upfront`, term: (n: number) => `${n}-month term` },
+  hi: { deposit: (v: string) => `${v} वापस मिलने वाला डिपॉज़िट`, upfront: (v: string) => `${v} शुरुआती रकम`, term: (n: number) => `${n} महीने की अवधि` },
+};
+
 /** "Drive To Own: ₹10,000 refundable deposit" for each plan with a figure, as a city job page lists them. */
-export function planLines(plans: PlanTerms[]): string[] {
+export function planLines(plans: PlanTerms[], locale: Locale = "en"): string[] {
+  const words = locale === "hi" ? LINE_WORDS.hi : LINE_WORDS.en;
   return plans.flatMap((p) => {
-    const money = p.deposit ? `${p.deposit} refundable deposit` : p.upfront ? `${p.upfront} upfront` : "";
-    const term = p.months ? `${p.months}-month term` : "";
+    const money = p.deposit ? words.deposit(p.deposit) : p.upfront ? words.upfront(p.upfront) : "";
+    const term = p.months ? words.term(p.months) : "";
     const detail = [money, term].filter(Boolean).join(", ");
     return detail ? [`${p.name}: ${detail}`] : [];
   });

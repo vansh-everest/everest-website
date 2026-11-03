@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${facts.name} Driver Job Contact Number: ${call.display}`,
     description: `Driver job in ${facts.name} with a car included: call Everest Fleet on ${call.display}. Hub addresses, timings and documents to bring.`,
-    alternates: { canonical: `${contactPath(slug)}/` },
+    alternates: { canonical: `${contactPath(slug)}/`, languages: { "en-IN": `${contactPath(slug)}/`, "hi-IN": `/hi${contactPath(slug)}/`, "x-default": `${contactPath(slug)}/` } },
   };
 }
 
@@ -177,7 +177,7 @@ export default async function Page({ params }: Props) {
 
       <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} defaultCity={slug} source={source} placement="bottom" callHref={call.href} />
 
-      <StickyBar call={dict.cta.call} callHref={call.href} />
+      <StickyBar call={dict.cta.call} apply={dict.cta.apply} callHref={call.href} />
     </>
   );
 }

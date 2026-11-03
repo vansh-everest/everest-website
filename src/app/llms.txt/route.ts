@@ -7,7 +7,7 @@ import { EXTRA_LOCALES, localePath, type ExtraLocale } from "@/lib/i18n";
 import { NEWS, newsDate, newsPath } from "@/lib/news";
 import { PLAN_PAGES } from "@/lib/plan-pages";
 import { getLiveData } from "@/lib/fleet-data";
-import { CONTACT_ROOT, FLEET_ROOT, RENT_ROOT, contactPath, fleetPath, rentPath } from "@/lib/search-pages";
+import { CONTACT_ROOT, FLEET_ROOT, RENT_ROOT, UBER_JOB_ROOT, VACANCY_ROOT, contactPath, fleetPath, hubPath, rentPath, uberJobPath, vacancyPath } from "@/lib/search-pages";
 import { allCityFacts, listNames } from "@/lib/seo-data";
 import { getContent } from "@/lib/store";
 
@@ -39,6 +39,11 @@ export async function GET() {
   });
   const fleet = facts.map((c) => `- [Uber fleet in ${c.name}](${link(fleetPath(c.slug))})${c.readyCars ? `: ${c.readyCars.toLocaleString("en-IN")} cars ready` : ""}${c.hubs.length ? `; ${c.hubs.length} hubs` : ""}`);
   const contact = facts.map((c) => `- [Driver job contact number, ${c.name}](${link(contactPath(c.slug))})${c.phone ? `: ${c.phone.display}` : ""}`);
+  const vacancy = facts.map((c) => `- [Driver vacancy in ${c.name}](${link(vacancyPath(c.slug))})${c.readyCars ? `: ${c.readyCars.toLocaleString("en-IN")} cars ready for drivers` : ""}`);
+  const uberJob = facts.map((c) => `- [Uber driver job in ${c.name}](${link(uberJobPath(c.slug))})`);
+  const hubs = content.cities.flatMap((c) =>
+    c.hubs.map((h) => `- [${h.name} hub, ${c.name.en}](${link(hubPath(c, h))}): ${h.address}${h.fuel ? `; ${h.fuel} cars` : ""}${h.hours ? `; ${h.hours}` : ""}`)
+  );
   const cities = content.cities.map((c) => c.name.en);
 
   const plans = PLAN_PAGES.flatMap(({ path, planId }) => {
@@ -80,6 +85,15 @@ export async function GET() {
     `- [All cities](${link(CONTACT_ROOT)})`,
     ...contact,
     "",
+    "## Driver vacancies",
+    `- [All cities](${link(VACANCY_ROOT)})`,
+    ...vacancy,
+    "",
+    "## Uber driver job by city",
+    `- [Uber driver job](${link(UBER_JOB_ROOT)}): the steps to drive on Uber with an Everest Fleet car`,
+    ...uberJob,
+    "",
+    ...(hubs.length ? ["## Hubs", ...hubs, ""] : []),
     "## Driver jobs",
     `- [Driver jobs in all cities](${link("/drive-with-us")}): plans, hubs and how to apply`,
     ...content.cities.map((c) => `- [Driver job in ${c.name.en}](${link(cityPath(c.slug))})`),

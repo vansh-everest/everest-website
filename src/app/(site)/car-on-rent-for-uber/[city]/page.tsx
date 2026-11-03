@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `Car on Rent for Uber in ${name}: Cars, Plans and Hubs`,
     description: `Car on rent for Uber drivers in ${name}${cars ? `: ${cars}` : ""}. Insurance and permit included, ${facts.hubs.length} hubs, weekly payouts. Apply in a minute.`,
-    alternates: { canonical: `${rentPath(slug)}/` },
+    alternates: { canonical: `${rentPath(slug)}/`, languages: { "en-IN": `${rentPath(slug)}/`, "hi-IN": `/hi${rentPath(slug)}/`, "x-default": `${rentPath(slug)}/` } },
   };
 }
 
@@ -159,7 +159,7 @@ export default async function Page({ params }: Props) {
 
       <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} defaultCity={slug} source={source} placement="bottom" callHref={facts.phone?.href} />
 
-      <StickyBar call={dict.cta.call} callHref={facts.phone?.href} />
+      <StickyBar call={dict.cta.call} apply={dict.cta.apply} callHref={facts.phone?.href} />
     </>
   );
 }

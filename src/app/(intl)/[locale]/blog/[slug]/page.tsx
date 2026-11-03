@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogPost, postJsonLd } from "@/components/driver/blog-pages";
+import { formCities } from "@/components/driver/driver-pages";
 import { blogPostsFor } from "@/lib/blog-posts";
 import { EXTRA_LOCALES, alternatesFor, canonical, isLocale, type ExtraLocale } from "@/lib/i18n";
 import { getContent } from "@/lib/store";
@@ -53,7 +54,12 @@ export default async function Page({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(postJsonLd(post, locale as ExtraLocale)) }}
       />
-      <BlogPost locale={locale as ExtraLocale} post={post} related={await relatedTo(locale as ExtraLocale, slug)} />
+      <BlogPost
+        locale={locale as ExtraLocale}
+        post={post}
+        related={await relatedTo(locale as ExtraLocale, slug)}
+        cities={formCities(await getContent(), locale as ExtraLocale)}
+      />
     </>
   );
 }

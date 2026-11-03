@@ -126,26 +126,56 @@ export async function POST(request: Request) {
 }
 
 /**
- * With RECAPTCHA_SECRET_KEY set, a lead needs a token Google accepts. Without it there is no check.
- * Google not answering lets the lead through, logged: a lost driver costs more than one stray bot.
+ * With a reCAPTCHA secret set, a lead needs a token Google accepts; with none there is no check.
+ * RECAPTCHA_V3_SECRET_KEY is the invisible mode's: its token passes at a score of MIN_SCORE or more
+ * for the "lead" action. A token it refuses is tried against RECAPTCHA_SECRET_KEY (the checkbox),
+ * so pages cached before a switch between modes keep working. A build that ships the invisible
+ * site key (inlined at build time, so the server knows too) while the server has no v3 secret lets
+ * leads through and logs it: that is a deploy that set the key before the secret, and it must not
+ * turn every driver away. The mode is never read from the request, so a sender cannot pick it.
+ * Google not answering also lets the lead through, logged: a lost driver costs more than one bot.
  */
+const MIN_SCORE = 0.3;
+const INVISIBLE_BUILD = Boolean(process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY);
+
 async function captchaPassed(token: string): Promise<boolean> {
-  const secret = process.env.RECAPTCHA_SECRET_KEY;
-  if (!secret) return true;
+  const v3 = process.env.RECAPTCHA_V3_SECRET_KEY;
+  const v2 = process.env.RECAPTCHA_SECRET_KEY;
+  if (!v3 && !v2) return true;
+  if (INVISIBLE_BUILD && !v3) {
+    console.error("[lead] invisible reCAPTCHA site key is built in but RECAPTCHA_V3_SECRET_KEY is not set: lead accepted unchecked");
+    return true;
+  }
   if (!token) return false;
   try {
-    const res = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-      method: "POST",
-      body: new URLSearchParams({ secret, response: token }),
-      signal: AbortSignal.timeout(5000),
-    });
-    const answer = (await res.json()) as { success?: boolean; "error-codes"?: string[] };
+    if (v3) {
+      const answer = await verify(v3, token);
+      if (answer.success && (!answer.action || answer.action === "lead")) {
+        const score = answer.score ?? 0;
+        if (score < MIN_SCORE) console.warn("[lead] captcha score too low", score);
+        return score >= MIN_SCORE;
+      }
+      if (!v2) {
+        console.warn("[lead] captcha refused", answer["error-codes"], answer.action);
+        return false;
+      }
+    }
+    const answer = await verify(v2 as string, token);
     if (!answer.success) console.warn("[lead] captcha refused", answer["error-codes"]);
     return answer.success === true;
   } catch (error) {
     console.error("[lead] captcha check unreachable, lead accepted", error);
     return true;
   }
+}
+
+async function verify(secret: string, token: string): Promise<{ success?: boolean; score?: number; action?: string; "error-codes"?: string[] }> {
+  const res = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+    method: "POST",
+    body: new URLSearchParams({ secret, response: token }),
+    signal: AbortSignal.timeout(5000),
+  });
+  return res.json();
 }
 
 /** True once Jarvis has the lead. False when fleet_connect is not set up or did not take it. */

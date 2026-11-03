@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   title: "Drive for Uber Without a Car: Get a Car From Everest Fleet",
   description:
     "Drive for Uber without your own car: an Everest Fleet CNG or EV car with insurance and permit, weekly payouts and plans to own it.",
-  alternates: { canonical: PATH },
+  alternates: { canonical: PATH, languages: { "en-IN": PATH, "hi-IN": `/hi${PATH}`, "x-default": PATH } },
 };
 
 export default async function Page() {
@@ -131,7 +131,7 @@ export default async function Page() {
 
       <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} source={source} placement="bottom" />
 
-      <StickyBar call={dict.cta.call} />
+      <StickyBar call={dict.cta.call} apply={dict.cta.apply} />
     </>
   );
 }

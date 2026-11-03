@@ -14,6 +14,8 @@ import {
   readMinutes,
 } from "@/components/blog/sections";
 import { GUIDE_SLUGS } from "@/components/blog/stories";
+import { ApplyBand } from "@/components/driver/driver-ui";
+import { StickyBar } from "@/components/driver/sticky-bar";
 import { SiteImage } from "@/components/site/site-image";
 import { getDictionary } from "@/content/dictionary";
 import { SITE_URL } from "@/lib/company";
@@ -48,7 +50,21 @@ export function BlogIndex({ locale, content }: { locale: Locale; content: SiteCo
 }
 
 /** /blog/<slug>/ in every locale. */
-export function BlogPost({ locale, post, related = [] }: { locale: Locale; post: Post; related?: Post[] }) {
+/**
+ * One post. Given the form's cities, the apply form follows the article, under source blog/<slug>,
+ * so a reader applies where they finish reading and the admin counts leads per post.
+ */
+export function BlogPost({
+  locale,
+  post,
+  related = [],
+  cities,
+}: {
+  locale: Locale;
+  post: Post;
+  related?: Post[];
+  cities?: { slug: string; label: string }[];
+}) {
   const dict = getDictionary(locale);
   const copy = blogCopy(locale);
 
@@ -103,8 +119,9 @@ export function BlogPost({ locale, post, related = [] }: { locale: Locale; post:
           ) : null}
         </div>
       </article>
+      {cities ? <ApplyBand locale={locale} dict={dict} cities={cities} source={`blog/${post.slug}`} placement="bottom" /> : null}
       {related.length ? <Guides posts={related} locale={locale} copy={copy} title={copy.moreTitle} /> : null}
-      <BlogCta locale={locale} copy={copy} />
+      {cities ? <StickyBar call={dict.cta.call} apply={dict.cta.apply} /> : <BlogCta locale={locale} copy={copy} />}
     </>
   );
 }

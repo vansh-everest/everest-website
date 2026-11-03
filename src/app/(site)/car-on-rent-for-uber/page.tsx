@@ -34,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Car on Rent for Uber Drivers: Cars and Hubs in Every City",
     description: `Car on rent for Uber drivers in ${listNames(cities.map((c) => c.name))}. CNG and EV cars with insurance and permit, weekly payouts. Apply in a minute.`,
-    alternates: { canonical: `${RENT_ROOT}/` },
+    alternates: { canonical: `${RENT_ROOT}/`, languages: { "en-IN": `${RENT_ROOT}/`, "hi-IN": `/hi${RENT_ROOT}/`, "x-default": `${RENT_ROOT}/` } },
   };
 }
 
@@ -99,7 +99,7 @@ export default async function Page() {
 
       <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} source={source} placement="bottom" />
 
-      <StickyBar call={dict.cta.call} />
+      <StickyBar call={dict.cta.call} apply={dict.cta.apply} />
     </>
   );
 }

@@ -307,3 +307,56 @@ export function median(values: number[]): number | null {
 
 /** "42%" of a whole; "–" when there is nothing to divide by. */
 export const pct = (part: number, whole: number) => (whole ? `${Math.round((part / whole) * 100)}%` : "–");
+
+/** The daily goal for driver applications, set 3 Nov 2026. */
+export const TARGET_PER_DAY = 300;
+
+/** Driver applications per day before the growth work, measured from Unify over 25 Oct to 2 Nov 2026. */
+export const BASELINE = { label: "25 Oct to 2 Nov", perDay: 83 };
+
+/**
+ * What brought a driver application: an outside source that sent the visit (paid ads, ChatGPT,
+ * Google Jobs) first, else the kind of page the form was on. `group` folds them into the chart's
+ * series; `base` is each one's daily average over the baseline days (0 for pages built after).
+ */
+export const LEVERS: { key: string; group: string; base: number }[] = [
+  { key: "Homepage", group: "Homepage", base: 33.3 },
+  { key: "City pages", group: "City and plan pages", base: 10.6 },
+  { key: "Plan pages", group: "City and plan pages", base: 18.2 },
+  { key: "Search pages", group: "Search pages", base: 6.8 },
+  { key: "Hindi search pages", group: "Search pages", base: 0 },
+  { key: "Hub pages", group: "New pages", base: 0 },
+  { key: "Vacancy and Uber job pages", group: "New pages", base: 0 },
+  { key: "Blog posts", group: "New pages", base: 0 },
+  { key: "ChatGPT", group: "ChatGPT and Google Jobs", base: 4.3 },
+  { key: "Google Jobs", group: "ChatGPT and Google Jobs", base: 0.2 },
+  { key: "Paid ads", group: "Paid ads", base: 9.2 },
+  { key: "Other", group: "Other", base: 0.3 },
+];
+
+/** The chart's series, in stack order; Okabe-Ito hues (built for colour-blind reading), grey for Other. */
+export const LEVER_GROUPS: { key: string; color: string }[] = [
+  { key: "Homepage", color: "#0072b2" },
+  { key: "City and plan pages", color: "#56b4e9" },
+  { key: "Search pages", color: "#009e73" },
+  { key: "New pages", color: "#e69f00" },
+  { key: "ChatGPT and Google Jobs", color: "#cc79a7" },
+  { key: "Paid ads", color: "#d55e00" },
+  { key: "Other", color: "#9aa4b2" },
+];
+
+export function leverOf(lead: FlowLead): string {
+  const channel = lead.channel.toLowerCase();
+  if (lead.channel === "Meta Ads" || lead.channel === "Google Ads" || lead.channel === "Facebook & Instagram") return "Paid ads";
+  if (channel.includes("chatgpt")) return "ChatGPT";
+  if (channel.includes("google_jobs")) return "Google Jobs";
+  const [kind] = lead.form.split("/");
+  if (kind === "hub") return "Hub pages";
+  if (kind === "blog") return "Blog posts";
+  if (kind === "vacancy" || kind === "uber-job") return "Vacancy and Uber job pages";
+  if (kind === "rent" || kind === "guide") return lead.page.startsWith("/hi/") ? "Hindi search pages" : "Search pages";
+  if (kind === "city" || lead.form === "drive-with-us") return "City pages";
+  if (kind === "plan" || lead.form === "our-plans") return "Plan pages";
+  if (lead.form === "home") return "Homepage";
+  return "Other";
+}

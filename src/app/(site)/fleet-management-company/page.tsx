@@ -32,7 +32,7 @@ const PATH = "/fleet-management-company/";
 export const metadata: Metadata = {
   title: `Fleet Management Company in India: ${COMPANY.vehicles} Cars in ${COMPANY.cities} Cities`,
   description: `Everest Fleet is India's largest fleet management company: ${COMPANY.vehicles} CNG and electric cars in ${COMPANY.cities} cities, on Uber since ${COMPANY.founded}. Fleet services for drivers and businesses.`,
-  alternates: { canonical: PATH },
+  alternates: { canonical: PATH, languages: { "en-IN": PATH, "hi-IN": `/hi${PATH}`, "x-default": PATH } },
 };
 
 const SERVICES = [
@@ -136,7 +136,7 @@ export default async function Page() {
 
       <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} source={source} placement="bottom" />
 
-      <StickyBar call={dict.cta.call} />
+      <StickyBar call={dict.cta.call} apply={dict.cta.apply} />
     </>
   );
 }

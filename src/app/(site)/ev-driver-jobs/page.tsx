@@ -39,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "EV Driver Jobs: Electric Car Driver Jobs on Uber",
     description: `EV car driver jobs in ${names || "Indian cities"} with Everest Fleet: an electric car with insurance and permit, weekly payouts. Apply in a minute.`,
-    alternates: { canonical: PATH },
+    alternates: { canonical: PATH, languages: { "en-IN": PATH, "hi-IN": `/hi${PATH}`, "x-default": PATH } },
   };
 }
 
@@ -107,7 +107,7 @@ export default async function Page() {
 
       <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} source={source} placement="bottom" />
 
-      <StickyBar call={dict.cta.call} />
+      <StickyBar call={dict.cta.call} apply={dict.cta.apply} />
     </>
   );
 }

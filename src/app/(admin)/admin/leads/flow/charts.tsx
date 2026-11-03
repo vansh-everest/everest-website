@@ -65,14 +65,26 @@ function Tip({ datum, series, style }: { datum: Datum; series: Series[]; style: 
 }
 
 /** Columns over time (or hour), each stacked by series; the tallest one carries its total. */
-export function StackedColumns({ series, data, height = 200 }: { series: Series[]; data: Datum[]; height?: number }) {
+export function StackedColumns({
+  series,
+  data,
+  height = 200,
+  target,
+}: {
+  series: Series[];
+  data: Datum[];
+  height?: number;
+  /** A goal per column, drawn as a dashed line across the chart with its value. */
+  target?: { value: number; label: string };
+}) {
   const [active, setActive] = useState<number | null>(null);
   const totalsList = data.map((d) => sum(d.values));
-  const max = Math.max(0, ...totalsList);
-  // Headroom above the tallest column, so its total never touches the card title.
+  const max = Math.max(0, ...totalsList, target?.value ?? 0);
+  // Headroom above the tallest column (or the target), so its total never touches the card title.
   const marks = ticks(max * 1.12);
   const top = marks[marks.length - 1];
-  const peak = max > 0 ? totalsList.indexOf(max) : -1;
+  const tallest = Math.max(0, ...totalsList);
+  const peak = tallest > 0 ? totalsList.indexOf(tallest) : -1;
   const every = Math.max(1, Math.ceil(data.length / 7));
   const n = data.length;
 
@@ -130,6 +142,11 @@ export function StackedColumns({ series, data, height = 200 }: { series: Series[
               );
             })}
           </div>
+          {target ? (
+            <div aria-hidden className="pointer-events-none absolute inset-x-0 border-t-2 border-dashed border-navy/60" style={{ bottom: `${(target.value / top) * 100}%` }}>
+              <span className="absolute -top-5 right-0 rounded bg-white/90 px-1 text-[11px] font-semibold text-navy">{target.label}</span>
+            </div>
+          ) : null}
           {active !== null ? <Tip datum={data[active]} series={series} style={tipStyle(active)} /> : null}
         </div>
         <div className="relative mt-1.5 flex h-4" aria-hidden>

@@ -32,7 +32,7 @@ const PATH = `${CONTACT_ROOT}/`;
 export const metadata: Metadata = {
   title: "Driver Job Contact Number: Everest Fleet Hiring Lines by City",
   description: "Driver job contact numbers for Mumbai, Delhi NCR, Bengaluru, Hyderabad, Pune, Kolkata and Chennai: call Everest Fleet for an Uber driver job with a car.",
-  alternates: { canonical: PATH },
+  alternates: { canonical: PATH, languages: { "en-IN": PATH, "hi-IN": `/hi${PATH}`, "x-default": PATH } },
 };
 
 export default async function Page() {
@@ -110,7 +110,7 @@ export default async function Page() {
 
       <ApplyBand locale="en" dict={dict} cities={formCities(content, "en")} source={source} placement="bottom" />
 
-      <StickyBar call={dict.cta.call} />
+      <StickyBar call={dict.cta.call} apply={dict.cta.apply} />
     </>
   );
 }

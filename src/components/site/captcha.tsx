@@ -3,16 +3,27 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Google's "I'm not a robot" check (reCAPTCHA v2), inside a lead form, above its buttons.
+ * Google reCAPTCHA inside a lead form, above its buttons, in one of two modes.
  *
- * The site key is public by design; the one below is registered for everestfleet.com (and its
- * subdomains) and the Amplify address. NEXT_PUBLIC_RECAPTCHA_SITE_KEY overrides it, e.g. with
- * Google's test key on localhost. api/lead checks each token once RECAPTCHA_SECRET_KEY is set. A
- * hidden required field holds the token, so a form that wakes its button on checkValidity() waits
- * for the tick, and the widget's own g-recaptcha-response field travels with the form data. A token
- * works once, so the widget clears itself after every submit.
+ * - Checkbox (v2, the default): the "I'm not a robot" box. The site key is public by design; the
+ *   one below is registered for everestfleet.com (and its subdomains) and the Amplify address.
+ *   NEXT_PUBLIC_RECAPTCHA_SITE_KEY overrides it, e.g. with Google's test key on localhost.
+ * - Invisible (v3): set NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY at build time (and RECAPTCHA_V3_SECRET_KEY
+ *   on the server). No box: a score token is fetched when the visitor first touches the form,
+ *   renewed every 90 seconds (a token lives two minutes) and again after each submit.
+ *
+ * Either way Google's script loads only once someone starts on a form, not with the page, so the
+ * ~400 KB of reCAPTCHA no longer slows every page view. A hidden required field holds the token, so
+ * a form that wakes its button on checkValidity() waits for it. api/lead checks each token once its
+ * secret is set. A token works once, so it is cleared or renewed after every submit.
  */
 const SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "6LcuWOstAAAAAOJla0SkIxCV-K2rLmUzNlYah7X1";
+const V3_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY || "";
+/** The field api/lead reads; the checkbox widget adds its own, the invisible mode fills ours. */
+const TOKEN_FIELD = "g-recaptcha-response";
+const RENEW_MS = 90_000;
+/** How long a submit waits for its first invisible-mode token before going ahead without one. */
+const WAIT_MS = 4_000;
 
 declare global {
   interface Window {
@@ -20,6 +31,7 @@ declare global {
       ready: (fn: () => void) => void;
       render: (el: HTMLElement, opts: Record<string, unknown>) => number;
       reset: (id?: number) => void;
+      execute: (key: string, opts: { action: string }) => Promise<string>;
     };
     onRecaptchaLoad?: () => void;
   }
@@ -28,11 +40,17 @@ declare global {
 let loading: Promise<void> | null = null;
 
 function loadScript(lang: string): Promise<void> {
-  if (window.grecaptcha?.render) return Promise.resolve();
   loading ??= new Promise((resolve) => {
-    window.onRecaptchaLoad = () => resolve();
     const s = document.createElement("script");
-    s.src = `https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit&hl=${encodeURIComponent(lang)}`;
+    if (V3_KEY) {
+      s.src = `https://www.google.com/recaptcha/api.js?render=${encodeURIComponent(V3_KEY)}&hl=${encodeURIComponent(lang)}`;
+      s.onload = () => window.grecaptcha?.ready(() => resolve());
+    } else {
+      window.onRecaptchaLoad = () => resolve();
+      s.src = `https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit&hl=${encodeURIComponent(lang)}`;
+    }
+    // Blocked (an ad blocker, a bad network): settle anyway, so nothing waits on it forever.
+    s.onerror = () => resolve();
     s.async = true;
     s.defer = true;
     document.head.appendChild(s);
@@ -47,39 +65,104 @@ function setField(input: HTMLInputElement | null, value: string) {
   input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
+/** Runs `start` once, the first time someone focuses, taps or clicks inside the form. */
+function onFirstTouch(form: HTMLFormElement | null, start: () => void): () => void {
+  if (!form) {
+    start();
+    return () => {};
+  }
+  const events = ["focusin", "pointerdown"] as const;
+  const once = () => {
+    for (const e of events) form.removeEventListener(e, once);
+    start();
+  };
+  for (const e of events) form.addEventListener(e, once);
+  return () => {
+    for (const e of events) form.removeEventListener(e, once);
+  };
+}
+
 export function Captcha({ lang = "en", className = "" }: { lang?: string; className?: string }) {
   const box = useRef<HTMLDivElement>(null);
   const field = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const el = box.current;
-    if (!SITE_KEY || !el) return;
+    // The invisible mode renders only its field; the checkbox mode renders the widget's box.
+    const el = V3_KEY ? field.current : box.current;
+    if ((!SITE_KEY && !V3_KEY) || !el) return;
+    const form = el.closest("form");
     let alive = true;
     let id: number | undefined;
-    loadScript(lang).then(() => {
-      if (!alive || !window.grecaptcha) return;
-      id = window.grecaptcha.render(el, {
-        sitekey: SITE_KEY,
-        callback: (token: string) => setField(field.current, token),
-        "expired-callback": () => setField(field.current, ""),
-        "error-callback": () => setField(field.current, ""),
+    let timer: number | undefined;
+
+    const renew = () =>
+      window.grecaptcha
+        ?.execute(V3_KEY, { action: "lead" })
+        .then((token) => alive && setField(field.current, token))
+        .catch(() => alive && setField(field.current, ""));
+
+    const stop = onFirstTouch(form, () =>
+      loadScript(lang).then(() => {
+        if (!alive || !window.grecaptcha) return;
+        if (V3_KEY) {
+          renew();
+          timer = window.setInterval(renew, RENEW_MS);
+          return;
+        }
+        if (!box.current) return;
+        id = window.grecaptcha.render(box.current, {
+          sitekey: SITE_KEY,
+          callback: (token: string) => setField(field.current, token),
+          "expired-callback": () => setField(field.current, ""),
+          "error-callback": () => setField(field.current, ""),
+        });
+      })
+    );
+
+    // Invisible mode: a submit that beats its first token (a quick fill, a slow network) is held
+    // until the token lands or WAIT_MS passes, then sent again; without a token the server decides.
+    // It runs on the form itself, before React's handler at the root, and stops that event there.
+    let letThrough = false;
+    const gate = (event: SubmitEvent) => {
+      if (!V3_KEY || letThrough || field.current?.value) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const submitter = event.submitter;
+      const token = loadScript(lang).then(() => renew());
+      void Promise.race([token, new Promise((r) => window.setTimeout(r, WAIT_MS))]).then(() => {
+        if (!alive || !form) return;
+        letThrough = true;
+        form.requestSubmit(submitter instanceof HTMLElement ? submitter : undefined);
+        letThrough = false;
       });
-    });
-    // The form builds its data in the same submit event; clear the used token just after.
-    const form = el.closest("form");
+    };
+
+    // The form builds its data in the same submit event; replace the used token just after.
     const onSubmit = () =>
       window.setTimeout(() => {
+        if (V3_KEY) {
+          setField(field.current, "");
+          renew();
+          return;
+        }
         if (id === undefined) return;
         window.grecaptcha?.reset(id);
         setField(field.current, "");
       }, 0);
+    form?.addEventListener("submit", gate);
     form?.addEventListener("submit", onSubmit);
     return () => {
       alive = false;
+      stop();
+      if (timer) window.clearInterval(timer);
+      form?.removeEventListener("submit", gate);
       form?.removeEventListener("submit", onSubmit);
     };
   }, [lang]);
 
+  if (V3_KEY) {
+    return <input ref={field} type="hidden" name={TOKEN_FIELD} defaultValue="" />;
+  }
   if (!SITE_KEY) return null;
   return (
     <div className={`flex justify-center ${className}`}>
