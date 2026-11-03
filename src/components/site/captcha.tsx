@@ -12,8 +12,8 @@ import { useEffect, useRef } from "react";
  *   on the server). No box: a score token is fetched when the visitor first touches the form,
  *   renewed every 90 seconds (a token lives two minutes) and again after each submit.
  *
- * Either way Google's script loads only once someone starts on a form, not with the page, so the
- * ~400 KB of reCAPTCHA no longer slows every page view. A hidden required field holds the token, so
+ * Either way Google's script loads three seconds after the page opens, or as soon as someone
+ * touches a form, so the ~400 KB of reCAPTCHA stays out of the page's first seconds. A hidden required field holds the token, so
  * a form that wakes its button on checkValidity() waits for it. api/lead checks each token once its
  * secret is set. A token works once, so it is cleared or renewed after every submit.
  */
@@ -22,6 +22,8 @@ const V3_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_V3_SITE_KEY || "";
 /** The field api/lead reads; the checkbox widget adds its own, the invisible mode fills ours. */
 const TOKEN_FIELD = "g-recaptcha-response";
 const RENEW_MS = 90_000;
+/** Google's script starts loading this long after the page opens, or sooner on a touch of the form. */
+const START_MS = 3_000;
 /** How long a submit waits for its first invisible-mode token before going ahead without one. */
 const WAIT_MS = 4_000;
 
@@ -65,21 +67,27 @@ function setField(input: HTMLInputElement | null, value: string) {
   input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
-/** Runs `start` once, the first time someone focuses, taps or clicks inside the form. */
-function onFirstTouch(form: HTMLFormElement | null, start: () => void): () => void {
-  if (!form) {
-    start();
-    return () => {};
-  }
+/**
+ * Runs `start` once: the first time someone focuses, taps or clicks inside the form, or `delay` ms
+ * after the page opens, whichever comes first. The delay keeps Google's script out of the page's
+ * first seconds while still having the check ready before most people reach the buttons.
+ */
+function onFirstTouch(form: HTMLFormElement | null, start: () => void, delay: number): () => void {
   const events = ["focusin", "pointerdown"] as const;
+  let done = false;
+  const cleanup = () => {
+    window.clearTimeout(timer);
+    for (const e of events) form?.removeEventListener(e, once);
+  };
   const once = () => {
-    for (const e of events) form.removeEventListener(e, once);
+    if (done) return;
+    done = true;
+    cleanup();
     start();
   };
-  for (const e of events) form.addEventListener(e, once);
-  return () => {
-    for (const e of events) form.removeEventListener(e, once);
-  };
+  const timer = window.setTimeout(once, delay);
+  for (const e of events) form?.addEventListener(e, once);
+  return cleanup;
 }
 
 export function Captcha({ lang = "en", className = "" }: { lang?: string; className?: string }) {
@@ -116,7 +124,8 @@ export function Captcha({ lang = "en", className = "" }: { lang?: string; classN
           "expired-callback": () => setField(field.current, ""),
           "error-callback": () => setField(field.current, ""),
         });
-      })
+      }),
+      START_MS
     );
 
     // Invisible mode: a submit that beats its first token (a quick fill, a slow network) is held
