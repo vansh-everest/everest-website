@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { PHONE_DISPLAY, PHONE_HREF } from "@/components/home/ui";
 import { trackLead } from "@/lib/analytics";
+import { useCityField } from "@/lib/use-city-field";
 import { Captcha } from "@/components/site/captcha";
 import { Consent } from "@/components/site/consent";
 
@@ -23,6 +24,7 @@ export function DostForm({ cities }: { cities: { slug: string; name: string }[] 
   const [state, setState] = useState<"idle" | "sending" | "done" | "failed">("idle");
   const [ready, setReady] = useState(false);
   const [joining, setJoining] = useState<"individual" | "company">("individual");
+  const cityField = useCityField();
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -99,7 +101,7 @@ export function DostForm({ cities }: { cities: { slug: string; name: string }[] 
       <label className={`${label} mt-2.5 lg:mt-[18px]`}>
         City{star}
         <span className="relative block">
-          <select name="city" required defaultValue="" className={`${input} appearance-none pr-12 invalid:text-[#8d99a5]`}>
+          <select ref={cityField} name="city" required defaultValue="" className={`${input} appearance-none pr-12 invalid:text-[#8d99a5]`}>
             <option value="" disabled>
               Select your city
             </option>

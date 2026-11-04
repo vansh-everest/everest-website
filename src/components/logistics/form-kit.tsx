@@ -6,6 +6,7 @@ import { PHONE_DISPLAY } from "@/components/home/ui";
 import { sendLead } from "@/components/b2b/lead";
 import { Captcha } from "@/components/site/captcha";
 import { Consent } from "@/components/site/consent";
+import { useCityField } from "@/lib/use-city-field";
 
 const labelCls = "block text-sm font-medium leading-5 text-navy";
 const inputCls =
@@ -62,12 +63,14 @@ export function SelectField({
   placeholder,
   options,
 }: FieldProps & { placeholder: string; options: string[] }) {
+  const cityField = useCityField();
   return (
     <label className={`${labelCls} ${className}`}>
       {label}
       {required ? star : null}
       <span className="relative block">
         <select
+          ref={name === "city" ? cityField : undefined}
           name={name}
           required={required}
           defaultValue=""

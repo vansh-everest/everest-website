@@ -6,6 +6,7 @@ import { PHONE_DISPLAY, PHONE_HREF } from "./ui";
 import type { FormCopy } from "@/content/home-copy";
 import { trackLead } from "@/lib/analytics";
 import { fill, type Locale } from "@/lib/i18n";
+import { useCityField } from "@/lib/use-city-field";
 import { Captcha } from "@/components/site/captcha";
 import { Consent } from "@/components/site/consent";
 
@@ -57,6 +58,7 @@ export function ApplyForm({
   const [ready, setReady] = useState(false);
   const wide = useWide();
   const form = useRef<HTMLFormElement>(null);
+  const cityField = useCityField();
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -118,7 +120,7 @@ export function ApplyForm({
         {copy.city}
         <Required />
         <span className="relative block">
-          <select name="city" required defaultValue="" className={`${input} appearance-none pr-12 invalid:text-[#9ca3af]`}>
+          <select ref={cityField} name="city" required defaultValue="" className={`${input} appearance-none pr-12 invalid:text-[#9ca3af]`}>
             <option value="" disabled>
               {copy.selectCity}
             </option>

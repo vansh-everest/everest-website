@@ -6,6 +6,7 @@ import { sendLead } from "@/components/b2b/lead";
 import { PHONE_DISPLAY } from "@/components/home/ui";
 import { Captcha } from "@/components/site/captcha";
 import { Consent } from "@/components/site/consent";
+import { useCityField } from "@/lib/use-city-field";
 
 const CITIES = ["Mumbai", "Delhi NCR", "Bengaluru", "Hyderabad", "Pune", "Kolkata", "Chennai"];
 
@@ -30,6 +31,7 @@ function Field({ title, ...input }: { title: string } & React.InputHTMLAttribute
 /** The quote form. Company, job title, email and message reach Jarvis as the lead's details. */
 export function QuoteForm() {
   const [state, setState] = useState<"idle" | "sending" | "done" | "failed">("idle");
+  const cityField = useCityField();
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -66,7 +68,7 @@ export function QuoteForm() {
         City
         <Star />
         <span className="relative block">
-          <select name="city" required defaultValue="" className={`${control} appearance-none pr-11 invalid:text-[#8d99a5]`}>
+          <select ref={cityField} name="city" required defaultValue="" className={`${control} appearance-none pr-11 invalid:text-[#8d99a5]`}>
             <option value="" disabled>
               Select your city
             </option>

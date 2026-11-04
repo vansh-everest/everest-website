@@ -6,6 +6,7 @@ import type { Dictionary } from "@/content/dictionary";
 import type { Locale } from "@/lib/i18n";
 import { PHONE_HREF } from "@/components/home/ui";
 import { trackLead } from "@/lib/analytics";
+import { useCityField } from "@/lib/use-city-field";
 import { Captcha } from "@/components/site/captcha";
 import { Consent } from "@/components/site/consent";
 
@@ -50,6 +51,7 @@ export function LeadForm({
 }) {
   const [state, setState] = useState<"idle" | "sending" | "done" | "failed">("idle");
   const { form, cta } = copy;
+  const cityField = useCityField();
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -108,7 +110,7 @@ export function LeadForm({
         {form.city}
         <Required />
         <span className="relative block">
-          <select name="city" required defaultValue={defaultCity ?? ""} className={`${input} appearance-none pr-12 invalid:text-[#9ca3af]`}>
+          <select ref={cityField} name="city" required defaultValue={defaultCity ?? ""} className={`${input} appearance-none pr-12 invalid:text-[#9ca3af]`}>
             <option value="" disabled>
               {form.selectCity}
             </option>
