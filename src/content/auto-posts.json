@@ -1,5 +1,68 @@
 [
   {
+    "slug": "uber-airport-queue-guide-for-indian-cab-drivers",
+    "locale": "en",
+    "title": "Uber Airport Queue Guide for Indian Cab Drivers",
+    "excerpt": "Learn how airport pickups, waiting areas and queue checks can help you decide when an airport trip is worth your time.",
+    "body": [
+      "If you search for uber airport queue, the main thing to know is simple. Airport trips can be good, but only when you understand the waiting area, pickup zone, flight demand and the time you may lose compared with city trips.",
+      "## How airport pickups are different from normal city trips",
+      "Uber’s driver guide says an airport trip appears in the Driver app like a normal trip, but the airport may require you to wait in a designated area before you receive a request. The app then shows the approved pickup or dropoff point for that airport.",
+      "This matters because airport pickup points are not always at the normal arrivals gate. Uber says airports may have special zones for Uber and other rideshare services, and the Driver app guides you to the designated pickup location.",
+      "For dropoffs, Uber advises drivers to ask the rider whether the flight is domestic or international and which airline they are using. This helps you follow the terminal signs and avoid circling inside the airport road system.",
+      "Airport surcharges, where applicable, are included in the price riders see when they request a trip to or from an airport, according to Uber’s driver page. Uber says those charges are paid to the airport by Uber, so you should not treat them as a separate cash discussion with the rider.",
+      "## How the airport queue works in the app",
+      "Uber Help describes the Virtual Queue as a system that organises airport requests by order of arrival in the designated airport area. In that model, your place depends on when you entered the queue area, not on whether you are parked closest to the passenger.",
+      "You should join only from the waiting area shown in the Driver app. Uber Help says staying outside the designated area can prevent you from receiving airport requests, and going offline or leaving the area may make you lose your place.",
+      "If you wait too long, first check whether you are in the correct waiting area. Uber Help says long airport waits can happen when there are fewer flights landing, at certain times of day, or because of weather conditions.",
+      "Uber Help gives two useful warning signs for drivers: waiting longer than 2 hours for UberX or UberXL, or longer than 2.5 hours for Exec. It also says Airport Rematch or Priority Queue Access can allow some drivers to receive requests before others in the airport queue.",
+      "Uber’s airport technology blog explains why the app shows airport information differently from normal city areas. Uber says airport driver and supply signals include flight, weather and rider app activity, and driver queue signals are used because airport rules can require drivers to be staged in a waiting lot before dispatch.",
+      "## Rules to follow at the airport",
+      "Uber Help says drivers should pick up passengers only at authorised pickup areas and avoid blocking traffic lanes. It also says drivers should wait for dispatch only in the approved staging lot shown by the Driver app and airport signage.",
+      "This is important in Indian airports because each terminal can have its own pickup point. Delhi Airport says app-based cabs are available at T1 outside the arrivals zone, at T2 outside the arrivals zone, and at T3 in the Multi-Level Car Park on Level 0.",
+      "Mumbai Airport’s FAQ says app-based cabs such as Ola and Uber use Terminal 2 Arrival P4 and Terminal 1 Ground Transportation level for arrivals. The same FAQ lists separate Terminal 2 arrival points for some Uber categories, including P6 and P7.",
+      "Before you enter the airport road, check the app and the airport signs together. If the rider is not at the pickup point, Uber says you can call or text the rider from the Driver app, but the pickup should still happen at the approved location.",
+      "## How to decide if an airport run is worth it",
+      "The best time to wait for an airport trip back to the city is when you have already dropped a rider at the airport, according to Uber Help. That is because you are already there, so you are not spending extra time just to reach the queue.",
+      "Before going empty to the airport, check three things in the app and on the airport arrivals page. Check the expected wait, the number of cars already in queue if shown, and whether several flights are landing soon.",
+      "The Indian Express reported in March 2023 that Uber’s driver app update shows approximate airport waiting time, the number of cars in the airport Uber zone, and expected flight arrivals over the next hour. Use these signals before deciding to leave a busy city area for the airport.",
+      "A simple habit is to compare airport waiting time with the trips you could get nearby in the city. If the airport shows a long wait and there are fewer arrivals, staying in city zones may keep your wheels moving more often.",
+      "Also check your car before choosing the airport queue. If your CNG level, EV charge, FASTag balance or phone battery is low, finish those jobs before entering the airport system, because leaving the waiting area can push you out of the queue.",
+      "For late-night airport work, keep the pickup zone clear in your mind before the rider calls. A calm call saying the terminal, pickup level and bay shown in the app can save time for both of you.",
+      "Airport trips can be useful when you treat the queue as one option, not the whole plan. If you need a car for app-based driving, Everest Fleet is one place you can go for a car."
+    ],
+    "published": true,
+    "date": "2026-11-04",
+    "coverImage": {
+      "label": "Daily post cover",
+      "url": "/blog/auto/uber-airport-queue-guide-for-indian-cab-drivers.webp",
+      "alt": "A cab driver takes a tea break beside a grey car on a wet city road."
+    },
+    "sources": [
+      {
+        "title": "How to Take Airport Trips | Driver App | Uber",
+        "url": "https://www.uber.com/in/en/drive/basics/airport-trips/?uclick_id=da0aec4a-18b2-4a82-9316-618244011eb8"
+      },
+      {
+        "title": "Airport trips FAQs",
+        "url": "https://help.uber.com/driving-and-delivering/article/airport-trips-faqs?nodeId=b5e9556e-a3b4-42ac-aeae-c6c45128ad81"
+      },
+      {
+        "title": "I am not getting requests at the airport or my position in the queue is not changing",
+        "url": "https://help.uber.com/en/driving-and-delivering/article/i-am-not-getting-requests-at-the-airport-or-my-position-in-the-queue-is-not-changing?nodeId=b704678c-ad08-4edd-b462-8eb6bdc0bcbd"
+      },
+      {
+        "title": "Cab & Taxi Services | Delhi Airport (DEL)",
+        "url": "https://www.newdelhiairport.in/to-and-from-airport/cab-or-taxi/"
+      },
+      {
+        "title": "Uber launches new features for airport rides: Pre-booking rides, in-airport navigation and more",
+        "url": "https://indianexpress.com/article/technology/tech-news-technology/uber-new-airport-features-8514653/lite/"
+      }
+    ],
+    "series": "earnings-airport"
+  },
+  {
     "slug": "uber-incentives-for-drivers-in-india-weekly-quest-guide",
     "locale": "en",
     "title": "Uber Incentives for Drivers in India Weekly Quest Guide",
