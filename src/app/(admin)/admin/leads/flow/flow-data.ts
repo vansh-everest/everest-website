@@ -328,6 +328,7 @@ export const LEVERS: { key: string; group: string; base: number }[] = [
   { key: "Hub pages", group: "New pages", base: 0 },
   { key: "Vacancy and Uber job pages", group: "New pages", base: 0 },
   { key: "Blog posts", group: "New pages", base: 0 },
+  { key: "Social links", group: "New pages", base: 0 },
   { key: "ChatGPT", group: "ChatGPT and Google Jobs", base: 4.3 },
   { key: "Google Jobs", group: "ChatGPT and Google Jobs", base: 0.2 },
   { key: "Paid ads", group: "Paid ads", base: 9.2 },
@@ -346,6 +347,8 @@ export const LEVER_GROUPS: { key: string; color: string }[] = [
 ];
 
 export function leverOf(lead: FlowLead): string {
+  // Before the channel: a bio link's referrer reads as Facebook & Instagram, which counts as paid.
+  if (lead.form.startsWith("social/")) return "Social links";
   const channel = lead.channel.toLowerCase();
   if (lead.channel === "Meta Ads" || lead.channel === "Google Ads" || lead.channel === "Facebook & Instagram") return "Paid ads";
   if (channel.includes("chatgpt")) return "ChatGPT";
