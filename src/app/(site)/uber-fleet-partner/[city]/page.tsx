@@ -48,8 +48,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { facts } = await load(slug);
   if (!facts) return {};
   return {
-    title: `Uber Fleet in ${facts.name}: Uber Fleet Operator${facts.readyCars ? ` With ${facts.readyCars.toLocaleString("en-IN")} Cars Ready` : ""}`,
-    description: `Everest Fleet runs an Uber fleet in ${facts.name}${facts.readyCars ? ` with ${facts.readyCars.toLocaleString("en-IN")} cars ready` : ""} across ${facts.hubs.length} hubs. Drive one of its cars on Uber, insurance and permit included.`,
+    title: `Uber Fleet in ${facts.name}: Uber Fleet Operator`,
+    description: `Everest Fleet runs an Uber fleet in ${facts.name}${facts.hubs.length ? ` across ${facts.hubs.length} hubs` : ""}. Drive one of its cars on Uber, insurance and permit included.`,
     alternates: { canonical: `${fleetPath(slug)}/`, languages: { "en-IN": `${fleetPath(slug)}/`, "hi-IN": `/hi${fleetPath(slug)}/`, "x-default": `${fleetPath(slug)}/` } },
   };
 }
@@ -58,7 +58,7 @@ function answer(f: CityFacts): string {
   const models = listNames(f.cars.map((c) => c.name));
   return [
     `Everest Fleet is an Uber fleet partner in ${f.name}`,
-    f.readyCars ? `, with ${f.readyCars.toLocaleString("en-IN")} cars ready across ${f.hubs.length} hubs` : f.hubs.length ? `, with ${f.hubs.length} hubs` : "",
+    f.hubs.length ? `, with ${f.hubs.length} hubs` : "",
     models ? `. It runs the ${models} on Uber.` : ".",
     " Drivers bring their documents and drive an Everest Fleet car, with its insurance, permit and maintenance held by the fleet, and are paid every week.",
   ].join("");
@@ -69,7 +69,6 @@ function faqs(f: CityFacts): QA[] {
   const items: QA[] = [
     { q: `Is Everest Fleet an Uber fleet partner in ${f.name}?`, a: `Yes. Everest Fleet has run cars on Uber since ${COMPANY.founded} and is a fleet partner in ${f.name}.` },
   ];
-  if (f.readyCars) items.push({ q: `How many cars does Everest Fleet have in ${f.name}?`, a: `${f.readyCars.toLocaleString("en-IN")} cars are ready to drive today, across ${f.hubs.length} hubs.` });
   if (f.cars.length) items.push({ q: `Which cars does Everest Fleet run in ${f.name}?`, a: `${listNames(f.cars.map((c) => `${c.name} (${c.fuel})`))}.` });
   if (f.hubs.length) items.push({ q: `Where are Everest Fleet's hubs in ${f.name}?`, a: f.hubs.map((h) => `${h.name}: ${h.address}`).join(". ") + "." });
   items.push({ q: `How do I join Everest Fleet in ${f.name}?`, a: `Apply on this page${f.phone ? ` or call ${f.phone.display}` : ""}, then visit a hub with your ${listNames(dict.documents.map(docName))}.` });
@@ -114,7 +113,6 @@ export default async function Page({ params }: Props) {
         title={`Uber Fleet In ${name}`}
         intro={`Everest Fleet's cars on Uber in ${name}: drive one, insurance and permit included.`}
         facts={[
-          ...(facts.readyCars ? [{ label: "Cars Ready", value: facts.readyCars.toLocaleString("en-IN") }] : []),
           ...(facts.hubs.length ? [{ label: "Hubs", value: String(facts.hubs.length) }] : []),
           { label: "On Uber Since", value: String(COMPANY.founded) },
         ]}

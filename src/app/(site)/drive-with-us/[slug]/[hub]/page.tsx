@@ -155,7 +155,6 @@ export default async function Page({ params }: Props) {
         facts={[
           ...(hub.fuel ? [{ label: "Cars", value: hub.fuel }] : []),
           ...(hub.hours ? [{ label: "Hub Hours", value: hub.hours }] : []),
-          ...(city.readyCars ? [{ label: `Ready In ${name}`, value: city.readyCars.toLocaleString("en-IN") }] : []),
         ]}
         phone={facts.phone}
         form={<SearchForm content={content} source={source} placement="hero" defaultCity={city.slug} callHref={facts.phone?.href} />}

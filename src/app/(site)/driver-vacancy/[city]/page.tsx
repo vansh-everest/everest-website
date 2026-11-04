@@ -29,8 +29,7 @@ import { allCityFacts, cityFacts, docName, hubHours, listNames, type CityFacts }
 import { getContent } from "@/lib/store";
 
 /**
- * "Driver vacancy in <city>": the open driver places are the cars ready for a driver, so the page
- * leads with that count and lists every hub to collect one from.
+ * "Driver vacancy in <city>": the page lists every hub to collect a car from.
  */
 
 type Props = { params: Promise<{ city: string }> };
@@ -52,10 +51,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { city, facts } = await load(slug);
   if (!city || !facts) return {};
   const name = city.name.en;
-  const ready = facts.readyCars;
   return {
-    title: ready ? `Driver Vacancy in ${name}: ${ready.toLocaleString("en-IN")} Cars Ready for Drivers` : `Driver Vacancy in ${name}: Cab Driver Jobs With a Car`,
-    description: `Driver vacancy in ${name} at Everest Fleet: ${ready ? `${ready.toLocaleString("en-IN")} cars ready, ` : ""}${facts.hubs.length ? `${facts.hubs.length} hubs, ` : ""}insurance and permit included, weekly payouts.`,
+    title: `Driver Vacancy in ${name}: Cab Driver Jobs With a Car`,
+    description: `Driver vacancy in ${name} at Everest Fleet: ${facts.hubs.length ? `${facts.hubs.length} hubs, ` : ""}insurance and permit included, weekly payouts.`,
     alternates: { canonical: `${vacancyPath(slug)}/` },
   };
 }
@@ -63,10 +61,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 function faqs(f: CityFacts): QA[] {
   const dict = getDictionary("en");
   const items: QA[] = [];
-  if (f.readyCars) {
-    const across = f.hubs.length ? `, across ${f.hubs.length} hubs` : "";
-    items.push({ q: `How many driver vacancies are there in ${f.name}?`, a: `${f.readyCars.toLocaleString("en-IN")} Everest Fleet cars are ready for drivers in ${f.name}${across}.` });
-  }
   if (f.hubs.length) items.push({ q: `Where are the vacancies in ${f.name}?`, a: `At the Everest Fleet hubs in ${listNames(f.hubs.map((h) => h.name))}.` });
   items.push({ q: "Who can apply?", a: `Anyone with a valid driving licence and their ${listNames(dict.documents.map(docName))}. Some cities ask for a commercial badge on the licence.` });
   if (f.phone) items.push({ q: `What is the number for driver vacancies in ${f.name}?`, a: `Call ${f.phone.display}, or apply on this page and the ${f.name} team calls you back.` });
@@ -117,7 +111,6 @@ export default async function Page({ params }: Props) {
   const items = faqs(facts);
   const others = allCityFacts(content, live).filter((c) => c.slug !== slug);
   const source = `vacancy/${slug}`;
-  const ready = facts.readyCars;
 
   return (
     <>
@@ -133,13 +126,8 @@ export default async function Page({ params }: Props) {
       <SearchHero
         chip={<BackChip href={`${VACANCY_ROOT}/`} label="All Cities" />}
         title={`Driver Vacancy In ${name}`}
-        intro={
-          ready
-            ? `${ready.toLocaleString("en-IN")} Everest Fleet cars in ${name} are ready for drivers, with insurance and permit included.`
-            : `Cab driver jobs in ${name} with an Everest Fleet car, insurance and permit included.`
-        }
+        intro={`Cab driver jobs in ${name} with an Everest Fleet car, insurance and permit included.`}
         facts={[
-          ...(ready ? [{ label: "Cars Ready", value: ready.toLocaleString("en-IN") }] : []),
           ...(facts.hubs.length ? [{ label: "Hubs", value: String(facts.hubs.length) }] : []),
           ...(facts.cars.length ? [{ label: "Models", value: String(facts.cars.length) }] : []),
         ]}
@@ -148,14 +136,14 @@ export default async function Page({ params }: Props) {
       />
 
       <AnswerBox title="In Short">
-        {ready ? `Everest Fleet has ${ready.toLocaleString("en-IN")} cars ready for drivers in ${name}` : `Everest Fleet is hiring cab drivers in ${name}`}
+        Everest Fleet is hiring cab drivers in {name}
         {facts.hubs.length ? `, at ${facts.hubs.length} hubs` : ""}. Apply here, bring your documents to the nearest hub and drive on Uber with weekly payouts.
       </AnswerBox>
 
       {facts.hubs.length ? <HubTable city={city} hubs={facts.hubs} /> : null}
 
       {facts.cars.length ? (
-        <CarsTable id="vacancy-cars" title={`Cars Ready In ${name}`} sub="Each car and the plans it comes on" cars={facts.cars} plans={facts.plans} />
+        <CarsTable id="vacancy-cars" title={`Cars In ${name}`} sub="Each car and the plans it comes on" cars={facts.cars} plans={facts.plans} />
       ) : null}
 
       <FormBand
@@ -186,7 +174,7 @@ export default async function Page({ params }: Props) {
           ...others.slice(0, 3).map((o) => ({
             href: `${vacancyPath(o.slug)}/`,
             label: `Driver Vacancy In ${o.name}`,
-            note: o.readyCars ? `${o.readyCars.toLocaleString("en-IN")} cars ready` : `${o.hubs.length} hubs`,
+            note: `${o.hubs.length} hubs`,
           })),
         ]}
       />

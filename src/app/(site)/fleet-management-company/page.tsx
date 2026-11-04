@@ -124,7 +124,7 @@ export default async function Page() {
         links={cities.map((c) => ({
           href: `${fleetPath(c.slug)}/`,
           label: `Everest Fleet In ${c.name}`,
-          note: [c.readyCars ? `${c.readyCars.toLocaleString("en-IN")} cars ready` : "", c.hubs.length ? `${c.hubs.length} hubs` : ""].filter(Boolean).join(" · ") || undefined,
+          note: c.hubs.length ? `${c.hubs.length} hubs` : undefined,
         }))}
       />
 

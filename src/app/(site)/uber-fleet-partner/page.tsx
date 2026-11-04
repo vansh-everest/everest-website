@@ -22,7 +22,7 @@ import { getDictionary } from "@/content/dictionary";
 import { COMPANY, SITE_URL } from "@/lib/company";
 import { getLiveData } from "@/lib/fleet-data";
 import { FLEET_ROOT, fleetPath } from "@/lib/search-pages";
-import { allCityFacts, docName, listNames, readyTotal } from "@/lib/seo-data";
+import { allCityFacts, docName, listNames } from "@/lib/seo-data";
 import { getContent } from "@/lib/store";
 
 export const revalidate = 3600;
@@ -39,7 +39,6 @@ export default async function Page() {
   const [content, live] = await Promise.all([getContent(), getLiveData()]);
   const dict = getDictionary("en");
   const cities = allCityFacts(content, live);
-  const ready = readyTotal(cities);
   const hubs = cities.reduce((s, c) => s + c.hubs.length, 0);
   const cityNames = listNames(cities.map((c) => c.name));
   const source = "guide/uber-fleet-partner";
@@ -51,7 +50,7 @@ export default async function Page() {
     },
     {
       q: "Is Everest Fleet an Uber fleet partner?",
-      a: `Yes. Everest Fleet runs cars on Uber in ${cityNames}${ready ? `, with ${ready.toLocaleString("en-IN")} cars ready to drive today` : ""}.`,
+      a: `Yes. Everest Fleet runs cars on Uber in ${cityNames}.`,
     },
     {
       q: "What do I need to drive with a fleet partner?",
@@ -84,7 +83,6 @@ export default async function Page() {
         title={`Uber Fleet Partner In ${cities.length} Cities`}
         intro="Drive an Everest Fleet car on Uber, insurance and permit included."
         facts={[
-          ...(ready ? [{ label: "Cars Ready", value: ready.toLocaleString("en-IN") }] : []),
           { label: "Cities", value: String(cities.length) },
           ...(hubs ? [{ label: "Hubs", value: String(hubs) }] : []),
         ]}
@@ -92,8 +90,7 @@ export default async function Page() {
       />
 
       <AnswerBox title="In Short">
-        An Uber fleet partner owns the cars and holds their papers; drivers drive them on Uber. Everest Fleet is a fleet partner in {cityNames}
-        {ready ? `, with ${ready.toLocaleString("en-IN")} cars ready across ${hubs} hubs` : ""}. Drivers bring their documents, collect a CNG or EV car, and are
+        An Uber fleet partner owns the cars and holds their papers; drivers drive them on Uber. Everest Fleet is a fleet partner in {cityNames}{hubs ? `, with ${hubs} hubs` : ""}. Drivers bring their documents, collect a CNG or EV car, and are
         paid every week.
       </AnswerBox>
 
@@ -118,7 +115,7 @@ export default async function Page() {
         links={cities.map((c) => ({
           href: `${fleetPath(c.slug)}/`,
           label: `Uber Fleet In ${c.name}`,
-          note: [c.readyCars ? `${c.readyCars.toLocaleString("en-IN")} cars ready` : "", c.hubs.length ? `${c.hubs.length} hubs` : ""].filter(Boolean).join(" · ") || undefined,
+          note: c.hubs.length ? `${c.hubs.length} hubs` : undefined,
         }))}
       />
 

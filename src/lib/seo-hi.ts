@@ -41,7 +41,6 @@ export const HI = {
   inShort: "संक्षेप में",
   allCities: "सभी शहर",
   keepReading: "आगे पढ़िए",
-  carsReady: "तैयार गाड़ियाँ",
   cities: "शहर",
   hubs: "हब",
   models: "मॉडल",
@@ -58,9 +57,8 @@ export const HI = {
   everestAcrossIndia: "पूरे भारत में Everest Fleet",
 };
 
-/** "12 हब", "5 मॉडल", "40 गाड़ियाँ तैयार": a card's note. */
+/** "12 हब", "5 मॉडल": a card's note. */
 export const hubCount = (n: number) => `${n} ${HI.hubs}`;
-export const readyCount = (n: number) => `${n.toLocaleString("en-IN")} गाड़ियाँ तैयार`;
 
 /** Beside the mid-page form on every Hindi search page. */
 export const APPLY_POINTS_HI = [

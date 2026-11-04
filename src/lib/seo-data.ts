@@ -23,7 +23,6 @@ export type CityFacts = {
   slug: string;
   name: string;
   state: string;
-  readyCars: number;
   hubs: Hub[];
   phone: { href: string; display: string } | null;
   cars: CityCar[];
@@ -69,7 +68,6 @@ export function cityFacts(content: SiteContent, live: LiveData | null, slug: str
     slug,
     name: city.name[locale] || city.name.en,
     state: city.state,
-    readyCars: city.readyCars,
     hubs: fuel ? city.hubs.filter((h) => !h.fuel || fuel.test(h.fuel)) : city.hubs,
     phone: cityPhone(slug),
     cars,
@@ -114,5 +112,3 @@ export const docName = (doc: string) => doc.split(" ").map((w, i) => (/^[A-Z]{2,
 /** "9 am to 7 pm, every day" for a hub, or its hours as entered. */
 export const hubHours = (hub: Hub) => (hub.hours ? (hub.daily ? `${hub.hours}, every day` : hub.hours) : "");
 
-/** Cars ready across the cities, as one figure. */
-export const readyTotal = (cities: { readyCars: number }[]) => cities.reduce((s, c) => s + c.readyCars, 0);

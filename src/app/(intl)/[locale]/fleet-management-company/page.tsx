@@ -23,7 +23,7 @@ import { COMPANY, SITE_URL } from "@/lib/company";
 import { getLiveData } from "@/lib/fleet-data";
 import { fleetPath } from "@/lib/search-pages";
 import { allCityFacts, listNames } from "@/lib/seo-data";
-import { APPLY_POINTS_HI, HI, hiAlternates, hiPath, hubCount, inHindi, isHindi, readyCount } from "@/lib/seo-hi";
+import { APPLY_POINTS_HI, HI, hiAlternates, hiPath, hubCount, inHindi, isHindi } from "@/lib/seo-hi";
 import { getContent } from "@/lib/store";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -139,7 +139,7 @@ export default async function Page({ params }: Props) {
         links={cities.map((c) => ({
           href: hiPath(fleetPath(c.slug)),
           label: `${c.name} में Everest Fleet`,
-          note: [c.readyCars ? readyCount(c.readyCars) : "", c.hubs.length ? hubCount(c.hubs.length) : ""].filter(Boolean).join(" · ") || undefined,
+          note: c.hubs.length ? hubCount(c.hubs.length) : undefined,
         }))}
       />
 

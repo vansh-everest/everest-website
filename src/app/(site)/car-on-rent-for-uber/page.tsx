@@ -19,7 +19,7 @@ import {
 import { getDictionary } from "@/content/dictionary";
 import { SITE_URL } from "@/lib/company";
 import { getLiveData } from "@/lib/fleet-data";
-import { RENT_ROOT, allCityFacts, listNames, readyTotal, rentPath } from "@/lib/seo-data";
+import { RENT_ROOT, allCityFacts, listNames, rentPath } from "@/lib/seo-data";
 import { getContent } from "@/lib/store";
 
 export const revalidate = 3600;
@@ -41,7 +41,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Page() {
   const { content, cities } = await load();
   const dict = getDictionary("en");
-  const ready = readyTotal(cities);
   const hubs = cities.reduce((s, c) => s + c.hubs.length, 0);
   const cars = listNames(cities.flatMap((c) => c.cars.map((x) => x.name)));
   const source = "rent/all";
@@ -70,7 +69,6 @@ export default async function Page() {
         title="Car On Rent For Uber Drivers"
         intro={`Rent a car to drive on Uber in ${cities.length} cities, insurance and permit included.`}
         facts={[
-          ...(ready ? [{ label: "Cars Ready", value: ready.toLocaleString("en-IN") }] : []),
           { label: "Cities", value: String(cities.length) },
           ...(hubs ? [{ label: "Hubs", value: String(hubs) }] : []),
         ]}
@@ -78,8 +76,7 @@ export default async function Page() {
       />
 
       <AnswerBox title="In Short">
-        Everest Fleet rents CNG and EV cars to Uber drivers in {listNames(cities.map((c) => c.name))}
-        {ready ? `, with ${ready.toLocaleString("en-IN")} cars ready` : ""}. Insurance, permit and maintenance are included and you pay for fuel. On Drive To
+        Everest Fleet rents CNG and EV cars to Uber drivers in {listNames(cities.map((c) => c.name))}. Insurance, permit and maintenance are included and you pay for fuel. On Drive To
         Own or Own Now the car becomes yours at the end of the term.
       </AnswerBox>
 

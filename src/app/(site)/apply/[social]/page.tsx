@@ -3,8 +3,6 @@ import { notFound } from "next/navigation";
 import { StickyBar } from "@/components/driver/sticky-bar";
 import { BackChip, SearchForm, SearchHero } from "@/components/seo/seo-ui";
 import { getDictionary } from "@/content/dictionary";
-import { getLiveData } from "@/lib/fleet-data";
-import { allCityFacts, readyTotal } from "@/lib/seo-data";
 import { getContent } from "@/lib/store";
 
 /**
@@ -39,10 +37,9 @@ export default async function SocialApplyPage({ params }: Props) {
   const { social } = await params;
   if (!SOCIALS.includes(social)) notFound();
 
-  const [content, live] = await Promise.all([getContent(), getLiveData()]);
+  const content = await getContent();
   const dict = getDictionary("en");
   const source = `social/${social}`;
-  const ready = readyTotal(allCityFacts(content, live));
 
   return (
     <>
@@ -51,7 +48,6 @@ export default async function SocialApplyPage({ params }: Props) {
         title="Driver Job Available"
         intro="Drive an Everest Fleet car. Insurance and permit included, weekly payouts."
         facts={[
-          ...(ready ? [{ label: "Cars ready", value: ready.toLocaleString("en-IN") }] : []),
           { label: "Cities", value: String(content.cities.length) },
         ]}
         form={<SearchForm content={content} source={source} placement="hero" />}

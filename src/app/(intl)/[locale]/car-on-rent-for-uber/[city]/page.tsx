@@ -60,7 +60,7 @@ function answer(f: CityFacts): string {
   const fuels = listNames(f.cars.map((c) => c.fuel), "या");
   return [
     `${f.name} में Everest Fleet Uber ड्राइवरों को Drive To Earn पर ${fuels || "CNG या EV"} गाड़ी देता है, या Drive To Own और Own Now पर ऐसी गाड़ी जो अवधि पूरी होने पर उनकी हो जाती है।`,
-    f.readyCars ? ` ${hubCount(f.hubs.length)} पर ${f.readyCars.toLocaleString("en-IN")} गाड़ियाँ तैयार हैं।` : f.hubs.length ? ` गाड़ी ${hubCount(f.hubs.length)} में से किसी एक से ले जाइए।` : "",
+    f.hubs.length ? ` गाड़ी ${hubCount(f.hubs.length)} में से किसी एक से ले जाइए।` : "",
     " बीमा, परमिट और मेंटेनेंस शामिल है; ईंधन का खर्च आपका।",
   ].join("");
 }
@@ -120,7 +120,6 @@ export default async function Page({ params }: Props) {
         title={`${name} में Uber के लिए किराये पर कार`}
         intro={`${name} में Everest Fleet की गाड़ी से Uber चलाइए, बीमा और परमिट शामिल।`}
         facts={[
-          ...(facts.readyCars ? [{ label: HI.carsReady, value: facts.readyCars.toLocaleString("en-IN") }] : []),
           ...(facts.hubs.length ? [{ label: HI.hubs, value: String(facts.hubs.length) }] : []),
           ...(facts.cars.length ? [{ label: HI.models, value: String(facts.cars.length) }] : []),
         ]}

@@ -47,10 +47,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!isHindi(locale)) return {};
   const { facts } = await load(slug);
   if (!facts) return {};
-  const ready = facts.readyCars ? facts.readyCars.toLocaleString("en-IN") : "";
   return {
-    title: `${facts.name} में Uber फ़्लीट: Uber फ़्लीट ऑपरेटर${ready ? `, ${ready} गाड़ियाँ तैयार` : ""}`,
-    description: `Everest Fleet ${facts.name} में ${hubCount(facts.hubs.length)} पर Uber फ़्लीट चलाता है${ready ? ` और ${ready} गाड़ियाँ तैयार हैं` : ""}: इसकी गाड़ी Uber पर चलाइए, बीमा और परमिट शामिल।`,
+    title: `${facts.name} में Uber फ़्लीट: Uber फ़्लीट ऑपरेटर`,
+    description: `Everest Fleet ${facts.name} में ${hubCount(facts.hubs.length)} पर Uber फ़्लीट चलाता है: इसकी गाड़ी Uber पर चलाइए, बीमा और परमिट शामिल।`,
     alternates: hiAlternates(`${fleetPath(slug)}/`),
   };
 }
@@ -59,7 +58,7 @@ function answer(f: CityFacts): string {
   const models = listNames(f.cars.map((c) => c.name), "और");
   return [
     `${f.name} में Everest Fleet एक Uber फ़्लीट पार्टनर है`,
-    f.readyCars ? `, और ${hubCount(f.hubs.length)} पर ${f.readyCars.toLocaleString("en-IN")} गाड़ियाँ तैयार हैं` : f.hubs.length ? `, जिसके ${hubCount(f.hubs.length)} हैं` : "",
+    f.hubs.length ? `, जिसके ${hubCount(f.hubs.length)} हैं` : "",
     models ? `। यह Uber पर ${models} चलाता है।` : "।",
     " ड्राइवर अपने कागज़ लाते हैं और Everest Fleet की गाड़ी चलाते हैं; बीमा, परमिट और मेंटेनेंस फ़्लीट संभालता है, और पेमेंट हर हफ़्ते मिलती है।",
   ].join("");
@@ -69,7 +68,6 @@ function faqs(f: CityFacts): QA[] {
   const items: QA[] = [
     { q: `क्या Everest Fleet ${f.name} में Uber फ़्लीट पार्टनर है?`, a: `हाँ। Everest Fleet ${COMPANY.founded} से Uber पर गाड़ियाँ चला रहा है और ${f.name} में फ़्लीट पार्टनर है।` },
   ];
-  if (f.readyCars) items.push({ q: `${f.name} में Everest Fleet के पास कितनी गाड़ियाँ हैं?`, a: `आज ${f.readyCars.toLocaleString("en-IN")} गाड़ियाँ चलाने के लिए तैयार हैं, ${hubCount(f.hubs.length)} पर।` });
   if (f.cars.length) items.push({ q: `${f.name} में Everest Fleet कौन-सी गाड़ियाँ चलाता है?`, a: `${listNames(f.cars.map((c) => `${c.name} (${c.fuel})`), "और")}।` });
   if (f.hubs.length) items.push({ q: `${f.name} में Everest Fleet के हब कहाँ हैं?`, a: f.hubs.map((h) => `${h.name}: ${h.address}`).join("। ") + "।" });
   items.push({
@@ -125,7 +123,6 @@ export default async function Page({ params }: Props) {
         title={`${name} में Uber फ़्लीट`}
         intro={`${name} में Uber पर Everest Fleet की गाड़ी चलाइए, बीमा और परमिट शामिल।`}
         facts={[
-          ...(facts.readyCars ? [{ label: HI.carsReady, value: facts.readyCars.toLocaleString("en-IN") }] : []),
           ...(facts.hubs.length ? [{ label: HI.hubs, value: String(facts.hubs.length) }] : []),
           { label: "Uber पर शुरुआत", value: String(COMPANY.founded) },
         ]}

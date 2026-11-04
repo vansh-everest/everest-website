@@ -7,7 +7,7 @@ import { AnswerBox, BackChip, FormBand, JsonLd, RelatedLinks, SearchForm, Search
 import { getDictionary } from "@/content/dictionary";
 import { SITE_URL } from "@/lib/company";
 import { getLiveData } from "@/lib/fleet-data";
-import { RENT_ROOT, allCityFacts, listNames, readyTotal, rentPath } from "@/lib/seo-data";
+import { RENT_ROOT, allCityFacts, listNames, rentPath } from "@/lib/seo-data";
 import { APPLY_POINTS_HI, HI, HI_DRIVE_CRUMB, hiAlternates, hiFaq, hiPath, hubCount, inHindi, isHindi } from "@/lib/seo-hi";
 import { getContent } from "@/lib/store";
 
@@ -40,7 +40,6 @@ export default async function Page({ params }: Props) {
   if (!isHindi(locale)) notFound();
   const { content, cities } = await load();
   const dict = getDictionary("hi");
-  const ready = readyTotal(cities);
   const hubs = cities.reduce((s, c) => s + c.hubs.length, 0);
   const cars = listNames(cities.flatMap((c) => c.cars.map((x) => x.name)), "और");
   const cityNames = listNames(cities.map((c) => c.name), "और");
@@ -71,7 +70,6 @@ export default async function Page({ params }: Props) {
         title="Uber ड्राइवरों के लिए किराये पर कार"
         intro={`${cities.length} शहरों में Uber चलाने के लिए गाड़ी पाइए, बीमा और परमिट शामिल।`}
         facts={[
-          ...(ready ? [{ label: HI.carsReady, value: ready.toLocaleString("en-IN") }] : []),
           { label: HI.cities, value: String(cities.length) },
           ...(hubs ? [{ label: HI.hubs, value: String(hubs) }] : []),
         ]}
@@ -79,8 +77,7 @@ export default async function Page({ params }: Props) {
       />
 
       <AnswerBox title={HI.inShort}>
-        Everest Fleet {cityNames} में Uber ड्राइवरों को CNG और EV गाड़ियाँ देता है
-        {ready ? `, अभी ${ready.toLocaleString("en-IN")} गाड़ियाँ तैयार हैं` : ""}। बीमा, परमिट और मेंटेनेंस शामिल है, ईंधन का खर्च आपका। Drive To Own या Own
+        Everest Fleet {cityNames} में Uber ड्राइवरों को CNG और EV गाड़ियाँ देता है। बीमा, परमिट और मेंटेनेंस शामिल है, ईंधन का खर्च आपका। Drive To Own या Own
         Now में अवधि पूरी होने पर गाड़ी आपकी हो जाती है।
       </AnswerBox>
 

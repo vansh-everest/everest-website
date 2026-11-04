@@ -37,9 +37,9 @@ export async function GET() {
     const cars = listNames(c.cars.map((x) => x.name));
     return `- [Car on rent for Uber in ${c.name}](${link(rentPath(c.slug))})${cars ? `: ${cars}` : ""}${c.hubs.length ? `; ${c.hubs.length} hubs` : ""}`;
   });
-  const fleet = facts.map((c) => `- [Uber fleet in ${c.name}](${link(fleetPath(c.slug))})${c.readyCars ? `: ${c.readyCars.toLocaleString("en-IN")} cars ready` : ""}${c.hubs.length ? `; ${c.hubs.length} hubs` : ""}`);
+  const fleet = facts.map((c) => `- [Uber fleet in ${c.name}](${link(fleetPath(c.slug))})${c.hubs.length ? `: ${c.hubs.length} hubs` : ""}`);
   const contact = facts.map((c) => `- [Driver job contact number, ${c.name}](${link(contactPath(c.slug))})${c.phone ? `: ${c.phone.display}` : ""}`);
-  const vacancy = facts.map((c) => `- [Driver vacancy in ${c.name}](${link(vacancyPath(c.slug))})${c.readyCars ? `: ${c.readyCars.toLocaleString("en-IN")} cars ready for drivers` : ""}`);
+  const vacancy = facts.map((c) => `- [Driver vacancy in ${c.name}](${link(vacancyPath(c.slug))})${c.hubs.length ? `: ${c.hubs.length} hubs` : ""}`);
   const uberJob = facts.map((c) => `- [Uber driver job in ${c.name}](${link(uberJobPath(c.slug))})`);
   const hubs = content.cities.flatMap((c) =>
     c.hubs.map((h) => `- [${h.name} hub, ${c.name.en}](${link(hubPath(c, h))}): ${h.address}${h.fuel ? `; ${h.fuel} cars` : ""}${h.hours ? `; ${h.hours}` : ""}`)

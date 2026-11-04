@@ -21,8 +21,8 @@ import {
 import { getDictionary } from "@/content/dictionary";
 import { SITE_URL } from "@/lib/company";
 import { getLiveData } from "@/lib/fleet-data";
-import { allCityFacts, listNames, planRefs, readyTotal } from "@/lib/seo-data";
-import { APPLY_POINTS_HI, HI, HI_DRIVE_CRUMB, hiAlternates, hiCityPath, hiDocuments, hiFaq, hiPath, hubCount, inHindi, isHindi, readyCount } from "@/lib/seo-hi";
+import { allCityFacts, listNames, planRefs } from "@/lib/seo-data";
+import { APPLY_POINTS_HI, HI, HI_DRIVE_CRUMB, hiAlternates, hiCityPath, hiDocuments, hiFaq, hiPath, hubCount, inHindi, isHindi } from "@/lib/seo-hi";
 import { getContent } from "@/lib/store";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -51,7 +51,6 @@ export default async function Page({ params }: Props) {
   const [content, live] = await Promise.all([getContent(), getLiveData()]);
   const dict = getDictionary("hi");
   const cities = allCityFacts(content, live, undefined, "hi");
-  const ready = readyTotal(cities);
   const cityNames = listNames(cities.map((c) => c.name), "और");
   const documents = hiDocuments();
   const source = "guide/drive-without-car";
@@ -85,7 +84,7 @@ export default async function Page({ params }: Props) {
         chip={<BackChip href={HI_DRIVE_CRUMB.path} label={HI_DRIVE_CRUMB.name} />}
         title="बिना अपनी गाड़ी के Uber चलाइए"
         intro="गाड़ी, बीमा और परमिट Everest Fleet का। आप अपना लाइसेंस लाइए।"
-        facts={[...(ready ? [{ label: HI.carsReady, value: ready.toLocaleString("en-IN") }] : []), { label: HI.cities, value: String(cities.length) }]}
+        facts={[{ label: HI.cities, value: String(cities.length) }]}
         form={<SearchForm locale="hi" content={content} source={source} placement="hero" />}
       />
 
@@ -122,7 +121,7 @@ export default async function Page({ params }: Props) {
         links={cities.map((c) => ({
           href: hiCityPath(c.slug),
           label: `${c.name} में ड्राइवर की नौकरी`,
-          note: [c.readyCars ? readyCount(c.readyCars) : "", c.hubs.length ? hubCount(c.hubs.length) : ""].filter(Boolean).join(" · ") || undefined,
+          note: c.hubs.length ? hubCount(c.hubs.length) : undefined,
         }))}
       />
 

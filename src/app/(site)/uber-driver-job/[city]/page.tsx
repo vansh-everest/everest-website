@@ -108,7 +108,6 @@ export default async function Page({ params }: Props) {
         title={`Uber Driver Job In ${name}`}
         intro={`Drive on Uber in ${name} with an Everest Fleet car, insurance and permit included.`}
         facts={[
-          ...(facts.readyCars ? [{ label: "Cars Ready", value: facts.readyCars.toLocaleString("en-IN") }] : []),
           ...(facts.hubs.length ? [{ label: "Hubs", value: String(facts.hubs.length) }] : []),
         ]}
         phone={facts.phone}

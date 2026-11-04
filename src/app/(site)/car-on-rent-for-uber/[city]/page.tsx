@@ -61,7 +61,7 @@ function answer(f: CityFacts): string {
   const fuels = listNames(f.cars.map((c) => c.fuel), "or");
   return [
     `In ${f.name}, Everest Fleet gives Uber drivers a ${fuels || "CNG or EV"} car on Drive To Earn, or one that becomes theirs at the end of the term on Drive To Own or Own Now.`,
-    f.readyCars ? ` ${f.readyCars.toLocaleString("en-IN")} cars are ready across ${f.hubs.length} hubs.` : f.hubs.length ? ` Collect it from ${f.hubs.length} hubs.` : "",
+    f.hubs.length ? ` Collect it from ${f.hubs.length} hubs.` : "",
     " Insurance, permit and maintenance are included; you pay for fuel.",
   ].join("");
 }
@@ -118,7 +118,6 @@ export default async function Page({ params }: Props) {
         title={`Car On Rent For Uber In ${name}`}
         intro={`Drive on Uber in ${name} with an Everest Fleet car, insurance and permit included.`}
         facts={[
-          ...(facts.readyCars ? [{ label: "Cars Ready", value: facts.readyCars.toLocaleString("en-IN") }] : []),
           ...(facts.hubs.length ? [{ label: "Hubs", value: String(facts.hubs.length) }] : []),
           ...(facts.cars.length ? [{ label: "Models", value: String(facts.cars.length) }] : []),
         ]}

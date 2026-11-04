@@ -19,7 +19,7 @@ import {
 import { getDictionary } from "@/content/dictionary";
 import { getLiveData } from "@/lib/fleet-data";
 import { VACANCY_ROOT, vacancyPath } from "@/lib/search-pages";
-import { allCityFacts, docName, listNames, readyTotal } from "@/lib/seo-data";
+import { allCityFacts, docName, listNames } from "@/lib/seo-data";
 import { getContent } from "@/lib/store";
 
 export const revalidate = 3600;
@@ -27,9 +27,8 @@ export const revalidate = 3600;
 export async function generateMetadata(): Promise<Metadata> {
   const [content, live] = await Promise.all([getContent(), getLiveData()]);
   const cities = allCityFacts(content, live);
-  const ready = readyTotal(cities);
   return {
-    title: ready ? `Driver Vacancy: ${ready.toLocaleString("en-IN")} Cars Ready in ${cities.length} Cities` : `Driver Vacancy in ${cities.length} Cities: Cab Driver Jobs With a Car`,
+    title: `Driver Vacancy in ${cities.length} Cities: Cab Driver Jobs With a Car`,
     description: `Driver vacancies at Everest Fleet in ${listNames(cities.map((c) => c.name))}, with the car, insurance and permit included and weekly payouts.`,
     alternates: { canonical: `${VACANCY_ROOT}/` },
   };
@@ -39,10 +38,8 @@ export default async function Page() {
   const [content, live] = await Promise.all([getContent(), getLiveData()]);
   const dict = getDictionary("en");
   const cities = allCityFacts(content, live);
-  const ready = readyTotal(cities);
   const source = "vacancy/all";
   const items: QA[] = [
-    ...(ready ? [{ q: "How many driver vacancies does Everest Fleet have?", a: `${ready.toLocaleString("en-IN")} cars are ready for drivers across ${listNames(cities.map((c) => c.name))}.` }] : []),
     { q: "What do I need to apply?", a: `A valid driving licence and your ${listNames(dict.documents.map(docName))}.` },
     ...dict.faq,
   ];
@@ -54,12 +51,12 @@ export default async function Page() {
         chip={<BackChip href="/drive-with-us/" label={dict.hub.eyebrow} />}
         title="Driver Vacancy"
         intro="Cab driver vacancies with an Everest Fleet car, insurance and permit included, in every city below."
-        facts={[...(ready ? [{ label: "Cars Ready", value: ready.toLocaleString("en-IN") }] : []), { label: "Cities", value: String(cities.length) }]}
+        facts={[{ label: "Cities", value: String(cities.length) }]}
         form={<SearchForm content={content} source={source} placement="hero" />}
       />
 
       <AnswerBox title="In Short">
-        {ready ? `Everest Fleet has ${ready.toLocaleString("en-IN")} cars ready for drivers` : "Everest Fleet is hiring cab drivers"} in {listNames(cities.map((c) => c.name))}. Pick your city, apply and
+        Everest Fleet is hiring cab drivers in {listNames(cities.map((c) => c.name))}. Pick your city, apply and
         collect your car from the nearest hub.
       </AnswerBox>
 
@@ -69,7 +66,7 @@ export default async function Page() {
         links={cities.map((c) => ({
           href: `${vacancyPath(c.slug)}/`,
           label: `Driver Vacancy In ${c.name}`,
-          note: [c.readyCars ? `${c.readyCars.toLocaleString("en-IN")} cars ready` : "", c.hubs.length ? `${c.hubs.length} hubs` : ""].filter(Boolean).join(" · ") || undefined,
+          note: c.hubs.length ? `${c.hubs.length} hubs` : undefined,
         }))}
       />
 

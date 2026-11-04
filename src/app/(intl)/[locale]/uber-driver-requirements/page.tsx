@@ -22,7 +22,7 @@ import { getDictionary } from "@/content/dictionary";
 import { COMPANY, SITE_URL } from "@/lib/company";
 import { getLiveData } from "@/lib/fleet-data";
 import { allCityFacts, listNames, rentPath } from "@/lib/seo-data";
-import { APPLY_POINTS_HI, HI, HI_DRIVE_CRUMB, hiAlternates, hiCityPath, hiDocuments, hiFaq, hiPath, hubCount, inHindi, isHindi, readyCount } from "@/lib/seo-hi";
+import { APPLY_POINTS_HI, HI, HI_DRIVE_CRUMB, hiAlternates, hiCityPath, hiDocuments, hiFaq, hiPath, hubCount, inHindi, isHindi } from "@/lib/seo-hi";
 import { getContent } from "@/lib/store";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -178,7 +178,7 @@ export default async function Page({ params }: Props) {
         links={cities.map((c) => ({
           href: hiCityPath(c.slug),
           label: `${c.name} में ड्राइवर की नौकरी`,
-          note: [c.readyCars ? readyCount(c.readyCars) : "", c.hubs.length ? hubCount(c.hubs.length) : ""].filter(Boolean).join(" · ") || undefined,
+          note: c.hubs.length ? hubCount(c.hubs.length) : undefined,
         }))}
       />
 

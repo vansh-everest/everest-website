@@ -22,8 +22,8 @@ import { getDictionary } from "@/content/dictionary";
 import { COMPANY, SITE_URL } from "@/lib/company";
 import { getLiveData } from "@/lib/fleet-data";
 import { FLEET_ROOT, fleetPath } from "@/lib/search-pages";
-import { allCityFacts, listNames, readyTotal } from "@/lib/seo-data";
-import { APPLY_POINTS_HI, HI, HI_DRIVE_CRUMB, hiAlternates, hiDocuments, hiFaq, hiPath, hubCount, inHindi, isHindi, readyCount } from "@/lib/seo-hi";
+import { allCityFacts, listNames } from "@/lib/seo-data";
+import { APPLY_POINTS_HI, HI, HI_DRIVE_CRUMB, hiAlternates, hiDocuments, hiFaq, hiPath, hubCount, inHindi, isHindi } from "@/lib/seo-hi";
 import { getContent } from "@/lib/store";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -52,7 +52,6 @@ export default async function Page({ params }: Props) {
   const [content, live] = await Promise.all([getContent(), getLiveData()]);
   const dict = getDictionary("hi");
   const cities = allCityFacts(content, live, undefined, "hi");
-  const ready = readyTotal(cities);
   const hubs = cities.reduce((s, c) => s + c.hubs.length, 0);
   const cityNames = listNames(cities.map((c) => c.name), "और");
   const source = "guide/uber-fleet-partner";
@@ -64,7 +63,7 @@ export default async function Page({ params }: Props) {
     },
     {
       q: "क्या Everest Fleet एक Uber फ़्लीट पार्टनर है?",
-      a: `हाँ। Everest Fleet ${cityNames} में Uber पर गाड़ियाँ चलाता है${ready ? `, और आज ${ready.toLocaleString("en-IN")} गाड़ियाँ चलाने के लिए तैयार हैं` : ""}।`,
+      a: `हाँ। Everest Fleet ${cityNames} में Uber पर गाड़ियाँ चलाता है।`,
     },
     {
       q: "फ़्लीट पार्टनर के साथ गाड़ी चलाने के लिए क्या चाहिए?",
@@ -95,7 +94,6 @@ export default async function Page({ params }: Props) {
         title={`${cities.length} शहरों में Uber फ़्लीट पार्टनर`}
         intro="Everest Fleet की गाड़ी Uber पर चलाइए, बीमा और परमिट शामिल।"
         facts={[
-          ...(ready ? [{ label: HI.carsReady, value: ready.toLocaleString("en-IN") }] : []),
           { label: HI.cities, value: String(cities.length) },
           ...(hubs ? [{ label: HI.hubs, value: String(hubs) }] : []),
         ]}
@@ -103,8 +101,7 @@ export default async function Page({ params }: Props) {
       />
 
       <AnswerBox title={HI.inShort}>
-        Uber फ़्लीट पार्टनर के पास गाड़ियाँ और उनके कागज़ होते हैं; ड्राइवर उन्हें Uber पर चलाते हैं। Everest Fleet {cityNames} में फ़्लीट पार्टनर है
-        {ready ? `, और ${hubCount(hubs)} पर ${ready.toLocaleString("en-IN")} गाड़ियाँ तैयार हैं` : ""}। ड्राइवर अपने कागज़ लाते हैं, CNG या EV गाड़ी ले जाते हैं, और
+        Uber फ़्लीट पार्टनर के पास गाड़ियाँ और उनके कागज़ होते हैं; ड्राइवर उन्हें Uber पर चलाते हैं। Everest Fleet {cityNames} में फ़्लीट पार्टनर है{hubs ? `, जिसके ${hubCount(hubs)} हैं` : ""}। ड्राइवर अपने कागज़ लाते हैं, CNG या EV गाड़ी ले जाते हैं, और
         उन्हें हर हफ़्ते पेमेंट मिलती है।
       </AnswerBox>
 
@@ -129,7 +126,7 @@ export default async function Page({ params }: Props) {
         links={cities.map((c) => ({
           href: hiPath(fleetPath(c.slug)),
           label: `${c.name} में Uber फ़्लीट`,
-          note: [c.readyCars ? readyCount(c.readyCars) : "", c.hubs.length ? hubCount(c.hubs.length) : ""].filter(Boolean).join(" · ") || undefined,
+          note: c.hubs.length ? hubCount(c.hubs.length) : undefined,
         }))}
       />
 
