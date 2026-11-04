@@ -27,7 +27,7 @@ type Metadata = { total: number; links: { next: string | null; prev: string | nu
 
 const FORMS = [
   "home", "drive-with-us", "our-plans", "about-us", "everest-dost", "our-services",
-  "fleet-logistics", "employee-mobility", "intercity", "advertise-with-us",
+  "fleet-logistics", "fleet-logistics/attach", "employee-mobility", "intercity", "advertise-with-us",
 ];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 

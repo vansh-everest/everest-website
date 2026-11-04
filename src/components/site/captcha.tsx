@@ -132,13 +132,18 @@ export function Captcha({ lang = "en", className = "", tone = "light" }: { lang?
     // until the token lands or WAIT_MS passes, then sent again; without a token the server decides.
     // It runs on the form itself, before React's handler at the root, and stops that event there.
     let letThrough = false;
+    let holding = false;
     const gate = (event: SubmitEvent) => {
       if (!V3_KEY || letThrough || field.current?.value) return;
       event.preventDefault();
       event.stopImmediatePropagation();
+      // A repeat click while one submit is held would send the lead twice.
+      if (holding) return;
+      holding = true;
       const submitter = event.submitter;
       const token = loadScript(lang).then(() => renew());
       void Promise.race([token, new Promise((r) => window.setTimeout(r, WAIT_MS))]).then(() => {
+        holding = false;
         if (!alive || !form) return;
         letThrough = true;
         form.requestSubmit(submitter instanceof HTMLElement ? submitter : undefined);
