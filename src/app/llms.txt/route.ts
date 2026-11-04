@@ -7,7 +7,7 @@ import { EXTRA_LOCALES, localePath, type ExtraLocale } from "@/lib/i18n";
 import { NEWS, newsDate, newsPath } from "@/lib/news";
 import { PLAN_PAGES } from "@/lib/plan-pages";
 import { getLiveData } from "@/lib/fleet-data";
-import { CONTACT_ROOT, FLEET_ROOT, RENT_ROOT, UBER_JOB_ROOT, VACANCY_ROOT, contactPath, fleetPath, hubPath, rentPath, uberJobPath, vacancyPath } from "@/lib/search-pages";
+import { CONTACT_ROOT, FLEET_ROOT, RENT_ROOT, UBER_JOB_ROOT, VACANCY_ROOT, contactPath, fleetPath, hubPath, rentPath, searchPages, uberJobPath, vacancyPath } from "@/lib/search-pages";
 import { allCityFacts, listNames } from "@/lib/seo-data";
 import { getContent } from "@/lib/store";
 
@@ -44,6 +44,9 @@ export async function GET() {
   const hubs = content.cities.flatMap((c) =>
     c.hubs.map((h) => `- [${h.name} hub, ${c.name.en}](${link(hubPath(c, h))}): ${h.address}${h.fuel ? `; ${h.fuel} cars` : ""}${h.hours ? `; ${h.hours}` : ""}`)
   );
+  const hindiRoots = searchPages(content)
+    .filter((p) => p.locale === "hi" && !p.city)
+    .map((p) => `- [${p.label.replace(" (Hindi)", "")}](${link(p.path.replace(/\/$/, ""))})`);
   const cities = content.cities.map((c) => c.name.en);
 
   const plans = PLAN_PAGES.flatMap(({ path, planId }) => {
@@ -94,6 +97,9 @@ export async function GET() {
     ...uberJob,
     "",
     ...(hubs.length ? ["## Hubs", ...hubs, ""] : []),
+    "## Driver pages in Hindi",
+    ...hindiRoots,
+    "",
     "## Driver jobs",
     `- [Driver jobs in all cities](${link("/drive-with-us")}): plans, hubs and how to apply`,
     ...content.cities.map((c) => `- [Driver job in ${c.name.en}](${link(cityPath(c.slug))})`),
@@ -115,10 +121,10 @@ export async function GET() {
     "",
     "## Services for businesses",
     `- [All services](${link("/our-services")}): fleet logistics, employee mobility, intercity travel and advertising on cars`,
-    `- [Fleet Logistics](${link("/fleet-logistics")}): chilled, frozen and ambient delivery vans, tracked live on every trip`,
-    `- [Employee Mobility](${link("/employee-mobility")}): electric office cabs with certified drivers, route planning and backup cabs`,
-    `- [Intercity](${link("/intercity")}): one way, round trip and multi-way cabs, airport transfers and city rides`,
-    `- [Advertise With Us](${link("/advertise-with-us")}): in-cab branding, cab branding and in-cab sampling across ${COMPANY.vehicles} cabs`,
+    `- [Fleet Logistics](${link("/fleet-logistics")}): freezer, chiller and ambient transport with live tracking and temperature logs; vehicle owners can attach trucks, reefers and EV 3-wheelers`,
+    `- [Employee Mobility](${link("/employee-mobility")}): office commute cabs with certified drivers, electric cabs, live tracking and backup cabs`,
+    `- [Intercity](${link("/intercity")}): one way, round trip and multi-way cabs, with fixed fares on top routes`,
+    `- [Advertise With Us](${link("/advertise-with-us")}): exterior and in-cab branding across ${COMPANY.vehicles} cabs in ${COMPANY.cities} cities`,
     "",
     "## Company",
     `- [About Everest Fleet](${link("/about-us")}): founded ${COMPANY.founded}, ${COMPANY.vehicles} cars, ${COMPANY.cities} cities (as of ${COMPANY.asOf})`,

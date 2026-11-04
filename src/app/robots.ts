@@ -7,7 +7,11 @@ import { SITE_URL } from "@/lib/company";
  * The AI search crawlers are separate from the AI training crawlers and are what decide
  * whether we can be cited in an answer: OAI-SearchBot feeds ChatGPT's search index,
  * PerplexityBot feeds Perplexity, and Google-Extended governs Gemini grounding.
- * All three are already reaching the live property, so the citation gap is content.
+ *
+ * Cloudflare prepends its own managed block to this file on the live site, which disallows
+ * GPTBot, ClaudeBot, Google-Extended and other training crawlers. That block is a Cloudflare
+ * dashboard setting, not this code. Googlebot, Bingbot, OAI-SearchBot, ChatGPT-User and
+ * PerplexityBot are not in it, so search and ChatGPT answers are unaffected.
  */
 export default function robots(): MetadataRoute.Robots {
   const searchAndAssistants = [

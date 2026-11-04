@@ -42,10 +42,10 @@ const fixed: Array<{ path: string; priority: number; changeFrequency: Freq }> = 
   { path: "/faq", priority: 0.7, changeFrequency: "monthly" },
   { path: "/investors", priority: 0.4, changeFrequency: "yearly" },
   { path: "/everest-dost", priority: 0.6, changeFrequency: "monthly" },
-  { path: "/fleet-logistics", priority: 0.5, changeFrequency: "monthly" },
-  { path: "/employee-mobility", priority: 0.5, changeFrequency: "monthly" },
-  { path: "/intercity", priority: 0.5, changeFrequency: "monthly" },
-  { path: "/advertise-with-us", priority: 0.5, changeFrequency: "monthly" },
+  { path: "/fleet-logistics", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/employee-mobility", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/intercity", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/advertise-with-us", priority: 0.7, changeFrequency: "monthly" },
   { path: "/careers", priority: 0.4, changeFrequency: "monthly" },
   { path: "/newsroom", priority: 0.4, changeFrequency: "monthly" },
   // The old site's legal pages, at their old addresses.
@@ -55,8 +55,17 @@ const fixed: Array<{ path: string; priority: number; changeFrequency: Freq }> = 
   { path: "/terms-and-conditions-for-referral-program", priority: 0.1, changeFrequency: "yearly" },
 ];
 
+/** The two languages of a search page that has a Hindi edition, both directions. */
+function hindiPair(englishPath: string): Record<string, string> {
+  return { "en-IN": url(englishPath), "hi-IN": url(`/hi${englishPath}`), "x-default": url(englishPath) };
+}
+
+/**
+ * lastModified is set only where the date is true (blog posts, press stories). A "now" stamp on
+ * every page would change with each daily blog deploy, and Google stops trusting a sitemap's dates
+ * once they prove wrong, which would cost the real ones too.
+ */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const lastModified = new Date();
   const content = await getContent();
   const entries: MetadataRoute.Sitemap = [];
 
@@ -64,7 +73,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const locale of MAIN_LOCALES) {
     entries.push({
       url: url(localePath(locale, "/")),
-      lastModified,
       changeFrequency: "weekly",
       priority: 1,
       alternates: { languages: absoluteAlternates("/", MAIN_LOCALES) },
@@ -75,12 +83,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const hidden = new Set(PLAN_PAGES.filter((p) => !planFor(content, p.planId)?.visible).map((p) => p.path as string));
   for (const { path, priority, changeFrequency } of fixed) {
     if (hidden.has(path)) continue;
-    entries.push({ url: url(path), lastModified, changeFrequency, priority });
+    entries.push({ url: url(path), changeFrequency, priority });
   }
 
-  // The search pages, in English (lib/search-pages.ts).
-  for (const page of searchPages(content)) {
-    entries.push({ url: url(page.path), lastModified, changeFrequency: "weekly", priority: page.city ? 0.7 : 0.8 });
+  // The search pages (lib/search-pages.ts). Those with a Hindi edition declare each other.
+  const pages = searchPages(content);
+  const hindi = new Set(pages.filter((p) => p.locale === "hi").map((p) => p.path.replace(/^\/hi/, "")));
+  for (const page of pages) {
+    const english = page.path.replace(/^\/hi/, "");
+    entries.push({
+      url: url(page.path),
+      changeFrequency: "weekly",
+      priority: page.city ? 0.7 : 0.8,
+      ...(hindi.has(english) ? { alternates: { languages: hindiPair(english) } } : {}),
+    });
   }
 
   // Driver pages and the blog index exist in every locale, each declaring the other two.
@@ -98,7 +114,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const locale of LOCALES) {
       entries.push({
         url: url(localePath(locale, path)),
-        lastModified,
         changeFrequency,
         priority,
         alternates: { languages: absoluteAlternates(path) },
@@ -110,7 +125,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const post of blogPostsFor(content, locale)) {
       entries.push({
         url: url(localePath(locale, `/blog/${post.slug}`)),
-        lastModified: new Date(post.date || lastModified),
+        ...(post.date ? { lastModified: new Date(post.date) } : {}),
         changeFrequency: "monthly",
         priority: locale === DEFAULT_LOCALE ? 0.6 : 0.5,
       });
