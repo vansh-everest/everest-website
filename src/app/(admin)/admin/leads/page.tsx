@@ -6,7 +6,7 @@ import { readSession } from "@/lib/auth";
 import { jarvisAdmin, jarvisAdminEnabled } from "@/lib/jarvis";
 import { updateLeadAction } from "./actions";
 import { LEAD_STATUSES, leadFilters, leadQuery } from "./query";
-import { formName } from "@/lib/forms";
+import { SOCIAL_FORMS, formLabel } from "@/lib/forms";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +28,7 @@ type Metadata = { total: number; links: { next: string | null; prev: string | nu
 const FORMS = [
   "home", "drive-with-us", "our-plans", "about-us", "everest-dost", "our-services",
   "fleet-logistics", "fleet-logistics/attach", "employee-mobility", "intercity", "advertise-with-us",
+  ...Object.keys(SOCIAL_FORMS),
 ];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -93,7 +94,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
             <option value="">All forms</option>
             {FORMS.map((f) => (
               <option key={f} value={f}>
-                {f}
+                {formLabel(f)}
               </option>
             ))}
           </select>
@@ -138,7 +139,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
                   </td>
                   <td className="px-3 py-2.5">{lead.city}</td>
                   <td className="px-3 py-2.5">
-                    {formName(lead.source)}
+                    {formLabel(lead.source)}
                     {lead.page ? <span className="block text-xs text-ink-soft">{lead.page}</span> : null}
                   </td>
                   <td className="px-3 py-2.5 text-ink-soft">

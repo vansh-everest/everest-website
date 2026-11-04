@@ -15,3 +15,9 @@ export function leadType(source: string): "driver" | "business" | "dost" | "othe
 
 /** A form's name as the admin shows it: the Drive To Earn form still sends its old key, "plan/leasing". */
 export const formName = (source: string) => (source === "plan/leasing" ? "plan/drive-to-earn" : source);
+
+/** The bio-link forms (app/(site)/apply), each with its network's name; one lead belongs to one network. */
+export const SOCIAL_FORMS: Record<string, string> = { "social/instagram": "Instagram", "social/facebook": "Facebook" };
+
+/** A form's label in the admin's lists: its network's link for a bio-link form, else its name. */
+export const formLabel = (source: string) => (SOCIAL_FORMS[source] ? `${SOCIAL_FORMS[source]} link` : formName(source));

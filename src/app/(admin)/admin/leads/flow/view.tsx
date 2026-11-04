@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { List } from "lucide-react";
+import { SOCIAL_FORMS, formLabel } from "@/lib/forms";
 import { searchPageAt, type SearchPage } from "@/lib/search-pages";
 import { sendToUnifyAction } from "./actions";
 import { Funnel, Legend, StackedBars, StackedColumns, type Datum, type Series } from "./charts";
@@ -65,8 +66,8 @@ function matches(lead: FlowLead, f: Filters, pages: SearchPage[]): boolean {
   return !f.form || lead.form === f.form;
 }
 
-const formLabel = (form: string) =>
-  form === "driver" ? "Driver forms" : form === "other" ? "Business and Dost forms" : form === "search" ? "Search pages" : form || "All forms";
+const filterLabel = (form: string) =>
+  form === "driver" ? "Driver forms" : form === "other" ? "Business and Dost forms" : form === "search" ? "Search pages" : formLabel(form) || "All forms";
 
 const options = (leads: FlowLead[], key: (l: FlowLead) => string) => tally(leads, key).map(([name]) => name);
 
@@ -134,9 +135,16 @@ function FiltersBar({ f, cities, forms, channels }: { f: Filters; cities: string
         <option value="driver">Driver forms</option>
         <option value="other">Business and Dost forms</option>
         <option value="search">Search pages</option>
-        {forms.map((c) => (
-          <option key={c}>{c}</option>
+        {Object.keys(SOCIAL_FORMS).map((c) => (
+          <option key={c} value={c}>
+            {formLabel(c)}
+          </option>
         ))}
+        {forms
+          .filter((c) => !SOCIAL_FORMS[c])
+          .map((c) => (
+            <option key={c}>{c}</option>
+          ))}
       </select>
       <select name="channel" defaultValue={f.channel} className={field} aria-label="Channel">
         <option value="">All channels</option>
@@ -633,7 +641,7 @@ export function FlowView({ f, jarvis, unify, unifyOn, all, pages, result }: { f:
         {unifyOn && unify ? <SendBar f={f} missing={all.filter((l) => l.stage === "missing").length} result={result} /> : null}
 
         <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          <Tile label="Submissions" value={t.total.toLocaleString("en-IN")} note={f.form ? formLabel(f.form) : `${t.driver} driver, ${t.total - t.driver} other forms`} />
+          <Tile label="Submissions" value={t.total.toLocaleString("en-IN")} note={f.form ? filterLabel(f.form) : `${t.driver} driver, ${t.total - t.driver} other forms`} />
           <Tile label="Driver applications" value={t.driver.toLocaleString("en-IN")} note={`${pct(t.driver, t.total)} of submissions`} />
           <Tile label="New in CRM" value={t.sent.toLocaleString("en-IN")} note={`${pct(t.sent, t.driver)} of applications`} strong />
           <Tile label="Duplicate" value={t.duplicate.toLocaleString("en-IN")} note={`${pct(t.duplicate, t.driver)} of applications`} />
@@ -647,7 +655,7 @@ export function FlowView({ f, jarvis, unify, unifyOn, all, pages, result }: { f:
           <ChartCard title="Conversion">
             <Funnel
               steps={[
-                { label: "Submissions", value: t.total, note: formLabel(f.form) },
+                { label: "Submissions", value: t.total, note: filterLabel(f.form) },
                 { label: "Driver applications", value: t.driver, note: `${pct(t.driver, t.total)} of submissions` },
                 { label: "Reached Unify", value: reached, note: `${pct(reached, t.driver)} of applications` },
                 { label: "New in CRM", value: t.sent, note: `${pct(t.sent, reached)} of Unify` },

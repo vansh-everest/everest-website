@@ -1,4 +1,4 @@
-import { formName } from "@/lib/forms";
+import { SOCIAL_FORMS, formLabel, formName } from "@/lib/forms";
 import { isDriverForm, type UnifyLead, type UnifyLeadReport } from "@/lib/unify";
 
 /**
@@ -120,7 +120,10 @@ export function channelOf(campaign: string, referrer: string): string {
   const source = (q.get("utm_source") ?? "").trim().toLowerCase();
   const medium = (q.get("utm_medium") ?? "").trim().toLowerCase();
   if (q.has("gclid") || q.has("gbraid") || q.has("wbraid") || (source === "google" && PAID.test(medium))) return "Google Ads";
-  if (q.has("fbclid") || /^(facebook|fb|instagram|ig|meta)$/.test(source)) return PAID.test(medium) || q.has("fbclid") ? "Meta Ads" : "Facebook & Instagram";
+  if (q.has("fbclid") || /^(facebook|fb|instagram|ig|meta)$/.test(source)) {
+    if (PAID.test(medium) || q.has("fbclid")) return "Meta Ads";
+    return /^(instagram|ig)$/.test(source) ? "Instagram" : "Facebook";
+  }
   if (source) return SOURCE_NAMES[source] ?? source.charAt(0).toUpperCase() + source.slice(1);
   let host = "";
   try {
@@ -130,7 +133,8 @@ export function channelOf(campaign: string, referrer: string): string {
   }
   if (!host || /everestfleet\.(com|in)$/.test(host) || host.endsWith("amplifyapp.com")) return "Direct";
   if (/(^|\.)google\./.test(host) || /(^|\.)bing\.com$/.test(host) || /duckduckgo\.com$/.test(host)) return "Search";
-  if (/facebook\.com$|instagram\.com$|fb\.com$/.test(host)) return "Facebook & Instagram";
+  if (/instagram\.com$/.test(host)) return "Instagram";
+  if (/facebook\.com$|fb\.com$/.test(host)) return "Facebook";
   if (/youtube\.com$|youtu\.be$/.test(host)) return "YouTube";
   if (/whatsapp\.com$|wa\.me$/.test(host)) return "WhatsApp";
   if (/linkedin\.com$|lnkd\.in$/.test(host)) return "LinkedIn";
@@ -228,7 +232,8 @@ export function joinLeads(leads: JarvisLead[], reports: UnifyLeadReport[]): Flow
       city: cityLabel(lead.city),
       form: formName(lead.source) || "unknown",
       driver,
-      channel: channelOf(lead.campaign ?? "", lead.referrer ?? ""),
+      // A bio link's form names its network. The apps add fbclid to links they open, which reads as paid.
+      channel: SOCIAL_FORMS[lead.source] ?? channelOf(lead.campaign ?? "", lead.referrer ?? ""),
       campaign: campaignOf(lead.campaign ?? ""),
       locale: LOCALES[lead.locale] ?? (lead.locale || "–"),
       deskStatus: lead.status,
@@ -328,7 +333,8 @@ export const LEVERS: { key: string; group: string; base: number }[] = [
   { key: "Hub pages", group: "New pages", base: 0 },
   { key: "Vacancy and Uber job pages", group: "New pages", base: 0 },
   { key: "Blog posts", group: "New pages", base: 0 },
-  { key: "Social links", group: "New pages", base: 0 },
+  { key: "Instagram link", group: "New pages", base: 0 },
+  { key: "Facebook link", group: "New pages", base: 0 },
   { key: "ChatGPT", group: "ChatGPT and Google Jobs", base: 4.3 },
   { key: "Google Jobs", group: "ChatGPT and Google Jobs", base: 0.2 },
   { key: "Paid ads", group: "Paid ads", base: 9.2 },
@@ -347,10 +353,10 @@ export const LEVER_GROUPS: { key: string; color: string }[] = [
 ];
 
 export function leverOf(lead: FlowLead): string {
-  // Before the channel: a bio link's referrer reads as Facebook & Instagram, which counts as paid.
-  if (lead.form.startsWith("social/")) return "Social links";
+  // Before the channel: a social visit counts as paid below, and a bio link is not.
+  if (SOCIAL_FORMS[lead.form]) return formLabel(lead.form);
   const channel = lead.channel.toLowerCase();
-  if (lead.channel === "Meta Ads" || lead.channel === "Google Ads" || lead.channel === "Facebook & Instagram") return "Paid ads";
+  if (lead.channel === "Meta Ads" || lead.channel === "Google Ads" || lead.channel === "Facebook" || lead.channel === "Instagram") return "Paid ads";
   if (channel.includes("chatgpt")) return "ChatGPT";
   if (channel.includes("google_jobs")) return "Google Jobs";
   const [kind] = lead.form.split("/");
