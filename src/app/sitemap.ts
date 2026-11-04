@@ -60,10 +60,28 @@ function hindiPair(englishPath: string): Record<string, string> {
   return { "en-IN": url(englishPath), "hi-IN": url(`/hi${englishPath}`), "x-default": url(englishPath) };
 }
 
+/** The pages whose copy last changed on REWORDED_ON. Move the date and the list together with the next rewrite. */
+const REWORDED_ON = new Date("2026-11-04");
+const REWORDED = [
+  "/advertise-with-us",
+  "/car-on-rent-for-uber",
+  "/drive-for-uber-without-a-car",
+  "/drive-with-us/driver-job-in-",
+  "/driver-vacancy",
+  "/employee-mobility",
+  "/fleet-logistics",
+  "/fleet-management-company",
+  "/intercity",
+  "/uber-driver-job",
+  "/uber-driver-requirements",
+  "/uber-fleet-partner",
+];
+const reworded = (path: string) => (REWORDED.some((p) => path.replace(/^\/hi/, "").startsWith(p)) ? { lastModified: REWORDED_ON } : {});
+
 /**
- * lastModified is set only where the date is true (blog posts, press stories). A "now" stamp on
- * every page would change with each daily blog deploy, and Google stops trusting a sitemap's dates
- * once they prove wrong, which would cost the real ones too.
+ * lastModified is set only where the date is true (blog posts, press stories, a rewrite listed
+ * above). A "now" stamp on every page would change with each daily blog deploy, and Google stops
+ * trusting a sitemap's dates once they prove wrong, which would cost the real ones too.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const content = await getContent();
@@ -83,7 +101,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const hidden = new Set(PLAN_PAGES.filter((p) => !planFor(content, p.planId)?.visible).map((p) => p.path as string));
   for (const { path, priority, changeFrequency } of fixed) {
     if (hidden.has(path)) continue;
-    entries.push({ url: url(path), changeFrequency, priority });
+    entries.push({ url: url(path), ...reworded(path), changeFrequency, priority });
   }
 
   // The search pages (lib/search-pages.ts). Those with a Hindi edition declare each other.
@@ -93,6 +111,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const english = page.path.replace(/^\/hi/, "");
     entries.push({
       url: url(page.path),
+      ...reworded(page.path),
       changeFrequency: "weekly",
       priority: page.city ? 0.7 : 0.8,
       ...(hindi.has(english) ? { alternates: { languages: hindiPair(english) } } : {}),
