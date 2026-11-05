@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/home/site-header";
 import { SiteFooter } from "@/components/home/site-footer";
 import { LocalePosts } from "@/components/home/locale-switch";
 import { Analytics } from "@/components/site/analytics";
+import { CallBeacon } from "@/components/site/call-beacon";
 import { PreviewBanner } from "@/components/site/preview-banner";
 import { CardSpotlight } from "@/components/fx/card-spotlight";
 import { RevealOnScroll } from "@/components/fx/reveal-on-scroll";
@@ -38,6 +39,7 @@ export async function RootShell({ locale, children }: { locale: Locale; children
           <SiteFooter locale={locale} />
           <PreviewBanner />
           <Analytics />
+          <CallBeacon locale={locale} />
           <Script id="landing" strategy="afterInteractive">
             {"try{sessionStorage.ef_landing||(sessionStorage.ef_landing=location.pathname)}catch(e){}"}
           </Script>

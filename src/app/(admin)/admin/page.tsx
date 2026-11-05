@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ExternalLink, Gauge, GitBranch, Inbox, LogOut } from "lucide-react";
+import { ExternalLink, Gauge, GitBranch, Inbox, LogOut, Phone } from "lucide-react";
 import { signOutAction } from "@/app/(admin)/admin/actions";
 import { Editor } from "@/components/admin/editor";
 import { LoginForm } from "@/components/admin/login-form";
@@ -104,6 +104,10 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
                 <Link href="/admin/leads/flow" className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-navy hover:bg-mist">
                   <GitBranch size={14} />
                   <span className="hidden sm:inline">Flow to CRM</span>
+                </Link>
+                <Link href="/admin/leads/calls" className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-navy hover:bg-mist">
+                  <Phone size={14} />
+                  <span className="hidden sm:inline">Calls</span>
                 </Link>
                 <Link href="/admin/leads" className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-navy hover:bg-mist">
                   <Inbox size={14} />

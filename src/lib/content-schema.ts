@@ -179,6 +179,7 @@ const RETERMED: Record<string, Row> = {
   "Earning Potential|₹35,000/month": { label: "Earning Potential", value: "₹35,000/m" },
   "Ownership|24 Months": { label: "Ownership", value: "11 Months* onwards" },
   "Ownership|11 Months onwards": { label: "Ownership", value: "11 Months* onwards" },
+  "Tenure|12 Months": { label: "Tenure", value: "11 Months" },
 };
 
 /** Hero tags the seed used to carry and the page no longer shows. */

@@ -139,3 +139,72 @@ export async function readUnifyLeads(since: Date): Promise<{ leads: UnifyLeadRep
     return null;
   }
 }
+
+/* --------------------------------------------------------------------------- call taps */
+
+const CALLS_PATH = "/api/public/website-calls";
+
+/** A tap on one of the site's call buttons. Nothing about the visitor: only the number, the page and the visit's source. */
+export type CallTap = {
+  call_id: string;
+  phone: string;
+  city: string | null;
+  page: string;
+  landing: string | null;
+  utm_source: string | null;
+  utm_campaign: string | null;
+  locale: string | null;
+  clicked_at: string;
+};
+
+export type CallTapReport = CallTap & { kind: string; received_at: string };
+
+/** Posts one tap to Unify, which keeps it for the admin's calls page. A failure is logged and dropped. */
+export async function sendCallToUnify(tap: CallTap): Promise<boolean> {
+  if (!unifyEnabled()) return false;
+  try {
+    const res = await fetch(`${base()}${CALLS_PATH}`, {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${key()}` },
+      body: JSON.stringify(tap),
+      cache: "no-store",
+      signal: AbortSignal.timeout(4000),
+    });
+    if (res.ok) return true;
+    console.error("[call] Unify refused the tap", res.status, (await res.text()).slice(0, 200));
+  } catch (error) {
+    console.error("[call] Unify unreachable", error);
+  }
+  return false;
+}
+
+/** The taps Unify holds since `since`, oldest first; null when Unify is not set up or not answering. */
+export async function readUnifyCalls(since: Date): Promise<{ calls: CallTapReport[]; truncated: boolean } | null> {
+  if (!unifyEnabled()) return null;
+  const seen = new Map<string, CallTapReport>();
+  let from = since.toISOString();
+  try {
+    for (let page = 0; page < UNIFY_PAGES; page++) {
+      const query = new URLSearchParams({ since: from, limit: String(UNIFY_PAGE) });
+      const res = await fetch(`${base()}${CALLS_PATH}?${query}`, {
+        headers: { authorization: `Bearer ${key()}` },
+        cache: "no-store",
+        signal: AbortSignal.timeout(8000),
+      });
+      if (!res.ok) {
+        console.error("[calls] Unify answered", res.status);
+        return null;
+      }
+      const body = (await res.json()) as { calls?: CallTapReport[]; truncated?: boolean };
+      const calls = body.calls ?? [];
+      for (const call of calls) seen.set(call.call_id, call);
+      const last = calls[calls.length - 1]?.received_at;
+      if (!body.truncated || !last || last === from) return { calls: [...seen.values()], truncated: false };
+      from = last;
+    }
+    return { calls: [...seen.values()], truncated: true };
+  } catch (error) {
+    console.error("[calls] Unify unreachable", error);
+    return null;
+  }
+}

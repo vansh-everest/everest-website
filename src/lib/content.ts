@@ -235,7 +235,7 @@ export type SiteContent = {
 };
 
 /** Bump when SiteContent changes shape, so no deployment reads a cache written by an older one. */
-export const CONTENT_VERSION = "15";
+export const CONTENT_VERSION = "16";
 
 export const placeholder = (label: string, alt = ""): ImageSlot => ({ label, url: "", alt });
 
@@ -323,7 +323,7 @@ const PLAN_SEED: Plan[] = [
       highlight: "Own a Car",
       heroImage: { label: "Own Now, hero photo", url: "/figma/own-hero.webp", alt: "Everest driver holding up the keys to his car" },
       heroImagePhone: { label: "Own Now, phone hero photo", url: "/figma/plans/hero-phone-own-now.webp", alt: "An Everest driver holding up the keys to his car" },
-      term: { label: "Tenure", value: "12 Months" },
+      term: { label: "Tenure", value: "11 Months" },
       tags: ["Ownership plan", "Pay upfront"],
       whyTag: "Benefits of this plan",
       whyTitle: "Everything a driver needs, in one plan",

@@ -335,6 +335,8 @@ export const LEVERS: { key: string; group: string; base: number }[] = [
   { key: "Blog posts", group: "New pages", base: 0 },
   { key: "Instagram link", group: "New pages", base: 0 },
   { key: "Facebook link", group: "New pages", base: 0 },
+  { key: "YouTube link", group: "New pages", base: 0 },
+  { key: "Careers and FAQ", group: "New pages", base: 0 },
   { key: "ChatGPT", group: "ChatGPT and Google Jobs", base: 4.3 },
   { key: "Google Jobs", group: "ChatGPT and Google Jobs", base: 0.2 },
   { key: "Paid ads", group: "Paid ads", base: 9.2 },
@@ -367,5 +369,6 @@ export function leverOf(lead: FlowLead): string {
   if (kind === "city" || lead.form === "drive-with-us") return "City pages";
   if (kind === "plan" || lead.form === "our-plans") return "Plan pages";
   if (lead.form === "home") return "Homepage";
+  if (lead.form === "careers" || lead.form === "faq") return "Careers and FAQ";
   return "Other";
 }

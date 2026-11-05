@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { List } from "lucide-react";
+import { List, Phone } from "lucide-react";
 import { SOCIAL_FORMS, formLabel } from "@/lib/forms";
 import { searchPageAt, type SearchPage } from "@/lib/search-pages";
 import { sendToUnifyAction } from "./actions";
@@ -615,6 +615,10 @@ export function FlowView({ f, jarvis, unify, unifyOn, all, pages, result }: { f:
           <span aria-hidden className="h-6 w-px bg-line" />
           <h1 className="text-[15px] font-bold text-navy">Leads flow</h1>
           <div className="ml-auto flex items-center gap-1 sm:gap-2">
+            <Link href="/admin/leads/calls" className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-navy hover:bg-mist">
+              <Phone size={14} />
+              <span className="hidden sm:inline">Inbound calls</span>
+            </Link>
             <Link href="/admin/leads" className="flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-navy hover:bg-mist">
               <List size={14} />
               All leads

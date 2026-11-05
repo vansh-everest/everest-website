@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
+import { formCities } from "@/components/driver/driver-pages";
+import { ApplyBand } from "@/components/driver/driver-ui";
 import { FormLink } from "@/components/home/form-link";
 import { PHONE_DISPLAY, PHONE_HREF } from "@/components/home/ui";
 import { SITE_URL } from "@/lib/company";
+import { getDictionary } from "@/content/dictionary";
 import { jsonLd } from "@/lib/json-ld";
+import { getContent } from "@/lib/store";
+
+export const revalidate = 3600;
 
 /**
  * The answers are the ones already given on the driver pages, so a person reading either
@@ -59,7 +65,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/faq/" },
 };
 
-export default function Page() {
+export default async function Page() {
+  const content = await getContent();
   const structured = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -119,6 +126,8 @@ export default function Page() {
           </div>
         </div>
       </section>
+
+      <ApplyBand locale="en" dict={getDictionary("en")} cities={formCities(content, "en")} source="faq" placement="bottom" />
     </>
   );
 }

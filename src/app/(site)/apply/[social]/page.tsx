@@ -12,7 +12,7 @@ import { getContent } from "@/lib/store";
  * only from the profiles: not indexed, and not in the search-page registry or the sitemap.
  */
 
-const SOCIALS = ["instagram", "facebook"];
+const SOCIALS = ["instagram", "facebook", "youtube"];
 
 type Props = { params: Promise<{ social: string }> };
 
