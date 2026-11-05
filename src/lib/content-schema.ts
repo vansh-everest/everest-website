@@ -179,20 +179,25 @@ const RETERMED: Record<string, Row> = {
   "Earning Potential|₹35,000/month": { label: "Earning Potential", value: "₹35,000/m" },
   "Ownership|24 Months": { label: "Ownership", value: "11 Months* onwards" },
   "Ownership|11 Months onwards": { label: "Ownership", value: "11 Months* onwards" },
-  "Tenure|12 Months": { label: "Tenure", value: "11 Months" },
+};
+
+/** The same, for one plan only: Own Now's tenure became 11 months on 5 Nov 2026. */
+const PLAN_RETERMED: Record<string, Record<string, Row>> = {
+  "own-now": { "Tenure|12 Months": { label: "Tenure", value: "11 Months" } },
 };
 
 /** Hero tags the seed used to carry and the page no longer shows. */
 const DROPPED_TAGS = new Set(["Non-refundable"]);
 
-function term(v: unknown): Row {
+function term(v: unknown, planId: string): Row {
   const t = obj(v);
   const row = { label: text(t.label, 24), value: text(t.value, 24) };
-  const next = RETERMED[`${row.label}|${row.value}`];
+  const key = `${row.label}|${row.value}`;
+  const next = PLAN_RETERMED[planId]?.[key] ?? RETERMED[key];
   return next ? { ...next } : row;
 }
 
-function page(v: unknown, base: PlanPage): PlanPage {
+function page(v: unknown, base: PlanPage, planId: string): PlanPage {
   const o = obj(v);
   const pick = (key: keyof PlanPage, max: number) => (key in o ? text(o[key], max) : (base[key] as string));
   return {
@@ -200,7 +205,7 @@ function page(v: unknown, base: PlanPage): PlanPage {
     highlight: pick("highlight", 60),
     heroImage: image(o.heroImage, base.heroImage),
     heroImagePhone: image(o.heroImagePhone, base.heroImagePhone),
-    term: "term" in o ? term(o.term) : { ...base.term },
+    term: "term" in o ? term(o.term, planId) : { ...base.term },
     tags: ("tags" in o ? lines(o.tags, 4, 48) : [...base.tags]).filter((t) => !DROPPED_TAGS.has(t)),
     whyTag: pick("whyTag", 40),
     whyTitle: pick("whyTitle", 90),
@@ -276,7 +281,7 @@ function plans(v: unknown, cityList: string[]): Plan[] {
       rows: "rows" in o ? rows(o.rows) : base.rows,
       benefits: "benefits" in o ? lines(o.benefits, 12, 60) : base.benefits,
       carIds: "carIds" in o ? lines(o.carIds, 40, 40).map(slugify) : base.carIds,
-      page: page(o.page, base.page),
+      page: page(o.page, base.page, id),
       overview: overview(o.overview, base.overview),
     };
   });

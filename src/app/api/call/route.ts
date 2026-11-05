@@ -20,19 +20,25 @@ const KNOWN = new Set(
 );
 const PER_CALLER = 20;
 const SHARED = 600;
+/** All callers together, per instance: a flood that forges its address still stops here. */
+const ALL = 300;
 const WINDOW_MS = 60_000;
+const MAX_BODY = 4096;
 
 const text = (v: unknown, max: number) => (typeof v === "string" && v.trim() ? v.trim().slice(0, max) : null);
 const done = (status = 204) => new NextResponse(null, { status });
 
 export async function POST(request: Request) {
-  const caller = callerKey(request.headers);
+  if (Number(request.headers.get("content-length") ?? 0) > MAX_BODY) return done(413);
+  // Cloudflare sits in front of the live site and names the visitor; the platform headers are the fallback.
+  const caller = request.headers.get("cf-connecting-ip")?.trim() || callerKey(request.headers);
+  if (tooMany("call:all", ALL, WINDOW_MS)) return done(429);
   if (tooMany(`call:${caller}`, caller === UNKNOWN_CALLER ? SHARED : PER_CALLER, WINDOW_MS)) return done(429);
 
   let body: Record<string, unknown>;
   try {
     // sendBeacon posts the tap as text, which keeps it a simple request.
-    body = JSON.parse((await request.text()).slice(0, 4000)) as Record<string, unknown>;
+    body = JSON.parse((await request.text()).slice(0, MAX_BODY)) as Record<string, unknown>;
   } catch {
     return done(400);
   }

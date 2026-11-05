@@ -168,7 +168,7 @@ export async function sendCallToUnify(tap: CallTap): Promise<boolean> {
       headers: { "content-type": "application/json", authorization: `Bearer ${key()}` },
       body: JSON.stringify(tap),
       cache: "no-store",
-      signal: AbortSignal.timeout(4000),
+      signal: AbortSignal.timeout(2000),
     });
     if (res.ok) return true;
     console.error("[call] Unify refused the tap", res.status, (await res.text()).slice(0, 200));
