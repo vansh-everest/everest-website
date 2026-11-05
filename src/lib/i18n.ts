@@ -66,11 +66,15 @@ const HINDI_ROOTS = [
   "/ev-driver-jobs",
 ];
 
+/** Families whose city pages are also in Hindi while the all-cities page above them is English only. */
+const HINDI_CITY_ROOTS = ["/driver-vacancy", "/uber-driver-job"];
+
 export function existsIn(locale: Locale, path: string): boolean {
   if (locale === DEFAULT_LOCALE) return true;
   const clean = path.replace(/\/+$/, "") || "/";
   if (clean === "/") return isMainLocale(locale);
   if (locale === "hi" && HINDI_ROOTS.some((root) => clean === root || clean.startsWith(`${root}/`))) return true;
+  if (locale === "hi" && HINDI_CITY_ROOTS.some((root) => clean.startsWith(`${root}/`))) return true;
   // The hub and city pages; the hub pages under a city (/drive-with-us/driver-job-in-mumbai/thane) are English only.
   return clean === "/drive-with-us" || /^\/drive-with-us\/driver-job-in-[a-z-]+$/.test(clean) || clean === "/blog";
 }

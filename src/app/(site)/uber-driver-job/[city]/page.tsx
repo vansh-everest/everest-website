@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `Uber Driver Job in ${name}: Start With an Everest Fleet Car`,
     description: `Uber driver job in ${name} with an Everest Fleet car: ${facts.hubs.length ? `${facts.hubs.length} hubs, ` : ""}insurance and permit included, weekly payouts and the steps to start.`,
-    alternates: { canonical: `${uberJobPath(slug)}/` },
+    alternates: { canonical: `${uberJobPath(slug)}/`, languages: { "en-IN": `${uberJobPath(slug)}/`, "hi-IN": `/hi${uberJobPath(slug)}/`, "x-default": `${uberJobPath(slug)}/` } },
   };
 }
 

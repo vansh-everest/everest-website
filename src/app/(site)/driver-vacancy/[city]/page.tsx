@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `Driver Vacancy in ${name}: Cab Driver Jobs With a Car`,
     description: `Driver vacancy in ${name} at Everest Fleet: ${facts.hubs.length ? `${facts.hubs.length} hubs, ` : ""}insurance and permit included, weekly payouts.`,
-    alternates: { canonical: `${vacancyPath(slug)}/` },
+    alternates: { canonical: `${vacancyPath(slug)}/`, languages: { "en-IN": `${vacancyPath(slug)}/`, "hi-IN": `/hi${vacancyPath(slug)}/`, "x-default": `${vacancyPath(slug)}/` } },
   };
 }
 
