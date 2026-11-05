@@ -1,5 +1,63 @@
 [
   {
+    "slug": "cab-driver-earnings-per-hour-after-fuel-cost",
+    "locale": "en",
+    "title": "Cab Driver Earnings Per Hour After Fuel Cost",
+    "excerpt": "Learn a simple daily method to track what you keep after fuel, charging, servicing and empty kilometres.",
+    "body": [
+      "Cab driver earnings per hour should mean what you keep after fuel and running costs, not only the fare total in the app. This guide shows a simple way to check your hour, kilometre, fuel and dead-kilometre numbers every day.",
+      "## Start with your app numbers, then subtract costs",
+      "Uber Help says you can track earnings by week, day or trip in the Driver app through the fare icon or the Earnings tab. It also says Trip History shows recent trips, and choosing one trip shows gross fare and net fare. Use these numbers as your starting point, not as your final take-home amount.",
+      "At the end of each shift, note four things in a notebook or phone note. Write the hours you were online, the earnings shown for the day, the total kilometres on your odometer, and the money spent on fuel or charging. If you work on more than one app, write separate trip totals if the app shows them, but keep one total for fuel and kilometres.",
+      "To find your earnings per hour, divide the money left after fuel or charging by the hours you worked. To find your earning per kilometre, divide the same money left by total kilometres driven, not only paid trip kilometres. This makes short waiting time, long pickup distance and empty return trips visible.",
+      "Uber’s Driver Dashboard also shows earnings, according to Uber Help. Check it when your phone screen is too small for a proper review. Do this once a week so you can compare Monday to Sunday, instead of judging your whole work by one good or bad day.",
+      "## Compare petrol, CNG and EV cost per kilometre",
+      "Fuel choice changes the money left in your pocket. TOI Auto compared running costs on September 28, 2026, using example prices and efficiency figures. It estimated a home-charged EV at about Rs 1.14 per km, CNG at about Rs 2.62 per km, and petrol at about Rs 7.41 per km, with the article clearly saying these are fuel or electricity costs only, not total ownership costs.",
+      "The same TOI Auto report used Mumbai examples, including CNG at Rs 88 per kg and petrol at Rs 111.21 per litre. It also said a public fast-charging example at Rs 20 per kWh could take the EV energy cost to about Rs 2.86 per km before charging losses and other charges. This is why an EV is strongest when your charging is cheap and easy, while CNG is useful when pumps are near your work area and queues are manageable.",
+      "Use this method for your own car instead of copying any one city’s number. Fill CNG or petrol fully, reset the trip meter, and note kilometres before the next fill. For an EV, note units charged and kilometres driven. After three to five shifts, divide the fuel or electricity money by kilometres driven. That is your real energy cost per km.",
+      "## Save fuel with daily driving and maintenance habits",
+      "Small driving habits matter because cab work has many starts, stops and U-turns. The Ministry of Housing and Urban Affairs Drivers Handbook says correct tyre pressure should be maintained because under-inflation reduces fuel efficiency and over-inflation damages tyres. It also advises switching off the engine when a stop is expected to be more than 2 minutes, and not riding the clutch.",
+      "Make these checks part of your first 10 minutes. Check tyre pressure when tyres are cold, look for uneven tyre wear, and listen for brake drag or engine roughness. Keep the AC filter and engine air filter clean as per the car maker’s service schedule, because a hard-working city cab spends many hours in dust and traffic.",
+      "The Ministry of Road Transport and Highways road safety book says running with one tyre under-inflated by 8 psi can reduce tyre life by 15,000 km and increase fuel consumption by 4 percent. It also says a poorly maintained vehicle can increase fuel consumption by up to 15 percent. For a driver doing high daily kilometres, these are not small numbers.",
+      "Do servicing on time and keep bills or service records. Use the oil grade recommended for the car and avoid delaying small repairs that affect mileage, such as spark plugs, filters, wheel alignment, brake binding or CNG tuning. The aim is simple: the car should use less fuel for the same trip distance.",
+      "## Cut dead kilometres before and after trips",
+      "Dead kilometres are kilometres driven without a paying rider. They include going far for pickup, returning empty from a low-demand area, driving around while waiting, and going home without a rider. These kilometres reduce both earnings per hour and earnings per kilometre.",
+      "Uber says its destination feature lets you set a destination so the app can find riders travelling in the same direction. If this feature is available in your city and app, use it when you are going home, going to a CNG pump, moving towards a busy area or ending your shift. Do not use extra kilometres chasing every possible hotspot if your fuel cost is already high.",
+      "Uber also describes back-to-back trips, where the app can send the next trip while you are completing the current one. When your app offers this, it can reduce waiting time between trips. Still, check pickup distance, traffic and fuel situation before accepting any trip, because a long unpaid pickup can spoil a good fare.",
+      "End every day with one question: did the car move mainly with riders, or mainly empty? If empty kilometres were high, change your start point, fuel stop, lunch break area or end-of-day route the next day. If you need a car for platform work, Everest Fleet is one place where drivers can go for a car."
+    ],
+    "published": true,
+    "date": "2026-11-05",
+    "coverImage": {
+      "label": "Daily post cover",
+      "url": "/blog/auto/cab-driver-earnings-per-hour-after-fuel-cost.webp",
+      "alt": "Dark blue cars at a fuel and charging station in early morning haze."
+    },
+    "sources": [
+      {
+        "title": "Viewing trip earnings",
+        "url": "https://help.uber.com/driving-and-delivering/article/fuvarkereset-megtekint%C3%A9se?nodeId=9fbc207b-2837-4428-8133-2d2df7b3b17d"
+      },
+      {
+        "title": "Taking Trips with Uber | Driver App | Uber",
+        "url": "https://www.uber.com/in/en/drive/basics/taking-trips/"
+      },
+      {
+        "title": "CNG vs EV vs Hybrid: Which Drivetrain Has the Lowest Running Cost in 2026?",
+        "url": "https://auto.timesofindia.com/news/cars/cng-vs-ev-vs-hybrid-which-drivetrain-has-the-lowest-running-cost-in-2026/articleshow/134543520.cms"
+      },
+      {
+        "title": "Drivers Handbook (Dec 2020)",
+        "url": "https://mohua.gov.in/upload/uploadfiles/files/PC2%20-%20Drivers%20Handbook%20%28Dec%202020%29.pdf"
+      },
+      {
+        "title": "Book on Road Safety Signage & Signs",
+        "url": "https://morth.nic.in/sites/default/files/road_safety_books.pdf"
+      }
+    ],
+    "series": "earnings-costs"
+  },
+  {
     "slug": "uber-airport-queue-guide-for-indian-cab-drivers",
     "locale": "en",
     "title": "Uber Airport Queue Guide for Indian Cab Drivers",
